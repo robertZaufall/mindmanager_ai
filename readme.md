@@ -15,6 +15,10 @@ These macros enhance mindmaps created by **Mindjet Mindmanager**.
 3. Refinement of the map.
 4. Deep refinement of the central topic or map.
 
+## Example
+
+![Drag Racing](macros.gif)
+
 ## Disclaimer
 
 This project is in its early stages. Generation might still contain errors. If you encounter an error, please try calling the macro again.
