@@ -1,0 +1,21 @@
+'#Language "WWB-COM"
+'#Uses "Mermaid.cls"
+'#Uses "MermaidToDocument.cls"
+
+Option Explicit
+
+Sub Main()
+    Dim Mermaid As New Mermaid
+    Dim MermaidToDocument As New MermaidToDocument
+
+    Dim doc As Document
+    Set doc = ActiveDocument
+
+    Dim mermaidText As String
+    mermaidText = Mermaid.GetDocumentAsMermaid(doc)
+
+	Dim NewMermaidText As String
+	NewMermaidText = mermaidText
+
+    MermaidToDocument.NewDocumentFromMermaid(NewMermaidText)
+End Sub
