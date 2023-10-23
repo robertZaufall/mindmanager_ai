@@ -14,6 +14,8 @@ These macros enhance mindmaps created by **Mindjet Mindmanager**.
 2. Create examples for a topic.
 3. Refinement of the map.
 4. Deep refinement of the central topic or map.
+5. Map translation
+6. Export to Mermaid syntax
 
 ## Example
 
