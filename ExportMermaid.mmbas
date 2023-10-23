@@ -1,12 +1,14 @@
 '#Language "WWB-COM"
 '#Uses "Mermaid.cls"
 '#Uses "MermaidToDocument.cls"
+'#Uses "Settings.cls"
 
 Option Explicit
 
 Sub Main()
     Dim Mermaid As New Mermaid
     Dim MermaidToDocument As New MermaidToDocument
+    Dim Settings As New Settings
 
     Dim doc As Document
     Set doc = ActiveDocument
@@ -14,8 +16,13 @@ Sub Main()
     Dim mermaidText As String
     mermaidText = Mermaid.GetDocumentAsMermaid(doc)
 
-	Dim NewMermaidText As String
-	NewMermaidText = mermaidText
+    MsgBox(mermaidText) ' eg. use at https://mermaid.live/
 
-    MermaidToDocument.NewDocumentFromMermaid(NewMermaidText)
+	If Settings.SwDebug Then
+    	' Create new document with reimporting the exported mermaid code
+		Dim NewMermaidText As String
+		NewMermaidText = mermaidText
+
+    	MermaidToDocument.NewDocumentFromMermaid(NewMermaidText)
+    End If
 End Sub
