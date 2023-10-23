@@ -23,14 +23,14 @@ Sub Main()
     Dim strUser As String
 	strSystem = "You are a helpful assistant."
 	strUser = "Given is the following Mermaid mindmap. Please refine the central topic or each subtopic with " + _
-		"top 6 most important subtopics and do this for additional 5 more subtopic levels, " + _
+		"top " + Settings.TopMostResultsDeep + " most important subtopics and do this for additional " + Settings.LevelsDeep + " more subtopic levels, " + _
 		"each subtopic " + Settings.MaxReturnWords + " words at maximum. " + _
 		"Example structure: 'mindmap\nCentralTopic\nTopic1\nTopic11\nTopic111\nTopic1111\nTopic1112\nTopic112\nTopic12\nTopic2'" + _
 		"Return the same Mermaid structure back with two spaces as indentation and no additional text. " + _
 		"This is the mindmap to be extended: \n" + _
 		Replace(mermaidText, vbCr, "\n")
 
-	Settings.MaxTokens = "4000"
+	Settings.MaxTokens = Settings.MaxTokensDeep
 
 	Dim NewMermaidText As String
 	NewMermaidText = Replace(GptRequest.Gpt4Request(Settings, strSystem, strUser), "\n", vbCr)

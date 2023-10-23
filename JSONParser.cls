@@ -19,6 +19,7 @@ Public Function ParseTopicsFromJSON(JSON As String, cloudType As String) As Stri
 
     'JSON = Replace(JSON, "\n", "")
     JSON = Replace(JSON, "\'", "")
+    JSON = Replace(JSON, "\""", "")
     JSON = Replace(JSON, "\u0026", "&")
     JSON = Replace(JSON, "'", "")
 
@@ -30,6 +31,8 @@ Public Function ParseTopicsFromJSON(JSON As String, cloudType As String) As Stri
     contentStart = InStr(1, JSON, findStr)
     contentEnd = InStr(contentStart + Len(findStr), JSON, """")
     contentString = Mid(JSON, contentStart + Len(findStr), contentEnd - contentStart - Len(findStr))
+
+    contentString = Replace(contentString, "```mermaid\n", "")
 
     Return contentString
 End Function

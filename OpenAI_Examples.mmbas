@@ -49,7 +49,10 @@ Sub Main()
 	strUser = "Create " + _
 		"top " + Settings.TopMostResults + " most common examples for this mindmap topic (which eventually has parent topics as context delimited by '|'), " + _
 		"each " + Settings.MaxReturnWords + " words at maximum and delimited by '#': '" + context + SelectedTopic.Text + "'"
-	'MsgBox(strUser)
+
+	If Settings.SwDebug Then MsgBox(strUser)
+
+	Settings.MaxTokens = Settings.MaxTokensSimple
 	Dim contentSTring As String
 	contentSTring = GptRequest.Gpt4Request(Settings, strSystem, strUser)
     Topics = Split(contentSTring, "#")

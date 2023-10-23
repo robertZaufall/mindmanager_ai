@@ -20,27 +20,31 @@ Public Function Gpt4Request(Settings As Settings, strSystem As String, strUser A
     Dim result As String
 
     strPayload = "{" + _
-        IIf (Settings.CloudType = "OPENAI", """model"": """ + Settings.OpenAIModel + """, ", "") + _
+        IIf (Settings.CloudType = "OPENAI", _
+        """model"": """ + Settings.OpenAIModel + """, ", "") + _
         """max_tokens"": " + Settings.MaxTokens +", " + _
+        """temperature"": " + Settings.Temperature +", " + _
         """messages"": [" + _
             "{""role"": ""system"", ""content"": """ + strSystem + """}, " + _
             "{""role"": ""user"", ""content"": """ + strUser + """ " + _
         "}]" + _
     "}"
-    'MsgBox(strPayload)
+    If Settings.SwDebug = True Then MsgBox(strPayload)
 
     Set Request = CreateObject("MSXML2.ServerXMLHTTP.6.0")
     Request.Open "POST", Settings.ApiUrl, False
     Request.setRequestHeader "Content-Type", "application/json"
     Request.setRequestHeader Settings.KeyHeaderText, Settings.KeyHeaderValue
-    Request.SetTimeouts 600000, 600000, 600000, 600000
+    Request.SetTimeouts Settings.ResolveTimeout, Settings.ConnectTimeout, Settings.SendTimeout, Settings.ReceiveTimeout
     Request.send strPayload
     responseText = Request.responseText
-    'MsgBox(responseText)
+
+    If Settings.SwDebug = True Then MsgBox(responseText)
 
     Dim parser As New JSONParser
     result = parser.ParseTopicsFromJSON(responseText, Settings.CloudType)
-    'MsgBox(result)
+
+    If Settings.SwDebug = True Then MsgBox(result)
 
     Return result
 End Function

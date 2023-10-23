@@ -14,7 +14,6 @@ Option Explicit
 
 Const delimiter As String = vbCr
 Const indentSize As Integer = 2
-Const swDebug As Boolean = vbFalse
 
 Public Function ParseMermaid(mermaidSyntax As String) As MermaidTopic()
 	Dim MermaidTopics() As MermaidTopic
