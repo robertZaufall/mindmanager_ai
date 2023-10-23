@@ -11,7 +11,7 @@ Attribute VB_Name = "Settings"
 
 Option Explicit
 
-Const DEBUG_FLAG = True
+Const DEBUG_FLAG = False
 
 '**********************************************************
 Const CLOUD_TYPE         As String = "AZURE" ' ["AZURE","OPENAI"]
