@@ -21,7 +21,7 @@ if len(sys.argv) > 1:
 		data.replace("\r", "\n"))
 
     payload = {
-        "max_tokens": config.MAX_TOKENS_NORMAL,
+        "max_tokens": config.MAX_TOKENS_DEEP,
         "temperature": config.OPENAI_TEMPERATURE,
         "messages": [
             {"role": "system", "content": str_system},
