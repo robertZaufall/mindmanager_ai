@@ -82,21 +82,21 @@ Private Sub Class_Initialize
 
 	If CloudType = "OPENAI" Then
 		' OpenAI
-        '**********************************************************
+        '''
 		OPENAI_API_KEY     = Environ("OPENAI_API_KEY_NATIVE")
-        '**********************************************************
+        '''
 	    ApiUrl = "https://api.openai.com/v1/chat/completions"
 		OpenAIModel = OPENAI_MODEL
 	    KeyHeaderText = "Authorization"
 	    KeyHeaderValue = "Bearer " & OPENAI_API_KEY
 	Else
 		' Azure
-        '**********************************************************
+        '''
 		OPENAI_API_KEY     = Environ("OPENAI_API_KEY")
 		OPENAI_API_BASE    = Environ("OPENAI_API_BASE")
 		OPENAI_DEPLOYMENT  = Environ("OPENAI_DEPLOYMENT")
 		OPENAI_API_VERSION = Environ("OPENAI_API_VERSION")
-        '**********************************************************
+        '''
 	    ApiUrl = OPENAI_API_BASE + "openai/deployments/" + OPENAI_DEPLOYMENT + "/chat/completions?api-version=" + OPENAI_API_VERSION
 	    KeyHeaderText = "api-key"
 	    KeyHeaderValue = OPENAI_API_KEY
