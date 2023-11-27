@@ -20,25 +20,25 @@ Public Function ParseMermaid(mermaidSyntax As String) As MermaidTopic()
 	Dim newIndex As Integer
 	newIndex = -1
 
-    Dim mermaidLinesArray() As String
-    mermaidLinesArray = Split(mermaidSyntax, delimiter)
+	Dim mermaidLinesArray() As String
+	mermaidLinesArray = Split(mermaidSyntax, delimiter)
 
 	If UBound(mermaidLinesArray) > 1 Then
-	    Dim mermaidLine As String
+		Dim mermaidLine As String
 
-	    Dim i As Integer
-	    For i = 1 To UBound(mermaidLinesArray)
-	    	mermaidLine = mermaidLinesArray(i)
-	        If mermaidLine <> "" Then
-	        	Dim IndentLevel As Integer
-	        	IndentLevel = (Len(mermaidLine) - Len(LTrim(mermaidLine))) / 2
+		Dim i As Integer
+		For i = 1 To UBound(mermaidLinesArray)
+			mermaidLine = mermaidLinesArray(i)
+			If mermaidLine <> "" Then
+				Dim IndentLevel As Integer
+				IndentLevel = (Len(mermaidLine) - Len(LTrim(mermaidLine))) / indentSize
 				newIndex = newIndex + 1
 				ReDim Preserve MermaidTopics(newIndex + 1)
 				Set MermaidTopics(newIndex) = New MermaidTopic
 				MermaidTopics(newIndex).TopicText = Trim(mermaidLine)
 				MermaidTopics(newIndex).TopicLevel = IndentLevel - 1
-	        End If
-	    Next
+			End If
+		Next
 	End If
 
 	Return MermaidTopics

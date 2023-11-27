@@ -15,24 +15,18 @@ Const swUseRound As Boolean = 0
 Const swUseRoot As Boolean = 1
 Const LineSeparator As String = vbCr
 
-Public Function GetDocumentAsMermaid(doc As Document) As String
-    Dim centralTopic As Topic
-    Set centralTopic = doc.CentralTopic
+Public Sub RecurseTopics(mermaidDiagram As String, ThisTopic As Topic, level As Integer)
+    If level = 0 Then
+        mermaidDiagram = "mindmap" + LineSeparator + _
+            "  " + IIf(swUseRoot And swUseRound, "root", "") + IIf(swUseRound, "(", "") + ThisTopic.Text + IIf(swUseRound, ")", "") + LineSeparator
+        RecurseTopics mermaidDiagram, ThisTopic, 1
+        Return
+    End If
 
-    Dim mermaidDiagram As String
-    mermaidDiagram = "mindmap" + LineSeparator + _
-  	    "  " + IIf(swUseRoot And swUseRound, "root", "") + IIf(swUseRound, "(", "") + centralTopic.Text + IIf(swUseRound, ")", "") + LineSeparator
-
-    RecurseTopics mermaidDiagram, centralTopic, 1
-
-    Return mermaidDiagram
-End Function
-
-Private Sub RecurseTopics(mermaidDiagram As String, ThisTopic As Topic, level As Integer)
     If level > 1 Then
         mermaidDiagram = mermaidDiagram + _
-    	    String(level * 2, " ") + _
-    	    IIf(swUseRound, "(", "") + ThisTopic.Text + IIf(swUseRound, ")", "") + LineSeparator
+            String(level * 2, " ") + _
+            IIf(swUseRound, "(", "") + ThisTopic.Text + IIf(swUseRound, ")", "") + LineSeparator
     End If
 
     Dim childTopics As Topics

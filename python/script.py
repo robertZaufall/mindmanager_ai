@@ -1,4 +1,5 @@
 import sys
+
 import config
 import json
 import requests
@@ -15,10 +16,10 @@ if len(sys.argv) > 1:
     
     str_system = "You are a helpful assistant."
     str_user = ("Given is the following Mermaid mindmap. Please refine each subtopic by adding a new level with "
-		"top " + str(config.TOP_MOST_RESULTS) + " most important subtopics, "
-		"each subtopic " + str(config.MAX_RETURN_WORDS) + " words at maximum "
-		"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n" +
-		data.replace("\r", "\n"))
+                "top " + str(config.TOP_MOST_RESULTS) + " most important subtopics, "
+                "each subtopic " + str(config.MAX_RETURN_WORDS) + " words at maximum "
+                "and return the same Mermaid structure back with two spaces as indentation and no additional text: \n" +
+                data.replace("\r", "\n"))
 
     payload = {
         "max_tokens": config.MAX_TOKENS_DEEP,

@@ -8,19 +8,19 @@ Option Explicit
 
 Sub Main()
 	Dim Settings As New Settings
-    Dim GptRequest As New GptRequest
+	Dim GptRequest As New GptRequest
 
-    Dim Mermaid As New Mermaid
-    Dim MermaidToDocument As New MermaidToDocument
+	Dim Mermaid As New Mermaid
+	Dim MermaidToDocument As New MermaidToDocument
 
-    Dim doc As Document
-    Set doc = ActiveDocument
+	Dim doc As Document
+	Set doc = ActiveDocument
 
-    Dim mermaidText As String
-    mermaidText = Mermaid.GetDocumentAsMermaid(doc)
+	Dim mermaidText As String
+	Mermaid.RecurseTopics(mermaidText, doc.CentralTopic, 0)
 
-    Dim strSystem As String
-    Dim strUser As String
+	Dim strSystem As String
+	Dim strUser As String
 	strSystem = "You are a helpful assistant."
 	strUser = "Given is the following Mermaid mindmap. Please refine the central topic or each subtopic with " + _
 		"top " + Settings.TopMostResultsDeep + " most important subtopics and do this for additional " + Settings.LevelsDeep + " more subtopic levels, " + _

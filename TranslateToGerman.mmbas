@@ -7,7 +7,7 @@
 Option Explicit
 
 Sub Main()
-	Dim Settings As New Settings
+    Dim Settings As New Settings
     Dim GptRequest As New GptRequest
 
     Dim Mermaid As New Mermaid
@@ -21,14 +21,14 @@ Sub Main()
 
     Dim strSystem As String
     Dim strUser As String
-	strSystem = "You are a helpful assistant."
-	strUser = "Given is the following Mermaid mindmap. Please translate every topic to the German language " + _
-		"and return the same mermaid structure back with two spaces as indentation: \n" + Replace(mermaidText, vbCr, "\n")
+    strSystem = "You are a helpful assistant."
+    strUser = "Given is the following Mermaid mindmap. Please translate every topic to the German language " + _
+        "and return the same mermaid structure back with two spaces as indentation: \n" + Replace(mermaidText, vbCr, "\n")
 
-	Settings.MaxTokens = Settings.MaxTokensDeep
+    Settings.MaxTokens = Settings.MaxTokensDeep
 
-	Dim NewMermaidText As String
-	NewMermaidText = Replace(GptRequest.Gpt4Request(Settings, strSystem, strUser), "\n", vbCr)
+    Dim NewMermaidText As String
+    NewMermaidText = Replace(GptRequest.Gpt4Request(Settings, strSystem, strUser), "\n", vbCr)
 
     MermaidToDocument.NewDocumentFromMermaid(NewMermaidText)
 End Sub

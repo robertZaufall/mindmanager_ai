@@ -14,7 +14,7 @@ Sub Main
 
     Dim doc As Document
     Set doc = ActiveDocument
-    mermaidText = Mermaid.GetDocumentAsMermaid(doc)
+    Mermaid.RecurseTopics(mermaidText, doc.CentralTopic, 0)
 
     '''
 
@@ -28,19 +28,19 @@ Sub Main
     outputFilePath = scriptPath + "\output.txt"
 
     Set textFileInput = fso.OpenTextFile(inputFilePath, 2, True)
-	textFileInput.WriteLine mermaidText
+    textFileInput.WriteLine mermaidText
     textFileInput.Close
 
-	wsh.Run "cmd /c python " + scriptPath + "\script.py """ + inputFilePath + """ > " + outputFilePath, 0, True
+    wsh.Run "cmd /c python " + scriptPath + "\script.py """ + inputFilePath + """ > " + outputFilePath, 0, True
 
-	'''
+    '''
 
-	Dim textFileOutput
+    Dim textFileOutput
     Set textFileOutput = fso.OpenTextFile(outputFilePath, 1)
     Do While textFileOutput.AtEndOfStream <> True
         NewMermaidText += textFileOutput.ReadLine & vbCr
     Loop
     textFileOutput.Close
 
-	MermaidToDocument.NewDocumentFromMermaid(NewMermaidText)
+    MermaidToDocument.NewDocumentFromMermaid(NewMermaidText)
 End Sub
