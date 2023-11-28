@@ -1,6 +1,6 @@
 # Mindjet Mindmanager automation and OpenAI Integration
 
-These macros enhance mindmaps created by **Mindjet Mindmanager**.
+These automations and macros enhance mindmaps created by **Mindjet Mindmanager**.
 
 ## Features
 
