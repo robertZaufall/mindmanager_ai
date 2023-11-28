@@ -6,8 +6,8 @@ These macros enhance mindmaps created by **Mindjet Mindmanager**.
 
 - Both platforms: Windows and MACOS!
 - On Windows written in **Win Wrap Basic** and alternatively in **Win Wrap Basic** combined with Python 
-- On MACOS written in **Python** using **appscript** and alternatively in pure *Apple Script* (incomplete approach by now)
-- Utilizes the **OpenAI REST Api** at **OpenAI* or **Azure OpenAI** for generation.
+- On MACOS written in **Python** using **appscript** and alternatively in pure **Apple Script** (incomplete approach by now)
+- Utilizes the **OpenAI REST Api** at **OpenAI** or **Azure OpenAI** for generation.
 - Configuration for OpenAI Api can be found and modified in `settings.cls` and `config.py`.
 
 ## Implemented Use Cases
