@@ -16,8 +16,8 @@ Sub Main()
     Dim doc As Document
     Set doc = ActiveDocument
 
-    Dim mermaidText As String
-    mermaidText = Mermaid.GetDocumentAsMermaid(doc)
+	Dim mermaidText As String
+	Mermaid.RecurseTopics(mermaidText, doc.CentralTopic, 0)
 
     Dim strSystem As String
     Dim strUser As String

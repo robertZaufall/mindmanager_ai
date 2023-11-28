@@ -23,7 +23,7 @@ Sub Main
     Set wsh = CreateObject("WScript.Shell")
 
     Dim scriptPath As String, inputFilePath As String, outputFilePath As String
-    scriptPath = wsh.ExpandEnvironmentStrings("%LOCALAPPDATA%") + "\Mindjet\MindManager\23\macros\python"
+    scriptPath = wsh.ExpandEnvironmentStrings("%LOCALAPPDATA%") + "\Mindjet\MindManager\23\macros\windows\python"
     inputFilePath = scriptPath + "\input.txt"
     outputFilePath = scriptPath + "\output.txt"
 
