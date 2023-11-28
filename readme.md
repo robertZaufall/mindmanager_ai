@@ -1,4 +1,4 @@
-# Mindjet Mindmanager Macros for OpenAI Integration
+# Mindjet Mindmanager automation and OpenAI Integration (WIN + MAC)
 
 These macros enhance mindmaps created by **Mindjet Mindmanager**.
 
