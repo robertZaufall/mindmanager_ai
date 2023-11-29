@@ -103,7 +103,7 @@ if mindmanager.documents[1].exists():
         mermaid = recurse_topics("", central_topic, 0)
 
         # OpenAI
-        str_system = "You are a helpful assistant."
+        str_system = "You are a business consultant and helpful assistant."
         str_user = ("Given is the following Mermaid mindmap. Please refine each subtopic by adding a new level with "
                     "top " + str(config.TOP_MOST_RESULTS) + " most important subtopics, "
                     "each subtopic " + str(config.MAX_RETURN_WORDS) + " words at maximum "
@@ -132,10 +132,10 @@ if mindmanager.documents[1].exists():
         response_text = response.text
 
         parsed_json = json.loads(response_text)
-        new_mermaid = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "")
+        new_mermaid = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").lstrip("\n")
 
         # create new document
-        new_document = mindmanager.documents.end.make(new=k.document)
+        new_document_ref = mindmanager.documents.end.make(new=k.document)
         new_central_topic_ref = mindmanager.documents[1].central_topic
         new_central_topic = new_central_topic_ref.get()
 
@@ -145,6 +145,7 @@ if mindmanager.documents[1].exists():
         
         i = create_sub_topics(mermaid_topics, 1, new_central_topic_ref)
 
+        mindmanager.documents[1].balance_map()
         mindmanager.activate()
     else:
         print("No topic node selected.")
