@@ -21,7 +21,7 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 
 ## Example
 
-![Drag Racing](macros.gif)
+![Windows Macro](anim1.gif)
 
 ## Disclaimer
 
