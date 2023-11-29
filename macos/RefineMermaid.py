@@ -45,30 +45,6 @@ def parse_mermaid(mermaid_syntax, delimiter=line_separator, indent_size=indent_s
 
     return mermaid_topics
 
-def create_sub_topics(mermaid_topics, index, parent_topic_ref):
-    i = index
-    last_topic = None
-    parent_topic = parent_topic_ref.get()
-
-    while i < len(mermaid_topics):
-        topic_level = mermaid_topics[i].topic_level
-        topic_text = mermaid_topics[i].topic_text
-
-        parent_topic_level = parent_topic_ref.level.get()
-        if topic_level <= parent_topic_level:
-            return i
-
-        if topic_level == parent_topic_level + 1:
-            new_topic = parent_topic.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
-            last_topic = new_topic
-
-        if topic_level > parent_topic_level + 1:
-            i = create_sub_topics(mermaid_topics, i, last_topic) - 1
-
-        i += 1
-
-    return i
-
 def recurse_topics(mermaid_diagram, this_topic, level):
     current_level = level
     this_topic_text = this_topic.title.get()
@@ -86,9 +62,18 @@ def recurse_topics(mermaid_diagram, this_topic, level):
     
     return mermaid_diagram
 
-def prompt_refine():
+def prompt_refine(top_most_results, max_return_words=config.MAX_RETURN_WORDS):
     str_user = ("Given is the following Mermaid mindmap. Please refine each subtopic by adding a new level with "
-                "top " + str(config.TOP_MOST_RESULTS) + " most important subtopics, "
+                "top " + str(top_most_results) + " most important subtopics, "
+                "if you decide from your knowledge there have to be more or less most important subtopics you can increase or decrease this number, "
+                "with each subtopic " + str(config.MAX_RETURN_WORDS) + " words at maximum, "
+                "and return the same Mermaid structure back with two spaces as indentation and no additional text: \n")
+    return str_user
+
+def prompt_refine_topic(top_most_results, max_return_words=config.MAX_RETURN_WORDS, topic_texts=""):
+    str_user = ("Given is the following Mermaid mindmap. " + 
+                "Please refine only the topic(s) \"" + topic_texts + "\" each by adding a new level with "
+                "top " + str(top_most_results) + " most important subtopics, "
                 "if you decide from your knowledge there have to be more or less most important subtopics you can increase or decrease this number, "
                 "with each subtopic " + str(config.MAX_RETURN_WORDS) + " words at maximum, "
                 "and return the same Mermaid structure back with two spaces as indentation and no additional text: \n")
@@ -124,42 +109,74 @@ def call_llm(mermaid, str_user):
     
     return result
 
+def create_sub_topics(mermaid_topics, index, parent_topic_ref):
+    i = index
+    last_topic = None
+    parent_topic = parent_topic_ref.get()
+
+    while i < len(mermaid_topics):
+        topic_level = mermaid_topics[i].topic_level
+        topic_text = mermaid_topics[i].topic_text
+
+        parent_topic_level = parent_topic_ref.level.get()
+        if topic_level <= parent_topic_level:
+            return i
+
+        if topic_level == parent_topic_level + 1:
+            new_topic = parent_topic.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
+            last_topic = new_topic
+
+        if topic_level > parent_topic_level + 1:
+            i = create_sub_topics(mermaid_topics, i, last_topic) - 1
+
+        i += 1
+
+    return i
+
 def map_from_mermaid(mindmanager, new_mermaid):
     mindmanager.documents.end.make(new=k.document)
 
-    new_central_topic_ref = mindmanager.documents[1].central_topic
-    new_central_topic = new_central_topic_ref.get()
-
     mermaid_topics = parse_mermaid(new_mermaid)
-
-    new_central_topic.title.set(mermaid_topics[0].topic_text)
-
-    i = create_sub_topics(mermaid_topics, 1, new_central_topic_ref)
+    
+    parent_topic_ref = mindmanager.documents[1].central_topic
+    parent_topic = parent_topic_ref.get()
+    parent_topic.title.set(mermaid_topics[0].topic_text)
+    
+    create_sub_topics(mermaid_topics, 1, parent_topic_ref)
 
 def main():
     mindmanager = app('MindManager')
 
     if mindmanager.documents[1].exists():
 
+        this_topic = None
+
         # use selection if available
-        #selection = mindmanager.documents[1].selection.get()
-        #if selection != {}:
-        #
-        #else:
-        #    print("No topic node selected.")
+        selection = mindmanager.documents[1].selection.get()
 
-        # use central topic
-        central_topic = mindmanager.documents[1].central_topic.get()
+        if len(selection) == 0:
+            this_topic = mindmanager.documents[1].central_topic.get()
+        else:
+            if len(selection) == 1:
+                if selection[0].class_.get() == k.topic:
+                    if selection[0].id.get() == mindmanager.documents[1].central_topic.id.get():
+                        this_topic = mindmanager.documents[1].central_topic.get()
 
-        # get mindmap in mermaid syntax
-        mermaid = recurse_topics("", central_topic, 0)
+        if this_topic != None:
+                if this_topic.level.get() == 0:
+                    mermaid = recurse_topics("", this_topic, 0)
+                    new_mermaid = call_llm(mermaid, prompt_refine(config.TOP_MOST_RESULTS))
+                    map_from_mermaid(mindmanager, new_mermaid)
+        else:
+            mermaid = recurse_topics("", mindmanager.documents[1].central_topic.get(), 0)
 
-        # get LLM response
-        new_mermaid = call_llm(mermaid, prompt_refine())
-
-        # create new document
-        map_from_mermaid(mindmanager, new_mermaid)
-
+            topic_texts = ""
+            for this_topic in selection:
+                topic_texts += this_topic.title.get() + ","
+                
+            new_mermaid = call_llm(mermaid, prompt_refine_topic(config.TOP_MOST_RESULTS, topic_texts=topic_texts[:-1]))
+            map_from_mermaid(mindmanager, new_mermaid)
+ 
         mindmanager.documents[1].balance_map()
         mindmanager.activate()
 
