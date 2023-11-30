@@ -188,7 +188,8 @@ def main(param):
             new_mermaid1 = call_llm(mermaid, prompt("refine", config.TOP_MOST_RESULTS))
             new_mermaid2 = call_llm(new_mermaid1, prompt("refine", config.TOP_MOST_RESULTS))
             new_mermaid3 = call_llm(new_mermaid2, prompt("cluster", config.TOP_MOST_RESULTS))
-            map_from_mermaid(mindmanager, new_mermaid3)
+            new_mermaid4 = call_llm(new_mermaid3, prompt("cluster", config.TOP_MOST_RESULTS))
+            map_from_mermaid(mindmanager, new_mermaid4)
         else:
             selection = mindmanager.documents[1].selection.get()
 
