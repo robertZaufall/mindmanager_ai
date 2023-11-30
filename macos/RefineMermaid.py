@@ -71,7 +71,19 @@ def prompt_refine(top_most_results, topic_texts=""):
         f"top {top_most_results} most important subtopics, "
         f"if you decide from your knowledge there have to be more or less most important subtopics you can increase or decrease this number, "
         f"with each subtopic {config.MAX_RETURN_WORDS} words at maximum, "
-        f"if there are existing 'examples' topics include them but do not refine them, "
+        f"if there are existing 'examples' topics include them but do not refine them, if there is examples topic dont create one, "
+        f"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n"
+    )
+    return str_user
+
+def prompt_cluster(top_most_results, topic_texts=""):
+    topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
+
+    str_user = (
+        f"Given is the following Mermaid mindmap. "
+        f"Please rethink, redo, rebalance and recluster the whole map from scratch, "
+        f"reduce complexity, simplify topics where possible and meaningful without loosing important information, "
+        f"include missing most important topics or remove least import topics if there are any "
         f"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n"
     )
     return str_user
@@ -93,6 +105,8 @@ def prompt(param, top_most_results, topic_texts=""):
         return prompt_refine(top_most_results, topic_texts=topic_texts)
     elif param == "examples":
         return prompt_examples(top_most_results, topic_texts=topic_texts)
+    elif param == "cluster":
+        return prompt_cluster(top_most_results, topic_texts=topic_texts)
     else:
         return ""
 
@@ -168,34 +182,41 @@ def main(param):
 
         this_topic = None
 
-        # use selection if available
-        selection = mindmanager.documents[1].selection.get()
-
-        if len(selection) == 0:
+        if param == "complexity":
             this_topic = mindmanager.documents[1].central_topic.get()
+            mermaid = recurse_topics("", this_topic, 0)
+            new_mermaid1 = call_llm(mermaid, prompt("refine", config.TOP_MOST_RESULTS))
+            new_mermaid2 = call_llm(new_mermaid1, prompt("refine", config.TOP_MOST_RESULTS))
+            new_mermaid3 = call_llm(new_mermaid2, prompt("cluster", config.TOP_MOST_RESULTS))
+            map_from_mermaid(mindmanager, new_mermaid3)
         else:
-            if len(selection) == 1:
-                if selection[0].class_.get() == k.topic:
-                    if selection[0].id.get() == mindmanager.documents[1].central_topic.id.get():
-                        this_topic = mindmanager.documents[1].central_topic.get()
+            selection = mindmanager.documents[1].selection.get()
 
-        if this_topic != None:
-                if this_topic.level.get() == 0:
-                    mermaid = recurse_topics("", this_topic, 0)
+            if len(selection) == 0:
+                this_topic = mindmanager.documents[1].central_topic.get()
+            else:
+                if len(selection) == 1:
+                    if selection[0].class_.get() == k.topic:
+                        if selection[0].id.get() == mindmanager.documents[1].central_topic.id.get():
+                            this_topic = mindmanager.documents[1].central_topic.get()
 
-                    new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS))
-                    if new_mermaid != "":
-                        map_from_mermaid(mindmanager, new_mermaid)
-        else:
-            mermaid = recurse_topics("", mindmanager.documents[1].central_topic.get(), 0)
+            if this_topic != None:
+                    if this_topic.level.get() == 0:
+                        mermaid = recurse_topics("", this_topic, 0)
 
-            topic_texts = ""
-            for this_topic in selection:
-                topic_texts += this_topic.title.get() + ","
-                
-            new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS, topic_texts=topic_texts[:-1]))
-            if new_mermaid != "":
-                map_from_mermaid(mindmanager, new_mermaid)
+                        new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS))
+                        if new_mermaid != "":
+                            map_from_mermaid(mindmanager, new_mermaid)
+            else:
+                mermaid = recurse_topics("", mindmanager.documents[1].central_topic.get(), 0)
+
+                topic_texts = ""
+                for this_topic in selection:
+                    topic_texts += this_topic.title.get() + ","
+                    
+                new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS, topic_texts=topic_texts[:-1]))
+                if new_mermaid != "":
+                    map_from_mermaid(mindmanager, new_mermaid)
  
         mindmanager.documents[1].balance_map()
         mindmanager.activate()
