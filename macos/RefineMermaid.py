@@ -62,28 +62,37 @@ def recurse_topics(mermaid_diagram, this_topic, level):
     
     return mermaid_diagram
 
-def prompt_refine(top_most_results):
-    str_user = ("Given is the following Mermaid mindmap. Please refine each subtopic by adding a new level with "
-                "top " + str(top_most_results) + " most important subtopics, "
-                "if you decide from your knowledge there have to be more or less most important subtopics you can increase or decrease this number, "
-                "with each subtopic " + str(config.MAX_RETURN_WORDS) + " words at maximum, "
-                "and return the same Mermaid structure back with two spaces as indentation and no additional text: \n")
+def prompt_refine(top_most_results, topic_texts=""):
+    topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
+
+    str_user = (
+        f"Given is the following Mermaid mindmap. "
+        f"Please refine {topics} by adding a new level with "
+        f"top {top_most_results} most important subtopics, "
+        f"if you decide from your knowledge there have to be more or less most important subtopics you can increase or decrease this number, "
+        f"with each subtopic {config.MAX_RETURN_WORDS} words at maximum, "
+        f"if there are existing 'examples' topics include them but do not refine them, "
+        f"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n"
+    )
     return str_user
 
-def prompt_refine_topic(top_most_results, topic_texts=""):
-    str_user = ("Given is the following Mermaid mindmap. " + 
-                "Please refine only the topic(s) \"" + topic_texts + "\" each by adding a new level with "
-                "top " + str(top_most_results) + " most important subtopics, "
-                "if you decide from your knowledge there have to be more or less most important subtopics you can increase or decrease this number, "
-                "with each subtopic " + str(config.MAX_RETURN_WORDS) + " words at maximum, "
-                "and return the same Mermaid structure back with two spaces as indentation and no additional text: \n")
+def prompt_examples(top_most_results, topic_texts=""):
+    topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
+
+    str_user = (
+        f"Given is the following Mermaid mindmap. "
+        f"Please add for {topics} a new subtopic 'examples' if not existant"
+        f"and add a new level with the top {top_most_results} most important examples or extend the existing ones, "
+        f"with each example {config.MAX_RETURN_WORDS} words at maximum, "
+        f"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n"
+    )
     return str_user
 
 def prompt(param, top_most_results, topic_texts=""):
-    if param == "refine" and topic_texts == "":
-        return prompt_refine(top_most_results)
-    elif param == "refine" and topic_texts != "":
-        return prompt_refine_topic(top_most_results, topic_texts)
+    if param == "refine":
+        return prompt_refine(top_most_results, topic_texts=topic_texts)
+    elif param == "examples":
+        return prompt_examples(top_most_results, topic_texts=topic_texts)
     else:
         return ""
 
@@ -173,8 +182,10 @@ def main(param):
         if this_topic != None:
                 if this_topic.level.get() == 0:
                     mermaid = recurse_topics("", this_topic, 0)
+
                     new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS))
-                    map_from_mermaid(mindmanager, new_mermaid)
+                    if new_mermaid != "":
+                        map_from_mermaid(mindmanager, new_mermaid)
         else:
             mermaid = recurse_topics("", mindmanager.documents[1].central_topic.get(), 0)
 
@@ -183,7 +194,8 @@ def main(param):
                 topic_texts += this_topic.title.get() + ","
                 
             new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS, topic_texts=topic_texts[:-1]))
-            map_from_mermaid(mindmanager, new_mermaid)
+            if new_mermaid != "":
+                map_from_mermaid(mindmanager, new_mermaid)
  
         mindmanager.documents[1].balance_map()
         mindmanager.activate()
