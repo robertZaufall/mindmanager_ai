@@ -22,10 +22,10 @@ if CLOUD_TYPE == "OPENAI":
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " & OPENAI_API_KEY
 else:
-    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-    OPENAI_API_URL = os.getenv('OPENAI_API_BASE')
-    OPENAI_DEPLOYMENT = os.getenv('OPENAI_DEPLOYMENT')
-    OPENAI_API_VERSION = os.getenv('OPENAI_API_VERSION')
+    OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
+    OPENAI_API_URL = os.getenv('OPENAI2_API_BASE')
+    OPENAI_DEPLOYMENT = os.getenv('OPENAI2_DEPLOYMENT')
+    OPENAI_API_VERSION = os.getenv('OPENAI2_API_VERSION')
 
     API_URL = OPENAI_API_URL + "openai/deployments/" + OPENAI_DEPLOYMENT + "/chat/completions?api-version=" + OPENAI_API_VERSION
     KEY_HEADER_TEXT = "api-key"
