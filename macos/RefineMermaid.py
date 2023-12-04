@@ -47,7 +47,8 @@ def create_sub_topics(mindm, mermaid_topics, index, parent_topic):
         i += 1
     return i
 
-def create_new_map_from_mermaid(mindm, mermaid_topics):
+def create_new_map_from_mermaid(mindm, mermaid_diagram):
+    mermaid_topics = mermaid.parse_mermaid(mermaid_diagram, config.LINE_SEPARATOR, config.INDENT_SIZE)
     mindm.add_document()
     parent_topic = mindm.get_central_topic()
     mindm.set_title_to_topic(parent_topic, mermaid_topics[0].topic_text)
@@ -57,13 +58,14 @@ def create_new_map_from_mermaid(mindm, mermaid_topics):
 
 def main(param):
     mindm = mindmanager.Mindmanager()
+    
+    prompts_list = prompts.prompts_list_from_param(param)
 
     if mindm.document_exists():
+        topic_texts = ""
+
         central_topic = mindm.get_central_topic()
         mermaid_diagram = recurse_topics(mindm, "", central_topic, 0)
-
-        topic_texts = ""
-        prompts_list = prompts.prompts_list_from_param(param)
 
         if len(prompts_list) == 1:
             selection = mindm.get_selection()
@@ -74,16 +76,12 @@ def main(param):
                     
                 if len(topic_texts) > 0: topic_texts = topic_texts[:-1]
 
-        new_mermaid = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+        new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
 
-        if new_mermaid != "":
-            mermaid_topics = mermaid.parse_mermaid(new_mermaid, config.LINE_SEPARATOR, config.INDENT_SIZE)
-            create_new_map_from_mermaid(mindm, mermaid_topics)
-
+        if new_mermaid_diagram != "": create_new_map_from_mermaid(mindm, new_mermaid_diagram)
         mindm.finalize()
 
         print("Done.")
-
     else:
         print("No document found.")
 
