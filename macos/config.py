@@ -12,6 +12,9 @@ TOP_MOST_RESULTS_DEEP = int('6')
 MAX_RETURN_WORDS = int('5')
 LEVELS_DEEP = int('5')
 
+INDENT_SIZE = int('2')
+LINE_SEPARATOR = "\n"
+
 if CLOUD_TYPE == "OPENAI":
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
     OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
