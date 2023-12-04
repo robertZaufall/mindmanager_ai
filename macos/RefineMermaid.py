@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-import sys
-
 import config
+import prompts
+
+import sys
 import json
 import requests
 import os
@@ -62,57 +63,14 @@ def recurse_topics(mermaid_diagram, this_topic, level):
     
     return mermaid_diagram
 
-def prompt_refine(top_most_results, topic_texts=""):
-    topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
+def call_llm_sequence(prompts_list, mermaid, top_most_results):
+    new_mermaid = mermaid
+    for prompt in prompts_list:
+        new_mermaid = call_llm(prompts.prompt(prompt, new_mermaid, top_most_results))
+    return new_mermaid
 
-    str_user = (
-        f"Given is the following Mermaid mindmap. "
-        f"Please refine {topics} by adding a new level with "
-        f"top {top_most_results} most important subtopics, "
-        f"if you decide from your knowledge there have to be more or less most important subtopics you can increase or decrease this number, "
-        f"with each subtopic {config.MAX_RETURN_WORDS} words at maximum, "
-        f"if there are existing 'examples' topics include them but do not refine them, if there is examples topic dont create one, "
-        f"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n"
-    )
-    return str_user
-
-def prompt_cluster(top_most_results, topic_texts=""):
-    topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
-
-    str_user = (
-        f"Given is the following Mermaid mindmap. "
-        f"Please rethink, redo, rebalance and recluster the whole map from scratch, "
-        f"reduce complexity, simplify topics where possible and meaningful without loosing important information, "
-        f"include missing most important topics or remove least import topics if there are any "
-        f"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n"
-    )
-    return str_user
-
-def prompt_examples(top_most_results, topic_texts=""):
-    topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
-
-    str_user = (
-        f"Given is the following Mermaid mindmap. "
-        f"Please add for {topics} a new subtopic 'examples' if not existant"
-        f"and add a new level with the top {top_most_results} most important examples or extend the existing ones, "
-        f"with each example {config.MAX_RETURN_WORDS} words at maximum, "
-        f"and return the same Mermaid structure back with two spaces as indentation and no additional text: \n"
-    )
-    return str_user
-
-def prompt(param, top_most_results, topic_texts=""):
-    if param == "refine":
-        return prompt_refine(top_most_results, topic_texts=topic_texts)
-    elif param == "examples":
-        return prompt_examples(top_most_results, topic_texts=topic_texts)
-    elif param == "cluster":
-        return prompt_cluster(top_most_results, topic_texts=topic_texts)
-    else:
-        return ""
-
-def call_llm(mermaid, str_user):
+def call_llm(str_user):
     str_system = "You are a business consultant and helpful assistant."
-    str_user += mermaid.replace("\r", "\n")
 
     payload = {
         "max_tokens": config.MAX_TOKENS_DEEP,
@@ -181,15 +139,22 @@ def main(param):
     if mindmanager.documents[1].exists():
 
         this_topic = None
+        central_topic = mindmanager.documents[1].central_topic.get()
 
         if param == "complexity":
-            this_topic = mindmanager.documents[1].central_topic.get()
-            mermaid = recurse_topics("", this_topic, 0)
-            new_mermaid1 = call_llm(mermaid, prompt("refine", config.TOP_MOST_RESULTS))
-            new_mermaid2 = call_llm(new_mermaid1, prompt("refine", config.TOP_MOST_RESULTS))
-            new_mermaid3 = call_llm(new_mermaid2, prompt("cluster", config.TOP_MOST_RESULTS))
-            new_mermaid4 = call_llm(new_mermaid3, prompt("cluster", config.TOP_MOST_RESULTS))
-            map_from_mermaid(mindmanager, new_mermaid4)
+            prompts_list = ["refine", "cluster", "examples"]
+            new_mermaid = call_llm_sequence(prompts_list, recurse_topics("", central_topic, 0), config.TOP_MOST_RESULTS)
+            map_from_mermaid(mindmanager, new_mermaid)
+
+        elif param == "complexity_2":
+            prompts_list = ["exp_prj_prc_org", "refine"]
+            new_mermaid = call_llm_sequence(prompts_list, recurse_topics("", central_topic, 0), config.TOP_MOST_RESULTS)
+            map_from_mermaid(mindmanager, new_mermaid)
+
+        elif param == "complexity_3":
+            prompts_list = ["exp_prj_prc_org", "refine", "examples"]
+            new_mermaid = call_llm_sequence(prompts_list, recurse_topics("", central_topic, 0), config.TOP_MOST_RESULTS)
+            map_from_mermaid(mindmanager, new_mermaid)
         else:
             selection = mindmanager.documents[1].selection.get()
 
@@ -202,12 +167,12 @@ def main(param):
                             this_topic = mindmanager.documents[1].central_topic.get()
 
             if this_topic != None:
-                    if this_topic.level.get() == 0:
-                        mermaid = recurse_topics("", this_topic, 0)
+                if this_topic.level.get() == 0:
+                    mermaid = recurse_topics("", this_topic, 0)
 
-                        new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS))
-                        if new_mermaid != "":
-                            map_from_mermaid(mindmanager, new_mermaid)
+                    new_mermaid = call_llm(prompts.prompt(param, mermaid, config.TOP_MOST_RESULTS))
+                    if new_mermaid != "":
+                        map_from_mermaid(mindmanager, new_mermaid)
             else:
                 mermaid = recurse_topics("", mindmanager.documents[1].central_topic.get(), 0)
 
@@ -215,7 +180,7 @@ def main(param):
                 for this_topic in selection:
                     topic_texts += this_topic.title.get() + ","
                     
-                new_mermaid = call_llm(mermaid, prompt(param, config.TOP_MOST_RESULTS, topic_texts=topic_texts[:-1]))
+                new_mermaid = call_llm(prompts.prompt(param, mermaid, config.TOP_MOST_RESULTS, topic_texts=topic_texts[:-1]))
                 if new_mermaid != "":
                     map_from_mermaid(mindmanager, new_mermaid)
  
@@ -229,7 +194,7 @@ def main(param):
 
 if __name__ == "__main__":
     
-    param = "refine"
+    param = "complexity_2"
     
     if len(sys.argv) > 1:
         param = sys.argv[1]
