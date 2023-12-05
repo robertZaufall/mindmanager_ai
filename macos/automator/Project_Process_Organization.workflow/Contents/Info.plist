@@ -12,7 +12,7 @@
 			<key>NSMenuItem</key>
 			<dict>
 				<key>default</key>
-				<string>Project_vs_Process_vs_Organization</string>
+				<string>Project_Process_Organization</string>
 			</dict>
 			<key>NSMessage</key>
 			<string>runWorkflowAsService</string>
