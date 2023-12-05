@@ -92,9 +92,8 @@ def prompt_exp_prj_prc_org(text, topic_texts=""):
 def prompt_exp(text, topic_texts=""):
     str_user = (
         prompt_prefix +
-        f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
-        f"dividing organizational topics ('organization') vs. "
-        f"center of excellence oriented topics of this top level business case ('expertise'), "
+        f"Please recluster all topics of the whole map from scratch to 4 levels at maximum regarding "
+        f"expertiese and center of excellence oriented topics and from a strong top level business case centric perspective, "
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
