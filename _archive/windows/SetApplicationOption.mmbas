@@ -1,9 +1,0 @@
-'#Language "WWB-COM"
-
-Option Explicit
-
-Sub Main
-    Dim mindManagerApp As Object
-    Set mindManagerApp = CreateObject("MindManager.Application")
-    mindManagerApp.Options.BalanceNewMainTopics = True  ' Set to False to disable
-End Sub

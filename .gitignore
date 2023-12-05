@@ -1,5 +1,3 @@
 src/__pycache__/**
-_archive/macos/__pycache__/**
-_archive/windows/python/__pycache__/**
-windows/python/input.txt
-windows/python/output.txt
+_ignore/**
+
