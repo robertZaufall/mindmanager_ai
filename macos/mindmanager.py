@@ -1,6 +1,3 @@
-import config
-import mermaid
-
 from appscript import *
 
 class Mindmanager:

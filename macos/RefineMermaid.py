@@ -87,7 +87,7 @@ def main(param):
 
 if __name__ == "__main__":
     
-    param = "examples"
+    param = "refine"
     
     if len(sys.argv) > 1:
         param = sys.argv[1]
