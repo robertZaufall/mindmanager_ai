@@ -33,6 +33,10 @@ def call_llm(str_user):
         data=json.dumps(payload)
     )
     response_text = response.text
+    response_status = response.status_code
+
+    if response_status != 200:
+        raise Exception(f"Error: {response_status} - {response_text}")
 
     parsed_json = json.loads(response_text)
     result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").lstrip("\n")

@@ -30,6 +30,6 @@ else:
     OPENAI_DEPLOYMENT = os.getenv('OPENAI2_DEPLOYMENT')
     OPENAI_API_VERSION = os.getenv('OPENAI2_API_VERSION')
 
-    API_URL = OPENAI_API_URL + "openai/deployments/" + OPENAI_DEPLOYMENT + "/chat/completions?api-version=" + OPENAI_API_VERSION
+    API_URL = f"{OPENAI_API_URL}openai/deployments/{OPENAI_DEPLOYMENT}/chat/completions?api-version={OPENAI_API_VERSION}"
     KEY_HEADER_TEXT = "api-key"
     KEY_HEADER_VALUE = OPENAI_API_KEY

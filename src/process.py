@@ -3,12 +3,14 @@ import config
 import prompts
 import llm
 import mermaid
-import mindmanager
+import sys
 
 import sys
-import os
 
-current_folder = os.getcwd()
+if sys.platform.startswith('win'):
+    import mindmanager_win as mindmanager
+elif sys.platform.startswith('darwin'):
+    import mindmanager_mac as mindmanager
 
 def recurse_topics(mindm, mermaid_diagram, this_topic, level):
     this_topic_text = mindm.get_title_from_topic(this_topic)
