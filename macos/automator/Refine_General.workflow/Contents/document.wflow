@@ -60,7 +60,7 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>source $HOME/.zshrc
-python3 ~/git/mindmanager_ai/macos/RefineMermaid.py refine</string>
+python3 ~/git/mindmanager_ai/src/process.py refine</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
