@@ -13,10 +13,10 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 ## Implemented Use Cases
 
 1. Refinement of the map or topic.  
-2. Refinement of the map or topic from development perspective.  
-3. Create examples for one, more (selected), all topics.  
+2. Refinement of the map or topic from a development perspective.  
+3. Create examples for one, more (selected) or all topics.  
 4. Clustering topics from scratch.  
-5. Clustering by on or more criterias eg. Organization/Prpcess/Project/Expertise, Capex-Opex perspective.  
+5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 
 ## Examples  
@@ -40,9 +40,11 @@ pip install --upgrade requests
 pip install --upgrade pywin32
 ```
 Macros can be registered directly by merging the `macro_registration.reg` to the registry. Hint: view order in Mindmanager is sorted by the GUIDs. All macros can then be executed using the context menu of topics (right mouse button click).  
+
 ![Registry](doc/windows_registry.png)  
 
-Macros can also be executed by the Macro Editor. The macros are similar but the action parameter:  
+Macros can also be executed by the Macro Editor. The macros are similar but the action parameter.  
+
 ![Automator](doc/windows_macroeditor.png)  
 
 ### MACOS  
@@ -55,16 +57,16 @@ Automator workflows can be copied to the Services folder by executing the `copy_
 chmod +x ./copy_to_services.sh
 ```  
 
-Automator workflow settings are similar but the action parameter:  
+All **Automator** workflow settings are similar but the action parameter:  
 
-![Automator](doc/macos_automator.png)  
+<img src="doc/macos_automator.png" width="600" >
 
 The workflows are then available at the "MindManager" main menu -> Services  
 
-![Services](doc/macos_services.png)  
+<img src="doc/macos_services.png" width="400" >
 
 ## Configuration  
-OpenAI/AzureOpenAI relevant information should be stored in environment variables and set in the `config-py`. Some parameters are not used at the moment (token count, levels deep etc.).  
+OpenAI/AzureOpenAI relevant information should be stored in environment variables and mapped to the corresponding variables in the `config-py` file. Some parameters are not used at the moment (token count, levels deep etc.).  
 
 ![Configuration](doc/config.png)  
 
@@ -73,24 +75,28 @@ Prompt crafting is lightly implemented using the following strategy:
 
 ![Configuration](doc/prompt.png)  
 
-## Platform specific implementation
+## Platform specific implementations
 ### Windows  
 MindManager COM objects are addressed by using the PyWin32 library:  
 
-![PyWin32](doc/windows_mindmanager.png)  
+<img src="doc/windows_mindmanager.png" height="210" >
 
 ### MACOS  
 MindManager objects are addressed by using the AppScript library:  
 
-![Appscript](doc/macos_mindmanager.png)  
+<img src="doc/macos_mindmanager.png" height="200" >
 
 ## Implementation details  
-The Mermaid Mindmap syntax is used when talking to the OpenAI LLM. Log outputs of the generation process can be used as internediate results eg. in MD files on GitHub.  
+The Mermaid mindmap syntax is used when talking to the OpenAI LLM as an intermediate "language". Log file contents for input, output, prompt can be used in other use cases eg. mindmap visualizations in GitHub markdown files.  
 
-![Mermaid](doc/mermaid.png)  
-The online editor is available at https://mermaid.live/edit
+![Log](doc/log.png)  
 
-Example using a Mermaid mindmap with MD on Github:
+Log files content:  
+
+<img src="doc/log_files.png" width="500" >
+
+Example using a Mermaid mindmap in a (this!) GitHub markdown file.  
+Code:
 ```
 ```mermaid
 mindmap
@@ -109,7 +115,7 @@ mindmap
       Determine Key Partnerships```  
 ```
 
-Github representation of Mermaid:
+Github rendering of the (this!) map:
 
 ```mermaid
 mindmap
@@ -128,6 +134,15 @@ mindmap
       Determine Key Partnerships 
 ```
 
+You can also use the content inside the Mermaid online editor (https://mermaid.live/edit):  
+
+![Mermaid](doc/mermaid.png)  
+
+
 ## Disclaimer
 
-This project is in its early stages. Generation might still contain errors. If you encounter an error, please try calling the macro again.
+The OpenAI API execution time can be somewhat lengthy, typically around 20 seconds per call. For more intricate use cases, this duration can extend to 2 minutes or more, with execution time also varying based on token count.
+
+Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.
+
+Should a runtime error occur, please attempt at least a second call to the process ;-)
