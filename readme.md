@@ -84,7 +84,7 @@ MindManager objects are addressed by using the AppScript library:
 
 ![Appscript](doc/macos_mindmanager.png)  
 
-## Implementation destails
+## Implementation details
 The Mermaid Mindmap syntax is used when talking to the llm. Log outouts can be used in MD files using Mermaid:  
 
 ![Mermaid](doc/mermaid.png)  
