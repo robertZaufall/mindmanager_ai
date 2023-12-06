@@ -84,13 +84,13 @@ MindManager objects are addressed by using the AppScript library:
 
 ![Appscript](doc/macos_mindmanager.png)  
 
-## Implementation details
-The Mermaid Mindmap syntax is used when talking to the llm. Log outouts can be used in MD files using Mermaid:  
+## Implementation details  
+The Mermaid Mindmap syntax is used when talking to the OpenAI LLM. Log outputs of the generation process can be used as internediate results eg. in MD files on GitHub.  
 
 ![Mermaid](doc/mermaid.png)  
 The online editor is available at https://mermaid.live/edit
 
-Example using a mermaid mindmap with MD on Github:
+Example using a Mermaid mindmap with MD on Github:
 ```
 ```mermaid
 mindmap
@@ -109,6 +109,8 @@ mindmap
       Determine Key Partnerships```  
 ```
 
+Github representation of Mermaid:
+
 ```mermaid
 mindmap
   Creating an AI Startup
@@ -125,6 +127,7 @@ mindmap
       Identify Cost Structure
       Determine Key Partnerships 
 ```
+
 ## Disclaimer
 
 This project is in its early stages. Generation might still contain errors. If you encounter an error, please try calling the macro again.
