@@ -84,6 +84,47 @@ MindManager objects are addressed by using the AppScript library:
 
 ![Appscript](doc/macos_mindmanager.png)  
 
+## Implementation destails
+The Mermaid Mindmap syntax is used when talking to the llm. Log outouts can be used in MD files using Mermaid:  
+
+![Mermaid](doc/mermaid.png)  
+The online editor is available at https://mermaid.live/edit
+
+Example using a mermaid mindmap with MD on Github:
+```
+```mermaid
+mindmap
+  Creating an AI Startup
+    Market Research
+      Identify Target Audience
+      Analyze Competitors
+      Understand Market Trends
+      Assess Market Needs
+      Evaluate Market Size
+    Business Model
+      Define Value Proposition
+      Choose Revenue Streams
+      Plan Monetization Strategy
+      Identify Cost Structure
+      Determine Key Partnerships```  
+```
+
+```mermaid
+mindmap
+  Creating an AI Startup
+    Market Research
+      Identify Target Audience
+      Analyze Competitors
+      Understand Market Trends
+      Assess Market Needs
+      Evaluate Market Size
+    Business Model
+      Define Value Proposition
+      Choose Revenue Streams
+      Plan Monetization Strategy
+      Identify Cost Structure
+      Determine Key Partnerships 
+```
 ## Disclaimer
 
 This project is in its early stages. Generation might still contain errors. If you encounter an error, please try calling the macro again.
