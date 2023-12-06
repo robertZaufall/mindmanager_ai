@@ -4,29 +4,85 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 
 ## Features
 
-- Both platforms: Windows and MACOS
-- On Windows written in **Win Wrap Basic** and alternatively in **Win Wrap Basic** combined with **Python** 
-- On MACOS written in **Python** using **appscript** and alternatively in pure **Apple Script** (incomplete approach by now)
-- Utilizes the **OpenAI REST Api** at **OpenAI** or **Azure OpenAI** for generation
-- Configuration for OpenAI Api can be found and modified in `settings.cls` and `config.py`
+- Windows and MACOS
+- On Windows the **Python** logic can be called from a macro or by starting the **Python** script directly   
+- On MACOS the **Python** logic can be called by an **Automator** workflow ie. **Quick Action** or by starting the **Python** script directly   
+- Utilizes **OPENAI** or **Azure OPENAI** api infrastructure for generation
+- Configuration for OpenAI api can be found and modified in `config.py`
 
 ## Implemented Use Cases
 
-1. Refinement of the map.  
-2. Refinement of the map from development perspective.  
+1. Refinement of the map or topic.  
+2. Refinement of the map or topic from development perspective.  
 3. Create examples for one, more (selected), all topics.  
 4. Clustering topics from scratch.  
-5. Clustering by on eore more criterias eg. Org/Pc/Prj/Exp, Capex-Opex.  
+5. Clustering by on or more criterias eg. Organization/Prpcess/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 
-## Examples
-
+## Examples  
+### Windows  
 ![Example 1](doc/anim1.gif)  
 
 ![Example 2](doc/anim3.gif)  
 
 ![Example 3](doc/anim4.gif)  
 
+![Example 3](doc/anim5.gif)  
+
+### MACOS
+![Example 4 MACOS](doc/anim_macos.gif)  
+
+## Installation  
+### Windows  
+Run `install.bat` or  
+```
+pip install --upgrade requests
+pip install --upgrade pywin32
+```
+Macros can be registered directly by merging the `macro_registration.reg` to the registry. Hint: view order in Mindmanager is sorted by the GUIDs. All macros can then be executed using the context menu of topics (right mouse button click).  
+![Registry](doc/windows_registry.png)  
+
+Macros can also be executed by the Macro Editor. The macros are similar but the action parameter:  
+![Automator](doc/windows_macroeditor.png)  
+
+### MACOS  
+```
+pip install --upgrade requests
+pip install --upgrade appscript
+```
+Automator workflows can be copied to the Services folder by executing the `copy_to_services.sh` shell script. To make the script executable:
+```
+chmod +x ./copy_to_services.sh
+```  
+
+Automator workflow settings are similar but the action parameter:  
+
+![Automator](doc/macos_automator.png)  
+
+The workflows are then available at the "MindManager" main menu -> Services  
+
+![Services](doc/macos_services.png)  
+
+## Configuration  
+OpenAI/AzureOpenAI relevant information should be stored in environment variables and set in the `config-py`. Some parameters are not used at the moment (token count, levels deep etc.).  
+
+![Configuration](doc/config.png)  
+
+## Prompt crafting  
+Prompt crafting is lightly implemented using the following strategy:  
+
+![Configuration](doc/prompt.png)  
+
+## Platform specific implementation
+### Windows  
+MindManager COM objects are addressed by using the PyWin32 library:  
+
+![PyWin32](doc/windows_mindmanager.png)  
+
+### MACOS  
+MindManager objects are addressed by using the AppScript library:  
+
+![Appscript](doc/macos_mindmanager.png)  
 
 ## Disclaimer
 
