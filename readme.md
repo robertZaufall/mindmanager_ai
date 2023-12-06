@@ -23,11 +23,7 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 ### Windows  
 ![Example 1](doc/anim1.gif)  
 
-![Example 2](doc/anim3.gif)  
-
-![Example 3](doc/anim4.gif)  
-
-![Example 3](doc/anim5.gif)  
+![Example 2](doc/anim6.gif)  
 
 ### MACOS
 ![Example 4 MACOS](doc/anim_macos.gif)  
