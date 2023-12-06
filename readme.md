@@ -12,16 +12,21 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 
 ## Implemented Use Cases
 
-1. Refinement of the map (Windows, MACOS).
-2. Create subtasks for a topic (Windows).
-3. Create examples for a topic (Windows).
-4. Deep refinement of the central topic or map (Windows).
-5. Map translation (Windows).
-6. Export to Mermaid syntax (Windows, MACOS).
+1. Refinement of the map.  
+2. Refinement of the map from development perspective.  
+3. Create examples for one, more (selected), all topics.  
+4. Clustering topics from scratch.  
+5. Clustering by on eore more criterias eg. Org/Pc/Prj/Exp, Capex-Opex.  
+6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 
-## Example
+## Examples
 
-![Windows Macro](doc/anim1.gif)
+![Example 1](doc/anim1.gif)  
+
+![Example 2](doc/anim3.gif)  
+
+![Example 3](doc/anim4.gif)  
+
 
 ## Disclaimer
 
