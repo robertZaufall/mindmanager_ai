@@ -5,7 +5,7 @@ prompt_prefix = "Given is the following Mermaid mindmap. "
 prompt_postfix = (
     f"Return back the mindmap data in pure Mermaid mindmap syntax using {config.INDENT_SIZE} space characters as topic level delimiters "
     f"with no additional text or explainings in your answer, "
-    f"eg. 'mindmap\n  Central topic\n    Main topic 1\n      Subtopic 11\n      Subtopic 12\n    Main topic 2\n      Subtopic 21\n      Subtopic 22'\n "
+    f"eg. \n'mindmap\n  Central topic\n    Main topic 1\n      Subtopic 11\n      Subtopic 12\n    Main topic 2\n      Subtopic 21\n      Subtopic 22'\n "
     f"Here is the data: \n"
 )
 

@@ -5,8 +5,6 @@ import llm
 import mermaid
 import sys
 
-import sys
-
 if sys.platform.startswith('win'):
     import mindmanager_win as mindmanager
 elif sys.platform.startswith('darwin'):
