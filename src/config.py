@@ -1,5 +1,7 @@
 import os
 
+LOG = True # write source mindmaps, destination mindmaps and prompts to file
+
 CLOUD_TYPE = 'AZURE'  # 'AZURE/OPENAI'
 OPENAI_MODEL = "gpt-4" # only for OPENAI relevant
 OPENAI_TEMPERATURE = float('0.3')
