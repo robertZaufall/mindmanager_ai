@@ -37,34 +37,89 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts=""):
     return new_mermaid
 
 def call_llm(str_user):
-    str_system = "You are a business consultant and helpful assistant."
-
-    payload = {
-        "max_tokens": config.MAX_TOKENS_DEEP,
-        "temperature": config.OPENAI_TEMPERATURE,
-        "messages": [
-            {"role": "system", "content": str_system},
-            {"role": "user", "content": str_user}
-        ]
-    }
-    if config.CLOUD_TYPE == "OPENAI":
-        payload["model"] = config.OPENAI_MODEL
-
-    response = requests.post(
-        config.API_URL,
-        headers={
-            "Content-Type": "application/json",
-            config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-        },
-        data=json.dumps(payload)
-    )
-    response_text = response.text
-    response_status = response.status_code
-
-    if response_status != 200:
-        raise Exception(f"Error: {response_status} - {response_text}")
-
-    parsed_json = json.loads(response_text)
-    result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+    result = ""
     
+    str_system = config.SYSTEM_PROMPT
+
+    if config.CLOUD_TYPE == "AZURE" or config.CLOUD_TYPE == "OPENAI":
+        payload = {
+            "max_tokens": config.MAX_TOKENS_DEEP,
+            "temperature": config.LLM_TEMPERATURE,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ]
+        }
+        if config.CLOUD_TYPE == "OPENAI":
+            payload["model"] = config.OPENAI_MODEL
+
+        response = requests.post(
+            config.API_URL,
+            headers={
+                "Content-Type": "application/json",
+                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+    
+    elif config.CLOUD_TYPE == "GEMINI" or config.CLOUD_TYPE == "GEMINIPROJECT":
+        payload = {
+            "contents": {
+                "role": "user",
+                "parts": [
+                    { "text": config.SYSTEM_PROMPT },
+                    { "text": str_user }
+                ]
+            },
+            "safety_settings": [
+                { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_TOXICITY", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_VIOLENCE", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_SEXUAL", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_MEDICAL", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_UNSPECIFIED", "threshold": "BLOCK_NONE" },
+            ],
+            "generation_config": {
+                "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
+                "topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
+                "topP": 0.95, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
+                "maxOutputTokens": config.MAX_TOKENS_DEEP # 2k / 4k
+            }
+        }
+
+        if config.KEY_HEADER_TEXT != "":
+            headers = {
+                "Content-Type": "application/json",
+                config.KEY_HEADER_TEXT : config.KEY_HEADER_VALUE
+            }
+        else:
+            headers = { "Content-Type": "application/json" }
+
+        response = requests.post(
+            config.API_URL,
+            headers=headers,
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+        result = parsed_json["candidates"][0]["content"]["parts"][0]["text"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
     return result
