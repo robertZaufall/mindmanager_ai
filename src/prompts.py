@@ -4,8 +4,8 @@ prompt_prefix = "Given is the following Mermaid mindmap. "
 
 prompt_postfix = (
     f"Return back the mindmap data in pure Mermaid mindmap syntax using {config.INDENT_SIZE} space characters as topic level delimiters "
-    f"with no additional text or explainings in your answer, "
-    f"eg. \n'mindmap\n  Central topic\n    Main topic 1\n      Subtopic 11\n      Subtopic 12\n    Main topic 2\n      Subtopic 21\n      Subtopic 22'\n "
+    f"with no additional text or explainings in your answer. This is an example of a n level deep mindmap: \n"
+    f"'mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n'\n "
     f"Here is the data: \n"
 )
 
@@ -14,7 +14,7 @@ def prompt_refine(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding a new level with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
+        f"Please refine {topics} by adding an additional level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Each subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. "
         f"Do not change the central topic. "
@@ -29,7 +29,7 @@ def prompt_refine_dev(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding a new level with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
+        f"Please refine {topics} by adding an additional level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Each subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. "
         f"Do not change the central topic. "
