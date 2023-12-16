@@ -4,7 +4,7 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
-CLOUD_TYPE = 'GEMINI' # 'AZURE|OPENAI|GEMINI'
+CLOUD_TYPE = 'AZURE' # 'AZURE|OPENAI|GEMINI|GEMINIPROJECT'
 
 LLM_TEMPERATURE = float('0.3')
 
@@ -50,15 +50,13 @@ elif CLOUD_TYPE == "GEMINI":
     KEY_HEADER_VALUE = ""
 
 elif CLOUD_TYPE == "GEMINIPROJECT":
-    raise Exception("Error: not implemented.")
-
     MODEL_ID = "gemini-pro" # "gemini-pro|gemini-pro-vision"
     PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
-    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
+    GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
 
     API_URL = f"https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/{MODEL_ID}:streamGenerateContent"
     KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + GOOGLE_API_KEY
+    KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
 
 else:
     raise Exception("Error: Unknown CLOUD_TYPE")
