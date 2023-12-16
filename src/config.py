@@ -42,8 +42,8 @@ elif CLOUD_TYPE == "AZURE":
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
 elif CLOUD_TYPE == "GEMINI":
-    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
     MODEL_ID = "gemini-pro" # "gemini-pro|gemini-pro-vision"
+    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
 
     API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={GOOGLE_API_KEY}"
     KEY_HEADER_TEXT = ""
@@ -52,9 +52,11 @@ elif CLOUD_TYPE == "GEMINI":
 elif CLOUD_TYPE == "GEMINIPROJECT":
     MODEL_ID = "gemini-pro" # "gemini-pro|gemini-pro-vision"
     PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
+    API_ENDPOINT="us-central1-aiplatform.googleapis.com"
+    LOCATION_ID="us-central1"
     GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
 
-    API_URL = f"https://us-central1-aiplatform.googleapis.com/v1/projects/{PROJECT_ID}/locations/us-central1/publishers/google/models/{MODEL_ID}:streamGenerateContent"
+    API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:streamGenerateContent"
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
 

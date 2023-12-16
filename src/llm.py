@@ -94,9 +94,10 @@ def call_llm(str_user):
             ],
             "generation_config": {
                 "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
-                "topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
+                #"topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
                 "topP": 0.95, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
-                "maxOutputTokens": config.MAX_TOKENS_DEEP # 2k / 4k
+                "maxOutputTokens": config.MAX_TOKENS_DEEP, # 2k / 4k
+                "candidateCount": 1,
             }
         }
 
@@ -119,7 +120,22 @@ def call_llm(str_user):
         if response_status != 200:
             raise Exception(f"Error: {response_status} - {response_text}")
 
+        if "\"finishReason\": \"STOP\"" in response_text:
+            print("LLM response truncated: \"finishReason\": \"STOP\"\n")
+
         parsed_json = json.loads(response_text)
-        result = parsed_json["candidates"][0]["content"]["parts"][0]["text"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        
+        if config.CLOUD_TYPE == "GEMINI":
+            result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
+        else:
+            concatenated_texts = []
+            for item in parsed_json:
+                for candidate in item.get("candidates", []):
+                    for part in candidate.get("content", {}).get("parts", []):
+                        text = part.get("text", "")
+                        concatenated_texts.append(text)
+            result = "\n".join(concatenated_texts)
+
+        result = result.replace("```mermaid", "").replace("```", "").lstrip("\n")        
 
     return result
