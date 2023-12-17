@@ -1,14 +1,18 @@
-# Mindjet Mindmanager automation and OpenAI Integration
+# Mindjet Mindmanager automation and LLM Integration
 
 These automations and macros enhance mindmaps created by **Mindjet Mindmanager**.
 
 ## Features
 
-- Windows and MACOS
-- On Windows the **Python** logic can be called from a macro or by starting the **Python** script directly   
-- On MACOS the **Python** logic can be called by an **Automator** workflow ie. **Quick Action** or by starting the **Python** script directly   
-- Utilizes **OPENAI** or **Azure OPENAI** api infrastructure for generation
-- Configuration for OpenAI api can be found and modified in `config.py`
+- Supported LLMs:
+  - Azure OpenAI Api (use your key) -> ***best tested***
+  - OpenAI Api (use your key)
+  - Gemini Pro Generative Language Api (use your key)  
+  - Gemini Pro Vertex AI Api (use your access token)  
+  - Ollama -> ***use zephyr model for best results***
+- Windows compatible (run macro/context menu or call the **Python** script directly)  
+- MACOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
+- Just native LLM requests via REST calls (no middleware needed)
 
 ## Implemented Use Cases
 
@@ -59,10 +63,19 @@ All **Automator** workflow settings are similar but the action parameter:
 
 The workflows are then available at the "MindManager" main menu -> Services  
 
-<img src="doc/macos_services.png" width="400" >
+<img src="doc/macos_services.png" width="400" >  
+
+
+## LLM systems
+### Azure OpenAI
+The solution ist best tested with `Azure OpenAI`. Results are prefect for every use case. Execution time can take a while.  
+### Gemini Pro
+`Gemini Pro` results are restrictied by 2k tokens by now and therefore truncated. Usage is not recommended.  
+### Ollama
+Ollama results are not perfect and dependent on the used model. `Zephyr` brings better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.
 
 ## Configuration  
-OpenAI/AzureOpenAI relevant information should be stored in environment variables and mapped to the corresponding variables in the `config-py` file. Some parameters are not used at the moment (token count, levels deep etc.).  
+LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
 
 ![Configuration](doc/config.png)  
 
