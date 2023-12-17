@@ -70,6 +70,28 @@ def call_llm(str_user):
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
     
+    elif "OLLAMA" in config.CLOUD_TYPE:
+        payload = {
+            "system": config.SYSTEM_PROMPT,
+            "prompt": str_user,
+            "model": config.MODEL_ID,
+            "stream": False,
+            "options": { "temperature": config.LLM_TEMPERATURE },
+        }
+
+        response = requests.post(
+            config.API_URL,
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response.status_code != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+        
+        parsed_json = json.loads(response_text)
+        result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+    
     elif config.CLOUD_TYPE == "GEMINI" or config.CLOUD_TYPE == "GEMINIPROJECT":
         payload = {
             "contents": {

@@ -4,7 +4,7 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
-CLOUD_TYPE = 'AZURE' # 'AZURE|OPENAI|GEMINI|GEMINIPROJECT'
+CLOUD_TYPE = 'OLLAMA+zephyr' # 'AZURE|OPENAI|GEMINI|GEMINIPROJECT|OLLAMA+llama2|OLLAMA+mistral|OLLAMA+mistral-openorca|OLLAMA+neural-chat|OLLAMA+zephyr'
 
 LLM_TEMPERATURE = float('0.3')
 
@@ -59,6 +59,10 @@ elif CLOUD_TYPE == "GEMINIPROJECT":
     API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:streamGenerateContent"
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
+
+elif "OLLAMA" in CLOUD_TYPE:
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    API_URL="http://localhost:11434/api/generate"
 
 else:
     raise Exception("Error: Unknown CLOUD_TYPE")
