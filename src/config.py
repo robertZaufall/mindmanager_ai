@@ -4,7 +4,7 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
-CLOUD_TYPE = 'OLLAMA+zephyr' # 'AZURE|OPENAI|GEMINI|GEMINIPROJECT|OLLAMA+llama2|OLLAMA+mistral|OLLAMA+mistral-openorca|OLLAMA+neural-chat|OLLAMA+zephyr'
+CLOUD_TYPE = 'AZURE' # 'AZURE|OPENAI|GEMINI|GEMINIPROJECT|OLLAMA+llama2|OLLAMA+mistral|OLLAMA+mistral-openorca|OLLAMA+neural-chat|OLLAMA+zephyr'
 
 LLM_TEMPERATURE = float('0.3')
 
