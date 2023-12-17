@@ -41,13 +41,19 @@ class Mindmanager:
         layout = centralTopic.SubTopicsLayout
         growthDirection = layout.CentralTopicGrowthDirection
 
-        if max_topic_level > 2:
+        if max_topic_level == 3:
             if len(centralTopic.AllSubTopics) > 2:
                 if growthDirection == 1:
                     layout.CentralTopicGrowthDirection = 5
             else:
                 if growthDirection != 1:
                     layout.CentralTopicGrowthDirection = 1
+        elif max_topic_level > 3:
+            if growthDirection != 1:
+                layout.CentralTopicGrowthDirection = 1
+            for m_Topic in self.mindmanager.ActiveDocument.Range(2, True):
+                if m_Topic.Level > 2:
+                    m_Topic.Collapsed = True
         else:
             if growthDirection != 1:
                 layout.CentralTopicGrowthDirection = 1
