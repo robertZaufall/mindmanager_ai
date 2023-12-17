@@ -36,6 +36,21 @@ class Mindmanager:
     def add_document(self):
         self.mindmanager.Documents.Add()
 
-    def finalize(self):
+    def finalize(self, max_topic_level):
+        centralTopic = self.mindmanager.ActiveDocument.CentralTopic
+        layout = centralTopic.SubTopicsLayout
+        growthDirection = layout.CentralTopicGrowthDirection
+
+        if max_topic_level > 2:
+            if len(centralTopic.AllSubTopics) > 2:
+                if growthDirection == 1:
+                    layout.CentralTopicGrowthDirection = 5
+            else:
+                if growthDirection != 1:
+                    layout.CentralTopicGrowthDirection = 1
+        else:
+            if growthDirection != 1:
+                layout.CentralTopicGrowthDirection = 1
+
         self.mindmanager.ActiveDocument.Zoom(1)
         self.mindmanager.Visible = True

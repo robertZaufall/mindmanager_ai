@@ -49,11 +49,12 @@ def create_sub_topics(mindm, mermaid_topics, index, parent_topic):
 
 def create_new_map_from_mermaid(mindm, mermaid_diagram):
     mermaid_topics = mermaid.parse_mermaid(mermaid_diagram, config.LINE_SEPARATOR, config.INDENT_SIZE)
+    max_topic_level = max(topic.topic_level for topic in mermaid_topics)
     mindm.add_document()
     parent_topic = mindm.get_central_topic()
     mindm.set_title_to_topic(parent_topic, mermaid_topics[0].topic_text)
     create_sub_topics(mindm, mermaid_topics, 1, mindm.get_central_topic())
-
+    return max_topic_level
 
 
 def main(param):
@@ -78,8 +79,9 @@ def main(param):
 
         new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
 
-        if new_mermaid_diagram != "": create_new_map_from_mermaid(mindm, new_mermaid_diagram)
-        mindm.finalize()
+        if new_mermaid_diagram != "":
+            max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
+            mindm.finalize(max_topic_level)
 
         print("Done.")
     else:

@@ -37,6 +37,6 @@ class Mindmanager:
     def add_document(self):
         self.mindmanager.documents.end.make(new=k.document)
 
-    def finalize(self):
+    def finalize(self, max_topic_level):
         self.mindmanager.documents[1].balance_map()
         self.mindmanager.activate()
