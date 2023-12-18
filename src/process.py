@@ -47,9 +47,13 @@ def create_sub_topics(mindm, mermaid_topics, index, parent_topic):
         i += 1
     return i
 
-def create_new_map_from_mermaid(mindm, mermaid_diagram):
+def get_mermaid_topics(mindm, mermaid_diagram):
     mermaid_topics = mermaid.parse_mermaid(mermaid_diagram, config.LINE_SEPARATOR, config.INDENT_SIZE)
     max_topic_level = max(topic.topic_level for topic in mermaid_topics)
+    return (mermaid_topics, max_topic_level)
+
+def create_new_map_from_mermaid(mindm, mermaid_diagram):
+    (mermaid_topics, max_topic_level) = get_mermaid_topics(mindm, mermaid_diagram)
     mindm.add_document()
     parent_topic = mindm.get_central_topic()
     mindm.set_title_to_topic(parent_topic, mermaid_topics[0].topic_text)
@@ -59,33 +63,40 @@ def create_new_map_from_mermaid(mindm, mermaid_diagram):
 
 def main(param):
     mindm = mindmanager.Mindmanager()
+
+    if not mindm.document_exists():
+        print("No document found.")    
+        return
+
+    central_topic = mindm.get_central_topic()
+    mermaid_diagram = recurse_topics(mindm, "", central_topic, 0)
+
+    if param != "finalize":
+        prompts_list = prompts.prompts_list_from_param(param)
+
+        if mindm.document_exists():
+            topic_texts = ""
+
+            if len(prompts_list) == 1:
+                selection = mindm.get_selection()
+                if len(selection) > 0:
+                    for this_topic in selection:
+                        if mindm.get_level_from_topic(this_topic) > 0:
+                            topic_texts += mindm.get_title_from_topic(this_topic) + ","
+                        
+                    if len(topic_texts) > 0: topic_texts = topic_texts[:-1]
+
+            new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+
+            if new_mermaid_diagram != "":
+                max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
+                mindm.finalize(max_topic_level)
     
-    prompts_list = prompts.prompts_list_from_param(param)
+    elif param == "finalize":
+        max_topic_level = get_mermaid_topics(mindm, mermaid_diagram)[1]
+        mindm.finalize(max_topic_level)
 
-    if mindm.document_exists():
-        topic_texts = ""
-
-        central_topic = mindm.get_central_topic()
-        mermaid_diagram = recurse_topics(mindm, "", central_topic, 0)
-
-        if len(prompts_list) == 1:
-            selection = mindm.get_selection()
-            if len(selection) > 0:
-                for this_topic in selection:
-                    if mindm.get_level_from_topic(this_topic) > 0:
-                        topic_texts += mindm.get_title_from_topic(this_topic) + ","
-                    
-                if len(topic_texts) > 0: topic_texts = topic_texts[:-1]
-
-        new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
-
-        if new_mermaid_diagram != "":
-            max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
-            mindm.finalize(max_topic_level)
-
-        print("Done.")
-    else:
-        print("No document found.")
+    print("Done.")
 
 if __name__ == "__main__":
     

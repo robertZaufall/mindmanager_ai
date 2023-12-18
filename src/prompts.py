@@ -30,7 +30,7 @@ def prompt_refine_dev(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding an additional level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
+        f"Please refine {topics} by adding an additional n+1 level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Each subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. "
         f"Do not change the central topic. "
