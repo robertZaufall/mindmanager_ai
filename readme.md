@@ -220,7 +220,7 @@ You can also use the content inside the Mermaid online editor (https://mermaid.l
 
 ## Disclaimer
 
-The OpenAI API execution time can be somewhat lengthy, typically around 20 seconds per call. For more intricate use cases, this duration can extend to 2 minutes or more, with execution time also varying based on token count.
+The API execution time can be somewhat lengthy, typically around 20 seconds or more per call. For more intricate use cases, this duration can extend to 2 minutes or more, with execution time also varying based on token count.
 
 Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.
 
