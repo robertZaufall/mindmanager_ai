@@ -51,9 +51,9 @@ class Mindmanager:
         elif max_topic_level > 3:
             if growthDirection != 1:
                 layout.CentralTopicGrowthDirection = 1
-            for m_Topic in self.mindmanager.ActiveDocument.Range(2, True):
-                if m_Topic.Level > 2:
-                    m_Topic.Collapsed = True
+            for topic in self.mindmanager.ActiveDocument.Range(2, True): # 2 = all topics
+                if topic.Level > 2:
+                    topic.Collapsed = True
         else:
             if growthDirection != 1:
                 layout.CentralTopicGrowthDirection = 1
