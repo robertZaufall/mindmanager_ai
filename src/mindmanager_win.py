@@ -40,21 +40,32 @@ class Mindmanager:
         centralTopic = self.mindmanager.ActiveDocument.CentralTopic
         layout = centralTopic.SubTopicsLayout
         growthDirection = layout.CentralTopicGrowthDirection
-
-        if max_topic_level == 3:
-            if len(centralTopic.AllSubTopics) > 2:
-                if growthDirection == 1:
-                    layout.CentralTopicGrowthDirection = 5
-            else:
-                if growthDirection != 1:
-                    layout.CentralTopicGrowthDirection = 1
-        elif max_topic_level > 3:
-            if growthDirection != 1:
-                layout.CentralTopicGrowthDirection = 1
+        cnt_subtopics = len(centralTopic.AllSubTopics)
+                           
+        # collapse/uncollapse outer topics
+        if max_topic_level > 3:
             for topic in self.mindmanager.ActiveDocument.Range(2, True): # 2 = all topics
                 if topic.Level > 2:
                     topic.Collapsed = True
+                else:
+                    if topic.Level != 0: topic.Collapsed = False
         else:
+            for topic in self.mindmanager.ActiveDocument.Range(2, True): # 2 = all topics
+                if topic.Level > 3:
+                    topic.Collapsed = True
+                else:
+                    if topic.Level != 0: topic.Collapsed = False
+
+        # org chart            
+        if max_topic_level > 2 and cnt_subtopics > 4:
+            if growthDirection == 1:
+                layout.CentralTopicGrowthDirection = 5
+
+        # radial map
+        if max_topic_level > 2 and cnt_subtopics < 5:
+            if growthDirection != 1:
+                layout.CentralTopicGrowthDirection = 1
+        if max_topic_level < 3 and cnt_subtopics > 4:
             if growthDirection != 1:
                 layout.CentralTopicGrowthDirection = 1
 
