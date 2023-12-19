@@ -89,6 +89,7 @@ CLOUD_TYPE = 'AZURE'
 # CLOUD_TYPE = 'OLLAMA+mistral-openorca'
 # CLOUD_TYPE = 'OLLAMA+neural-chat'
 # CLOUD_TYPE = 'OLLAMA+zephyr'
+# CLOUD_TYPE = 'OLLAMA+openchat'
 
 LLM_TEMPERATURE = float('0.3')
 
