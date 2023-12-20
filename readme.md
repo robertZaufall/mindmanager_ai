@@ -82,14 +82,19 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 CLOUD_TYPE = 'AZURE' 
 # CLOUD_TYPE = 'OPENAI'
+
+# CLOUD_TYPE = 'OLLAMA+solar' # best
+# CLOUD_TYPE = 'OLLAMA+mistral' # best
+# CLOUD_TYPE = 'OLLAMA+openchat' # very good
+# CLOUD_TYPE = 'OLLAMA+zephyr' # ok
+# CLOUD_TYPE = 'OLLAMA+neural-chat' # ok
+
+# CLOUD_TYPE = 'OLLAMA+mistral-openorca' # not good
+# CLOUD_TYPE = 'OLLAMA+phi' # not working
+# CLOUD_TYPE = 'OLLAMA+llama2' # not working
+
 # CLOUD_TYPE = 'GEMINI'
 # CLOUD_TYPE = 'GEMINIPROJECT'
-# CLOUD_TYPE = 'OLLAMA+llama2'
-# CLOUD_TYPE = 'OLLAMA+mistral'
-# CLOUD_TYPE = 'OLLAMA+mistral-openorca'
-# CLOUD_TYPE = 'OLLAMA+neural-chat'
-# CLOUD_TYPE = 'OLLAMA+zephyr'
-# CLOUD_TYPE = 'OLLAMA+openchat'
 
 LLM_TEMPERATURE = float('0.3')
 
