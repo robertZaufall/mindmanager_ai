@@ -4,20 +4,25 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
-# CLOUD_TYPE = 'AZURE' 
-# CLOUD_TYPE = 'OPENAI'
+# ChatGPT, best in class
+CLOUD_TYPE = 'AZURE'  # best, uncensored
+# CLOUD_TYPE = 'OPENAI' # best, uncensored
 
-# CLOUD_TYPE = 'OLLAMA+solar' # best
-# CLOUD_TYPE = 'OLLAMA+mistral' # best
-# CLOUD_TYPE = 'OLLAMA+openchat' # very good
-# CLOUD_TYPE = 'OLLAMA+zephyr' # ok
-# CLOUD_TYPE = 'OLLAMA+neural-chat' # ok
+# Ollama (local models), best results
+# CLOUD_TYPE = 'OLLAMA+mixtral'     # best,      censored
+# CLOUD_TYPE = 'OLLAMA+solar'       # best,      uncensored
+# CLOUD_TYPE = 'OLLAMA+mistral'     # best,      uncensored
+# CLOUD_TYPE = 'OLLAMA+openchat'    # very good, uncensored
+# CLOUD_TYPE = 'OLLAMA+zephyr'      # very good, uncensored
+# CLOUD_TYPE = 'OLLAMA+neural-chat' # good,      uncensored
 
-# CLOUD_TYPE = 'OLLAMA+mistral-openorca' # not good
-# CLOUD_TYPE = 'OLLAMA+phi' # not working
-# CLOUD_TYPE = 'OLLAMA+llama2' # not working
+# Ollama (local models), not working
+# CLOUD_TYPE = 'OLLAMA+mistral-openorca' # not good, uncensored
+# CLOUD_TYPE = 'OLLAMA+phi'              # not working
+# CLOUD_TYPE = 'OLLAMA+llama2'           # not working
 
-# CLOUD_TYPE = 'GEMINI'
+# Gemini (bad results, sometimes not working at all)
+# CLOUD_TYPE = 'GEMINI' # bad, censored --> error
 # CLOUD_TYPE = 'GEMINIPROJECT'
 
 LLM_TEMPERATURE = float('0.3')
