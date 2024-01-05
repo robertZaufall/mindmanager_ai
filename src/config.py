@@ -5,7 +5,7 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # ChatGPT, best in class
-# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
