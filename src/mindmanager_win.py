@@ -34,7 +34,9 @@ class Mindmanager:
         topic.Text = topic_text
 
     def add_document(self):
+        style = self.mindmanager.ActiveDocument.StyleXml
         self.mindmanager.Documents.Add()
+        self.mindmanager.ActiveDocument.StyleXml = style
 
     def finalize(self, max_topic_level):
         centralTopic = self.mindmanager.ActiveDocument.CentralTopic
