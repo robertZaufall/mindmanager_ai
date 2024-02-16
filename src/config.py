@@ -5,7 +5,7 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # ChatGPT, best in class
-CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
@@ -24,9 +24,9 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OLLAMA+wizard-vicuna-uncensored' # not working
 # CLOUD_TYPE = 'OLLAMA+yi'                       # not working
 
-# Gemini (bad results, sometimes not working at all)
-# CLOUD_TYPE = 'GEMINI'                          # bad, censored --> error
-# CLOUD_TYPE = 'GEMINIPROJECT'                   # bad
+# Gemini
+# CLOUD_TYPE = 'GEMINI'                          # ok
+# CLOUD_TYPE = 'GEMINIPROJECT'                   # bad (very limited output)
 
 LLM_TEMPERATURE = float('0.3')
 
@@ -64,7 +64,7 @@ elif CLOUD_TYPE == "AZURE":
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
 elif CLOUD_TYPE == "GEMINI":
-    MODEL_ID = "gemini-pro" # "gemini-pro|gemini-pro-vision"
+    MODEL_ID = "gemini-1.0-pro" # "gemini-1.0-pro|gemini-1.0-pro-vision"
     GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
 
     API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={GOOGLE_API_KEY}"
@@ -72,11 +72,15 @@ elif CLOUD_TYPE == "GEMINI":
     KEY_HEADER_VALUE = ""
 
 elif CLOUD_TYPE == "GEMINIPROJECT":
-    MODEL_ID = "gemini-pro" # "gemini-pro|gemini-pro-vision"
+    # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
+    # Service Account / Key -> Create new key -> JSON
+    # gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>
+    # gcloud auth print-access-token
+    MODEL_ID = "gemini-1.0-pro" # "gemini-1.0-pro|gemini-1.0-pro-vision"
     PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
     API_ENDPOINT="us-central1-aiplatform.googleapis.com"
     LOCATION_ID="us-central1"
-    GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
+    GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
 
     API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:streamGenerateContent"
     KEY_HEADER_TEXT = "Authorization"
