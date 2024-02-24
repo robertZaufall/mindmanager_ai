@@ -1,5 +1,6 @@
 import config
 import prompts
+import mermaid as m
 
 import requests
 import json
@@ -16,8 +17,15 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts=""):
         log_input += new_mermaid + "\n\n"
 
         this_prompt = prompts.prompt(prompt, new_mermaid, topic_texts=topic_texts)
-        new_mermaid = call_llm(this_prompt)
 
+        not_valid = True
+        retries = 0
+        while (not_valid and retries < config.MAX_RETRIES):
+            new_mermaid = call_llm(this_prompt)
+            not_valid = m.validate_mermaid(new_mermaid, config.LINE_SEPARATOR, config.INDENT_SIZE)
+            if not_valid:
+                retries = retries + 1
+                
         log_output += new_mermaid + "\n\n"
         log_prompt += "Prompt = " + prompt + "\n-------\n" + this_prompt + "\n\n"
 
