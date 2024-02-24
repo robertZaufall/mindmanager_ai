@@ -5,7 +5,7 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # ChatGPT, best in class
-# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
@@ -28,7 +28,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'GEMINI'                          # ok
 # CLOUD_TYPE = 'GEMINIPROJECT'                   # bad (very limited output)
 
-LLM_TEMPERATURE = float('0.3')
+LLM_TEMPERATURE = float('0.9')
 
 MAX_TOKENS_SIMPLE = int('100')
 MAX_TOKENS_NORMAL = int('1000')
