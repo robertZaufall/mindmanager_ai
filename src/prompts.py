@@ -3,7 +3,8 @@ import config
 prompt_prefix = "Given is the following Mermaid mindmap. "
 
 prompt_postfix = (
-    f"Return back the complete mindmap data as a functional Mermaid mindmap using its syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
+    f"Return back the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
+    f"Put also {config.INDENT_SIZE} space characters in front of the first topic i.e. central topic. Use the 'mermaid' keyword only once at the beginning. "
     f"Do not add any additional text or explainings to your answer. "
     f"This is an example of a n level deep mindmap: \n"
     f"'mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n'\n "
