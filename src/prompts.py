@@ -141,9 +141,9 @@ def prompt_examples(text, topic_texts=""):
     return str_user
 
 def prompts_list_from_param(param):
-    if   param == "complexity_1": return ["refine", "cluster", "examples"]
+    if   param == "complexity_1": return ["refine", "refine", "cluster"]
     elif param == "complexity_2": return ["exp_prj_prc_org", "refine"]
-    elif param == "complexity_3": return ["exp_prj_prc_org", "refine", "examples"]
+    elif param == "complexity_3": return ["prj_prc_org", "refine"]
     else:
         return [param]
 

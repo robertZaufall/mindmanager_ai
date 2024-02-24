@@ -100,7 +100,7 @@ def main(param):
 
 if __name__ == "__main__":
     
-    param = "refine"
+    param = "refine" # refine, refine_dev, complexity_1, complexity_2, complexity_3, examples, cluster, prc_org, prj_prc_org, exp_prj_prc_org, exp, prj_org, capex_opex
     
     if len(sys.argv) > 1:
         param = sys.argv[1]
