@@ -174,7 +174,7 @@ def call_llm(str_user):
         result = result.replace("```mermaid", "").replace("```", "").lstrip("\n")        
 
     # CLAUDE3
-    elif config.CLOUD_TYPE == "CLAUDE3":
+    elif "CLAUDE3" in config.CLOUD_TYPE:
         payload = {
             "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS_DEEP,
@@ -204,6 +204,6 @@ def call_llm(str_user):
         parsed_json = json.loads(response_text)
         stop_reason = parsed_json["stop_reason"]
         stop_sequence = parsed_json["stop_sequence"]
-        result = parsed_json["content"][0]["text"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        result = parsed_json["content"][0]["text"].replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     return result
