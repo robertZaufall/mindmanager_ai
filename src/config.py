@@ -31,7 +31,9 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'GEMINIPROJECT'                   # bad (very limited output)
 
 # Claude3
-# CLOUD_TYPE = 'CLAUDE3'                         # ok
+# CLOUD_TYPE = 'CLAUDE3_OPUS'                    # ok
+# CLOUD_TYPE = 'CLAUDE3_SONNET'                  # ok
+# CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # not available as of 2024-03-04
 
 
 
@@ -99,7 +101,13 @@ elif "OLLAMA" in CLOUD_TYPE:
     API_URL="http://localhost:11434/api/generate"
 
 elif "CLAUDE3" in CLOUD_TYPE:
-    MODEL_ID = "claude-3-opus-20240229"
+    model=CLOUD_TYPE.split("_")[-1]
+    if model == "HAIKU":
+        MODEL_ID = "claude-3-haiku-20240229"
+    elif model == "SONNET":
+        MODEL_ID = "claude-3-sonnet-20240229"
+    elif model == "OPUS":
+        MODEL_ID = "claude-3-opus-20240229"
     ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
     ANTHROPIC_VERSION="2023-06-01"
     KEY_HEADER_TEXT = "x-api-key"
