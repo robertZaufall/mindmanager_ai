@@ -4,6 +4,8 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
+
+
 # ChatGPT, best in class
 CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
@@ -28,7 +30,12 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'GEMINI'                          # ok
 # CLOUD_TYPE = 'GEMINIPROJECT'                   # bad (very limited output)
 
-LLM_TEMPERATURE = float('0.9')
+# Claude3
+# CLOUD_TYPE = 'CLAUDE3'                         # ok
+
+
+
+LLM_TEMPERATURE = float('0.5')
 
 MAX_TOKENS_SIMPLE = int('100')
 MAX_TOKENS_NORMAL = int('1000')
@@ -90,6 +97,14 @@ elif CLOUD_TYPE == "GEMINIPROJECT":
 elif "OLLAMA" in CLOUD_TYPE:
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     API_URL="http://localhost:11434/api/generate"
+
+elif "CLAUDE3" in CLOUD_TYPE:
+    MODEL_ID = "claude-3-opus-20240229"
+    ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
+    ANTHROPIC_VERSION="2023-06-01"
+    KEY_HEADER_TEXT = "x-api-key"
+    KEY_HEADER_VALUE = ANTHROPIC_API_KEY
+    API_URL="https://api.anthropic.com/v1/messages"
 
 else:
     raise Exception("Error: Unknown CLOUD_TYPE")

@@ -49,6 +49,7 @@ def call_llm(str_user):
     
     str_system = config.SYSTEM_PROMPT
 
+    # Azure / OpenAI
     if config.CLOUD_TYPE == "AZURE" or config.CLOUD_TYPE == "OPENAI":
         payload = {
             "max_tokens": config.MAX_TOKENS_DEEP,
@@ -78,6 +79,7 @@ def call_llm(str_user):
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
     
+    # OLLAMA
     elif "OLLAMA" in config.CLOUD_TYPE:
         payload = {
             "system": config.SYSTEM_PROMPT,
@@ -100,12 +102,13 @@ def call_llm(str_user):
         parsed_json = json.loads(response_text)
         result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
     
+    # GEMINI
     elif config.CLOUD_TYPE == "GEMINI" or config.CLOUD_TYPE == "GEMINIPROJECT":
         payload = {
             "contents": {
                 "role": "user",
                 "parts": [
-                    { "text": config.SYSTEM_PROMPT },
+                    { "text": str_system },
                     { "text": str_user }
                 ]
             },
@@ -114,6 +117,8 @@ def call_llm(str_user):
                 { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
                 { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
                 { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
+
+                # not supported by now
                 #{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" },
                 #{ "category": "HARM_CATEGORY_TOXICITY", "threshold": "BLOCK_NONE" },
                 #{ "category": "HARM_CATEGORY_VIOLENCE", "threshold": "BLOCK_NONE" },
@@ -167,5 +172,38 @@ def call_llm(str_user):
             result = "\n".join(concatenated_texts)
 
         result = result.replace("```mermaid", "").replace("```", "").lstrip("\n")        
+
+    # CLAUDE3
+    elif config.CLOUD_TYPE == "CLAUDE3":
+        payload = {
+            "model": config.MODEL_ID,
+            "max_tokens": config.MAX_TOKENS_DEEP,
+            "temperature": config.LLM_TEMPERATURE,
+            "messages": [
+                {"role": "user", "content": "Hello, Claude."},
+                {"role": "assistant", "content": str_system.replace("You are ", "Hi, I'm Claude, ")},
+                {"role": "user", "content": str_user}
+            ]
+        }
+
+        response = requests.post(
+            config.API_URL,
+            headers={
+                "content-type": "application/json",
+                "anthropic-version": config.ANTHROPIC_VERSION,
+                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+        stop_reason = parsed_json["stop_reason"]
+        stop_sequence = parsed_json["stop_sequence"]
+        result = parsed_json["content"][0]["text"].replace("```mermaid", "").replace("```", "").lstrip("\n")
 
     return result
