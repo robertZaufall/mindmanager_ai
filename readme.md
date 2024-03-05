@@ -9,8 +9,8 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
   - OpenAI w/ ***GPT4 Turbo*** (use your key)
   - Anthropic ***Claude 3*** (use your key)  
   - groq w/ ***Mixtral*** (use your key)
-  - Gemini Pro Generative Language Api (use your key)  
-  - Gemini Pro via Vertex AI Api (use your access token)
+  - Gemini Pro Generative Language (use your key)  
+  - Gemini Pro via Vertex AI (use your access token)
   - Ollama w/ any LLM (use ***Zephyr*** or ***Mixtral*** model for best results)
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
@@ -76,9 +76,9 @@ The solution ist best tested with `Azure OpenAI`. Results are perfect for every 
 ### Ollama
 Ollama results are not perfect and dependent on the used model. `Zephyr` and `Mixtral` are gettin better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.  
 ### Anthropic Claude 3
-Anthorpic Claude 3 results are ok. The OPUS model is little bit expensive.
+Anthropic Claude 3 results are ok. The OPUS model is little bit expensive.
 ### groq
-groq is sure the fastest LLM by now. The results using the `Mixtral` model are ok. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-03-05).  
+groq is sure the fastest LLM platform by now. The results using the `Mixtral` model are ok. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-03-05).  
 
 ## Configuration  
 LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
