@@ -5,16 +5,16 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 ## Features
 
 - Supported LLMs:
-  - Azure OpenAI Api (use your key) -> ***best tested***
-  - OpenAI Api (use your key)
-  - Anthropic Claude 3 (use your key)  
-  - GROQ / Mixtral (use your key)
+  - Azure OpenAI w/ ***GPT4 Turbo*** (use your key) -> ***best tested***
+  - OpenAI w/ ***GPT4 Turbo*** (use your key)
+  - Anthropic ***Claude 3*** (use your key)  
+  - groq w/ ***Mixtral*** (use your key)
   - Gemini Pro Generative Language Api (use your key)  
-  - Gemini Pro Vertex AI Api (use your access token)
-  - Ollama -> ***use Zephyr or Mixtral model for best results***
+  - Gemini Pro via Vertex AI Api (use your access token)
+  - Ollama w/ any LLM (use ***Zephyr*** or ***Mixtral*** model for best results)
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
-- MACOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
-- Just native LLM requests via REST calls (no middleware needed)
+- macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
+- Just native LLM requests via API calls (no middleware needed)
 
 ## Implemented Use Cases
 
@@ -29,11 +29,12 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 ### Windows  
 ![Example 1](doc/anim2.gif)  
 
-### MACOS
+### macOS
 ![Example 4 MACOS](doc/anim_macos.gif)  
 
 ## Installation  
 ### Windows  
+Python has to be installed first (eg. using Chocolatey).  
 Run `install.bat` or  
 ```
 pip install --upgrade requests
@@ -47,7 +48,8 @@ Macros can also be executed by the Macro Editor. The macros are similar but the 
 
 ![Automator](doc/windows_macroeditor.png)  
 
-### MACOS  
+### macOS  
+Python has to be installed first (eg. using Homebrew).  
 ```
 pip install --upgrade requests
 pip install --upgrade appscript
@@ -67,12 +69,16 @@ The workflows are then available at the "MindManager" main menu -> Services
 
 
 ## LLM systems
-### Azure OpenAI
-The solution ist best tested with `Azure OpenAI`. Results are prefect for every use case. Execution time can take a while.  
+### Azure OpenAI / OpenAI
+The solution ist best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time can be somewhat lengthy.  
 ### Gemini Pro
-`Gemini Pro` results are restrictied by 2k tokens by now and therefore truncated. Usage is not recommended.  
+`Gemini Pro` results are restrictied by 2k tokens by now and furthermore truncated with 1.0 models. Usage is not recommended.  
 ### Ollama
-Ollama results are not perfect and dependent on the used model. `Zephyr` brings better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.
+Ollama results are not perfect and dependent on the used model. `Zephyr` and `Mixtral` are gettin better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.  
+### Anthropic Claude 3
+Anthorpic Claude 3 results are ok. The OPUS model is little bit expensive.
+### groq
+groq is sure the fastest LLM by now. The results using the `Mixtral` model are ok. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-03-05).  
 
 ## Configuration  
 LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
