@@ -7,10 +7,11 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 - Supported LLMs:
   - Azure OpenAI Api (use your key) -> ***best tested***
   - OpenAI Api (use your key)
+  - Anthropic Claude 3 (use your key)  
+  - GROQ / Mixtral (use your key)
   - Gemini Pro Generative Language Api (use your key)  
   - Gemini Pro Vertex AI Api (use your access token)
-  - Anthropic Claude 3 (use your key)  
-  - Ollama -> ***use zephyr model for best results***
+  - Ollama -> ***use Zephyr or Mixtral model for best results***
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - MACOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
 - Just native LLM requests via REST calls (no middleware needed)
