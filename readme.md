@@ -110,6 +110,9 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'CLAUDE3_SONNET'                  # ok
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # not available as of 2024-03-04
 
+# Groq
+# CLOUD_TYPE = 'GROQ+mixtral'                    # best
+
 
 LLM_TEMPERATURE = float('0.5')
 
@@ -182,11 +185,25 @@ elif "CLAUDE3" in CLOUD_TYPE:
         MODEL_ID = "claude-3-sonnet-20240229"
     elif model == "OPUS":
         MODEL_ID = "claude-3-opus-20240229"
+    else:
+        raise Exception("Error: Unknown CLAUDE3 model")
     ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
     ANTHROPIC_VERSION="2023-06-01"
     KEY_HEADER_TEXT = "x-api-key"
     KEY_HEADER_VALUE = ANTHROPIC_API_KEY
     API_URL="https://api.anthropic.com/v1/messages"
+
+elif "GROQ" in CLOUD_TYPE:
+    model = CLOUD_TYPE.split("+")[-1]
+    GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + GROQ_API_KEY
+    API_URL="https://api.groq.com/openai/v1/chat/completions"
+    if model == "mixtral":
+        MODEL_NAME = "Mixtral-8x7b-Instruct-v0.1"
+        MODEL_ID = "mixtral-8x7b-32768"
+    else:
+        raise Exception("Error: Unknown GROQ model")
 ```
 
 ## Prompt crafting  
