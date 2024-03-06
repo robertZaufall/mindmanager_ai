@@ -35,7 +35,7 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'CLAUDE3_SONNET'                  # ok
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # not available as of 2024-03-04
 
-# Groq
+# groq
 # CLOUD_TYPE = 'GROQ+mixtral'                    # best
 
 

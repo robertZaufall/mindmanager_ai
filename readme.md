@@ -9,9 +9,9 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
   - OpenAI w/ ***GPT4 Turbo*** (use your key)
   - Anthropic ***Claude 3*** (use your key)  
   - groq w/ ***Mixtral*** (use your key)
-  - Gemini Pro Generative Language (use your key)  
-  - Gemini Pro via Vertex AI (use your access token)
-  - Ollama w/ any LLM (use ***Zephyr*** or ***Mixtral*** model for best results)
+  - Google Gemini Pro Generative Language (use your key)  
+  - Google Gemini Pro via Vertex AI (use your access token)
+  - Ollama (local) w/ any LLM (use ***Zephyr*** or ***Mixtral*** model for best results)
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
 - Just native LLM requests via API calls (no middleware needed)
@@ -71,10 +71,10 @@ The workflows are then available at the "MindManager" main menu -> Services
 ## LLM systems
 ### Azure OpenAI / OpenAI
 The solution ist best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time can be somewhat lengthy.  
-### Gemini Pro
+### Google Gemini Pro
 `Gemini Pro` results are restrictied by 2k tokens by now and furthermore truncated with 1.0 models. Usage is not recommended.  
-### Ollama
-Ollama results are not perfect and dependent on the used model. `Zephyr` and `Mixtral` are gettin better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.  
+### Ollama (hosted locally - no internet access needed)
+Ollama results are dependent on the used model. `Zephyr` and `Mixtral` are getting better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.  
 ### Anthropic Claude 3
 Anthropic Claude 3 results are ok. The OPUS model is little bit expensive.
 ### groq
@@ -117,7 +117,7 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'CLAUDE3_SONNET'                  # ok
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # not available as of 2024-03-04
 
-# Groq
+# groq
 # CLOUD_TYPE = 'GROQ+mixtral'                    # best
 
 
