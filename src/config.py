@@ -7,7 +7,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 
 # ChatGPT, best in class
-CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
@@ -39,7 +39,7 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'GROQ+mixtral'                    # best
 
 # Perplexity
-# CLOUD_TYPE = 'PERPLEXITY+mistral'              # ok
+CLOUD_TYPE = 'PERPLEXITY+mistral'              # ok
 
 
 
@@ -132,7 +132,7 @@ elif "GROQ" in CLOUD_TYPE:
         MODEL_NAME = "Mixtral-8x7b-Instruct-v0.1"
         MODEL_ID = "mixtral-8x7b-32768"
     else:
-        raise Exception("Error: Unknown GROQ model")
+        raise Exception("Error: Unknown groq model")
 
 elif "PERPLEXITY" in CLOUD_TYPE:
     model = CLOUD_TYPE.split("+")[-1]
@@ -143,7 +143,7 @@ elif "PERPLEXITY" in CLOUD_TYPE:
     if model == "mistral":
         MODEL_ID = "mistral-7b-instruct"
     else:
-        raise Exception("Error: Unknown GROQ model")
+        raise Exception("Error: Unknown Perplexity model")
 
 else:
     raise Exception("Error: Unknown CLOUD_TYPE")

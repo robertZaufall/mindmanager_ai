@@ -217,7 +217,7 @@ elif "GROQ" in CLOUD_TYPE:
         MODEL_NAME = "Mixtral-8x7b-Instruct-v0.1"
         MODEL_ID = "mixtral-8x7b-32768"
     else:
-        raise Exception("Error: Unknown GROQ model")
+        raise Exception("Error: Unknown groq model")
 
 elif "PERPLEXITY" in CLOUD_TYPE:
     model = CLOUD_TYPE.split("+")[-1]
@@ -228,7 +228,7 @@ elif "PERPLEXITY" in CLOUD_TYPE:
     if model == "mistral":
         MODEL_ID = "mistral-7b-instruct"
     else:
-        raise Exception("Error: Unknown GROQ model")
+        raise Exception("Error: Unknown Perplexity model")
 ```
 
 ## Prompt crafting  
