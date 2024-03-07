@@ -8,7 +8,8 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
   - Azure OpenAI w/ ***GPT4 Turbo*** (use your key) -> ***best tested***
   - OpenAI w/ ***GPT4 Turbo*** (use your key)
   - Anthropic ***Claude 3*** (use your key)  
-  - groq w/ ***Mixtral*** (use your key)
+  - groq (platform) w/ ***Mixtral*** (use your key)
+  - Perplexity (platform) w/ ***Mistral*** (use your key)
   - Google Gemini Pro Generative Language (use your key)  
   - Google Gemini Pro via Vertex AI (use your access token)
   - Ollama (local) w/ any LLM (use ***Zephyr*** or ***Mixtral*** model for best results)
@@ -77,8 +78,10 @@ The solution ist best tested with `Azure OpenAI`. Results are perfect for every 
 Ollama results are dependent on the used model. `Zephyr` and `Mixtral` are getting better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.  
 ### Anthropic Claude 3
 Anthropic Claude 3 results are ok. The OPUS model is little bit expensive.
-### groq
+### groq (platform)
 groq is sure the fastest LLM platform by now. The results using the `Mixtral` model are ok. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-03-05).  
+### Perplexity (platform)
+Perplexity works perfekt as an univeral LLM platform. Currently Mistral LLM was tested and worked ok.  
 
 ## Configuration  
 LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
@@ -119,6 +122,10 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 
 # groq
 # CLOUD_TYPE = 'GROQ+mixtral'                    # best
+
+# Perplexity
+# CLOUD_TYPE = 'PERPLEXITY+mistral'              # ok
+
 
 
 LLM_TEMPERATURE = float('0.5')
@@ -209,6 +216,17 @@ elif "GROQ" in CLOUD_TYPE:
     if model == "mixtral":
         MODEL_NAME = "Mixtral-8x7b-Instruct-v0.1"
         MODEL_ID = "mixtral-8x7b-32768"
+    else:
+        raise Exception("Error: Unknown GROQ model")
+
+elif "PERPLEXITY" in CLOUD_TYPE:
+    model = CLOUD_TYPE.split("+")[-1]
+    PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + PERPLEXITY_API_KEY
+    API_URL="https://api.perplexity.ai/chat/completions"
+    if model == "mistral":
+        MODEL_ID = "mistral-7b-instruct"
     else:
         raise Exception("Error: Unknown GROQ model")
 ```

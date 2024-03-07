@@ -38,6 +38,9 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # groq
 # CLOUD_TYPE = 'GROQ+mixtral'                    # best
 
+# Perplexity
+# CLOUD_TYPE = 'PERPLEXITY+mistral'              # ok
+
 
 
 LLM_TEMPERATURE = float('0.5')
@@ -128,6 +131,17 @@ elif "GROQ" in CLOUD_TYPE:
     if model == "mixtral":
         MODEL_NAME = "Mixtral-8x7b-Instruct-v0.1"
         MODEL_ID = "mixtral-8x7b-32768"
+    else:
+        raise Exception("Error: Unknown GROQ model")
+
+elif "PERPLEXITY" in CLOUD_TYPE:
+    model = CLOUD_TYPE.split("+")[-1]
+    PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + PERPLEXITY_API_KEY
+    API_URL="https://api.perplexity.ai/chat/completions"
+    if model == "mistral":
+        MODEL_ID = "mistral-7b-instruct"
     else:
         raise Exception("Error: Unknown GROQ model")
 

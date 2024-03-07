@@ -235,4 +235,33 @@ def call_llm(str_user):
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
         
+    # Perplexity
+    elif "PERPLEXITY" in config.CLOUD_TYPE:
+        payload = {
+            "max_tokens": config.MAX_TOKENS_DEEP,
+            "temperature": config.LLM_TEMPERATURE,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ]
+        }        
+        payload["model"] = config.MODEL_ID
+
+        response = requests.post(
+            config.API_URL,
+            headers={
+                "Content-Type": "application/json",
+                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        
     return result
