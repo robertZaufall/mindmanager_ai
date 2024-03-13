@@ -48,7 +48,6 @@ LLM_TEMPERATURE = float('0.5')
 MAX_TOKENS = int('4000')
 MAX_RETRIES = int('3')
 TOP_MOST_RESULTS = int('5')
-TOP_MOST_RESULTS_DEEP = int('6')
 MAX_RETURN_WORDS = int('5')
 LEVELS_DEEP = int('5')
 
