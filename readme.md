@@ -11,7 +11,7 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
   - groq (platform) w/ ***Mixtral*** (use your key)
   - Perplexity (platform) w/ ***Mistral*** (use your key)
   - Google Gemini Pro Generative Language (use your key)  
-  - Google Gemini Pro via Vertex AI (use your access token)
+  - Google Gemini Pro / Vertex AI (use your access token)
   - Ollama (local) w/ any LLM (use ***Zephyr*** or ***Mixtral*** model for best results)
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
@@ -111,7 +111,7 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OLLAMA+wizard-vicuna-uncensored' # not working
 # CLOUD_TYPE = 'OLLAMA+yi'                       # not working
 
-# Gemini
+# Google Gemini
 # CLOUD_TYPE = 'GEMINI'                          # ok
 # CLOUD_TYPE = 'GEMINIPROJECT'                   # bad (very limited output)
 
@@ -130,9 +130,7 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 
 LLM_TEMPERATURE = float('0.5')
 
-MAX_TOKENS_SIMPLE = int('100')
-MAX_TOKENS_NORMAL = int('1000')
-MAX_TOKENS_DEEP = int('4000')
+MAX_TOKENS = int('4000')
 MAX_RETRIES = int('3')
 TOP_MOST_RESULTS = int('5')
 TOP_MOST_RESULTS_DEEP = int('6')

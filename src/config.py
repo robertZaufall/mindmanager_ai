@@ -26,7 +26,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+wizard-vicuna-uncensored' # not working
 # CLOUD_TYPE = 'OLLAMA+yi'                       # not working
 
-# Gemini
+# Google Gemini
 # CLOUD_TYPE = 'GEMINI'                          # ok
 # CLOUD_TYPE = 'GEMINIPROJECT'                   # bad (very limited output)
 
@@ -45,9 +45,7 @@ CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # ok
 
 LLM_TEMPERATURE = float('0.5')
 
-MAX_TOKENS_SIMPLE = int('100')
-MAX_TOKENS_NORMAL = int('1000')
-MAX_TOKENS_DEEP = int('4000')
+MAX_TOKENS = int('4000')
 MAX_RETRIES = int('3')
 TOP_MOST_RESULTS = int('5')
 TOP_MOST_RESULTS_DEEP = int('6')

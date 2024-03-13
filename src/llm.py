@@ -52,7 +52,7 @@ def call_llm(str_user):
     # Azure / OpenAI
     if config.CLOUD_TYPE == "AZURE" or config.CLOUD_TYPE == "OPENAI":
         payload = {
-            "max_tokens": config.MAX_TOKENS_DEEP,
+            "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
                 {"role": "system", "content": str_system},
@@ -131,7 +131,7 @@ def call_llm(str_user):
                 "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
                 #"topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
                 "topP": 0.95, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
-                "maxOutputTokens": config.MAX_TOKENS_DEEP, # 2k / 4k
+                "maxOutputTokens": config.MAX_TOKENS, # 2k / 4k
                 "candidateCount": 1,
             }
         }
@@ -177,7 +177,7 @@ def call_llm(str_user):
     elif "CLAUDE3" in config.CLOUD_TYPE:
         payload = {
             "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS_DEEP,
+            "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
                 {"role": "user", "content": "Hello, Claude."},
@@ -209,7 +209,7 @@ def call_llm(str_user):
     # GROQ
     elif "GROQ" in config.CLOUD_TYPE:
         payload = {
-            "max_tokens": config.MAX_TOKENS_DEEP,
+            "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
                 {"role": "system", "content": str_system},
@@ -238,7 +238,7 @@ def call_llm(str_user):
     # Perplexity
     elif "PERPLEXITY" in config.CLOUD_TYPE:
         payload = {
-            "max_tokens": config.MAX_TOKENS_DEEP,
+            "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
                 {"role": "system", "content": str_system},
