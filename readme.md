@@ -113,7 +113,7 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI'                          # ok
-# CLOUD_TYPE = 'GEMINIPROJECT'                   # bad (very limited output)
+# CLOUD_TYPE = 'GEMINIPROJECT'                   #
 
 # Claude3 (use US VPN)
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                    # ok
@@ -162,7 +162,7 @@ elif CLOUD_TYPE == "AZURE":
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
 elif CLOUD_TYPE == "GEMINI":
-    MODEL_ID = "gemini-1.0-pro" # "gemini-1.0-pro|gemini-1.0-pro-vision"
+    MODEL_ID = "gemini-1.5-pro-latest" # "gemini-1.0-pro|gemini-1.0-pro-vision|gemini-1.5-pro-latest"
     GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
 
     API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={GOOGLE_API_KEY}"
@@ -174,7 +174,7 @@ elif CLOUD_TYPE == "GEMINIPROJECT":
     # Service Account / Key -> Create new key -> JSON
     # gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>
     # gcloud auth print-access-token
-    MODEL_ID = "gemini-1.0-pro" # "gemini-1.0-pro|gemini-1.0-pro-vision"
+    MODEL_ID = "gemini-1.5-pro-latest" # "gemini-1.0-pro|gemini-1.0-pro-vision|gemini-1.5-pro-latest"
     PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
     API_ENDPOINT="us-central1-aiplatform.googleapis.com"
     LOCATION_ID="us-central1"
