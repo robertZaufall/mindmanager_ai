@@ -155,8 +155,8 @@ def call_llm(str_user):
         if response_status != 200:
             raise Exception(f"Error: {response_status} - {response_text}")
 
-        if "\"finishReason\": \"STOP\"" in response_text:
-            print("LLM response truncated: \"finishReason\": \"STOP\"\n")
+        #if "\"finishReason\": \"STOP\"" in response_text:
+        #    print("LLM response truncated: \"finishReason\": \"STOP\"\n")
 
         parsed_json = json.loads(response_text)
         
@@ -171,7 +171,7 @@ def call_llm(str_user):
                         concatenated_texts.append(text)
             result = "\n".join(concatenated_texts)
 
-        result = result.replace("```mermaid", "").replace("```", "").lstrip("\n")        
+        result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")        
 
     # CLAUDE3
     elif "CLAUDE3" in config.CLOUD_TYPE:
