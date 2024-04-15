@@ -7,7 +7,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 
 # ChatGPT, best in class
-CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
@@ -17,6 +17,7 @@ CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OLLAMA+openchat'                 # very good,   uncensored
 # CLOUD_TYPE = 'OLLAMA+zephyr'                   # very good,   uncensored *
 # CLOUD_TYPE = 'OLLAMA+neural-chat'              # good,        uncensored
+CLOUD_TYPE = 'OLLAMA+wizardlm2'                # good
 
 # Ollama (local models), not working
 # CLOUD_TYPE = 'OLLAMA+mistral-openorca'         # bad,         uncensored

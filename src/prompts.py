@@ -5,6 +5,8 @@ prompt_prefix = "Given is the following Mermaid mindmap. "
 prompt_postfix = (
     f"Return back the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
     f"Put also {config.INDENT_SIZE} space characters in front of the first topic i.e. central topic. "
+    f"Don't include the phrase 'central topic' or similar to the central topic. "
+    f"Each topic or subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. If an existing topic has more than {config.MAX_RETURN_WORDS} words, reduce it to {config.MAX_RETURN_WORDS} words. "
     f"Use the 'mermaid' keyword only once at the beginning or suppress it. They keyword 'mindmap' must be present without any whitespace characters in front of this keyword. "
     f"Don't use only numbers as topics but replace them with something meaningful. "
     f"Do not add any additional text or explainings at the beginning or end to your answer. The answer must be Mermaid code only. "
@@ -20,7 +22,6 @@ def prompt_refine(text, topic_texts=""):
         prompt_prefix +
         f"Please refine {topics} by adding an additional n+1 level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
-        f"Each subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. "
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +
@@ -35,7 +36,6 @@ def prompt_refine_dev(text, topic_texts=""):
         prompt_prefix +
         f"Please refine {topics} by adding an additional n+1 level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
-        f"Each subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. "
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +

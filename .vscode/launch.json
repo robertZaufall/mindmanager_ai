@@ -8,12 +8,20 @@
       "console": "integratedTerminal",
       "justMyCode": true
     },
-
     {
       "name": "Python: process.py",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/process.py",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> Cluster",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["cluster"],
       "console": "integratedTerminal",
       "justMyCode": true
     }
