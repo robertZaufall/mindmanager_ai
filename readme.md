@@ -102,7 +102,8 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+openchat'                 # very good,   uncensored
 # CLOUD_TYPE = 'OLLAMA+zephyr'                   # very good,   uncensored *
 # CLOUD_TYPE = 'OLLAMA+neural-chat'              # good,        uncensored
-CLOUD_TYPE = 'OLLAMA+wizardlm2'                # good
+# CLOUD_TYPE = 'OLLAMA+wizardlm2'                # very good,   uncensored (with warnings)
+CLOUD_TYPE = 'OLLAMA+llama3'                   # good,        uncensored
 
 # Ollama (local models), not working
 # CLOUD_TYPE = 'OLLAMA+mistral-openorca'         # bad,         uncensored
