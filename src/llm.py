@@ -94,13 +94,16 @@ def call_llm(str_user):
             data=json.dumps(payload)
         )
         response_text = response.text
-        response_status = response.status_code
+        response_status = response.status_code            
 
         if response.status_code != 200:
             raise Exception(f"Error: {response_status} - {response_text}")
         
         parsed_json = json.loads(response_text)
         result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
+        if config.CLOUD_TYPE == "OLLAMA+llama3:70b":
+            result = result.replace("Here is the refined mind map:\n\n", "")
     
     # GEMINI
     elif config.CLOUD_TYPE == "GEMINI" or config.CLOUD_TYPE == "GEMINIPROJECT":
