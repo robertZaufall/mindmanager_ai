@@ -21,7 +21,7 @@ def prompt_refine(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding an additional n+1 level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
+        f"Please refine {topics} by adding at least one more additional level with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
@@ -35,7 +35,7 @@ def prompt_refine_dev(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding an additional n+1 level of deepness with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
+        f"Please refine {topics} by adding at least one more additional level with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +

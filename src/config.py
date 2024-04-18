@@ -6,7 +6,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 
 
-# ChatGPT, best in class
+# GPT4, best in class
 # CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
@@ -19,7 +19,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+neural-chat'              # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                # very good,   uncensored (with warnings)
 # CLOUD_TYPE = 'OLLAMA+llama3'                   # good,        uncensored
-CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
+# CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
 
 # Ollama (local models), not working
 # CLOUD_TYPE = 'OLLAMA+mistral-openorca'         # bad,         uncensored
@@ -29,14 +29,14 @@ CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
 # CLOUD_TYPE = 'OLLAMA+wizard-vicuna-uncensored' # not working
 # CLOUD_TYPE = 'OLLAMA+yi'                       # not working
 
-# Google Gemini
+# Google Gemini (use with VPN)
 # CLOUD_TYPE = 'GEMINI'                          # ok
 # CLOUD_TYPE = 'GEMINIPROJECT'                   #
 
-# Claude3 (use US VPN)
-# CLOUD_TYPE = 'CLAUDE3_OPUS'                    # ok
-# CLOUD_TYPE = 'CLAUDE3_SONNET'                  # ok
-# CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # ok
+# Claude3
+# CLOUD_TYPE = 'CLAUDE3_OPUS'                    # good
+# CLOUD_TYPE = 'CLAUDE3_SONNET'                  # good
+CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # good
 
 # groq
 # CLOUD_TYPE = 'GROQ+mixtral'                    # best

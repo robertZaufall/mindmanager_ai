@@ -9,10 +9,11 @@
       "justMyCode": true
     },
     {
-      "name": "Python: process.py",
+      "name": "Python: process.py -> Refine",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/process.py",
+      "args": ["refine"],
       "console": "integratedTerminal",
       "justMyCode": true
     },
@@ -22,6 +23,15 @@
       "request": "launch",
       "program": "${workspaceFolder}/src/process.py",
       "args": ["cluster"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> Examples",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["examples"],
       "console": "integratedTerminal",
       "justMyCode": true
     }
