@@ -104,6 +104,7 @@ def call_llm(str_user):
 
         if config.CLOUD_TYPE == "OLLAMA+llama3:70b":
             result = result.replace("Here is the refined mind map:\n\n", "")
+            result = result.replace("Here is the refined mindmap:\n\n", "")
     
     # GEMINI
     elif config.CLOUD_TYPE == "GEMINI" or config.CLOUD_TYPE == "GEMINIPROJECT":
@@ -174,7 +175,7 @@ def call_llm(str_user):
                         concatenated_texts.append(text)
             result = "\n".join(concatenated_texts)
 
-        result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")        
+        result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     # CLAUDE3
     elif "CLAUDE3" in config.CLOUD_TYPE:
@@ -237,6 +238,10 @@ def call_llm(str_user):
 
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
+        if config.CLOUD_TYPE == "GROQ+llama3-70b-8192":
+            result = result.replace("Here is the refined mind map:\n\n", "")
+            result = result.replace("Here is the refined mindmap:\n\n", "")
         
     # Perplexity
     elif "PERPLEXITY" in config.CLOUD_TYPE:

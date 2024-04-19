@@ -121,10 +121,12 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                    # good
 # CLOUD_TYPE = 'CLAUDE3_SONNET'                  # good
-CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # good
+# CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # good
 
 # groq
-# CLOUD_TYPE = 'GROQ+mixtral'                    # best
+# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'         # good
+# CLOUD_TYPE = 'GROQ+llama3-8b-8192'             # good
+# CLOUD_TYPE = 'GROQ+llama3-70b-8192'            # good
 
 # Perplexity
 # CLOUD_TYPE = 'PERPLEXITY+mistral'              # ok
@@ -208,16 +210,11 @@ elif "CLAUDE3" in CLOUD_TYPE:
     API_URL="https://api.anthropic.com/v1/messages"
 
 elif "GROQ" in CLOUD_TYPE:
-    model = CLOUD_TYPE.split("+")[-1]
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
     GROQ_API_KEY = os.getenv('GROQ_API_KEY')
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + GROQ_API_KEY
     API_URL="https://api.groq.com/openai/v1/chat/completions"
-    if model == "mixtral":
-        MODEL_NAME = "Mixtral-8x7b-Instruct-v0.1"
-        MODEL_ID = "mixtral-8x7b-32768"
-    else:
-        raise Exception("Error: Unknown groq model")
 
 elif "PERPLEXITY" in CLOUD_TYPE:
     model = CLOUD_TYPE.split("+")[-1]
