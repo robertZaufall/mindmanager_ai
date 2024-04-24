@@ -20,6 +20,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                # very good,   uncensored (with warnings)
 # CLOUD_TYPE = 'OLLAMA+llama3'                   # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
+CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
 
 # Ollama (local models), not working
 # CLOUD_TYPE = 'OLLAMA+mistral-openorca'         # bad,         uncensored
@@ -41,7 +42,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # groq
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'         # good
 # CLOUD_TYPE = 'GROQ+llama3-8b-8192'             # good
-CLOUD_TYPE = 'GROQ+llama3-70b-8192'            # good
+# CLOUD_TYPE = 'GROQ+llama3-70b-8192'            # good
 
 # Perplexity
 # CLOUD_TYPE = 'PERPLEXITY+mistral'              # ok

@@ -105,6 +105,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                # very good,   uncensored (with warnings)
 # CLOUD_TYPE = 'OLLAMA+llama3'                   # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
+# CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
 
 # Ollama (local models), not working
 # CLOUD_TYPE = 'OLLAMA+mistral-openorca'         # bad,         uncensored
