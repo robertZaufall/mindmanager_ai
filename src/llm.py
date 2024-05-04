@@ -271,5 +271,7 @@ def call_llm(str_user):
 
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
-        
+        result = result.replace("Here is the refined mind map:\n\n", "")
+        result = result.replace("Here is the refined mindmap:\n\n", "")
+
     return result

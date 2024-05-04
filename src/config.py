@@ -20,7 +20,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                # very good,   uncensored (with warnings)
 # CLOUD_TYPE = 'OLLAMA+llama3'                   # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
-CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
+# CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
 
 # Ollama (local models), not working
 # CLOUD_TYPE = 'OLLAMA+mistral-openorca'         # bad,         uncensored
@@ -45,8 +45,14 @@ CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
 # CLOUD_TYPE = 'GROQ+llama3-70b-8192'            # good
 
 # Perplexity
-# CLOUD_TYPE = 'PERPLEXITY+mistral'              # ok
-
+# CLOUD_TYPE = 'PERPLEXITY+mistral-7b-instruct'            # deprecated
+# CLOUD_TYPE = 'PERPLEXITY+mixtral-8x7b-instruct'          # deprecated
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-8b-instruct'            # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-70b-instruct'           # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-chat'   # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-chat'   # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online' # reduced usability
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online' # good
 
 
 
@@ -134,15 +140,11 @@ elif "GROQ" in CLOUD_TYPE:
     API_URL="https://api.groq.com/openai/v1/chat/completions"
 
 elif "PERPLEXITY" in CLOUD_TYPE:
-    model = CLOUD_TYPE.split("+")[-1]
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
     PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + PERPLEXITY_API_KEY
     API_URL="https://api.perplexity.ai/chat/completions"
-    if model == "mistral":
-        MODEL_ID = "mistral-7b-instruct"
-    else:
-        raise Exception("Error: Unknown Perplexity model")
 
 else:
     raise Exception("Error: Unknown CLOUD_TYPE")
