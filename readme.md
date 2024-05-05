@@ -72,16 +72,18 @@ The workflows are then available at the "MindManager" main menu -> Services
 ## LLM systems
 ### Azure OpenAI / OpenAI
 The solution ist best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time can be somewhat lengthy.  
-### Google Gemini Pro
-`Gemini Pro` results are restrictied by 2k tokens by now and furthermore truncated with 1.0 models. Usage is not recommended.  
+### Google Gemini Pro / Vertex AI
+`Gemini Pro 1.5` results are ok.  
 ### Ollama (hosted locally - no internet access needed)
-Ollama results are dependent on the used model. `Zephyr` and `Mixtral` are getting better results than others eg. `LLama2`. `Mistral` and `Neural-chat` are good as well.  
+Ollama results are dependent on the used model. `LLama3`, `Zephyr` and `Mixtral` are working well.  
 ### Anthropic Claude 3
-Anthropic Claude 3 results are ok. The OPUS model is little bit expensive.
+Anthropic Claude 3 results are ogood. The OPUS model is a little bit expensive.
 ### groq (platform)
-groq is sure the fastest LLM platform by now. The results using the `Mixtral` model are ok. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-03-05).  
+groq is sure the fastest LLM platform by now. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-05-05).  
 ### Perplexity (platform)
-Perplexity works perfekt as an univeral LLM platform. Currently Mistral LLM was tested and worked ok.  
+Perplexity works perfekt as an univeral LLM platform.  
+### MLX (hosted locally on Apple Silicon - no internet access needed)
+MLX results are dependent on the used model. `LLama3` works well.
 
 ## Configuration  
 LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
@@ -96,7 +98,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 
 # GPT4, best in class
-# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
 # CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
@@ -132,6 +134,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'         # good
 # CLOUD_TYPE = 'GROQ+llama3-8b-8192'             # good
 # CLOUD_TYPE = 'GROQ+llama3-70b-8192'            # good
+# CLOUD_TYPE = 'GROQ+gemma-7b-it'                # good
 
 # Perplexity
 # CLOUD_TYPE = 'PERPLEXITY+mistral-7b-instruct'            # deprecated
@@ -143,6 +146,9 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online' # reduced usability
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online' # good
 
+# MLX server, MACOS only (pip install mlx-lm)
+# python -m mlx_lm.server --model mlx-community/Meta-Llama-3-8B-Instruct-4bit --port 8080 --log-level DEBUG
+# CLOUD_TYPE = 'MLX+llama3-8b'                             # good
 
 
 LLM_TEMPERATURE = float('0.5')
@@ -155,8 +161,10 @@ LEVELS_DEEP = int('5')
 
 INDENT_SIZE = int('2')
 LINE_SEPARATOR = "\n"
+OPENAI_COMPATIBILITY = False
 
 if CLOUD_TYPE == "OPENAI":
+    OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
     OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
     OPENAI_DEPLOYMENT = ""
@@ -168,6 +176,7 @@ if CLOUD_TYPE == "OPENAI":
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
 
 elif CLOUD_TYPE == "AZURE":
+    OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
     OPENAI_API_URL = os.getenv('OPENAI2_API_BASE')
     OPENAI_DEPLOYMENT = os.getenv('OPENAI2_DEPLOYMENT')
@@ -202,10 +211,15 @@ elif CLOUD_TYPE == "GEMINIPROJECT":
     KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
 
 elif "OLLAMA" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    API_URL="http://localhost:11434/api/generate"
+    if OPENAI_COMPATIBILITY:
+        API_URL="http://localhost:11434/v1/chat/completions"
+    else: 
+        API_URL="http://localhost:11434/api/generate"
 
 elif "CLAUDE3" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
     model=CLOUD_TYPE.split("_")[-1]
     if model == "HAIKU":
         MODEL_ID = "claude-3-haiku-20240307"
@@ -222,6 +236,7 @@ elif "CLAUDE3" in CLOUD_TYPE:
     API_URL="https://api.anthropic.com/v1/messages"
 
 elif "GROQ" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     GROQ_API_KEY = os.getenv('GROQ_API_KEY')
     KEY_HEADER_TEXT = "Authorization"
@@ -229,14 +244,17 @@ elif "GROQ" in CLOUD_TYPE:
     API_URL="https://api.groq.com/openai/v1/chat/completions"
 
 elif "PERPLEXITY" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + PERPLEXITY_API_KEY
     API_URL="https://api.perplexity.ai/chat/completions"
 
-else:
-    raise Exception("Error: Unknown CLOUD_TYPE")
+elif "MLX" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    MODEL_ID = CLOUD_TYPE.split("+")[-1] # not used, depends on how the server was started
+    API_URL="http://localhost:8080/v1/chat/completions"
 ```
 
 ## Prompt crafting  

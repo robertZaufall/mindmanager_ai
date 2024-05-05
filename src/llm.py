@@ -81,13 +81,24 @@ def call_llm(str_user):
     
     # OLLAMA
     elif "OLLAMA" in config.CLOUD_TYPE:
-        payload = {
-            "system": config.SYSTEM_PROMPT,
-            "prompt": str_user,
-            "model": config.MODEL_ID,
-            "stream": False,
-            "options": { "temperature": config.LLM_TEMPERATURE },
-        }
+        if config.OPENAI_COMPATIBILITY:
+            payload = {
+                "max_tokens": config.MAX_TOKENS,
+                "temperature": config.LLM_TEMPERATURE,
+                "messages": [
+                    {"role": "system", "content": str_system},
+                    {"role": "user", "content": str_user}
+                ],
+                "model": config.MODEL_ID
+            }
+        else:
+            payload = {
+                "system": str_system,
+                "prompt": str_user,
+                "model": config.MODEL_ID,
+                "stream": False,
+                "options": { "temperature": config.LLM_TEMPERATURE },
+            }
 
         response = requests.post(
             config.API_URL,
@@ -98,14 +109,14 @@ def call_llm(str_user):
 
         if response.status_code != 200:
             raise Exception(f"Error: {response_status} - {response_text}")
-        
+            
         parsed_json = json.loads(response_text)
-        result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
 
-        if config.CLOUD_TYPE == "OLLAMA+llama3:70b":
-            result = result.replace("Here is the refined mind map:\n\n", "")
-            result = result.replace("Here is the refined mindmap:\n\n", "")
-    
+        if config.OPENAI_COMPATIBILITY:
+            result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        else:
+            result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
     # GEMINI
     elif config.CLOUD_TYPE == "GEMINI" or config.CLOUD_TYPE == "GEMINIPROJECT":
         payload = {
@@ -179,6 +190,7 @@ def call_llm(str_user):
 
     # CLAUDE3
     elif "CLAUDE3" in config.CLOUD_TYPE:
+        # same like OpenAI but different
         payload = {
             "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS,
@@ -212,6 +224,7 @@ def call_llm(str_user):
 
     # GROQ
     elif "GROQ" in config.CLOUD_TYPE:
+        # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -238,13 +251,10 @@ def call_llm(str_user):
 
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
-
-        if config.CLOUD_TYPE == "GROQ+llama3-70b-8192":
-            result = result.replace("Here is the refined mind map:\n\n", "")
-            result = result.replace("Here is the refined mindmap:\n\n", "")
-        
+       
     # Perplexity
     elif "PERPLEXITY" in config.CLOUD_TYPE:
+        # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -271,7 +281,37 @@ def call_llm(str_user):
 
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
-        result = result.replace("Here is the refined mind map:\n\n", "")
-        result = result.replace("Here is the refined mindmap:\n\n", "")
+
+    # MLX
+    elif "MLX" in config.CLOUD_TYPE:
+        # same like OpenAI
+        payload = {
+            "max_tokens": config.MAX_TOKENS,
+            "temperature": config.LLM_TEMPERATURE,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ]
+        }
+
+        response = requests.post(
+            config.API_URL,
+            headers={
+                "Content-Type": "application/json"
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+    
+    # needed for LLama3 large models
+    result = result.replace("Here is the refined mind map:\n\n", "")
+    result = result.replace("Here is the refined mindmap:\n\n", "")
 
     return result
