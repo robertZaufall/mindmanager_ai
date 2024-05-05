@@ -8,14 +8,15 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
   - Azure OpenAI w/ ***GPT4 Turbo*** (use your key) -> ***best tested***
   - OpenAI w/ ***GPT4 Turbo*** (use your key)
   - Anthropic ***Claude 3*** (use your key)  
-  - groq (platform) w/ ***Mixtral*** (use your key)
-  - Perplexity (platform) w/ ***Mistral*** (use your key)
+  - groq (platform) w/ ***LLama3*** (use your key)
+  - Perplexity (platform) w/ ***LLama3*** (use your key)
   - Google Gemini Pro Generative Language (use your key)  
   - Google Gemini Pro / Vertex AI (use your access token)
-  - Ollama (local) w/ any LLM (use ***Zephyr*** or ***Mixtral*** model for best results)
+  - Ollama (local) w/ any LLM (use ***LLama3***, ***Zephyr*** or ***Mixtral*** model for best results)
+  - MLX (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
-- Just native LLM requests via API calls (no middleware needed)
+- Just native LLM requests via API calls - ***no middleware needed***
 
 ## Implemented Use Cases
 
