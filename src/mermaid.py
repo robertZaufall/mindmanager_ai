@@ -38,11 +38,11 @@ def get_mermaid_line(level, topic):
     if level > 1:
         return f"{get_space_string(level)}{get_left_round()}{topic}{get_right_round()}{line_separator}"
 
-def validate_mermaid(mermaid_diagran, line_separator, indent_size):
+def validate_mermaid(mermaid_diagram, line_separator, indent_size):
     pattern_text = "^(?:\s{" + str(indent_size) + "})*\S.*"
     pattern = re.compile(pattern_text, re.MULTILINE)
-    matches = pattern.findall(mermaid_diagran)
-    non_empty_lines = [line for line in mermaid_diagran.split(line_separator) if line.strip() and not line.strip().startswith('//')]
+    matches = pattern.findall(mermaid_diagram)
+    non_empty_lines = [line for line in mermaid_diagram.split(line_separator) if line.strip() and not line.strip().startswith('//')]
     if len(matches) == len(non_empty_lines):
         return False  # All lines match the pattern
     else:

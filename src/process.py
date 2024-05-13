@@ -113,7 +113,7 @@ if __name__ == "__main__":
     param = "refine" 
 
     # radial, orchart (-> on macos factory template duplicates are used from the ./macos folder)
-    charttype = "radial"
+    charttype = "orgchart"
 
     if len(sys.argv) > 1:
         param = sys.argv[1]
