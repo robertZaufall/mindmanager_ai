@@ -39,7 +39,7 @@ class Mindmanager:
         self.mindmanager.Documents.Add()
         self.mindmanager.ActiveDocument.StyleXml = style
 
-    def finalize(self, max_topic_level, mermaid_diagram):
+    def finalize(self, max_topic_level):
         centralTopic = self.mindmanager.ActiveDocument.CentralTopic
         layout = centralTopic.SubTopicsLayout
         growthDirection = layout.CentralTopicGrowthDirection
