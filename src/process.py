@@ -7,8 +7,10 @@ import sys
 
 if sys.platform.startswith('win'):
     import mindmanager_win as mindmanager
+    platform = "win"
 elif sys.platform.startswith('darwin'):
     import mindmanager_mac as mindmanager
+    platform = "darwin"
 
 def recurse_topics(mindm, mermaid_diagram, this_topic, level):
     this_topic_text = mindm.get_title_from_topic(this_topic)
@@ -61,8 +63,8 @@ def create_new_map_from_mermaid(mindm, mermaid_diagram):
     return max_topic_level
 
 
-def main(param):
-    mindm = mindmanager.Mindmanager()
+def main(param, charttype):
+    mindm = mindmanager.Mindmanager(charttype)
 
     if not mindm.document_exists():
         print("No document found.")    
@@ -93,7 +95,10 @@ def main(param):
                 mindm.finalize(max_topic_level)
     
     elif param == "finalize":
-        max_topic_level = get_mermaid_topics(mindm, mermaid_diagram)[1]
+        if platform == "win":
+            max_topic_level = get_mermaid_topics(mindm, mermaid_diagram)[1]
+        else:
+            max_topic_level = create_new_map_from_mermaid(mindm, mermaid_diagram)
         mindm.finalize(max_topic_level)
 
     print("Done.")
@@ -101,11 +106,18 @@ def main(param):
 if __name__ == "__main__":
     
     param = "refine" # refine, refine_dev, complexity_1, complexity_2, complexity_3, examples, cluster, prc_org, prj_prc_org, exp_prj_prc_org, exp, prj_org, capex_opex
-    
+    charttype = "radial" # radial, orgchart
+
     if len(sys.argv) > 1:
         param = sys.argv[1]
+
+    if len(sys.argv) > 2:
+        charttype = sys.argv[2]
+        if charttype != "orgchart" and charttype != "radial":
+            print("Invalid chart type. Use 'orgchart' or 'radial'.")
+            sys.exit(1)
         
     try:
-        main(param)
+        main(param, charttype)
     except Exception as e:
         print(f"An error occurred: {str(e)}")

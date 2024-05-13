@@ -2,8 +2,9 @@ from appscript import *
 
 class Mindmanager:
 
-    def __init__(self):
+    def __init__(self, charttype):
         self.mindmanager = app('MindManager')
+        self.charttype = charttype
 
     def document_exists(self):
         return self.mindmanager.documents[1].exists()
@@ -35,7 +36,12 @@ class Mindmanager:
         topic_instance.title.set(topic_text)
 
     def add_document(self):
-        self.mindmanager.documents.end.make(new=k.document)
+        if self.charttype == "orgchart":
+            template_alias = mactypes.Alias('./macos/Org-Chart Map.mmat')
+        if self.charttype == "radial":
+            template_alias = mactypes.Alias('./macos/Radial Map.mmat')
+        self.mindmanager.open(template_alias)
+        # self.mindmanager.documents.end.make(new=k.document)
 
     def finalize(self, max_topic_level):
         self.mindmanager.documents[1].balance_map()

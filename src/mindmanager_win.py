@@ -2,9 +2,10 @@ import win32com.client
 
 class Mindmanager:
 
-    def __init__(self):
+    def __init__(self, charttype):
         self.mindmanager = win32com.client.Dispatch("Mindmanager.Application")
         self.mindmanager.Options.BalanceNewMainTopics = True
+        self.charttype = charttype
 
     def document_exists(self):
         return True if self.mindmanager.ActiveDocument else False
@@ -38,7 +39,7 @@ class Mindmanager:
         self.mindmanager.Documents.Add()
         self.mindmanager.ActiveDocument.StyleXml = style
 
-    def finalize(self, max_topic_level):
+    def finalize(self, max_topic_level, mermaid_diagram):
         centralTopic = self.mindmanager.ActiveDocument.CentralTopic
         layout = centralTopic.SubTopicsLayout
         growthDirection = layout.CentralTopicGrowthDirection
@@ -59,17 +60,19 @@ class Mindmanager:
                     if topic.Level != 0: topic.Collapsed = False
 
         # org chart            
-        if max_topic_level > 2 and cnt_subtopics > 4:
-            if growthDirection == 1:
-                layout.CentralTopicGrowthDirection = 5
+        if self.charttype == "orgchart":
+            if max_topic_level > 2 and cnt_subtopics > 4:
+                if growthDirection == 1:
+                    layout.CentralTopicGrowthDirection = 5
 
         # radial map
-        if max_topic_level > 2 and cnt_subtopics < 5:
-            if growthDirection != 1:
-                layout.CentralTopicGrowthDirection = 1
-        if max_topic_level < 3 and cnt_subtopics > 4:
-            if growthDirection != 1:
-                layout.CentralTopicGrowthDirection = 1
+        if self.charttype == "radial":
+            if max_topic_level > 2 and cnt_subtopics < 5:
+                if growthDirection != 1:
+                    layout.CentralTopicGrowthDirection = 1
+            if max_topic_level < 3 and cnt_subtopics > 4:
+                if growthDirection != 1:
+                    layout.CentralTopicGrowthDirection = 1
 
         self.mindmanager.ActiveDocument.Zoom(1)
         self.mindmanager.Visible = True
