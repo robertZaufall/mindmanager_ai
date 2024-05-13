@@ -4,9 +4,9 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
 
 ## Features
 
-- Supported LLMs:
+### Supported LLMs
   - **Azure OpenAI** w/ ***GPT4 Turbo*** (use your key) -> **best tested**
-  - **OpenAI** w/ ***GPT4 Turbo*** (use your key)
+  - **OpenAI** w/ ***GPT-4o*** (use your key) -> **best results**
   - **Anthropic** w/ ***Claude 3*** (use your key)  
   - **Groq** (platform) w/ ***LLama3*** (use your key)
   - **Perplexity** (platform) w/ ***LLama3*** (use your key)
@@ -14,9 +14,16 @@ These automations and macros enhance mindmaps created by **Mindjet Mindmanager**
   - **Google Gemini Pro / Vertex AI** (use your access token)
   - **Ollama** (local) w/ any LLM (use ***LLama3***, ***Zephyr*** or ***Mixtral*** model for best results)
   - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
+
+### Platform
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
 - Just native LLM requests via API calls - **no middleware needed**
+
+### Layout
+- Map format can be radial map or orgchart
+- Using map templates on MAC
+- Map styles on Windows are persistent, automatic collapsing of nodes
 
 ## Implemented Use Cases
 
@@ -90,17 +97,9 @@ MLX results are dependent on the used model. `LLama3` works well.
 LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
 
 ```Python
-import os
-
-LOG = True # write source mindmaps, destination mindmaps and prompts to file
-
-SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
-
-
-
-# GPT4, best in class
-CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
-# CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
+# GPT4(o), best in class
+# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+mixtral'                  # best,        censored
@@ -171,7 +170,7 @@ if CLOUD_TYPE == "OPENAI":
     OPENAI_DEPLOYMENT = ""
     OPENAI_API_VERSION = ""
 
-    OPENAI_MODEL = "gpt-4" # only for OPENAI relevant
+    OPENAI_MODEL = "gpt-4o" # only for OPENAI relevant
     API_URL = OPENAI_API_URL
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY

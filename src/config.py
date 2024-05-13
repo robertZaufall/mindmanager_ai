@@ -6,9 +6,9 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 
 
-# GPT4, best in class
-CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
-# CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
+# GPT4(o), best in class
+# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
+CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+mixtral'                  # best,        censored
@@ -79,7 +79,7 @@ if CLOUD_TYPE == "OPENAI":
     OPENAI_DEPLOYMENT = ""
     OPENAI_API_VERSION = ""
 
-    OPENAI_MODEL = "gpt-4" # only for OPENAI relevant
+    OPENAI_MODEL = "gpt-4o" # only for OPENAI relevant
     API_URL = OPENAI_API_URL
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
