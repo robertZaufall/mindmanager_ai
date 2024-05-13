@@ -112,7 +112,7 @@ if __name__ == "__main__":
     # finalize (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
     param = "refine" 
 
-    # radial, orchart (-> on macos factory template duplicates are used from the ./macos folder)
+    # radial, orgchart (-> on macos factory template duplicates are used from the ./macos folder)
     charttype = "radial"
 
     if len(sys.argv) > 1:
