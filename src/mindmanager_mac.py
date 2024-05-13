@@ -5,6 +5,8 @@ class Mindmanager:
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
         self.charttype = charttype
+        self.orgchart_template = mactypes.Alias('./macos/Org-Chart Map.mmat')
+        self.radial_template = mactypes.Alias('./macos/Radial Map.mmat')
 
     def document_exists(self):
         return self.mindmanager.documents[1].exists()
@@ -35,13 +37,18 @@ class Mindmanager:
         topic_instance = topic.get()
         topic_instance.title.set(topic_text)
 
-    def add_document(self):
+    def add_document(self, max_topic_level):
+        cnt_subtopics = len(self.mindmanager.documents[1].central_topic.subtopics.get())
         if self.charttype == "orgchart":
-            template_alias = mactypes.Alias('./macos/Org-Chart Map.mmat')
+            template_alias = self.orgchart_template
         if self.charttype == "radial":
-            template_alias = mactypes.Alias('./macos/Radial Map.mmat')
+            template_alias = self.radial_template
+        if self.charttype == "auto":
+            if max_topic_level > 2 and cnt_subtopics > 4:
+                template_alias = self.orgchart_template
+            else:
+                template_alias = self.radial_template
         self.mindmanager.open(template_alias)
-        # self.mindmanager.documents.end.make(new=k.document)
 
     def finalize(self, max_topic_level):
         self.mindmanager.documents[1].balance_map()

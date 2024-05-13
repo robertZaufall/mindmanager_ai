@@ -34,7 +34,7 @@ class Mindmanager:
     def set_title_to_topic(self, topic, topic_text):
         topic.Text = topic_text
 
-    def add_document(self):
+    def add_document(self, max_topic_level):
         style = self.mindmanager.ActiveDocument.StyleXml
         self.mindmanager.Documents.Add()
         self.mindmanager.ActiveDocument.StyleXml = style
@@ -58,15 +58,13 @@ class Mindmanager:
                     topic.Collapsed = True
                 else:
                     if topic.Level != 0: topic.Collapsed = False
-
         # org chart            
-        if self.charttype == "orgchart":
+        if self.charttype == "orgchart" or self.charttype == "auto":
             if max_topic_level > 2 and cnt_subtopics > 4:
                 if growthDirection == 1:
                     layout.CentralTopicGrowthDirection = 5
-
         # radial map
-        if self.charttype == "radial":
+        if self.charttype == "radial" or self.charttype == "auto":
             if max_topic_level > 2 and cnt_subtopics < 5:
                 if growthDirection != 1:
                     layout.CentralTopicGrowthDirection = 1

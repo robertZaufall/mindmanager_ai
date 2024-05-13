@@ -56,7 +56,7 @@ def get_mermaid_topics(mindm, mermaid_diagram):
 
 def create_new_map_from_mermaid(mindm, mermaid_diagram):
     (mermaid_topics, max_topic_level) = get_mermaid_topics(mindm, mermaid_diagram)
-    mindm.add_document()
+    mindm.add_document(max_topic_level)
     parent_topic = mindm.get_central_topic()
     mindm.set_title_to_topic(parent_topic, mermaid_topics[0].topic_text)
     create_sub_topics(mindm, mermaid_topics, 1, mindm.get_central_topic())
@@ -112,15 +112,15 @@ if __name__ == "__main__":
     # finalize (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
     param = "refine" 
 
-    # radial, orgchart (-> on macos factory template duplicates are used from the ./macos folder)
-    charttype = "radial"
+    # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)
+    charttype = "auto"
 
     if len(sys.argv) > 1:
         param = sys.argv[1]
 
     if len(sys.argv) > 2:
         charttype = sys.argv[2]
-        if charttype != "orgchart" and charttype != "radial":
+        if charttype != "orgchart" and charttype != "radial" and charttype != "auto":
             print("Invalid chart type. Use 'orgchart' or 'radial'.")
             sys.exit(1)
         
