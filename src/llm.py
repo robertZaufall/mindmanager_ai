@@ -118,7 +118,7 @@ def call_llm(str_user):
             result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
 
     # GEMINI
-    elif config.CLOUD_TYPE == "GEMINI" or config.CLOUD_TYPE == "GEMINIPROJECT":
+    elif "GEMINI" in config.CLOUD_TYPE:
         payload = {
             "contents": {
                 "role": "user",
@@ -127,11 +127,11 @@ def call_llm(str_user):
                     { "text": str_user }
                 ]
             },
-            "safety_settings": [
-                { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
-                { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
-                { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
-                { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
+            #"safety_settings": [
+                #{ "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
+                #{ "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
 
                 # not supported by now
                 #{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" },
@@ -141,7 +141,7 @@ def call_llm(str_user):
                 #{ "category": "HARM_CATEGORY_MEDICAL", "threshold": "BLOCK_NONE" },
                 #{ "category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE" },
                 #{ "category": "HARM_CATEGORY_UNSPECIFIED", "threshold": "BLOCK_NONE" },
-            ],
+            #],
             "generation_config": {
                 "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
                 #"topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
@@ -170,22 +170,8 @@ def call_llm(str_user):
         if response_status != 200:
             raise Exception(f"Error: {response_status} - {response_text}")
 
-        #if "\"finishReason\": \"STOP\"" in response_text:
-        #    print("LLM response truncated: \"finishReason\": \"STOP\"\n")
-
         parsed_json = json.loads(response_text)
-        
-        if config.CLOUD_TYPE == "GEMINI":
-            result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
-        else:
-            concatenated_texts = []
-            for item in parsed_json:
-                for candidate in item.get("candidates", []):
-                    for part in candidate.get("content", {}).get("parts", []):
-                        text = part.get("text", "")
-                        concatenated_texts.append(text)
-            result = "\n".join(concatenated_texts)
-
+        result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
         result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     # CLAUDE3

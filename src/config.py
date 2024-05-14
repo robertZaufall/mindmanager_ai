@@ -8,7 +8,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # GPT4(o), best in class
 # CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
-CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
+# CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+mixtral'                  # best,        censored
@@ -31,8 +31,10 @@ CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 # CLOUD_TYPE = 'OLLAMA+yi'                       # not working
 
 # Google Gemini (use with VPN)
-# CLOUD_TYPE = 'GEMINI'                          # ok
-# CLOUD_TYPE = 'GEMINIPROJECT'                   #
+CLOUD_TYPE = 'GEMINI_PRO'                      # good
+# CLOUD_TYPE = 'GEMINI_FLASH'                    # one-shot ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GEMINIPROJECT_PRO'               # good
+# CLOUD_TYPE = 'GEMINIPROJECT_FLASH'             # one-shot ok, generates maps only 3 levels deep
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                    # good
@@ -60,7 +62,7 @@ CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
 # CLOUD_TYPE = 'MLX+llama3-8b'                             # good
 
 
-LLM_TEMPERATURE = float('0.5')
+LLM_TEMPERATURE = float('0.1')
 
 MAX_TOKENS = int('4000')
 MAX_RETRIES = int('3')
@@ -96,28 +98,43 @@ elif CLOUD_TYPE == "AZURE":
     KEY_HEADER_TEXT = "api-key"
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
-elif CLOUD_TYPE == "GEMINI":
-    MODEL_ID = "gemini-1.5-pro-latest" # "gemini-1.0-pro|gemini-1.0-pro-vision|gemini-1.5-pro-latest"
-    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
+elif "GEMINI" in CLOUD_TYPE:
+    system = CLOUD_TYPE.split("_")[0]
+    if system == "GEMINI":
+        model = CLOUD_TYPE.split("_")[-1]
+        if model == "PRO":
+            MODEL_ID = "gemini-1.5-pro-latest"
+        elif model == "FLASH":
+            MODEL_ID = "gemini-1.5-flash-latest"
+        else:
+            raise Exception("Error: Unknown GEMINI model")
 
-    API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={GOOGLE_API_KEY}"
-    KEY_HEADER_TEXT = ""
-    KEY_HEADER_VALUE = ""
+        GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
+        API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={GOOGLE_API_KEY}"
+        KEY_HEADER_TEXT = ""
+        KEY_HEADER_VALUE = ""
+    elif system == "GEMINIPROJECT":
+        # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
+        # Service Account / Key -> Create new key -> JSON
+        # gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>
+        # gcloud auth print-access-token
+        model = CLOUD_TYPE.split("_")[-1]
+        if model == "PRO":
+            MODEL_ID = "gemini-1.5-pro-preview-0514"
+        elif model == "FLASH":
+            MODEL_ID = "gemini-1.5-flash-preview-0514"
+        else:
+            raise Exception("Error: Unknown GEMINI model")
 
-elif CLOUD_TYPE == "GEMINIPROJECT":
-    # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
-    # Service Account / Key -> Create new key -> JSON
-    # gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>
-    # gcloud auth print-access-token
-    MODEL_ID = "gemini-1.5-pro-latest" # "gemini-1.0-pro|gemini-1.0-pro-vision|gemini-1.5-pro-latest"
-    PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
-    API_ENDPOINT="us-central1-aiplatform.googleapis.com"
-    LOCATION_ID="us-central1"
-    GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
-
-    API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:streamGenerateContent"
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
+        PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
+        API_ENDPOINT="us-central1-aiplatform.googleapis.com"
+        LOCATION_ID="us-central1"
+        GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
+        API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:generateContent"
+        KEY_HEADER_TEXT = "Authorization"
+        KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
+    else:
+        raise Exception("Error: Unknown GEMINI system")
 
 elif "OLLAMA" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
@@ -129,7 +146,7 @@ elif "OLLAMA" in CLOUD_TYPE:
 
 elif "CLAUDE3" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
-    model=CLOUD_TYPE.split("_")[-1]
+    model = CLOUD_TYPE.split("_")[-1]
     if model == "HAIKU":
         MODEL_ID = "claude-3-haiku-20240307"
     elif model == "SONNET":
