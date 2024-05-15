@@ -127,11 +127,21 @@ def call_llm(str_user):
                     { "text": str_user }
                 ]
             },
-            #"safety_settings": [
-                #{ "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
+            "generation_config": {
+                "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
+                #"topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
+                "topP": 0.95, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
+                "maxOutputTokens": config.MAX_TOKENS, # 2k / 4k
+                "candidateCount": 1,
+            }
+        }
+
+        if config.CLOUD_TYPE.split("_")[0] == "GEMINI": # VertexAI does not support this settings right now (as pf 2024-05-14)
+            payload["safety_settings"] = [
+                { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
 
                 # not supported by now
                 #{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" },
@@ -141,15 +151,7 @@ def call_llm(str_user):
                 #{ "category": "HARM_CATEGORY_MEDICAL", "threshold": "BLOCK_NONE" },
                 #{ "category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE" },
                 #{ "category": "HARM_CATEGORY_UNSPECIFIED", "threshold": "BLOCK_NONE" },
-            #],
-            "generation_config": {
-                "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
-                #"topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
-                "topP": 0.95, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
-                "maxOutputTokens": config.MAX_TOKENS, # 2k / 4k
-                "candidateCount": 1,
-            }
-        }
+            ]
 
         if config.KEY_HEADER_TEXT != "":
             headers = {
