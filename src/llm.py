@@ -136,7 +136,7 @@ def call_llm(str_user):
             }
         }
 
-        if config.CLOUD_TYPE.split("_")[0] == "GEMINI": # VertexAI does not support this settings right now (as pf 2024-05-14)
+        if config.CLOUD_TYPE.split("_")[0] == "GEMINI": # VertexAI does not support this settings right now (as of 2024-05-14)
             payload["safety_settings"] = [
                 { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
                 { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
