@@ -115,9 +115,10 @@ elif "GEMINI" in CLOUD_TYPE:
         KEY_HEADER_VALUE = ""
     elif system == "GEMINIPROJECT":
         # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
-        # Service Account / Key -> Create new key -> JSON
-        # gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>
+        # -> open console
         # gcloud auth print-access-token
+        # (Service Account / Key -> Create new key -> JSON)
+        # (gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>)
         model = CLOUD_TYPE.split("_")[-1]
         if model == "PRO":
             MODEL_ID = "gemini-1.5-pro-preview-0514"
