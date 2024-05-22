@@ -50,7 +50,7 @@ def call_llm(str_user):
     str_system = config.SYSTEM_PROMPT
 
     # Azure / OpenAI
-    if config.CLOUD_TYPE == "AZURE" or config.CLOUD_TYPE == "OPENAI":
+    if "AZURE" in config.CLOUD_TYPE or config.CLOUD_TYPE == "OPENAI":
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -297,7 +297,9 @@ def call_llm(str_user):
 
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
-    
+    else:
+        raise Exception("Error: Unknown CLOUD_TYPE")
+
     # needed for LLama3 large models
     result = result.replace("Here is the refined mind map:\n\n", "")
     result = result.replace("Here is the refined mindmap:\n\n", "")
