@@ -13,7 +13,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your mod
 # CLOUD_TYPE = 'AZURE+gpt-35'                    # best, serverless
 
 # OpenAI
-# CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
+# CLOUD_TYPE = 'OPENAI'                          # best, using pre paid tokens with auto-topup
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+mixtral'                  # best,        censored
@@ -30,7 +30,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your mod
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI_PRO'                      # good
 # CLOUD_TYPE = 'GEMINI_FLASH'                    # one-shot ok, generates maps only 3 levels deep
-# CLOUD_TYPE = 'GEMINIPROJECT_PRO'               # good
+
+# Google Gemini Vertex AI (needs pre-authentication ie. token)
+# CLOUD_TYPE = 'GEMINIPROJECT_PRO'               # good, Vertex AI need pre-authentication
 # CLOUD_TYPE = 'GEMINIPROJECT_FLASH'             # one-shot ok, generates maps only 3 levels deep
 
 # Claude3

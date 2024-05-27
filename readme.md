@@ -97,9 +97,14 @@ MLX results are dependent on the used model. `LLama3` works well.
 LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
 
 ```Python
-# GPT4(o), best in class
-# CLOUD_TYPE = 'AZURE'                           # best,        uncensored(?)
-# CLOUD_TYPE = 'OPENAI'                          # best,        uncensored(?)
+# Azure serverless models which are working
+CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your model deployment name, ie. gpt-4o!
+# CLOUD_TYPE = 'AZURE+gpt-4'                     # best, serverless
+# CLOUD_TYPE = 'AZURE+gpt-4-32k'                 # best, serverless
+# CLOUD_TYPE = 'AZURE+gpt-35'                    # best, serverless
+
+# OpenAI
+# CLOUD_TYPE = 'OPENAI'                          # best, using pre paid tokens with auto-topup
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+mixtral'                  # best,        censored
@@ -113,18 +118,12 @@ LLM Api relevant information should be stored in environment variables and mappe
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
 # CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
 
-# Ollama (local models), not working
-# CLOUD_TYPE = 'OLLAMA+mistral-openorca'         # bad,         uncensored
-# CLOUD_TYPE = 'OLLAMA+phi'                      # not working
-# CLOUD_TYPE = 'OLLAMA+llama2'                   # not working
-# CLOUD_TYPE = 'OLLAMA+llama2-uncensored'        # not working
-# CLOUD_TYPE = 'OLLAMA+wizard-vicuna-uncensored' # not working
-# CLOUD_TYPE = 'OLLAMA+yi'                       # not working
-
-# Google Gemini (use with VPN)
-CLOUD_TYPE = 'GEMINI_PRO'                      # good
+# Google Gemini
+# CLOUD_TYPE = 'GEMINI_PRO'                      # good
 # CLOUD_TYPE = 'GEMINI_FLASH'                    # one-shot ok, generates maps only 3 levels deep
-# CLOUD_TYPE = 'GEMINIPROJECT_PRO'               # good
+
+# Google Gemini Vertex AI (needs pre-authentication ie. token)
+# CLOUD_TYPE = 'GEMINIPROJECT_PRO'               # good, Vertex AI need pre-authentication
 # CLOUD_TYPE = 'GEMINIPROJECT_FLASH'             # one-shot ok, generates maps only 3 levels deep
 
 # Claude3
@@ -177,11 +176,11 @@ if CLOUD_TYPE == "OPENAI":
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
 
-elif CLOUD_TYPE == "AZURE":
+elif "AZURE" in CLOUD_TYPE:
+    OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
     OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
     OPENAI_API_URL = os.getenv('OPENAI2_API_BASE')
-    OPENAI_DEPLOYMENT = os.getenv('OPENAI2_DEPLOYMENT')
     OPENAI_API_VERSION = os.getenv('OPENAI2_API_VERSION')
 
     OPENAI_MODEL = ""
@@ -206,9 +205,10 @@ elif "GEMINI" in CLOUD_TYPE:
         KEY_HEADER_VALUE = ""
     elif system == "GEMINIPROJECT":
         # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
-        # Service Account / Key -> Create new key -> JSON
-        # gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>
+        # -> open console
         # gcloud auth print-access-token
+        # (Service Account / Key -> Create new key -> JSON)
+        # (gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>)
         model = CLOUD_TYPE.split("_")[-1]
         if model == "PRO":
             MODEL_ID = "gemini-1.5-pro-preview-0514"
