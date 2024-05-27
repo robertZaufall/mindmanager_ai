@@ -1,11 +1,11 @@
-# Mindjet Mindmanager automation and LLM Integration
+# Mindjet Mindmanager Automation and LLM Integration
 
 These automations and macros enhance mindmaps created by **Mindjet Mindmanager**.
 
 ## Features
 
 ### Supported LLMs
-  - **Azure OpenAI** w/ ***GPT4 Turbo*** (use your key) -> **best tested**
+  - **Azure OpenAI** w/ ***GPT-4o*** (use your key) -> **best tested**
   - **OpenAI** w/ ***GPT-4o*** (use your key) -> **best results**
   - **Anthropic** w/ ***Claude 3*** (use your key)  
   - **Groq** (platform) w/ ***LLama3*** (use your key)
