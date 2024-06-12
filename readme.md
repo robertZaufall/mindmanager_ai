@@ -355,6 +355,3 @@ You can also use the content inside the Mermaid online editor (https://mermaid.l
 The API execution time depends heavily on the used LLM model or system and token count.  
 
 Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.  
-
-Should a runtime error occur, please attempt at least a second call to the process ;-)  
-
