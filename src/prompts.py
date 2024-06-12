@@ -12,7 +12,7 @@ prompt_postfix = (
     f"Do not add any additional text or explainings at the beginning or end to your answer. The answer must be pure Mermaid code only. "
     f"Suppress any text like 'Here is the refined mind map' or else in your answer. "
     f"This is an example of a n level deep mindmap and how the output format has to look like: \n"
-    f"'mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n'\n "
+    f"'mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n'\n\n"
     f"Here is the data: \n"
 )
 
