@@ -50,7 +50,7 @@ def call_llm(str_user):
     str_system = config.SYSTEM_PROMPT
 
     # Azure / OpenAI
-    if "AZURE" in config.CLOUD_TYPE or config.CLOUD_TYPE == "OPENAI":
+    if "AZURE" in config.CLOUD_TYPE or "OPENAI" in config.CLOUD_TYPE:
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -59,7 +59,7 @@ def call_llm(str_user):
                 {"role": "user", "content": str_user}
             ]
         }
-        if config.CLOUD_TYPE == "OPENAI":
+        if "OPENAI" in config.CLOUD_TYPE:
             payload["model"] = config.OPENAI_MODEL
 
         response = requests.post(

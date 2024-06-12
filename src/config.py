@@ -6,14 +6,16 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 
 
-# Azure serverless models which are working
-CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4'                     # best, serverless
-# CLOUD_TYPE = 'AZURE+gpt-4-32k'                 # best, serverless
-# CLOUD_TYPE = 'AZURE+gpt-35'                    # best, serverless
+# Azure serverless models, !use your model deployment name, ie. gpt-4o!
+CLOUD_TYPE = 'AZURE+gpt-4o'                    # best
+# CLOUD_TYPE = 'AZURE+gpt-4'                     # best
+# CLOUD_TYPE = 'AZURE+gpt-4-32k'                 # best
+# CLOUD_TYPE = 'AZURE+gpt-35'                    # best
 
 # OpenAI
-# CLOUD_TYPE = 'OPENAI'                          # best, using pre paid tokens with auto-topup
+# CLOUD_TYPE = 'OPENAI+gpt-4o'                   # best
+# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'              # best
+# CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'            # best
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+mixtral'                  # best,        censored
@@ -26,6 +28,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your mod
 # CLOUD_TYPE = 'OLLAMA+llama3'                   # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
 # CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
+# CLOUD_TYPE = 'OLLAMA+qwen2'                    # ok,          censored
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI_PRO'                      # good
@@ -47,8 +50,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your mod
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                # good
 
 # Perplexity
-# CLOUD_TYPE = 'PERPLEXITY+mistral-7b-instruct'            # deprecated
-# CLOUD_TYPE = 'PERPLEXITY+mixtral-8x7b-instruct'          # deprecated
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-8b-instruct'            # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-70b-instruct'           # good
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-chat'   # ok
@@ -61,7 +62,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your mod
 # CLOUD_TYPE = 'MLX+llama3-8b'                             # good
 
 
-LLM_TEMPERATURE = float('0.1')
+LLM_TEMPERATURE = float('0.5')
 
 MAX_TOKENS = int('4000')
 MAX_RETRIES = int('3')
@@ -73,14 +74,14 @@ INDENT_SIZE = int('2')
 LINE_SEPARATOR = "\n"
 OPENAI_COMPATIBILITY = False
 
-if CLOUD_TYPE == "OPENAI":
+if "OPENAI" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
     OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
     OPENAI_DEPLOYMENT = ""
     OPENAI_API_VERSION = ""
 
-    OPENAI_MODEL = "gpt-4o" # only for OPENAI relevant
+    OPENAI_MODEL = CLOUD_TYPE.split("+")[-1]
     API_URL = OPENAI_API_URL
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
