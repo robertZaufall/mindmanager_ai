@@ -299,7 +299,7 @@ Log files content:
 
 <img src="doc/log_files.png" width="500" >
 
-Example using a Mermaid mindmap in a (this!) GitHub markdown file.  
+Example using a Mermaid mindmap in a GitHub markdown file.  
 Code:
 ```
 ```mermaid
@@ -319,7 +319,7 @@ mindmap
       Determine Key Partnerships```  
 ```
 
-Github rendering of the (this!) map:
+Github rendering of the map:
 
 ```mermaid
 mindmap
