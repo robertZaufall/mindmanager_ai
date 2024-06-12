@@ -56,7 +56,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your mod
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online' # reduced usability
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online' # good
 
-# MLX server, MACOS only (pip install mlx-lm)
+# MLX server, macOS only (pip install mlx-lm)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3-8B-Instruct-4bit --port 8080 --log-level DEBUG
 # CLOUD_TYPE = 'MLX+llama3-8b'                             # good
 
