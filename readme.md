@@ -1,6 +1,6 @@
-# Mindjet Mindmanager Automation and LLM Integration
+# Mindmanager Automation and LLM Integration
 
-These automations and macros enhance mindmaps created by **Mindjet Mindmanager**.
+These automations and macros enhance mindmaps created by **Mindmanager**.
 
 ## Features
 
