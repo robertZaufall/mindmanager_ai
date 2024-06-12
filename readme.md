@@ -1,6 +1,6 @@
-# Mindmanager Automation and LLM Integration
+# MindManager Automation and LLM Integration
 
-These automations and macros enhance mindmaps created by **Mindmanager** on macOS and Windows.
+These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
 ## Features
 
@@ -56,7 +56,7 @@ Run `install.bat` or
 pip install --upgrade requests
 pip install --upgrade pywin32
 ```
-Macros can be registered directly by merging the `macro_registration.reg` to the registry. Hint: view order in Mindmanager is sorted by the GUIDs. All macros can then be executed using the context menu of topics (right mouse button click).  
+Macros can be registered directly by merging the `macro_registration.reg` to the registry. Hint: view order in MindManager is sorted by the GUIDs. All macros can then be executed using the context menu of topics (right mouse button click).  
 
 ![Registry](doc/windows_registry.png)  
 
