@@ -25,8 +25,7 @@ These automations and macros enhance mindmaps created by **Mindmanager**.
 - Using map templates on MAC
 - Map styles on Windows are persistent, automatic collapsing of nodes
 
-## Implemented Use Cases
-
+## Implemented Business Cases
 1. Refinement of the map or topic.  
 2. Refinement of the map or topic from a development perspective.  
 3. Create examples for one, more (selected) or all topics.  
@@ -34,12 +33,20 @@ These automations and macros enhance mindmaps created by **Mindmanager**.
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 
+## Other Use Cases (implemented or easy to add)
+- Export mindmap to Mermaid systax or any other text format
+- Change map layout by using a template (macOS)
+- Reorder topics by business value or importance
+- Translate the map to other languages
+- Misspelling or syntax correction
+- Create a map based on external text data
+
 ## Examples  
 ### Windows  
 ![Example 1](doc/anim2.gif)  
 
 ### macOS
-![Example 4 MACOS](doc/anim_macos.gif)  
+![Example 4 macOS](doc/anim_macos.gif)  
 
 ## Installation  
 ### Windows  
@@ -94,7 +101,7 @@ Perplexity works perfekt as an univeral LLM platform.
 MLX results are dependent on the used model. `LLama3` works well.
 
 ## Configuration  
-LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file. Not every parameter is used at the moment (token count, levels deep etc.).  
+LLM Api relevant information should be stored in environment variables and mapped to the corresponding variables in the `config.py` file.    
 
 ```Python
 # Azure serverless models which are working
@@ -147,7 +154,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best, serverless, !use your mod
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online' # reduced usability
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online' # good
 
-# MLX server, MACOS only (pip install mlx-lm)
+# MLX server, macOS only (pip install mlx-lm)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3-8B-Instruct-4bit --port 8080 --log-level DEBUG
 # CLOUD_TYPE = 'MLX+llama3-8b'                             # good
 
@@ -285,7 +292,7 @@ MindManager COM objects are addressed by using the PyWin32 library:
 
 <img src="doc/windows_mindmanager.png" height="210" >
 
-### MACOS  
+### macOS  
 MindManager objects are addressed by using the AppScript library:  
 
 <img src="doc/macos_mindmanager.png" height="200" >
@@ -344,9 +351,9 @@ You can also use the content inside the Mermaid online editor (https://mermaid.l
 
 
 ## Disclaimer
+The API execution time depends heavily on the used LLM model or system and token count.  
 
-The API execution time can be somewhat lengthy, typically around 20 seconds or more per call. For more intricate use cases, this duration can extend to 2 minutes or more, with execution time also varying based on token count.
+Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.  
 
-Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.
+Should a runtime error occur, please attempt at least a second call to the process ;-)  
 
-Should a runtime error occur, please attempt at least a second call to the process ;-)
