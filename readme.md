@@ -34,7 +34,7 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 
 ## Other Use Cases (implemented or easy to add)
-- Export mindmap to Mermaid systax or any other text format
+- Export mindmap to Mermaid syntax or any other text format
 - Change map layout by using a template (macOS)
 - Reorder topics by business value or importance
 - Translate the map to other languages
