@@ -1,6 +1,6 @@
 # Mindmanager Automation and LLM Integration
 
-These automations and macros enhance mindmaps created by **Mindmanager**.
+These automations and macros enhance mindmaps created by **Mindmanager** on macOS and Windows.
 
 ## Features
 
@@ -22,7 +22,7 @@ These automations and macros enhance mindmaps created by **Mindmanager**.
 
 ### Layout
 - Map format can be radial map or orgchart
-- Using map templates on MAC
+- Using map templates on macOS
 - Map styles on Windows are persistent, automatic collapsing of nodes
 
 ## Implemented Business Cases
