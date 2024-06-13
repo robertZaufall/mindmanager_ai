@@ -49,6 +49,7 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 
 ## Example  
 Remark: Image generation with DALL-E-3 needs far more time than in this animation.  
+More animated examples are in the `doc` folder.
 
 ![Example](doc/anim1.gif)  
 
