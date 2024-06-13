@@ -199,7 +199,7 @@ CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
 
-RESIZE_IMAGE = False
+RESIZE_IMAGE = True
 RESIZE_IMAGE_WIDTH = 512  # source size is 1024
 RESIZE_IMAGE_HEIGHT = 512 # source size is 1024
 

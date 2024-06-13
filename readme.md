@@ -47,12 +47,10 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 - Misspelling or syntax correction
 - Create a map based on external text data
 
-## Examples  
-### Windows  
-![Example 1](doc/anim2.gif)  
+## Example  
+Remark: Image generation with DALL-E-3 needs far more time than in this animation.  
 
-### macOS
-![Example 4 macOS](doc/anim_macos.gif)  
+![Example](doc/anim1.gif)  
 
 ## Installation  
 ### Windows  

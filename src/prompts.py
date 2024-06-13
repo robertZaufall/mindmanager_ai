@@ -24,7 +24,7 @@ def prompt_image(top_most_topic, subtopics):
     explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
     topics = f" and the subtopics {subtopics}" if subtopics != "" else ""
     str_user = (
-        f"A clean, minimalist professional marketing sketch{explicit_style} on a white background with focus on {top_most_topic}{topics}. "
+        f"A clean, minimalist, professional marketing logo{explicit_style} on a white background with focus on {top_most_topic}{topics}. "
         f"Use a visually appealing and professional look."
     )
     return str_user
