@@ -2,6 +2,11 @@
 
 These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
+![Example](doc/anim1.gif)  
+
+Remark: Image generation with DALL-E-3 needs far more time than in this animation.  
+More animated examples are in the `doc` folder.
+
 ## Features
 
 ### Supported LLMs
@@ -46,12 +51,6 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 - Translate the map to other languages
 - Misspelling or syntax correction
 - Create a map based on external text data
-
-## Example  
-Remark: Image generation with DALL-E-3 needs far more time than in this animation.  
-More animated examples are in the `doc` folder.
-
-![Example](doc/anim1.gif)  
 
 ## Installation  
 ### Windows  
