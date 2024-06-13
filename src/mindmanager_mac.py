@@ -1,3 +1,4 @@
+import os
 from appscript import *
 
 class Mindmanager:
@@ -5,9 +6,10 @@ class Mindmanager:
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
         self.charttype = charttype
-        self.orgchart_template = mactypes.Alias('./macos/Org-Chart Map.mmat')
-        self.radial_template = mactypes.Alias('./macos/Radial Map.mmat')
-
+        current_folder_path = os.path.dirname(os.path.abspath(__file__))
+        self.orgchart_template = mactypes.Alias(current_folder_path + '/../macos/Org-Chart Map.mmat')
+        self.radial_template = mactypes.Alias(current_folder_path + '/../macos/Radial Map.mmat')
+    
     def document_exists(self):
         return self.mindmanager.documents[1].exists()
 
