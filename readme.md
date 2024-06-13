@@ -15,11 +15,6 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
   - **Ollama** (local) w/ any LLM (use ***LLama3***, ***Zephyr*** or ***Mixtral*** model for best results)
   - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
 
-### Supported Image Generation Systems
-  - **Azure OpenAI** w/ ***DALL-E-3*** (use your key) -> **best tested**
-  - **OpenAI** w/ ***DALL-E-3* (use your key) -> **best results**
-  - **Stability AI** w/ ***Stable Duffusion 3 / Ultra / Core*** (use your key)  
-
 ### Platform
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
