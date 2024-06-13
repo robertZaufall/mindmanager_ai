@@ -82,16 +82,31 @@ def main(param, charttype):
             if len(prompts_list) == 1:
                 selection = mindm.get_selection()
                 if len(selection) > 0:
+                    central_topic_selected = False
                     for this_topic in selection:
                         if mindm.get_level_from_topic(this_topic) > 0:
                             topic_texts += mindm.get_title_from_topic(this_topic) + ","
+                        else:
+                            central_topic_selected = True
                         
                     if len(topic_texts) > 0: topic_texts = topic_texts[:-1]
 
             if param == "image":
-                if len(topic_texts) == 0: topic_texts = mindm.get_title_from_topic(central_topic)
-                image_result = llm.call_llm_image(prompts.prompt_image(topic_texts))
-
+                central_topic_text = mindm.get_title_from_topic(central_topic)
+                if len(topic_texts) == 0: 
+                    top_most_topic = central_topic_text
+                    subtopics = ""
+                else:
+                    if central_topic_selected:
+                        top_most_topic = central_topic_text
+                        subtopics = topic_texts
+                    else:
+                        topics = topic_texts.split(",")
+                        top_most_topic = topics[0]
+                        subtopics = ",".join(topics[1:])
+                
+                image_result = llm.call_llm_image(prompts.prompt_image(top_most_topic, subtopics))
+                
             else:
                 new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
 

@@ -191,16 +191,23 @@ else:
 
 
 # CLOUD_TYPE_IMAGE = ''
-CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
 
-IMAGE_QUALITY = "hd"  # hd, standard
-IMAGE_STYLE = "vivid" # natural, vivid
-RESIZE_IMAGE = True
+RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 512  # source size is 1024
 RESIZE_IMAGE_HEIGHT = 512 # source size is 1024
 
 if "AZURE" in CLOUD_TYPE_IMAGE:
+    EXPLICIT_STYLE = "digital art"
+
+    IMAGE_QUALITY = "hd"  # hd, standard
+    IMAGE_STYLE = "vivid" # natural, vivid
     OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
     OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
     OPENAI_API_URL_IMAGE = os.getenv('OPENAI2_API_BASE')
@@ -211,6 +218,11 @@ if "AZURE" in CLOUD_TYPE_IMAGE:
     KEY_HEADER_VALUE_IMAGE = OPENAI_API_KEY_IMAGE
 
 elif "OPENAI" in CLOUD_TYPE_IMAGE:
+    EXPLICIT_STYLE = "digital art"
+
+    IMAGE_QUALITY = "hd"  # hd, standard
+    IMAGE_STYLE = "vivid" # natural, vivid
+
     OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
     OPENAI_API_URL_IMAGE = "https://api.openai.com/v1/images/generations"
     OPENAI_DEPLOYMENT_IMAGE = ""
@@ -220,3 +232,21 @@ elif "OPENAI" in CLOUD_TYPE_IMAGE:
     API_URL_IMAGE = OPENAI_API_URL_IMAGE
     KEY_HEADER_TEXT_IMAGE = "Authorization"
     KEY_HEADER_VALUE_IMAGE = "Bearer " + OPENAI_API_KEY_IMAGE
+
+elif "STABILITYAI" in CLOUD_TYPE_IMAGE:
+    OUTPUT_FORMAT_IMAGE = "png"         # png, jpeg, webp
+    OUTPUT_ASPECT_RATIO_IMAGE = "1:1"   # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
+    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+    SEED_IMAGE = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
+    
+    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    MODEL_ENDPOINT = MODEL_ID_IMAGE.split("-")[0]
+
+    # 3d-model analog-film anime cinematic comic-book digital-art 
+    # enhance fantasy-art isometric line-art low-poly modeling-compound 
+    # neon-punk origami photographic pixel-art tile-texture
+    STYLE_PRESET = "digital-art"
+    EXPLICIT_STYLE = STYLE_PRESET if MODEL_ENDPOINT != "core" else ""
+
+    STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
+    API_URL_IMAGE = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"

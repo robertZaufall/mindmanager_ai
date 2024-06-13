@@ -3,3 +3,4 @@ src/log/**
 src/images/**
 _ignore/**
 .DS_Store
+macos/automator/.DS_Store

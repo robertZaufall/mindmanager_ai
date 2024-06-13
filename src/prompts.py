@@ -16,8 +16,17 @@ prompt_postfix = (
     f"Here is the data: \n"
 )
 
-def prompt_image(topic_texts):
-    str_user = f"professional image logo for mindmap topics ({topic_texts}), only logo, absolutely no text, absolutely no characters, white background"
+def prompt_image2(top_most_topic, subtopics):
+    str_user = f"professional marketing logo; {subtopics}; white background, only logo, no text, no characters, no letters"
+    return str_user
+
+def prompt_image(top_most_topic, subtopics):
+    explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
+    topics = f" and the subtopics {subtopics}" if subtopics != "" else ""
+    str_user = (
+        f"A clean, minimalist professional marketing sketch{explicit_style} on a white background with focus on {top_most_topic}{topics}. "
+        f"Use a visually appealing and professional look."
+    )
     return str_user
 
 def prompt_refine(text, topic_texts=""):
@@ -166,6 +175,5 @@ def prompt(param, text, topic_texts=""):
     elif param == "exp":             return prompt_exp(text_input, topic_texts=topic_texts)
     elif param == "prj_org":         return prompt_prj_org(text_input, topic_texts=topic_texts)
     elif param == "capex_opex":      return prompt_capex_opex(text_input, topic_texts=topic_texts)
-    elif param == "image":           return prompt_image(topic_texts=topic_texts)
     else:
         return ""
