@@ -88,11 +88,16 @@ def main(param, charttype):
                         
                     if len(topic_texts) > 0: topic_texts = topic_texts[:-1]
 
-            new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+            if param == "image":
+                if len(topic_texts) == 0: topic_texts = mindm.get_title_from_topic(central_topic)
+                image_result = llm.call_llm_image(prompts.prompt_image(topic_texts))
 
-            if new_mermaid_diagram != "":
-                max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
-                mindm.finalize(max_topic_level)
+            else:
+                new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+
+                if new_mermaid_diagram != "":
+                    max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
+                    mindm.finalize(max_topic_level)
     
     elif param == "finalize":
         if platform == "win":
@@ -110,6 +115,7 @@ if __name__ == "__main__":
     # examples, cluster, exp, capex_opex
     # prc_org, prj_prc_org, exp_prj_prc_org, prj_org
     # finalize (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
+    # image (experimental)
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

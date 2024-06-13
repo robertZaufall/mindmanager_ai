@@ -16,6 +16,10 @@ prompt_postfix = (
     f"Here is the data: \n"
 )
 
+def prompt_image(topic_texts):
+    str_user = f"professional image logo for mindmap topics ({topic_texts}), only logo, absolutely no text, absolutely no characters, white background"
+    return str_user
+
 def prompt_refine(text, topic_texts=""):
     topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
 
@@ -162,5 +166,6 @@ def prompt(param, text, topic_texts=""):
     elif param == "exp":             return prompt_exp(text_input, topic_texts=topic_texts)
     elif param == "prj_org":         return prompt_prj_org(text_input, topic_texts=topic_texts)
     elif param == "capex_opex":      return prompt_capex_opex(text_input, topic_texts=topic_texts)
+    elif param == "image":           return prompt_image(topic_texts=topic_texts)
     else:
         return ""

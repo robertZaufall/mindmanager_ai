@@ -185,3 +185,38 @@ elif "MLX" in CLOUD_TYPE:
     
 else:
     raise Exception("Error: Unknown CLOUD_TYPE")
+
+
+# only used for action = image
+
+
+# CLOUD_TYPE_IMAGE = ''
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'
+
+IMAGE_QUALITY = "hd"  # hd, standard
+IMAGE_STYLE = "vivid" # natural, vivid
+RESIZE_IMAGE = True
+RESIZE_IMAGE_WIDTH = 512  # source size is 1024
+RESIZE_IMAGE_HEIGHT = 512 # source size is 1024
+
+if "AZURE" in CLOUD_TYPE_IMAGE:
+    OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
+    OPENAI_API_URL_IMAGE = os.getenv('OPENAI2_API_BASE')
+    OPENAI_API_VERSION_IMAGE = '2024-02-01'
+
+    API_URL_IMAGE = f"{OPENAI_API_URL_IMAGE}openai/deployments/{OPENAI_DEPLOYMENT_IMAGE}/images/generations?api-version={OPENAI_API_VERSION_IMAGE}"
+    KEY_HEADER_TEXT_IMAGE = "api-key"
+    KEY_HEADER_VALUE_IMAGE = OPENAI_API_KEY_IMAGE
+
+elif "OPENAI" in CLOUD_TYPE_IMAGE:
+    OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
+    OPENAI_API_URL_IMAGE = "https://api.openai.com/v1/images/generations"
+    OPENAI_DEPLOYMENT_IMAGE = ""
+    OPENAI_API_VERSION_IMAGE = ""
+
+    OPENAI_MODEL_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    API_URL_IMAGE = OPENAI_API_URL_IMAGE
+    KEY_HEADER_TEXT_IMAGE = "Authorization"
+    KEY_HEADER_VALUE_IMAGE = "Bearer " + OPENAI_API_KEY_IMAGE

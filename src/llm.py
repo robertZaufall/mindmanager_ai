@@ -305,3 +305,82 @@ def call_llm(str_user):
     result = result.replace("Here is the refined mindmap:\n\n", "")
 
     return result
+
+
+def call_llm_image(str_user):
+
+    import httpx
+    from PIL import Image
+    from io import BytesIO
+    import base64
+    import uuid
+    from urllib.parse import urlparse
+
+    # Azure
+    if "AZURE" in config.CLOUD_TYPE or "OPENAI" in config.CLOUD_TYPE:
+
+        #format = "url"
+        format = "b64_json"
+
+        payload = {
+            "prompt": str_user,
+            "quality": config.IMAGE_QUALITY,
+            "style": config.IMAGE_STYLE,
+
+            "size": "1024x1024",        # 1024x1024, 1792x1024, 1024x1792
+            "n": 1,                     # number of files
+            "response_format": format   # b64_json, url
+        }
+
+        if "OPENAI" in config.CLOUD_TYPE_IMAGE:
+            payload["model"] = config.OPENAI_MODEL_IMAGE
+            
+        response = requests.post(
+            config.API_URL_IMAGE,
+            headers={
+                "Content-Type": "application/json",
+                config.KEY_HEADER_TEXT_IMAGE: config.KEY_HEADER_VALUE_IMAGE
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+
+        folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "images")
+        if not os.path.exists(folder_path): os.makedirs(folder_path)
+
+        if format == "url":
+            url = parsed_json['data'][0]['url']
+            a = urlparse(url)
+            path_parts = os.path.split(a.path)
+            guid = path_parts[0].split("/")[-1]
+        else:
+            guid = uuid.uuid4()
+
+        image_name = f"{guid}.png"
+        image_path = os.path.join(folder_path, image_name)      
+
+        if format == "url":
+            generated_image = httpx.get(url).content
+            with open(image_path, "wb") as image_file:
+                image_file.write(generated_image)
+            image = Image.open(image_path)
+
+        else:
+            b64_image = parsed_json['data'][0]['b64_json']
+            image_data = base64.b64decode(b64_image)
+            image = Image.open(BytesIO(image_data))
+            image.save(image_path)
+
+        if config.RESIZE_IMAGE:
+            image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
+            image.save(image_path)
+
+        image.show()
+
+        return image

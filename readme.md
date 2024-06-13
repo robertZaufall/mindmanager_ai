@@ -25,13 +25,14 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 - Using map templates on macOS
 - Map styles on Windows are persistent, automatic collapsing of nodes
 
-## Implemented Business Cases
+## Implemented Business or Use Cases
 1. Refinement of the map or topic.  
 2. Refinement of the map or topic from a development perspective.  
 3. Create examples for one, more (selected) or all topics.  
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
+7. NEW: Image generation with DALL-E-3 from topics (use copy/pase after generation)
 
 ## Other Use Cases (implemented or easy to add)
 - Export mindmap to Mermaid syntax or any other text format
@@ -280,6 +281,37 @@ elif "MLX" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1] # not used, depends on how the server was started
     API_URL="http://localhost:8080/v1/chat/completions"
+
+
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'
+
+IMAGE_QUALITY = "hd"  # hd, standard
+IMAGE_STYLE = "vivid" # natural, vivid
+RESIZE_IMAGE = True
+RESIZE_IMAGE_WIDTH = 512  # source size is 1024
+RESIZE_IMAGE_HEIGHT = 512 # source size is 1024
+
+if "AZURE" in CLOUD_TYPE_IMAGE:
+    OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
+    OPENAI_API_URL_IMAGE = os.getenv('OPENAI2_API_BASE')
+    OPENAI_API_VERSION_IMAGE = '2024-02-01'
+
+    API_URL_IMAGE = f"{OPENAI_API_URL_IMAGE}openai/deployments/{OPENAI_DEPLOYMENT_IMAGE}/images/generations?api-version={OPENAI_API_VERSION_IMAGE}"
+    KEY_HEADER_TEXT_IMAGE = "api-key"
+    KEY_HEADER_VALUE_IMAGE = OPENAI_API_KEY_IMAGE
+
+elif "OPENAI" in CLOUD_TYPE_IMAGE:
+    OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
+    OPENAI_API_URL_IMAGE = "https://api.openai.com/v1/images/generations"
+    OPENAI_DEPLOYMENT_IMAGE = ""
+    OPENAI_API_VERSION_IMAGE = ""
+
+    OPENAI_MODEL_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    API_URL_IMAGE = OPENAI_API_URL_IMAGE
+    KEY_HEADER_TEXT_IMAGE = "Authorization"
+    KEY_HEADER_VALUE_IMAGE = "Bearer " + OPENAI_API_KEY_IMAGE
 ```
 
 ## Prompt crafting  

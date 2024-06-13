@@ -1,4 +1,5 @@
 src/__pycache__/**
 src/log/**
+src/images/**
 _ignore/**
 .DS_Store
