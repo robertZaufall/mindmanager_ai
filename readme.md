@@ -42,7 +42,7 @@ More animated examples are in the `doc` folder.
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
-7. NEW: Image generation with DALL-E-3 or SD3 from topics (use copy/pase after generation)
+7. Image generation with DALL-E-3 or SD3 from topics (use copy/paste after generation)
 
 ## Other Use Cases (implemented or easy to add)
 - Export mindmap to Mermaid syntax or any other text format
