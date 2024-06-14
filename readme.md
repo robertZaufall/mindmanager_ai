@@ -54,44 +54,92 @@ More animated examples are in the `doc` folder.
 
 ## Installation  
 ### Windows  
-Python has to be installed first (eg. using Chocolatey).  
-Run `install.bat` or  
+First install the Windows package manager **Chocolatey** from an administration shell or choose any other way following https://chocolatey.org/install.  
+This is one line:  
 ```
+Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+```  
+Change to folder `%localappdata%\Mindjet\MindManager\23\macros`:
+```
+cd %localappdata%\Mindjet\MindManager\23\macros
+```
+Copy all files from the GitHub repository to this location.  
+Change to `windows` folder:
+```
+cd windows
+```
+Run `install.bat` or  the following commands:
+```
+choco install python3
 pip install --upgrade requests
 pip install --upgrade pywin32
+pip install --upgrade Pillow
+pip install --upgrade httpx
+powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
 ```
-Macros can be registered directly by merging the `macro_registration.reg` to the registry. Hint: view order in MindManager is sorted by the GUIDs. All macros can then be executed using the context menu of topics (right mouse button click).  
+Check in MindManager, if the macros are available (right click on topic).  
+Hint: The macro list is ordered according to the GUID-string, not the macro name.    
 
 ![Registry](doc/windows_registry.png)  
 
-Macros can also be executed by the Macro Editor. The macros are similar but the action parameter.  
+Macros can also be executed by the macro editor. The macros are similar but the action parameter.  
 
 ![Automator](doc/windows_macroeditor.png)  
 
+You can also check here if the path to the python files is correct.  
+
 ### macOS  
-Python has to be installed first (eg. using Homebrew).  
+Python has to be installed first (https://www.python.org/downloads/macos/).  
 ```
 pip install --upgrade requests
 pip install --upgrade appscript
+pip install --upgrade Pillow
+pip install --upgrade httpx
 ```
-Automator workflows can be copied to the Services folder by executing the `copy_to_services.sh` shell script. To make the script executable:
+Copy all repository files to `~/git/mindmanager_ai` (=user home, `mkdir git`, `mkdir mindmanager_ai`)  as the Automator workflows contain this path.  
+Alternatively you can clone the repository in `~/git` using  
+```
+git clone https://github.com/robertZaufall/mindmanager_ai.git
+```
+Change to folder `macos`
+```
+cd macos
+```
+Automator workflows can be copied to the `Services` folder by executing the `copy_to_services.sh` shell script. To make the script executable:
 ```
 chmod +x ./copy_to_services.sh
+./copy_to_services.sh
 ```  
+If you need elevated privileges for copying the files use `sudo sh ./copy_to_services.sh`.  
 
 All **Automator** workflow settings are similar but the action parameter:  
 
-<img src="doc/macos_automator.png" width="600" >
+<img src="doc/macos_automator.png" width="600" >  
 
 The workflows are then available at the "MindManager" main menu -> Services  
 
 <img src="doc/macos_services.png" width="400" >  
 
+### VSCode
+
+I prefer to execute the python script directly from VSCode. Here you can easily adjust the settings, try different LLMs on the fly and even debug, if problems occur (external systems are sometimes not available).
+
 ## How to use  
+### Configuration  
+First of all you have to open the `config.py` in a text editor of your choice.  
+Use the apropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
+  
+If you want to run local models with Ollama or GPT4All you have to have either a newer Apple Mac model with M1, M2, M3 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
+
 ### Map actions
-Select the central topic or deselect all topics and call the macro by right-clicking (Windows) or by choosing the Automator Action via the MindManager menu -> Services -> General. You can also select one or more topics and start the automation.
+Select the central topic or deselect all topics and call the macro by right-clicking (Windows) or by choosing the Automator Action via the MindManager menu -> Services -> General (macOS). You can also select one or more topics and start the automation.  
+
 ### Image generation
-Image generation has been tested only on macOS so far. Just select the topics for which you want to generate an image and choose the action "Generate Image" or call a defined macro or the Python script. After a little while, the image will be opened and also stored in the `src/images` folder. Unfortunately, the image cannot automatically be inserted into the map or added to a topic due to insufficient library support on macOS. The results from the generation process are good with DALL-E 3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.
+Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image`.  
+After a little while, the image will be opened and also stored in the `src/images` folder.  
+Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support. For Windows I have to look into this topic first.   
+The results from the generation process are good with DALL-E-3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
+For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt.). DALL-E-3 does not support a seed value anymore (by the time of writing).  
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
