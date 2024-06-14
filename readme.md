@@ -42,7 +42,7 @@ More animated examples are in the `doc` folder.
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
-7. NEW: Image generation with DALL-E-3 from topics (use copy/pase after generation)
+7. NEW: Image generation with DALL-E-3 or SD3 from topics (use copy/pase after generation)
 
 ## Other Use Cases (implemented or easy to add)
 - Export mindmap to Mermaid syntax or any other text format
@@ -186,3 +186,12 @@ You can also use the content inside the Mermaid online editor (https://mermaid.l
 The API execution time depends heavily on the used LLM model or system and token count.  
 
 Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.  
+
+## More Examples
+
+![Example](doc/anim2.gif)  
+
+![Example](doc/anim5.gif)  
+
+![Example](doc/anim6.gif)  
+
