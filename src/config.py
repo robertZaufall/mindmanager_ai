@@ -45,7 +45,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best
 
 # groq
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'         # good
-# CLOUD_TYPE = 'GROQ+llama3-8b-8192'             # good
+# CLOUD_TYPE = 'GROQ+llama3-8b-8192'             # reduced usability
 # CLOUD_TYPE = 'GROQ+llama3-70b-8192'            # good
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                # good
 
