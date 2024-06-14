@@ -2,9 +2,13 @@
 
 These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
-![Example](doc/anim1.gif)  
+## Windows  
+![Example](doc/anim_neu_1.gif)  
 
-Remark: Image generation with DALL-E-3 needs far more time than in this animation.  
+## macOS  
+![Example](doc/anim_neu_2.gif)  
+
+Remark: Image generation with DALL-E-3 or SD3 needs far more time than in these animations.  
 More animated examples are in the `doc` folder.
 
 ## Features
@@ -20,6 +24,11 @@ More animated examples are in the `doc` folder.
   - **Ollama** (local) w/ any LLM (use ***LLama3***, ***Zephyr*** or ***Mixtral*** model for best results)
   - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
 
+### Supported Image Generation Systems
+  - **Azure OpenAI** w/ ***DALL-E-3*** (use your key) -> **best tested**
+  - **OpenAI** w/ ***DALL-E-3*** (use your key) -> **best results**
+  - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
+
 ### Platform
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
@@ -29,11 +38,6 @@ More animated examples are in the `doc` folder.
 - Map format can be radial map or orgchart
 - Using map templates on macOS
 - Map styles on Windows are persistent, automatic collapsing of nodes
-
-### Supported Image Generation Systems
-  - **Azure OpenAI** w/ ***DALL-E-3*** (use your key) -> **best tested**
-  - **OpenAI** w/ ***DALL-E-3*** (use your key) -> **best results**
-  - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
 
 ## Implemented Business or Use Cases
 1. Refinement of the map or topic.  
