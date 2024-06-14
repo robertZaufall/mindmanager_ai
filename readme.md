@@ -153,12 +153,13 @@ To process the whole map, select the central topic (for right-clicking) or no to
 
 Examples for commandline activation:
 ```
-cd ~/git/mindmanager_ai/src
+cd ~/git/mindmanager_ai/src                           # macOS
+cd %localappdata%\Mindjet\MindManager\23\macros\src   # Windows
 
 python3 process.py refine             # first refinement
 python3 process.py refine radial      # second refinement and radial chart layout
-python3 process.py finalize orgchart  # just change format to organizational chart layout (on macOS there is no other way)
-python3 process.py capex_opex radial  # restructure the whole map to cluster capex and opex relevant topics
+python3 process.py finalize orgchart  # just change format to org chart (on macOS there is no other way)
+python3 process.py capex_opex radial  # restructure the whole map for capex-opex topics
 
 # for image generation select relevant topics first or the central topic is chosen
 python3 process.py image
