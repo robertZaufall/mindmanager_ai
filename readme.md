@@ -143,6 +143,7 @@ I prefer to execute the python script directly from VSCode. Here you can easily 
 ## How to use  
 ### Configuration  
 First of all you have to open the `config.py` in a text editor of your choice.  
+Don't be overwhelmed by the huge list of variables. Just pick the lines you need and set its values.  
 Use the apropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
 If you want to run local models with Ollama or GPT4All you have to have either a newer Apple Mac model with M1, M2, M3 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
 
@@ -150,20 +151,6 @@ If you want to run local models with Ollama or GPT4All you have to have either a
 You can have more than one open document in MindManager. The document which should be processed musst be the active document. For every processing a new document with the new topics will be created.  
 
 To process the whole map, select the central topic (for right-clicking) or no topic at all (call macro manually (Windows), choose Automator Workflow from Mindmanager Menu -> Services or call the python script from VSCode or commandline `python3 process.py <action> <format>`.  
-
-Examples for commandline activation:
-```
-cd ~/git/mindmanager_ai/src                           # macOS
-cd %localappdata%\Mindjet\MindManager\23\macros\src   # Windows
-
-python3 process.py refine             # first refinement
-python3 process.py refine radial      # second refinement and radial chart layout
-python3 process.py finalize orgchart  # just change format to org chart (on macOS there is no other way)
-python3 process.py capex_opex radial  # restructure the whole map for capex-opex topics
-
-# for image generation select relevant topics first or the central topic is chosen
-python3 process.py image
-```
 
 ### Map actions
 Select the central topic or deselect all topics and call the activation.  
@@ -191,10 +178,6 @@ groq is sure the fastest LLM platform by now. Payment for API usage is still unc
 Perplexity works perfekt as an univeral LLM platform.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
 MLX results are dependent on the used model. `LLama3` works well.
-
-## Configuration  
-All configuration is stored in the `config.py` file. Security relevant information should be mapped using environment variables.  
-Don't be overwhelmed by the huge list of variables. Just pick the lines you need and set its values  
 
 ## Prompt crafting  
 Prompt crafting is lightly implemented using the following strategy:  
@@ -270,11 +253,4 @@ The API execution time depends heavily on the used LLM model or system and token
 
 Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.  
 
-## More Examples
-
-![Example](doc/anim2.gif)  
-
-![Example](doc/anim5.gif)  
-
-![Example](doc/anim6.gif)  
 
