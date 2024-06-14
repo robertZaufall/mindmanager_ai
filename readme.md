@@ -77,8 +77,8 @@ pip install --upgrade Pillow
 pip install --upgrade httpx
 powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
 ```
-Check in MindManager, if the macros are available (right click on topic).  
-Hint: The macro list is ordered according to the GUID-string, not the macro name.    
+Check in registry and MindManager, if the macros are available (right click on topic).  
+Hint: The macro list is ordered according to the GUID-string, not the macro name.   
 
 ![Registry](doc/windows_registry.png)  
 
@@ -89,29 +89,41 @@ Macros can also be executed by the macro editor. The macros are similar but the 
 You can also check here if the path to the python files is correct.  
 
 ### macOS  
-Python has to be installed first (https://www.python.org/downloads/macos/).  
+Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
+Install required python libraries:
 ```
 pip install --upgrade requests
 pip install --upgrade appscript
 pip install --upgrade Pillow
 pip install --upgrade httpx
 ```
-Copy all repository files to `~/git/mindmanager_ai` (=user home, `mkdir git`, `mkdir mindmanager_ai`)  as the Automator workflows contain this path.  
-Alternatively you can clone the repository in `~/git` using  
+Create the directory structure `~/git/mindmanager_ai` with Terminal:
 ```
+cd ~/
+mkdir git
+cd git
+mkdir mindmanager_ai
+cd mindmanager_ai
+```
+Copy all repository files to this location as the Automator workflows contain this path.  
+Alternatively you can clone the repository in Terminal:  
+```
+cd ~/
+mkdir git
+cd git
 git clone https://github.com/robertZaufall/mindmanager_ai.git
+cd mindmanager_ai
 ```
-Change to folder `macos`
+Change to folder `macos` and copy the Automator workflows to the `~/Library/Services` (hidden) folder:
 ```
-cd macos
-```
-Automator workflows can be copied to the `Services` folder by executing the `copy_to_services.sh` shell script. To make the script executable:
-```
+cd macos/automator
 chmod +x ./copy_to_services.sh
 ./copy_to_services.sh
-```  
-If you need elevated privileges for copying the files use `sudo sh ./copy_to_services.sh`.  
-
+```
+If you need elevated privileges for copying the files use this command:
+```
+sudo sh ./copy_to_services.sh
+```
 All **Automator** workflow settings are similar but the action parameter:  
 
 <img src="doc/macos_automator.png" width="600" >  
@@ -128,11 +140,29 @@ I prefer to execute the python script directly from VSCode. Here you can easily 
 ### Configuration  
 First of all you have to open the `config.py` in a text editor of your choice.  
 Use the apropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
-  
 If you want to run local models with Ollama or GPT4All you have to have either a newer Apple Mac model with M1, M2, M3 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
 
+### General
+You can have more than one open document in MindManager. The document which should be processed musst be the active document. For every processing a new document with the new topics will be created.  
+
+To process the whole map, select the central topic (for right-clicking) or no topic at all (call macro manually (Windows), choose Automator Workflow from Mindmanager Menu -> Services or call the python script from VSCode or commandline `python3 process.py <action> <format>`.  
+
+Examples for commandline activation:
+```
+cd ~/git/mindmanager_ai/src
+
+python3 process.py refine             # first refinement
+python3 process.py refine radial      # second refinement and radial chart layout
+python3 process.py finalize orgchart  # just change format to organizational chart layout (on macOS there is no other way)
+python3 process.py capex_opex radial  # restructure the whole map to cluster capex and opex relevant topics
+
+# for image generation select relevant topics first or the central topic is chosen
+python3 process.py image
+```
+
 ### Map actions
-Select the central topic or deselect all topics and call the macro by right-clicking (Windows) or by choosing the Automator Action via the MindManager menu -> Services -> General (macOS). You can also select one or more topics and start the automation.  
+Select the central topic or deselect all topics and call the activation.  
+You can also select one or more topics and start the automation for just these topics, e.g. to generate examples for these topics, refine just these topics etc.  
 
 ### Image generation
 Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image`.  
