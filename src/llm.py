@@ -401,9 +401,9 @@ def call_llm_image(str_user):
             else:
                 raise Exception(str(response.json()))
             
-            if config.RESIZE_IMAGE:
-                image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
-                image.save(image_path)
+        if config.RESIZE_IMAGE:
+            image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
+            image.save(image_path)
 
         image.show()
         return image
