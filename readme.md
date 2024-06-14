@@ -1,4 +1,4 @@
-# MindManager Automation and LLM Integration
+# MindManager automation and LLM / AI Integration Windows + macOS
 
 These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
