@@ -1,0 +1,66 @@
+import config  
+import json  
+import os  
+from openai import AzureOpenAI  
+from azure.identity import InteractiveBrowserCredential  
+from datetime import datetime, timedelta  
+  
+TOKEN_CACHE_FILE = "token_cache.json"  
+  
+def load_token_cache():  
+    if os.path.exists(TOKEN_CACHE_FILE):  
+        with open(TOKEN_CACHE_FILE, "r") as f:  
+            return json.load(f)  
+    return {}  
+  
+def save_token_cache(cache):  
+    with open(TOKEN_CACHE_FILE, "w") as f:  
+        json.dump(cache, f)  
+  
+class CachedTokenProvider:  
+    def __init__(self, credential, scope):  
+        self._credential = credential  
+        self._scope = scope  
+        self._token_cache = load_token_cache()  
+  
+    def get_token(self):  
+        # Check if token is cached and not expired  
+        if 'access_token' in self._token_cache:  
+            token_expiry = datetime.fromisoformat(self._token_cache['expires_on'])  
+            if token_expiry > datetime.utcnow():  
+                return self._token_cache['access_token']  
+  
+        # Otherwise, get a new token  
+        token = self._credential.get_token(self._scope)  
+  
+        # Cache the new token  
+        self._token_cache = {  
+            'access_token': token.token,  
+            'expires_on': datetime.utcfromtimestamp(token.expires_on).isoformat()  
+        }  
+        save_token_cache(self._token_cache)  
+  
+        return token.token  
+  
+def call_llm_azure_entra(str_user):  
+    interactive_browser_credential = InteractiveBrowserCredential()  
+    token_provider = CachedTokenProvider(interactive_browser_credential, "https://cognitiveservices.azure.com/.default")  
+  
+    client = AzureOpenAI(  
+        azure_endpoint=config.OPENAI_API_URL,  
+        azure_ad_token_provider=token_provider.get_token, 
+        api_version=config.OPENAI_API_VERSION  
+    )  
+  
+    response = client.chat.completions.create(  
+        model=config.OPENAI_DEPLOYMENT,  
+        temperature=config.LLM_TEMPERATURE,  
+        max_tokens=config.MAX_TOKENS,  
+        messages=[  
+            {"role": "system", "content": config.SYSTEM_PROMPT},  
+            {"role": "user", "content": str_user},  
+        ]  
+    )  
+  
+    result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
+    return result

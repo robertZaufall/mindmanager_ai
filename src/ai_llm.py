@@ -51,8 +51,8 @@ def call_llm(str_user):
 
     # Azure / OpenAI
     if "AZURE" in config.CLOUD_TYPE and config.USE_AZURE_ENTRA:
-        import ai_llm_entra
-        return ai_llm_entra.call_llm_azure_entra(str_user)
+        import ai_azure_entra
+        return ai_azure_entra.call_llm_azure_entra(str_user)
     
     if "AZURE" in config.CLOUD_TYPE or "OPENAI" in config.CLOUD_TYPE:
         payload = {
