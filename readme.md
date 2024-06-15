@@ -25,7 +25,7 @@ More animated examples are in the `doc` folder.
   - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
 
 ### Supported Image Generation Systems
-  - **Azure OpenAI** w/ ***DALL-E 3*** (use your key) -> **best tested**
+  - **Azure OpenAI** w/ ***DALL-E 3*** (use your key or log in with Azure EntraID) -> **best tested**
   - **OpenAI** w/ ***DALL-E 3*** (use your key) -> **best results**
   - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
   - **Google Vertex AI** w/ ***Imagen2 V6*** (use your access token, confirmed accounts)  
@@ -195,7 +195,7 @@ MLX results are dependent on the used model. `LLama3` works well.
 
 ## Image generation systems  
 ### Azure OpenAI / OpenAI - DALL-E 3  
-The solution is best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images.  
+The solution is best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Stability AI - Stable Diffusion 3  
 Image generation with SD3 is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen2  

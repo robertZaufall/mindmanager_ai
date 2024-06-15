@@ -1,6 +1,7 @@
 import config  
 import json  
-import os  
+import os
+import requests
 from openai import AzureOpenAI  
 from azure.identity import InteractiveBrowserCredential  
 from datetime import datetime, timedelta  
@@ -64,3 +65,34 @@ def call_llm_azure_entra(str_user):
   
     result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
     return result
+
+def call_image_ai(str_user, image_path):
+
+    from PIL import Image
+
+    interactive_browser_credential = InteractiveBrowserCredential()  
+    token_provider = CachedTokenProvider(interactive_browser_credential, "https://cognitiveservices.azure.com/.default")  
+  
+    client = AzureOpenAI(  
+        azure_endpoint=config.OPENAI_API_URL,  
+        azure_ad_token_provider=token_provider.get_token, 
+        api_version=config.OPENAI_API_VERSION_IMAGE
+    )  
+
+    response = client.images.generate(  
+        model = config.OPENAI_DEPLOYMENT_IMAGE,  
+        prompt = str_user,
+        n = 1,
+        quality = config.IMAGE_QUALITY,
+        style = config.IMAGE_STYLE,
+        size = "1024x1024"
+    )  
+  
+    json_response = json.loads(response.model_dump_json())
+
+    image_url = json_response["data"][0]["url"]
+    generated_image = requests.get(image_url).content 
+    with open(image_path, "wb") as image_file:
+        image_file.write(generated_image)
+
+    return image_path
