@@ -155,7 +155,7 @@ Use the apropriate LLM system for which you have an API key. These keys are avai
 If you want to run local models with Ollama or GPT4All you have to have either a newer Apple Mac model with M1, M2, M3 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
 
 ### General
-You can have more than one open document in MindManager. The document which should be processed musst be the active document. For every processing a new document with the new topics will be created.  
+You can have more than one open document in MindManager. The document which should be processed must be the active document. For every processing a new document with the new topics will be created.  
 
 To process the whole map, select the central topic (for right-clicking) or no topic at all (call macro manually (Windows), choose Automator Workflow from Mindmanager Menu -> Services or call the python script from VSCode or commandline `python3 process.py <action> <format>`.  
 
