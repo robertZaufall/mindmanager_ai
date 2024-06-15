@@ -30,6 +30,9 @@ More animated examples are in the `doc` folder.
   - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
   - **Google Vertex AI** w/ ***Imagen2 V6*** (use your access token, confirmed accounts)  
 
+### Supported Professional Translation Services
+ - **DeepL** (use your key)
+
 ### Platform
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
@@ -48,12 +51,12 @@ More animated examples are in the `doc` folder.
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 7. Image generation with DALL-E-3, SD3, Imagen2 from topics (use copy/paste after generation)
+8. Professional translation of all topics by DeepL
 
 ## Other Use Cases (implemented or easy to add)
 - Export mindmap to Mermaid syntax or any other text format
 - Change map layout by using a template (macOS)
 - Reorder topics by business value or importance
-- Translate the map to other languages
 - Misspelling or syntax correction
 - Create a map based on external text data
 
@@ -193,6 +196,19 @@ Image generation with SD3 is the most flexible, as you can use a seed value, neg
 ### Google Vertex AI - Imagen2  
 Image generation results are too simple by now as prompt engineering is also most important here. Imagen2 has the highest image resolution (1:1 with 1536x1536). Imagen2 is GA (globally available) but there is an approval process to get access to the API.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
+
+## Translation systems
+### DeepL
+Translation works for these languages:
+```
+# supported languages as source
+# BG,CS,DA,DE,EL,EN,ES,ET,FI,FR,HU,ID,IT,JA,KO,LT,LV,NB,NL,PL,PT,RO,RU,SK,SL,SV,TR,UK,ZH
+
+# supported languages as target
+# BG.CS.DA.DE.EL.EN-GB.EN-US.ES.ET.FI.FR.HU.ID.IT.JA.KO.LT.LV.NB.NL.PL.PT-BR.PT-PT.RO.RU.SK.SL.SV.TR.UK.ZH
+```
+Source language will be detected automatically. "Formality" parameter is not supported for all languages, so it is disabled by now. Context is also permitted as DeepL states it's deprecated.
+Api is directed to the free tier. If you have a paid subscription change the URL.
 
 ## Prompt crafting  
 Prompt crafting is lightly implemented using the following strategy:  

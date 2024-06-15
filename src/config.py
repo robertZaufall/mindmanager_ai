@@ -128,8 +128,8 @@ elif "GEMINI" in CLOUD_TYPE:
             raise Exception("Error: Unknown GEMINI model")
 
         PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
-        API_ENDPOINT="us-central1-aiplatform.googleapis.com"
-        LOCATION_ID="us-central1"
+        API_ENDPOINT = "us-central1-aiplatform.googleapis.com"
+        LOCATION_ID = "us-central1"
         GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
         API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:generateContent"
         KEY_HEADER_TEXT = "Authorization"
@@ -270,10 +270,21 @@ elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
     NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
 
     PROJECT_ID_IMAGE = os.getenv('GOOGLE_PROJECT_ID_AI')
-    API_ENDPOINT_IMAGE="us-central1-aiplatform.googleapis.com"
-    LOCATION_ID_IMAGE="us-central1"
+    API_ENDPOINT_IMAGE = "us-central1-aiplatform.googleapis.com"
+    LOCATION_ID_IMAGE = "us-central1"
     GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
     API_URL_IMAGE = f"https://{API_ENDPOINT_IMAGE}/v1/projects/{PROJECT_ID_IMAGE}/locations/{LOCATION_ID_IMAGE}/publishers/google/models/{MODEL_ID_IMAGE}:predict"
     
     KEY_HEADER_TEXT_IMAGE = "Authorization"
     KEY_HEADER_VALUE_IMAGE = "Bearer " + GOOGLE_ACCESS_TOKEN_IMAGE
+
+
+CLOUD_TYPE_TRANSLATION = 'DEEPL'
+
+if "DEEPL" in CLOUD_TYPE_TRANSLATION:
+    DEEPL_API_KEY = os.getenv('DEEPL_API_KEY')
+    #DEEPL_BASE_URL = "https://api.deepl.com/v2/translate"
+    DEEPL_BASE_URL = "https://api-free.deepl.com/v2/translate"
+
+    KEY_HEADER_TEXT_TRANSLATION = "Authorization"
+    KEY_HEADER_VALUE_TRANSLATION = "DeepL-Auth-Key " + DEEPL_API_KEY

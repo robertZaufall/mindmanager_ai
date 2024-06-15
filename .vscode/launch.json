@@ -43,6 +43,24 @@
       "args": ["image"],
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> Translate -> German",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["translate_deepl+DE"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+    {
+      "name": "Python: process.py -> Translate -> English",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["translate_deepl+EN-US"],
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }

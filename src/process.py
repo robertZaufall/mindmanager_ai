@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import config
 import prompts
-import llm
 import mermaid
 import sys
+
+import ai_llm
+import ai_image
+import ai_translation
 
 if sys.platform.startswith('win'):
     import mindmanager_win as mindmanager
@@ -105,12 +108,23 @@ def main(param, charttype):
                         top_most_topic = topics[0]
                         subtopics = ",".join(topics[1:])
                 
-                image_path = llm.call_llm_image(prompts.prompt_image(top_most_topic, subtopics))
-                if config.INSERT_IMAGE_AS_BACKGROUND:
-                    mindm.set_document_background_image(image_path) # implemented for Windows only
-                
+                image_path = ai_image.call_image_ai(prompts.prompt_image(top_most_topic, subtopics))
+                if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
+                    mindm.set_document_background_image(image_path)
+                else:
+                    import PIL as Image
+                    Image.show(Image.open(image_path))
+
+            elif "translate_deepl" in param:
+                language = param.split("+")[-1]
+                new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
+
+                if new_mermaid_diagram != "":
+                    max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
+                    mindm.finalize(max_topic_level)
+
             else:
-                new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+                new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
 
                 if new_mermaid_diagram != "":
                     max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
@@ -133,6 +147,7 @@ if __name__ == "__main__":
     # prc_org, prj_prc_org, exp_prj_prc_org, prj_org
     # finalize (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
     # image (experimental)
+    # translate_deepl+EN-US, translate_deepl+DE, ...
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)
