@@ -25,9 +25,10 @@ More animated examples are in the `doc` folder.
   - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
 
 ### Supported Image Generation Systems
-  - **Azure OpenAI** w/ ***DALL-E-3*** (use your key) -> **best tested**
-  - **OpenAI** w/ ***DALL-E-3*** (use your key) -> **best results**
+  - **Azure OpenAI** w/ ***DALL-E 3*** (use your key) -> **best tested**
+  - **OpenAI** w/ ***DALL-E 3*** (use your key) -> **best results**
   - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
+  - **Google Vertex AI** w/ ***Imagen2 V6*** (use your access token, confirmed accounts)  
 
 ### Platform
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
@@ -46,7 +47,7 @@ More animated examples are in the `doc` folder.
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
-7. Image generation with DALL-E-3 or SD3 from topics (use copy/paste after generation)
+7. Image generation with DALL-E-3, SD3, Imagen2 from topics (use copy/paste after generation)
 
 ## Other Use Cases (implemented or easy to add)
 - Export mindmap to Mermaid syntax or any other text format
@@ -160,14 +161,15 @@ You can also select one or more topics and start the automation for just these t
 Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image`.  
 After a little while, the image will be opened and also stored in the `src/images` folder.  
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support. For Windows I have to look into this topic first.   
-The results from the generation process are good with DALL-E-3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
-For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt.). DALL-E-3 does not support a seed value anymore (by the time of writing).  
+The results from the generation process are good with DALL-E 3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
+For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt.). DALL-E 3 does not support a seed value anymore (by the time of writing).  
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
-The solution ist best tested with `Azure OpenAI`. Results are perfect but slow for every use case. Execution time is far better with `OpenAI / GPT-4o`.  
+The solution ist best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `GPT-4o` model.  
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
+Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
 ### Ollama (hosted locally - no internet access needed)
 Ollama results are dependent on the used model. `LLama3`, `Zephyr` and `Mixtral` are working well.  
 ### Anthropic Claude 3
@@ -178,6 +180,15 @@ groq is sure the fastest LLM platform by now. Payment for API usage is still unc
 Perplexity works perfekt as an univeral LLM platform.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
 MLX results are dependent on the used model. `LLama3` works well.
+
+## Iamge generation systems  
+### Azure OpenAI / OpenAI - DALL-E 3  
+The solution ist best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images.  
+### Stability AI - Stable Diffusion 3  
+Image genration with SD3 is the most flexible, as you can use a seed value, negative prompt etc. Prompt engineering is most important here, as the results are far from beeing perfect by now.  
+### Google Vertex AI - Imagen2  
+Image generation results are too simple by now as prompt engineering is also most important here. Imagen2 has the highest image resolution (1:1 with 1536x1536). Imagen2 is GA (globally available) but there is an approval process to get access to the API.  
+Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
 
 ## Prompt crafting  
 Prompt crafting is lightly implemented using the following strategy:  

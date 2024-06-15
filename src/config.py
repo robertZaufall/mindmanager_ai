@@ -198,47 +198,40 @@ CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
+# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
 
 RESIZE_IMAGE = True
 RESIZE_IMAGE_WIDTH = 512  # source size is 1024
 RESIZE_IMAGE_HEIGHT = 512 # source size is 1024
 
-if "AZURE" in CLOUD_TYPE_IMAGE:
+if "AZURE" in CLOUD_TYPE_IMAGE or "OPENAI" in CLOUD_TYPE_IMAGE:
     EXPLICIT_STYLE = "digital art"
-
-    IMAGE_QUALITY = "hd"  # hd, standard
-    IMAGE_STYLE = "vivid" # natural, vivid
-    OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
-    OPENAI_API_URL_IMAGE = os.getenv('OPENAI2_API_BASE')
-    OPENAI_API_VERSION_IMAGE = '2024-02-01'
-
-    API_URL_IMAGE = f"{OPENAI_API_URL_IMAGE}openai/deployments/{OPENAI_DEPLOYMENT_IMAGE}/images/generations?api-version={OPENAI_API_VERSION_IMAGE}"
-    KEY_HEADER_TEXT_IMAGE = "api-key"
-    KEY_HEADER_VALUE_IMAGE = OPENAI_API_KEY_IMAGE
-
-elif "OPENAI" in CLOUD_TYPE_IMAGE:
-    EXPLICIT_STYLE = "digital art"
-
     IMAGE_QUALITY = "hd"  # hd, standard
     IMAGE_STYLE = "vivid" # natural, vivid
 
-    OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
-    OPENAI_API_URL_IMAGE = "https://api.openai.com/v1/images/generations"
-    OPENAI_DEPLOYMENT_IMAGE = ""
-    OPENAI_API_VERSION_IMAGE = ""
+    if "AZURE" in CLOUD_TYPE_IMAGE:
+        OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
+        OPENAI_API_VERSION_IMAGE = '2024-02-01'
+        OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+        OPENAI_MODEL_IMAGE = ""
+        OPENAI_API_URL_IMAGE = os.getenv('OPENAI2_API_BASE')
 
-    OPENAI_MODEL_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    API_URL_IMAGE = OPENAI_API_URL_IMAGE
-    KEY_HEADER_TEXT_IMAGE = "Authorization"
-    KEY_HEADER_VALUE_IMAGE = "Bearer " + OPENAI_API_KEY_IMAGE
+        API_URL_IMAGE = f"{OPENAI_API_URL_IMAGE}openai/deployments/{OPENAI_DEPLOYMENT_IMAGE}/images/generations?api-version={OPENAI_API_VERSION_IMAGE}"
+        KEY_HEADER_TEXT_IMAGE = "api-key"
+        KEY_HEADER_VALUE_IMAGE = OPENAI_API_KEY_IMAGE
+
+    elif "OPENAI" in CLOUD_TYPE_IMAGE:
+        OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
+        OPENAI_API_VERSION_IMAGE = ""
+        OPENAI_DEPLOYMENT_IMAGE = ""
+        OPENAI_MODEL_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+        OPENAI_API_URL_IMAGE = "https://api.openai.com/v1/images/generations"
+
+        API_URL_IMAGE = OPENAI_API_URL_IMAGE
+        KEY_HEADER_TEXT_IMAGE = "Authorization"
+        KEY_HEADER_VALUE_IMAGE = "Bearer " + OPENAI_API_KEY_IMAGE
 
 elif "STABILITYAI" in CLOUD_TYPE_IMAGE:
-    OUTPUT_FORMAT_IMAGE = "png"         # png, jpeg, webp
-    OUTPUT_ASPECT_RATIO_IMAGE = "1:1"   # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
-    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
-    SEED_IMAGE = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
-    
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
     MODEL_ENDPOINT = MODEL_ID_IMAGE.split("-")[0]
 
@@ -248,5 +241,38 @@ elif "STABILITYAI" in CLOUD_TYPE_IMAGE:
     STYLE_PRESET = "digital-art"
     EXPLICIT_STYLE = STYLE_PRESET if MODEL_ENDPOINT != "core" else ""
 
+    OUTPUT_FORMAT_IMAGE = "png"         # png, jpeg, webp
+    OUTPUT_ASPECT_RATIO_IMAGE = "1:1"   # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
+    SEED_IMAGE = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
+
+    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+
     STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
     API_URL_IMAGE = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"
+
+elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
+    # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
+    # -> open console
+    # gcloud auth print-access-token
+    # (Service Account / Key -> Create new key -> JSON)
+    # (gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>)
+    model = CLOUD_TYPE_IMAGE.split("+")[-1]
+    if model == "IMAGEN2-6":
+        MODEL_ID_IMAGE = "imagegeneration@006"
+    else:
+        raise Exception("Error: Unknown GOOGLE image model")
+
+    EXPLICIT_STYLE = "digital art"
+    OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1536x1536) 9:16 (1152x2016) 16:9 (2016x1134) 3:4 (1344x1792) 4:3 (1792x1344)
+    ADD_WATERMARK = False
+
+    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+
+    PROJECT_ID_IMAGE = os.getenv('GOOGLE_PROJECT_ID_AI')
+    API_ENDPOINT_IMAGE="us-central1-aiplatform.googleapis.com"
+    LOCATION_ID_IMAGE="us-central1"
+    GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
+    API_URL_IMAGE = f"https://{API_ENDPOINT_IMAGE}/v1/projects/{PROJECT_ID_IMAGE}/locations/{LOCATION_ID_IMAGE}/publishers/google/models/{MODEL_ID_IMAGE}:predict"
+    
+    KEY_HEADER_TEXT_IMAGE = "Authorization"
+    KEY_HEADER_VALUE_IMAGE = "Bearer " + GOOGLE_ACCESS_TOKEN_IMAGE

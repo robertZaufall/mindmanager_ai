@@ -401,6 +401,46 @@ def call_llm_image(str_user):
             else:
                 raise Exception(str(response.json()))
             
+        elif "GOOGLEPROJECT" in config.CLOUD_TYPE_IMAGE:
+            payload = {
+                "instances": [
+                    {
+                        "prompt": str_user
+                    }
+                ],
+                "parameters": {
+                    "sampleCount": 1,
+                    "addWatermark": config.ADD_WATERMARK,
+                }
+            }
+
+            if config.KEY_HEADER_TEXT_IMAGE != "":
+                headers = {
+                    "Content-Type": "application/json",
+                    config.KEY_HEADER_TEXT_IMAGE : config.KEY_HEADER_VALUE_IMAGE
+                }
+            else:
+                headers = { "Content-Type": "application/json" }
+
+            response = requests.post(
+                config.API_URL_IMAGE,
+                headers=headers,
+                data=json.dumps(payload)
+            )
+            response_text = response.text
+            response_status = response.status_code
+
+            if response_status != 200:
+                raise Exception(f"Error: {response_status} - {response_text}")
+
+            parsed_json = json.loads(response_text)
+
+            b64_image = parsed_json['predictions'][0]['bytesBase64Encoded']
+            image_data = base64.b64decode(b64_image)
+            image = Image.open(BytesIO(image_data))
+            image.save(image_path)
+
+
         if config.RESIZE_IMAGE:
             image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
             image.save(image_path)
