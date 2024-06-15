@@ -76,7 +76,7 @@ Change to `windows` folder:
 ```
 cd windows
 ```
-Run `install.bat` or  the following commands (azure.identity only for Azure EntryID authnetication):
+Run `install.bat` or  the following commands (azure.identity only for Azure EntryID authentication):
 ```
 choco install python3
 pip install --upgrade requests
