@@ -1,4 +1,4 @@
-# MindManager automation and LLM / AI Integration Windows + macOS
+# MindManager Automation and LLM / AI Integration Windows + macOS
 
 These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
@@ -8,7 +8,7 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 ## macOS  
 ![Example](doc/anim_neu_2.gif)  
 
-Remark: Image generation with DALL-E-3 or SD3 needs far more time than in these animations.  
+Note: Image generation with DALL-E-3 or SD3 needs far more time than in these animations.  
 More animated examples are in the `doc` folder.
 
 ## Features
@@ -33,7 +33,7 @@ More animated examples are in the `doc` folder.
 ### Platform
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
-- Just native LLM requests via API calls - **no middleware needed**
+- Only native API requests to AI systems - **no middleware needed**
 
 ### Layout
 - Map format can be radial map or orgchart
@@ -139,7 +139,10 @@ The workflows are then available at the "MindManager" main menu -> Services
 
 ### VSCode
 
-I prefer to execute the python script directly from VSCode. Here you can easily adjust the settings, try different LLMs on the fly and even debug, if problems occur (external systems are sometimes not available).
+I prefer to execute the python script directly from VSCode. Here you can easily adjust the settings, try different LLMs on the fly and even debug, if problems occur (external systems are sometimes not available).  
+There are some actions already predefined for quick execution.  
+
+![VSCode](doc/vscode.png)  
 
 ## How to use  
 ### Configuration  
@@ -166,7 +169,7 @@ For Stable Diffusion the filename is enriched with the generation **seed**. This
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
-The solution ist best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `GPT-4o` model.  
+The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `GPT-4o` model.  
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
@@ -177,15 +180,15 @@ Anthropic Claude 3 results are ogood. The OPUS model is a little bit expensive.
 ### groq (platform)
 groq is sure the fastest LLM platform by now. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-05-05).  
 ### Perplexity (platform)
-Perplexity works perfekt as an univeral LLM platform.  
+Perplexity works perfect as an universal LLM platform.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
 MLX results are dependent on the used model. `LLama3` works well.
 
-## Iamge generation systems  
+## Image generation systems  
 ### Azure OpenAI / OpenAI - DALL-E 3  
-The solution ist best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images.  
+The solution is best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images.  
 ### Stability AI - Stable Diffusion 3  
-Image genration with SD3 is the most flexible, as you can use a seed value, negative prompt etc. Prompt engineering is most important here, as the results are far from beeing perfect by now.  
+Image generation with SD3 is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen2  
 Image generation results are too simple by now as prompt engineering is also most important here. Imagen2 has the highest image resolution (1:1 with 1536x1536). Imagen2 is GA (globally available) but there is an approval process to get access to the API.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
