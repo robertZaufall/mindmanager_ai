@@ -9,12 +9,6 @@ def call_translation_ai(text, language):
 
         # DeepL
         if "DEEPL" in config.CLOUD_TYPE_TRANSLATION:
-
-            # supported languages as source
-            # BG,CS,DA,DE,EL,EN,ES,ET,FI,FR,HU,ID,IT,JA,KO,LT,LV,NB,NL,PL,PT,RO,RU,SK,SL,SV,TR,UK,ZH
-
-            # supported languages as target
-            # BG.CS.DA.DE.EL.EN-GB.EN-US.ES.ET.FI.FR.HU.ID.IT.JA.KO.LT.LV.NB.NL.PL.PT-BR.PT-PT.RO.RU.SK.SL.SV.TR.UK.ZH
     
             payload = {
                 "text": [ 
