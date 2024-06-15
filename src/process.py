@@ -112,8 +112,9 @@ def main(param, charttype):
                 if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
                     mindm.set_document_background_image(image_path)
                 else:
-                    import PIL as Image
-                    Image.show(Image.open(image_path))
+                    from PIL import Image
+                    image = Image.open(image_path)  
+                    image.show()
 
             elif "translate_deepl" in param:
                 language = param.split("+")[-1]
