@@ -205,10 +205,10 @@ Translation works for these languages:
 # BG,CS,DA,DE,EL,EN,ES,ET,FI,FR,HU,ID,IT,JA,KO,LT,LV,NB,NL,PL,PT,RO,RU,SK,SL,SV,TR,UK,ZH
 
 # supported languages as target
-# BG.CS.DA.DE.EL.EN-GB.EN-US.ES.ET.FI.FR.HU.ID.IT.JA.KO.LT.LV.NB.NL.PL.PT-BR.PT-PT.RO.RU.SK.SL.SV.TR.UK.ZH
+# BG,CS,DA,DE,EL,EN-GB,EN-US,ES,ET,FI,FR,HU,ID,IT,JA,KO,LT,LV,NB,NL,PL,PT-BR,PT-PT,RO,RU,SK,SL,SV,TR,UK,ZH
 ```
-Source language will be detected automatically. "Formality" parameter is not supported for all languages, so it is disabled by now. Context is also permitted as DeepL states it's deprecated.
-Api is directed to the free tier. If you have a paid subscription change the URL.
+Source language will be detected automatically. `Formality` parameter is not supported for all languages, so it is disabled by now. `Context` parameter was not used as DeepL states it's deprecated.
+API requests point to the free tier. If you have a paid subscription change the URL in the `config.py`.
 
 ## Prompt crafting  
 Prompt crafting is lightly implemented using the following strategy:  
