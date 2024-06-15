@@ -3,6 +3,8 @@ $baseRegistryPath = "HKCU:\Software\Mindjet\MindManager\23\Macro"
   
 # Define the macros with their respective GUIDs, names, and file paths  
 $macros = @(  
+    @{ GUID = "{04d9db3e-16b7-4bd8-aa47-00ebfabb2693}"; Name = "Translate to EN"; Path = "translate_en.mmbas" },  
+    @{ GUID = "{056ff458-4156-48c0-a051-0510da9aa1aa}"; Name = "Translate to DE"; Path = "translate_de.mmbas" },  
     @{ GUID = "{07815d9b-2bd4-4dee-acee-15908829985f}"; Name = "Cluster"; Path = "cluster.mmbas" },  
     @{ GUID = "{1ca2390b-fbfe-4bb5-b526-6b3deadf2ba3}"; Name = "Examples"; Path = "examples.mmbas" },  
     @{ GUID = "{2472b281-2c60-4b2a-9ee0-8b360678fcfd}"; Name = "Refine"; Path = "refine.mmbas" },  
@@ -18,7 +20,7 @@ $macros = @(
     @{ GUID = "{e53fe7fc-645d-437a-a8c2-92226dfb5a65}"; Name = "Complexity_3"; Path = "complexity_3.mmbas" },  
     @{ GUID = "{e9e5ac24-228c-46e0-867b-9df3bb2c372a}"; Name = "Generate Image"; Path = "generate_image.mmbas" }  
 )  
-  
+
 # Get the local app data path  
 $localAppDataPath = [System.Environment]::GetFolderPath('LocalApplicationData')  
   
