@@ -10,6 +10,9 @@ class Mindmanager:
         self.orgchart_template = mactypes.Alias(current_folder_path + '/../macos/Org-Chart Map.mmat')
         self.radial_template = mactypes.Alias(current_folder_path + '/../macos/Radial Map.mmat')
     
+    def set_document_background_image(self, path):
+        pass
+    
     def document_exists(self):
         return self.mindmanager.documents[1].exists()
 

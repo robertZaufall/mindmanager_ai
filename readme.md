@@ -163,7 +163,8 @@ You can also select one or more topics and start the automation for just these t
 ### Image generation
 Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image`.  
 After a little while, the image will be opened and also stored in the `src/images` folder.  
-Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support. For Windows I have to look into this topic first.   
+Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
+On Windows the image can be automatically set as the background image of the map.     
 The results from the generation process are good with DALL-E 3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
 For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt.). DALL-E 3 does not support a seed value anymore (by the time of writing).  
 

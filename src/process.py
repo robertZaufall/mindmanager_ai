@@ -105,7 +105,9 @@ def main(param, charttype):
                         top_most_topic = topics[0]
                         subtopics = ",".join(topics[1:])
                 
-                image_result = llm.call_llm_image(prompts.prompt_image(top_most_topic, subtopics))
+                image_path = llm.call_llm_image(prompts.prompt_image(top_most_topic, subtopics))
+                if config.INSERT_IMAGE_AS_BACKGROUND:
+                    mindm.set_document_background_image(image_path) # implemented for Windows only
                 
             else:
                 new_mermaid_diagram = llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)

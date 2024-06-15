@@ -6,6 +6,14 @@ class Mindmanager:
         self.mindmanager = win32com.client.Dispatch("Mindmanager.Application")
         self.mindmanager.Options.BalanceNewMainTopics = True
         self.charttype = charttype
+    
+    def set_document_background_image(self, path):
+        bg_object = self.mindmanager.ActiveDocument.Background
+        if bg_object.HasImage:
+            bg_object.RemoveImage
+        bg_object.InsertImage(path)
+        bg_object.TileOption = 1 # center
+        bg_object.Transparency = 90
 
     def document_exists(self):
         return True if self.mindmanager.ActiveDocument else False

@@ -446,4 +446,4 @@ def call_llm_image(str_user):
             image.save(image_path)
 
         image.show()
-        return image
+        return image_path
