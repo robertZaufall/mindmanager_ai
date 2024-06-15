@@ -61,6 +61,8 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3-8B-Instruct-4bit --port 8080 --log-level DEBUG
 # CLOUD_TYPE = 'MLX+llama3-8b'                             # good
 
+USE_AZURE_ENTRA = True
+USE_GOOGLE_SSO = True
 
 LLM_TEMPERATURE = float('0.5')
 

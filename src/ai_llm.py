@@ -50,6 +50,10 @@ def call_llm(str_user):
     str_system = config.SYSTEM_PROMPT
 
     # Azure / OpenAI
+    if "AZURE" in config.CLOUD_TYPE and config.USE_AZURE_ENTRA:
+        import ai_llm_entra
+        return ai_llm_entra.call_llm_azure_entra(str_user)
+    
     if "AZURE" in config.CLOUD_TYPE or "OPENAI" in config.CLOUD_TYPE:
         payload = {
             "max_tokens": config.MAX_TOKENS,

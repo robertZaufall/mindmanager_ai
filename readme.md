@@ -14,7 +14,7 @@ More animated examples are in the `doc` folder.
 ## Features
 
 ### Supported LLMs
-  - **Azure OpenAI** w/ ***GPT-4o*** (use your key) -> **best tested**
+  - **Azure OpenAI** w/ ***GPT-4o*** (use your key or log in with Azure EntraID) -> **best tested**
   - **OpenAI** w/ ***GPT-4o*** (use your key) -> **best results**
   - **Anthropic** w/ ***Claude 3*** (use your key)  
   - **Groq** (platform) w/ ***LLama3*** (use your key)
@@ -76,13 +76,16 @@ Change to `windows` folder:
 ```
 cd windows
 ```
-Run `install.bat` or  the following commands:
+Run `install.bat` or  the following commands (azure.identity only for Azure EntryID authnetication):
 ```
 choco install python3
 pip install --upgrade requests
 pip install --upgrade pywin32
 pip install --upgrade Pillow
 pip install --upgrade httpx
+
+pip install --upgrade azure.identity
+
 powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
 ```
 Check in registry and MindManager, if the macros are available (right click on topic).  
@@ -98,12 +101,14 @@ You can also check here if the path to the python files is correct.
 
 ### macOS  
 Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
-Install required python libraries:
+Install required python libraries (azure.identity only for Azure EntryID authentication):
 ```
 pip install --upgrade requests
 pip install --upgrade appscript
 pip install --upgrade Pillow
 pip install --upgrade httpx
+
+pip install --upgrade azure.identity
 ```
 Create the directory structure `~/git/mindmanager_ai` with Terminal:
 ```
@@ -173,7 +178,7 @@ For Stable Diffusion the filename is enriched with the generation **seed**. This
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
-The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `GPT-4o` model.  
+The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `GPT-4o` model. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
