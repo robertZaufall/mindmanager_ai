@@ -13,7 +13,7 @@ class Mindmanager:
             bg_object.RemoveImage
         bg_object.InsertImage(path)
         bg_object.TileOption = 1 # center
-        bg_object.Transparency = 90
+        bg_object.Transparency = 88
 
     def document_exists(self):
         return True if self.mindmanager.ActiveDocument else False

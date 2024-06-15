@@ -201,8 +201,8 @@ CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
 # CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
 
 RESIZE_IMAGE = False
-RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
-RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024
+RESIZE_IMAGE_WIDTH = 800  # source size is 1024
+RESIZE_IMAGE_HEIGHT = 800 # source size is 1024
 INSERT_IMAGE_AS_BACKGROUND = True
 
 if "AZURE" in CLOUD_TYPE_IMAGE or "OPENAI" in CLOUD_TYPE_IMAGE:
