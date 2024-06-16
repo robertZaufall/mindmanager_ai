@@ -5,3 +5,4 @@ _ignore/**
 .DS_Store
 macos/automator/.DS_Store
 token_cache.json
+src/gcp_test.py
