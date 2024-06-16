@@ -202,14 +202,14 @@ else:
 
 
 # CLOUD_TYPE_IMAGE = ''
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
-CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
+# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 800  # source size is 1024
