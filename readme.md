@@ -76,7 +76,7 @@ Change to `windows` folder:
 ```
 cd windows
 ```
-Run `install.bat` or  the following commands (azure.identity only for Azure EntryID authentication):
+Run `install.bat` or  the following commands (azure.identity only for Azure EntryID authentication, google-auth only for GCP authentication):
 ```
 choco install python3
 pip install --upgrade requests
@@ -85,6 +85,7 @@ pip install --upgrade Pillow
 pip install --upgrade httpx
 
 pip install --upgrade azure.identity
+pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
 
 powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
 ```
@@ -101,7 +102,7 @@ You can also check here if the path to the python files is correct.
 
 ### macOS  
 Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
-Install required python libraries (azure.identity only for Azure EntryID authentication):
+Install required python libraries (azure.identity only for Azure EntryID authentication, google-auth only for GCP authentication):
 ```
 pip install --upgrade requests
 pip install --upgrade appscript
@@ -109,6 +110,7 @@ pip install --upgrade Pillow
 pip install --upgrade httpx
 
 pip install --upgrade azure.identity
+pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
 ```
 Create the directory structure `~/git/mindmanager_ai` with Terminal:
 ```
