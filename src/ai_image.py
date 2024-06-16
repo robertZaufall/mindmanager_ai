@@ -105,6 +105,11 @@ def call_image_ai(str_user):
                 raise Exception(str(response.json()))
             
         elif "GOOGLEPROJECT" in config.CLOUD_TYPE_IMAGE:
+
+            if "GOOGLEPROJECT" in config.CLOUD_TYPE_IMAGE and config.USE_GCP_OA2:
+                import ai_gcp
+                return ai_gcp.call_image_ai(str_user, image_path)
+
             payload = {
                 "instances": [
                     {

@@ -62,7 +62,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                    # best
 # CLOUD_TYPE = 'MLX+llama3-8b'                             # good
 
 USE_AZURE_ENTRA = False
-USE_GCP_OA2 = False
+USE_GCP_OA2 = True # only relevant for GEMINIPROJECT by now
 
 LLM_TEMPERATURE = float('0.5')
 
@@ -136,6 +136,15 @@ elif "GEMINI" in CLOUD_TYPE:
         API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:generateContent"
         KEY_HEADER_TEXT = "Authorization"
         KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
+
+        # GCP
+        # gcloud auth application-default login
+        GCP_CLIENT_ID = os.getenv('GCP_CLIENT_ID')
+        GCP_CLIENT_SECRET = os.getenv('GCP_CLIENT_SECRET')
+        GCP_PROJECT_ID = PROJECT_ID
+        GCP_ENDPOINT = API_ENDPOINT
+        GCP_LOCATION = LOCATION_ID
+
     else:
         raise Exception("Error: Unknown GEMINI system")
 
@@ -193,14 +202,14 @@ else:
 
 
 # CLOUD_TYPE_IMAGE = ''
-CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
-# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
+CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 800  # source size is 1024
@@ -279,6 +288,14 @@ elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
     
     KEY_HEADER_TEXT_IMAGE = "Authorization"
     KEY_HEADER_VALUE_IMAGE = "Bearer " + GOOGLE_ACCESS_TOKEN_IMAGE
+
+    # GCP
+    # gcloud auth application-default login
+    GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
+    GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
+    GCP_PROJECT_ID_IMAGE = PROJECT_ID_IMAGE
+    GCP_ENDPOINT_IMAGE = API_ENDPOINT_IMAGE
+    GCP_LOCATION_IMAGE = LOCATION_ID_IMAGE
 
 
 CLOUD_TYPE_TRANSLATION = 'DEEPL'

@@ -123,6 +123,11 @@ def call_llm(str_user):
 
     # GEMINI
     elif "GEMINI" in config.CLOUD_TYPE:
+
+        if "GEMINIPROJECT" in config.CLOUD_TYPE and config.USE_GCP_OA2:
+            import ai_gcp
+            return ai_gcp.call_llm_gcp(str_user)
+
         payload = {
             "contents": {
                 "role": "user",

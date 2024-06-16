@@ -95,4 +95,8 @@ def call_image_ai(str_user, image_path):
     with open(image_path, "wb") as image_file:
         image_file.write(generated_image)
 
+    if config.RESIZE_IMAGE:
+        image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
+        image.save(image_path)
+            
     return image_path

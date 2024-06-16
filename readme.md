@@ -20,7 +20,7 @@ More animated examples are in the `doc` folder.
   - **Groq** (platform) w/ ***LLama3*** (use your key)
   - **Perplexity** (platform) w/ ***LLama3*** (use your key)
   - **Google Gemini** w/ ***Pro*** and ***Flash*** (use your key)  
-  - **Google Vertex AI** w/ ***Gemini Pro*** and ***Gemini Flash*** (use your access token)
+  - **Google Vertex AI** w/ ***Gemini Pro*** and ***Gemini Flash*** (use your access token / OAth2)
   - **Ollama** (local) w/ any LLM (use ***LLama3***, ***Zephyr*** or ***Mixtral*** model for best results)
   - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
 
@@ -28,7 +28,7 @@ More animated examples are in the `doc` folder.
   - **Azure OpenAI** w/ ***DALL-E 3*** (use your key or log in with Azure EntraID) -> **best tested**
   - **OpenAI** w/ ***DALL-E 3*** (use your key) -> **best results**
   - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
-  - **Google Vertex AI** w/ ***Imagen2 V6*** (use your access token, confirmed accounts)  
+  - **Google Vertex AI** w/ ***Imagen2 V6*** (use your access token / OAth2, GCP approval)  
 
 ### Supported Professional Translation Services
  - **DeepL** (use your key)
@@ -85,7 +85,8 @@ pip install --upgrade Pillow
 pip install --upgrade httpx
 
 pip install --upgrade azure.identity
-pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client 
+pip install --upgrade google-cloud-aiplatform google-auth
 
 powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
 ```
@@ -110,7 +111,8 @@ pip install --upgrade Pillow
 pip install --upgrade httpx
 
 pip install --upgrade azure.identity
-pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client 
+pip install --upgrade google-cloud-aiplatform google-auth
 ```
 Create the directory structure `~/git/mindmanager_ai` with Terminal:
 ```
