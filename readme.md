@@ -287,6 +287,9 @@ You can also use the content inside the Mermaid online editor (https://mermaid.l
 
 ![Mermaid](doc/mermaid.png)  
 
+## Development of this project
+
+[![Development](http://img.youtube.com/vi/cAut4ktprX0/0.jpg)](http://www.youtube.com/watch?v=cAut4ktprX0)
 
 ## Disclaimer
 The API execution time depends heavily on the used LLM model or system and token count.  
