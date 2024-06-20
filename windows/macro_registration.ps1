@@ -19,6 +19,7 @@ $macros = @(
     @{ GUID = "{875aed98-dd01-4667-a3ef-2a87d3fb00b7}"; Name = "Complexity_2"; Path = "complexity_2.mmbas" },  
     @{ GUID = "{e53fe7fc-645d-437a-a8c2-92226dfb5a65}"; Name = "Complexity_3"; Path = "complexity_3.mmbas" },  
     @{ GUID = "{e9e5ac24-228c-46e0-867b-9df3bb2c372a}"; Name = "Generate Image"; Path = "generate_image.mmbas" }  
+    @{ GUID = "{eca7391c-87c7-4ba2-be26-5ce7db82f457}"; Name = "Generate Glossary"; Path = "glossary.mmbas" }
 )  
 
 # Get the local app data path  

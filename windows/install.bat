@@ -3,6 +3,7 @@ pip install --upgrade requests
 pip install --upgrade pywin32
 pip install --upgrade Pillow
 pip install --upgrade httpx
+pip install --upgrade markdown
 
 rem pip install --upgrade azure.identity
 rem pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client 
