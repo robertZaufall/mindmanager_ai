@@ -137,7 +137,8 @@ def main(param, charttype):
                     html_fragment = markdown.markdown(content)
                 except Exception as e:
                     with open(file_path + ".error", 'w') as f:
-                        f.write(f'caught {str(e)}: e')                
+                        f.write(f'caught {str(e)}: e') 
+                    raise   
 
                 html = prompts.convert_markdown_to_html("Glossary", html_fragment)
 
