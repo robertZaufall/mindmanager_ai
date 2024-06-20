@@ -16,7 +16,7 @@ More animated examples are in the `doc` folder.
 ### Supported LLMs
   - **Azure OpenAI** w/ ***GPT-4o*** (use your key or log in with Azure EntraID) -> **best tested**
   - **OpenAI** w/ ***GPT-4o*** (use your key) -> **best results**
-  - **Anthropic** w/ ***Claude 3*** (use your key)  
+  - **Anthropic** w/ ***Claude 3 / 3.5*** (use your key)  
   - **Groq** (platform) w/ ***LLama3*** (use your key)
   - **Perplexity** (platform) w/ ***LLama3*** (use your key)
   - **Google Gemini** w/ ***Pro*** and ***Flash*** (use your key)  
@@ -172,7 +172,7 @@ You can have more than one open document in MindManager. The document which shou
 To process the whole map, select the central topic (for right-clicking) or no topic at all (call macro manually (Windows), choose Automator Workflow from Mindmanager Menu -> Services or call the python script from VSCode or commandline `python3 process.py <action> <format>`.  
 
 ### Map actions
-Select the central topic or deselect all topics and call the activation.  
+Select the central topic or deselect all topics and call the automation.  
 You can also select one or more topics and start the automation for just these topics, e.g. to generate examples for these topics, refine just these topics etc.  
 
 ### Image generation
@@ -188,13 +188,13 @@ For Stable Diffusion the filename is enriched with the generation **seed**. This
 The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `GPT-4o` model. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
-Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
+Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
 ### Ollama (hosted locally - no internet access needed)
 Ollama results are dependent on the used model. `LLama3`, `Zephyr` and `Mixtral` are working well.  
-### Anthropic Claude 3
-Anthropic Claude 3 results are ogood. The OPUS model is a little bit expensive.
-### groq (platform)
-groq is sure the fastest LLM platform by now. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-05-05).  
+### Anthropic Claude 3 / 3.5
+The newest Anthropic Claude 3.5 **Sonnet** model seems to be best in class. Anthropic Claude 3 **Opus* ist also very good but little bit expensive. Anthropic Claude 3 **Haiku** is very cheap and betteer than GPT-3.5.
+### Groq (platform)
+Groq is sure the fastest LLM platform by now. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-05-05).  
 ### Perplexity (platform)
 Perplexity works perfect as an universal LLM platform.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
@@ -207,7 +207,7 @@ The solution is best tested with `Azure OpenAI`. Results are very good. There is
 Image generation with SD3 is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen2  
 Image generation results are too simple by now as prompt engineering is also most important here. Imagen2 has the highest image resolution (1:1 with 1536x1536). Imagen2 is GA (globally available) but there is an approval process to get access to the API.  
-Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow will be implemented later).  
+Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
 
 ## Translation systems
 ### DeepL
