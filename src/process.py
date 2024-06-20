@@ -3,6 +3,8 @@ import config
 import prompts
 import mermaid
 import sys
+import os
+import uuid
 
 import ai_llm
 import ai_image
@@ -116,6 +118,34 @@ def main(param, charttype):
                     image = Image.open(image_path)  
                     image.show()
 
+            if param == "glossary":
+                folder_path_docs = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "docs")
+                if not os.path.exists(folder_path_docs): os.makedirs(folder_path_docs)
+
+                guid = uuid.uuid4()
+                folder_path_session = os.path.join(folder_path_docs, str(guid))
+                if not os.path.exists(folder_path_session): os.makedirs(folder_path_session)
+
+                # use markdown, as html needs too much tokens
+                target_format = "html"
+                target_format_llm = "markdown"
+
+                content = ai_llm.call_llm(prompts.prompt_glossary(mermaid_diagram, topic_texts, target_format_llm))
+
+                if target_format == "html" and target_format_llm == "markdown":
+                    content = prompts.convert_markdown_to_html("Glossary", content)
+
+                file_extension = ".html" if target_format == "html" else ".md"
+                file_path = os.path.join(folder_path_session, "glossary" + file_extension)
+                with open(file_path, 'w') as f:
+                    f.write(content)
+                print(f"Path is: {file_path}")
+
+                if platform == "darwin":
+                    os.system(f"open {file_path}")
+                if platform == "win":
+                    os.system(f"start {file_path}")
+
             elif "translate_deepl" in param:
                 language = param.split("+")[-1]
                 new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
@@ -149,6 +179,7 @@ if __name__ == "__main__":
     # finalize (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
     # image (experimental)
     # translate_deepl+EN-US, translate_deepl+DE, ...
+    # glossary
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

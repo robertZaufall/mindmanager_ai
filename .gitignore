@@ -1,6 +1,7 @@
 src/__pycache__/**
 src/log/**
 src/images/**
+src/docs/**
 _ignore/**
 .DS_Store
 macos/automator/.DS_Store
