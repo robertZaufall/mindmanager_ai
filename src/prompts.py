@@ -25,7 +25,7 @@ def prompt_image(top_most_topic, subtopics):
     )
     return str_user
 
-def prompt_glossary(text, topic_texts, target_format):
+def prompt_glossary(text, topic_texts):
     topics = f"\"{topic_texts}\"" if topic_texts else "the whole map"
 
     str_user = (
@@ -36,17 +36,13 @@ def prompt_glossary(text, topic_texts, target_format):
         f"Use the original used language. "
         f"Don't split terms and its descriptions within the same first character. "
         f"Do not add any additional text or explainings at the beginning or end to your answer. Do not use any technical keyword like 'html' or 'markdown' etc. at the start of the text.\n"
-        f"The desired target format is {str.upper(target_format)} and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n"
-        #"Use this style tag: <style>body {font-family: Helvetica, Arial, sans-serif;}; h1, h2 {font-weight: bold;}</style>\n"
-        #"<h1>Glossary</h1><h2>A</h2><ul><li><strong>A_Term1</strong>: Explanation for A_Term1</li><li><strong>A_Term2</strong>: Explanation for A_Term2</li></ul><h2>B</h2><ul><li><strong>B_Term1</strong>: Explanation for B_Term1</li>...</ul>...\n"
+        f"The desired target format is HTML and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n"
         f"Here is the data: \n" +
         text
     )
     return str_user
 
-def convert_markdown_to_html(title, markdown_text):  
-    import markdown
-    html_fragment = markdown.markdown(markdown_text)  
+def convert_markdown_to_html(title, html_fragment):  
     complete_html = f"""
 <!DOCTYPE html><html lang="en">
 <head>

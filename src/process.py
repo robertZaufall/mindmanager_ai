@@ -96,7 +96,13 @@ def main(param, charttype):
                         
                     if len(topic_texts) > 0: topic_texts = topic_texts[:-1]
 
+            guid = uuid.uuid4()
             if param == "image":
+                folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "images")
+                if not os.path.exists(folder_path): os.makedirs(folder_path)
+                file_name = f"{guid}.png"
+                file_path = os.path.join(folder_path, file_name)      
+
                 central_topic_text = mindm.get_title_from_topic(central_topic)
                 if len(topic_texts) == 0: 
                     top_most_topic = central_topic_text
@@ -110,7 +116,7 @@ def main(param, charttype):
                         top_most_topic = topics[0]
                         subtopics = ",".join(topics[1:])
                 
-                image_path = ai_image.call_image_ai(prompts.prompt_image(top_most_topic, subtopics))
+                image_path = ai_image.call_image_ai(file_path, prompts.prompt_image(top_most_topic, subtopics))
                 if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
                     mindm.set_document_background_image(image_path)
                 else:
@@ -119,32 +125,30 @@ def main(param, charttype):
                     image.show()
 
             if param == "glossary":
-                folder_path_docs = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "docs")
-                if not os.path.exists(folder_path_docs): os.makedirs(folder_path_docs)
+                folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "docs")
+                if not os.path.exists(folder_path): os.makedirs(folder_path)
+                file_name = f"{guid}.html"
+                file_path = os.path.join(folder_path, file_name)
 
-                guid = uuid.uuid4()
-                folder_path_session = os.path.join(folder_path_docs, str(guid))
-                if not os.path.exists(folder_path_session): os.makedirs(folder_path_session)
+                content = ai_llm.call_llm(prompts.prompt_glossary(mermaid_diagram, topic_texts))
 
-                # use markdown, as html needs too much tokens
-                target_format = "html"
-                target_format_llm = "markdown"
+                try:
+                    import markdown
+                    html_fragment = markdown.markdown(content)
+                except Exception as e:
+                    with open(file_path + ".error", 'w') as f:
+                        f.write(f'caught {str(e)}: e')                
 
-                content = ai_llm.call_llm(prompts.prompt_glossary(mermaid_diagram, topic_texts, target_format_llm))
+                html = prompts.convert_markdown_to_html("Glossary", html_fragment)
 
-                if target_format == "html" and target_format_llm == "markdown":
-                    content = prompts.convert_markdown_to_html("Glossary", content)
-
-                file_extension = ".html" if target_format == "html" else ".md"
-                file_path = os.path.join(folder_path_session, "glossary" + file_extension)
                 with open(file_path, 'w') as f:
-                    f.write(content)
-                print(f"Path is: {file_path}")
+                    f.write(html)
 
                 if platform == "darwin":
                     os.system(f"open {file_path}")
                 if platform == "win":
-                    os.system(f"start {file_path}")
+                    import subprocess
+                    subprocess.Popen(f'cmd /k start explorer.exe "{file_path}"', shell=False)
 
             elif "translate_deepl" in param:
                 language = param.split("+")[-1]

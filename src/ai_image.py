@@ -7,7 +7,7 @@ import sys
 
 import random
 
-def call_image_ai(str_user):
+def call_image_ai(image_path, str_user):
 
     import httpx
     from PIL import Image
@@ -17,12 +17,6 @@ def call_image_ai(str_user):
     from urllib.parse import urlparse
 
     if config.CLOUD_TYPE_IMAGE != "":
-
-        folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "images")
-        if not os.path.exists(folder_path): os.makedirs(folder_path)
-        guid = uuid.uuid4()
-        image_name = f"{guid}.png"
-        image_path = os.path.join(folder_path, image_name)      
 
         if "AZURE" in config.CLOUD_TYPE and config.USE_AZURE_ENTRA:
             import ai_azure_entra
