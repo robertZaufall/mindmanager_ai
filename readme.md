@@ -53,6 +53,8 @@ More animated examples are in the `doc` folder.
 7. Image generation with DALL-E-3, SD3, Imagen2 from topics (use copy/paste after generation)
 8. Professional translation of all topics by DeepL
 9. Generate a glossary of all terms
+  
+![Refinemnt + Glossary](doc/glossary.gif)  
 
 ## Other Use Cases (implemented or easy to add)
 - Export mindmap to Mermaid syntax or any other text format
