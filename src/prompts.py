@@ -57,9 +57,14 @@ def convert_markdown_to_html(title, html_fragment):
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">  
 <title>{title}</title>
-<style>body {{font-family: Helvetica, Arial, sans-serif;}}; h1, h2 {{font-weight: bold;}}</style>
+<style>
+body {{font-family: Helvetica, Arial, sans-serif;}} 
+h2{{margin-top:0;margin-bottom:0;margin-block-start:0;margin-block-end:0}} 
+hr{{margin-top:0;margin-bottom:0;margin-block-start:0;margin-block-end:0}}
+ul{{margin-top:0;margin-block-start:0}}
+</style>
 </head>
-<body>{html_fragment}</body></html>
+<body>{html_fragment.replace("</h2>", "</h2><hr/>")}</body></html>
 """  
     return complete_html  
 
