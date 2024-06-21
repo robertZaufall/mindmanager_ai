@@ -40,7 +40,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                    # good
-CLOUD_TYPE = 'CLAUDE3_SONNET'                  # best (using 3-5 version)
+CLOUD_TYPE = 'CLAUDE35_SONNET'                  # best (using 3-5 version)
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # good
 
 # groq
@@ -162,7 +162,7 @@ elif "CLAUDE3" in CLOUD_TYPE:
     if model == "HAIKU":
         MODEL_ID = "claude-3-haiku-20240307"
     elif model == "SONNET":
-        MODEL_ID = "claude-3-5-sonnet-20240620" #claude-3-sonnet-20240229"
+        MODEL_ID = "claude-3-5-sonnet-20240620"
     elif model == "OPUS":
         MODEL_ID = "claude-3-opus-20240229"
     else:
