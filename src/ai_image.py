@@ -18,7 +18,7 @@ def call_image_ai(image_path, str_user):
 
     if config.CLOUD_TYPE_IMAGE != "":
 
-        if "AZURE" in config.CLOUD_TYPE and config.USE_AZURE_ENTRA:
+        if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA:
             import ai_azure_entra
             return ai_azure_entra.call_image_ai(str_user, image_path)
 
