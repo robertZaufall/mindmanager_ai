@@ -26,18 +26,27 @@ def prompt_image(top_most_topic, subtopics):
     return str_user
 
 def prompt_glossary(text, topic_texts):
-    topics = f"\"{topic_texts}\"" if topic_texts else "the whole map"
+    if topic_texts != "":
+        main_message = (
+            f"Please create an alphabetically sorted glossary with special terms and technical terms only included in this string: \"{topic_texts}\". "
+            f"Use the attached mindmap in Mermaid syntax just as context. "
+        )
+        context = "context"
+    else:
+        main_message = (
+            f"Please create an alphabetically sorted glossary with all business relevant special terms and technical terms included in the whole attached mindmap in Mermaid syntax. "
+        )
+        context = "data"
 
     str_user = (
-        prompt_prefix +
-        f"Please create an alphabetically sorted glossary for {topics} including all business relevant special terms and technical terms and use the whole mindmap in Mermaid syntax as context. "
+        main_message +
         f"Eliminate duplicates. "
         f"Add a short explaining of each term in one sentence. "
         f"Use the original used language. "
         f"Don't split terms and its descriptions within the same first character. "
         f"Do not add any additional text or explainings at the beginning or end to your answer. Do not use any technical keyword like 'html' or 'markdown' etc. at the start of the text.\n"
         f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n"
-        f"Here is the data: \n" +
+        f"Here is the {context}: \n" +
         text
     )
     return str_user
@@ -200,5 +209,6 @@ def prompt(param, text, topic_texts=""):
     elif param == "exp":             return prompt_exp(text_input, topic_texts=topic_texts)
     elif param == "prj_org":         return prompt_prj_org(text_input, topic_texts=topic_texts)
     elif param == "capex_opex":      return prompt_capex_opex(text_input, topic_texts=topic_texts)
+    elif param == "glossary":        return prompt_glossary(text_input, topic_texts=topic_texts)
     else:
         return ""
