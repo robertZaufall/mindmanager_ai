@@ -59,9 +59,9 @@ def convert_markdown_to_html(title, html_fragment):
 <title>{title}</title>
 <style>
 body {{font-family: Helvetica, Arial, sans-serif;}} 
-h2{{margin-top:0;margin-bottom:0;margin-block-start:0;margin-block-end:0}} 
-hr{{margin-top:0;margin-bottom:0;margin-block-start:0;margin-block-end:0}}
-ul{{margin-top:0;margin-block-start:0}}
+h2{{margin-block-start:0;margin-block-end:0}} 
+hr{{margin-block-start:0;margin-block-end:0}}
+ul{{margin-block-start:8px}}
 </style>
 </head>
 <body>{html_fragment.replace("</h2>", "</h2><hr/>")}</body></html>
