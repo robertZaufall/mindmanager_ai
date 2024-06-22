@@ -224,8 +224,13 @@ def call_llm(str_user):
             raise Exception(f"Error: {response_status} - {response_text}")
 
         parsed_json = json.loads(response_text)
+
+        usage = parsed_json["usage"]
+        print("usage: " + json.dumps(usage))
+
         stop_reason = parsed_json["stop_reason"]
         stop_sequence = parsed_json["stop_sequence"]
+
         result = parsed_json["content"][0]["text"].replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     # GROQ
