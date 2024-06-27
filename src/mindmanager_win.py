@@ -1,4 +1,6 @@
 import win32com.client
+import config
+import os
 
 class Mindmanager:
 
@@ -6,6 +8,8 @@ class Mindmanager:
         self.mindmanager = win32com.client.Dispatch("Mindmanager.Application")
         self.mindmanager.Options.BalanceNewMainTopics = True
         self.charttype = charttype
+        self.templates_folder = os.path.join(config.WINDOWS_LIBRARY_FOLDER, "Templates")
+        self.images_folder = os.path.join(config.WINDOWS_LIBRARY_FOLDER, "Images")
     
     def set_document_background_image(self, path):
         bg_object = self.mindmanager.ActiveDocument.Background

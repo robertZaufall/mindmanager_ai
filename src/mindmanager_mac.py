@@ -1,4 +1,5 @@
 import os
+import config
 from appscript import *
 
 class Mindmanager:
@@ -6,9 +7,10 @@ class Mindmanager:
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
         self.charttype = charttype
-        current_folder_path = os.path.dirname(os.path.abspath(__file__))
-        self.orgchart_template = mactypes.Alias(current_folder_path + '/../macos/Org-Chart Map.mmat')
-        self.radial_template = mactypes.Alias(current_folder_path + '/../macos/Radial Map.mmat')
+        self.templates_folder = os.path.join(config.MACOS_LIBRARY_FOLDER, "Templates")
+        self.images_folder = os.path.join(config.MACOS_LIBRARY_FOLDER, "Images")
+        self.orgchart_template = mactypes.Alias(os.path.join(self.templates_folder + '/Blank Templates/Org-Chart Map.mmat'))
+        self.radial_template = mactypes.Alias(os.path.join(self.templates_folder+ '/Blank Templates/Radial Map.mmat'))
     
     def set_document_background_image(self, path):
         pass
@@ -17,7 +19,22 @@ class Mindmanager:
         return self.mindmanager.documents[1].exists()
 
     def get_central_topic(self):
-        return self.mindmanager.documents[1].central_topic.get()
+        object = self.mindmanager.documents[1].central_topic.get()
+        return object
+        '''
+        object_ = object.properties.get()
+        object__ = object.attributes.get()
+        object__1 = object__[0].get()
+        object__2 = object__[1].get()
+        object__1_ = object__1.properties.get()
+        object__2_ = object__2.properties.get()
+        task = object.task.get()
+        task_ = task.properties.get()
+        callouts = object.callouts.get()
+        relationships = object.relationships.get()
+        subtopics = object.subtopics.get()
+        shape = object.shape.get()
+        '''
     
     def get_selection(self):
         return self.mindmanager.documents[1].selection.get()

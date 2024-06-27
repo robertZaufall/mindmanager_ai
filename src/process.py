@@ -2,6 +2,8 @@
 import config
 import prompts
 import mermaid
+import utility
+
 import sys
 import os
 import uuid
@@ -100,12 +102,7 @@ def generate_glossary_html(content, guid):
         subprocess.Popen(f'cmd /k start explorer.exe "{file_path}"', shell=False)
 
 def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid):
-    folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "images")
-    if not os.path.exists(folder_path): os.makedirs(folder_path)
-    file_name = f"{guid}.png"
-    file_path = os.path.join(folder_path, file_name)      
     central_topic_text = mindm.get_title_from_topic(central_topic)
-
     if len(topic_texts) == 0: 
         top_most_topic = central_topic_text
         subtopics = ""
@@ -118,14 +115,26 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
             top_most_topic = topics[0]
             subtopics = ",".join(topics[1:])
     
-    image_path = ai_image.call_image_ai(file_path, prompts.prompt_image(top_most_topic, subtopics))
+    folder_path = utility.create_folder_if_not_exists(mindm.images_folder, central_topic_text)
 
-    if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
-        mindm.set_document_background_image(image_path)
+    if "image_" in param:
+        count = param.split("_")[-1]
+
     else:
-        from PIL import Image
-        image = Image.open(image_path)  
-        image.show()
+        #root_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "images")
+        #folder_path = utility.create_folder_if_not_exists(root_path, central_topic_text)
+
+        file_name = f"{guid}.png"
+        file_path = os.path.join(folder_path, file_name)      
+
+        image_path = ai_image.call_image_ai(file_path, prompts.prompt_image(top_most_topic, subtopics))
+
+        if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
+            mindm.set_document_background_image(image_path)
+        else:
+            from PIL import Image
+            image = Image.open(image_path)  
+            image.show()
 
 
 def main(param, charttype):
@@ -148,7 +157,7 @@ def main(param, charttype):
                 topic_texts, central_topic_selected = get_topic_texts(mindm, topic_texts)
 
             guid = uuid.uuid4()
-            if param == "image":
+            if "image" in param:
                 generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid)
 
             elif param == "glossary":
@@ -181,6 +190,7 @@ if __name__ == "__main__":
     # prc_org, prj_prc_org, exp_prj_prc_org, prj_org
     # finalize (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
     # image (experimental)
+    # image_nn (experimental)
     # translate_deepl+EN-US, translate_deepl+DE, ...
     # glossary
     param = "refine" 

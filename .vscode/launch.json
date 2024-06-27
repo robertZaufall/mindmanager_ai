@@ -45,6 +45,15 @@
       "justMyCode": true
     },
     {
+      "name": "Python: process.py -> Images (10)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["image_10"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
       "name": "Python: process.py -> Translate -> German",
       "type": "python",
       "request": "launch",

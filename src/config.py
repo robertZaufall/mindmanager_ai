@@ -2,9 +2,10 @@ import os
 
 LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
+MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "23", "English", "Library")
+WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindjet", "MindManager", "23", "Library", "ENU")
+
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
-
-
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                    # best
@@ -201,15 +202,17 @@ else:
 # only used for action = image
 
 
-# CLOUD_TYPE_IMAGE = ''
+#CLOUD_TYPE_IMAGE = ''
 CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
-# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
+#CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
+#CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
+#CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
+#CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
+#CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
+#CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
+#CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
+#CLOUD_TYPE_IMAGE = 'MLX+sd'                      # local generation, MacOS w/ Apple Silicon only
+#CLOUD_TYPE_IMAGE = 'MLX+sdxl'                    # local generation MacOS w/ Apple Silicon only
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 800  # source size is 1024
@@ -296,6 +299,13 @@ elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
     GCP_PROJECT_ID_IMAGE = PROJECT_ID_IMAGE
     GCP_ENDPOINT_IMAGE = API_ENDPOINT_IMAGE
     GCP_LOCATION_IMAGE = LOCATION_ID_IMAGE
+
+elif "MLX" in CLOUD_TYPE:
+    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1] # not used, depends on how the server was started
+    EXPLICIT_STYLE = "digital art"
+
+
+# only used for action = DEEPL (translation)
 
 
 CLOUD_TYPE_TRANSLATION = 'DEEPL'
