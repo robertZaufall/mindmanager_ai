@@ -1,13 +1,8 @@
 choco install python3
-pip install --upgrade requests
-pip install --upgrade pywin32
-pip install --upgrade Pillow
-pip install --upgrade httpx
-pip install --upgrade markdown
 
-rem pip install --upgrade azure.identity
-rem pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client 
-rem pip install --upgrade google-cloud-aiplatform google-auth
+pip install -r .\..\requirements.txt
+pip install -r .\..\requirements_win.txt
+pip install -r .\..\requirements_auth.txt
 
 powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
 pause

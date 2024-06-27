@@ -7,7 +7,7 @@ import sys
 
 import random
 
-def call_image_ai(image_path, str_user):
+def call_image_ai(image_path, str_user, n_count = 1):
 
     import httpx
     from PIL import Image
@@ -22,7 +22,7 @@ def call_image_ai(image_path, str_user):
             import ai_azure_entra
             return ai_azure_entra.call_image_ai(str_user, image_path)
 
-        # Azure + OpenAI
+        # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
             #format = "url"
             format = "b64_json"
@@ -32,7 +32,7 @@ def call_image_ai(image_path, str_user):
                 "style": config.IMAGE_STYLE,
 
                 "size": "1024x1024",        # 1024x1024, 1792x1024, 1024x1792
-                "n": 1,                     # number of files
+                "n": n_count,               # number of files
                 "response_format": format   # b64_json, url
             }
 
@@ -60,13 +60,13 @@ def call_image_ai(image_path, str_user):
                 generated_image = httpx.get(url).content
                 with open(image_path, "wb") as file:
                     file.write(generated_image)
-                image = Image.open(image_path)
             else:
                 b64_image = parsed_json['data'][0]['b64_json']
                 image_data = base64.b64decode(b64_image)
                 image = Image.open(BytesIO(image_data))
                 image.save(image_path)
 
+        # Stability AI / Stable Diffusion
         elif "STABILITYAI" in config.CLOUD_TYPE_IMAGE:
             negative_prompt = config.NEGATIV_PROMPT_IMAGE if config.MODEL_ID_IMAGE != "sd3-large-turbo" else ""
             seed = config.SEED_IMAGE if config.SEED_IMAGE != 0 else random.randint(0, 2**32 - 1)
@@ -94,10 +94,10 @@ def call_image_ai(image_path, str_user):
             if response.status_code == 200:
                 with open(image_path, 'wb') as file:
                     file.write(response.content)
-                    image = Image.open(image_path)
             else:
                 raise Exception(str(response.json()))
-            
+
+        # Google VertexAI            
         elif "GOOGLEPROJECT" in config.CLOUD_TYPE_IMAGE:
 
             if "GOOGLEPROJECT" in config.CLOUD_TYPE_IMAGE and config.USE_GCP_OA2:
@@ -111,7 +111,7 @@ def call_image_ai(image_path, str_user):
                     }
                 ],
                 "parameters": {
-                    "sampleCount": 1,
+                    "sampleCount": n_count,
                     "addWatermark": config.ADD_WATERMARK,
                 }
             }
@@ -142,8 +142,27 @@ def call_image_ai(image_path, str_user):
             image = Image.open(BytesIO(image_data))
             image.save(image_path)
 
+        # MLX
+        elif "MLX" in config.CLOUD_TYPE_IMAGE:
+            import ai_image_mlx
+            seed = config.SEED_IMAGE if config.SEED_IMAGE != 0 else random.randint(0, 2**32 - 1)
+            image_path = ai_image_mlx.generate_image(
+                config.MODEL_ID_IMAGE, 
+                str_user, 
+                config.NEGATIV_PROMPT_IMAGE, 
+                n_count, 
+                config.STEPS_IMAGE, 
+                0, 
+                1, 
+                1, 
+                True, 
+                False, 
+                False, 
+                image_path, 
+                seed)
 
-        if config.RESIZE_IMAGE:
+        if config.RESIZE_IMAGE and n_count == 1:
+            image = Image.open(image_path)
             image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
             image.save(image_path)
 

@@ -7,10 +7,9 @@ class Mindmanager:
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
         self.charttype = charttype
-        self.templates_folder = os.path.join(config.MACOS_LIBRARY_FOLDER, "Templates")
-        self.images_folder = os.path.join(config.MACOS_LIBRARY_FOLDER, "Images")
-        self.orgchart_template = mactypes.Alias(os.path.join(self.templates_folder + '/Blank Templates/Org-Chart Map.mmat'))
-        self.radial_template = mactypes.Alias(os.path.join(self.templates_folder+ '/Blank Templates/Radial Map.mmat'))
+        self.library_folder = config.MACOS_LIBRARY_FOLDER
+        self.orgchart_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Org-Chart Map.mmat"))
+        self.radial_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Radial Map.mmat"))
     
     def set_document_background_image(self, path):
         pass

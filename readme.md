@@ -79,19 +79,12 @@ Change to `windows` folder:
 ```
 cd windows
 ```
-Run `install.bat` or  the following commands (azure.identity only for Azure EntryID authentication, google-auth only for GCP authentication):
+Run `install.bat` or  the following commands (requirements_auth.txt only if you want to use Azure Entra ID or GCP OAuth2):
 ```
 choco install python3
-pip install --upgrade requests
-pip install --upgrade pywin32
-pip install --upgrade Pillow
-pip install --upgrade httpx
-pip install --upgrade markdown
-
-pip install --upgrade azure.identity
-pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client 
-pip install --upgrade google-cloud-aiplatform google-auth
-
+pip install -r .\..\requirements.txt
+pip install -r .\..\requirements_win.txt
+pip install -r .\..\requirements_auth.txt
 powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
 ```
 Check in registry and MindManager, if the macros are available (right click on topic).  
@@ -107,17 +100,12 @@ You can also check here if the path to the python files is correct.
 
 ### macOS  
 Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
-Install required python libraries (azure.identity only for Azure EntryID authentication, google-auth only for GCP authentication):
+Install required python libraries (requirements_auth.txt only if you want to use Azure Entra ID or GCP OAuth2, requirements_mac_mlx.txt is only needed for local image generation using MLX):
 ```
-pip install --upgrade requests
-pip install --upgrade appscript
-pip install --upgrade Pillow
-pip install --upgrade httpx
-pip install --upgrade markdown
-
-pip install --upgrade azure.identity
-pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client 
-pip install --upgrade google-cloud-aiplatform google-auth
+pip install -r requirements.txt
+pip install -r requirements_mac.txt
+pip install -r requirements_mac_mlx.txt
+pip install -r requirements_auth.txt
 ```
 Create the directory structure `~/git/mindmanager_ai` with Terminal:
 ```
@@ -178,12 +166,14 @@ Select the central topic or deselect all topics and call the automation.
 You can also select one or more topics and start the automation for just these topics, e.g. to generate examples for these topics, refine just these topics etc.  
 
 ### Image generation
-Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image`.  
-After a little while, the image will be opened and also stored in the `src/images` folder.  
+Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image` or `image_n` (MLX only).  
+After a while, the image will be opened and also stored in the MindManager-Library `Images` folder.  
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
-On Windows the image can be automatically set as the background image of the map.     
+On Windows the image can be automatically set as the background image of the map.  
 The results from the generation process are good with DALL-E 3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
-For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt.). DALL-E 3 does not support a seed value anymore (by the time of writing).  
+For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt). DALL-E 3 does not support a seed value anymore (by the time of writing).  
+The prompt for image generation can optionally be optimized using a LLM call.
+Images can also be generated locally on macOS with Apple Silicon using the native Apple MLX framework.
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
@@ -210,6 +200,9 @@ Image generation with SD3 is the most flexible, as you can use a seed value, neg
 ### Google Vertex AI - Imagen2  
 Image generation results are too simple by now as prompt engineering is also most important here. Imagen2 has the highest image resolution (1:1 with 1536x1536). Imagen2 is GA (globally available) but there is an approval process to get access to the API.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
+### MLX w/ Stable Diffusion 2
+This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are below average using the SDXL model and less good using the SD model. There is a new action defined (image_n eg. image=10) to generate a bunch of images in a row. A pre-executing step is implemented to optimize the prompt using a LLM call.
+When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The data amount > 3GB.
 
 ## Translation systems
 ### DeepL

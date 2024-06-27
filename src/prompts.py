@@ -20,8 +20,25 @@ def prompt_image(top_most_topic, subtopics):
     explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
     topics = f" and the subtopics {subtopics}" if subtopics != "" else ""
     str_user = (
-        f"A clean, minimalist, professional marketing logo{explicit_style} on a white background with focus on {top_most_topic}{topics}. "
+        f"A clean, minimalistic, professional marketing logo{explicit_style} on a white background with focus on {top_most_topic}{topics}. "
         f"Use a visually appealing and professional look."
+    )
+    return str_user
+
+def prompt_image_sd(top_most_topic, subtopics):
+    explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
+    topics = f" and also influenced by thought of {subtopics}" if subtopics != "" else ""
+    str_user = (
+        f"One professional infographic, minimalistic, professional{explicit_style} on a white background about {top_most_topic}{topics}. "
+        f"Use an outstanding, visually appealing, polished and expensive look."
+    )
+    return str_user
+
+def prompt_image_prompt(text):
+    str_user = (
+        f"Please optimize this prompt to generate a good marketing logo like image or pictogram on a white background without gradient "
+        f"using Stable Diffusion 2: ```{text}```\n "
+        f"Return only the prompt without any further text or explainings."
     )
     return str_user
 

@@ -1,0 +1,5 @@
+mlx>=0.11
+huggingface-hub
+regex
+numpy
+tqdm

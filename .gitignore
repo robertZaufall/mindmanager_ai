@@ -7,3 +7,4 @@ _ignore/**
 macos/automator/.DS_Store
 token_cache.json
 **.mp4
+src/stable_diffusion/__pycache__/**

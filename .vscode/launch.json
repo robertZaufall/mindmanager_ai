@@ -45,11 +45,11 @@
       "justMyCode": true
     },
     {
-      "name": "Python: process.py -> Images (10)",
+      "name": "Python: process.py -> Images (5)",
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/process.py",
-      "args": ["image_10"],
+      "args": ["image_5"],
       "console": "integratedTerminal",
       "justMyCode": true
     },

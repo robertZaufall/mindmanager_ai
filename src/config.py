@@ -2,6 +2,7 @@ import os
 
 LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
+# set either MACOS_LIBRARY_FOLDER or WINDOWS_LIBRARY_FOLDER
 MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "23", "English", "Library")
 WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindjet", "MindManager", "23", "Library", "ENU")
 
@@ -218,6 +219,7 @@ RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 800  # source size is 1024
 RESIZE_IMAGE_HEIGHT = 800 # source size is 1024
 INSERT_IMAGE_AS_BACKGROUND = True
+OPTIMIZE_PROMPT_IMAGE = True # use a LLM call to optimize the prompt
 
 if "AZURE" in CLOUD_TYPE_IMAGE or "OPENAI" in CLOUD_TYPE_IMAGE:
     EXPLICIT_STYLE = "digital art"
@@ -300,10 +302,12 @@ elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
     GCP_ENDPOINT_IMAGE = API_ENDPOINT_IMAGE
     GCP_LOCATION_IMAGE = LOCATION_ID_IMAGE
 
-elif "MLX" in CLOUD_TYPE:
+elif "MLX" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1] # not used, depends on how the server was started
+    SEED_IMAGE = 0
     EXPLICIT_STYLE = "digital art"
-
+    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+    STEPS_IMAGE = 5 
 
 # only used for action = DEEPL (translation)
 

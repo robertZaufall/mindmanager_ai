@@ -115,19 +115,23 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
             top_most_topic = topics[0]
             subtopics = ",".join(topics[1:])
     
-    folder_path = utility.create_folder_if_not_exists(mindm.images_folder, central_topic_text)
+    folder_path_images = utility.create_folder_if_not_exists(os.path.join(mindm.library_folder, "Images"), central_topic_text)
+    file_name = f"{guid}.png"
+    file_path = os.path.join(folder_path_images, file_name)      
 
-    if "image_" in param:
+    if "image_" in param and platform == "darwin" and "MLX" in config.CLOUD_TYPE_IMAGE:
         count = param.split("_")[-1]
+        str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
+        final_prompt = ai_llm.call_llm(prompts.prompt_image_prompt(str_user))
+        ai_image.call_image_ai(file_path, final_prompt, int(count))
 
-    else:
-        #root_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "images")
-        #folder_path = utility.create_folder_if_not_exists(root_path, central_topic_text)
-
-        file_name = f"{guid}.png"
-        file_path = os.path.join(folder_path, file_name)      
-
-        image_path = ai_image.call_image_ai(file_path, prompts.prompt_image(top_most_topic, subtopics))
+    elif param == "image":
+        str_user = prompts.prompt_image(top_most_topic, subtopics)
+        if ("STABILITYAI" in config.CLOUD_TYPE_IMAGE or "MLX" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
+            final_prompt = ai_llm.call_llm(prompts.prompt_image_prompt(str_user))
+        else: 
+            final_prompt = str_user
+        image_path = ai_image.call_image_ai(file_path, final_prompt, 1)
 
         if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
             mindm.set_document_background_image(image_path)
