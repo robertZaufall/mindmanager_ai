@@ -29,6 +29,7 @@ More animated examples are in the `doc` folder.
   - **OpenAI** w/ ***DALL-E 3*** (use your key) -> **best results**
   - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
   - **Google Vertex AI** w/ ***Imagen2 V6*** (use your access token / OAuth2, GCP approval)  
+  - **MLX** (local w/ Apple Silicon) w/ ***SD, SDXL***
 
 ### Supported Professional Translation Services
  - **DeepL** (use your key)
@@ -50,7 +51,7 @@ More animated examples are in the `doc` folder.
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
-7. Image generation with DALL-E-3, SD3, Imagen2 from topics (use copy/paste after generation)
+7. Image generation with DALL-E-3, SD3, Imagen2, MLX from topics
 8. Professional translation of all topics by DeepL
 9. Generate a glossary of all terms
   

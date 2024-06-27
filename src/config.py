@@ -213,7 +213,7 @@ CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
 #CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
 #CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
 #CLOUD_TYPE_IMAGE = 'MLX+sd'                      # local generation, MacOS w/ Apple Silicon only
-#CLOUD_TYPE_IMAGE = 'MLX+sdxl'                    # local generation MacOS w/ Apple Silicon only
+#CLOUD_TYPE_IMAGE = 'MLX+sdxl'                    # local generation, MacOS w/ Apple Silicon only
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 800  # source size is 1024
