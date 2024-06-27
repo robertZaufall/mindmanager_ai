@@ -303,7 +303,7 @@ elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
     GCP_LOCATION_IMAGE = LOCATION_ID_IMAGE
 
 elif "MLX" in CLOUD_TYPE_IMAGE:
-    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1] # not used, depends on how the server was started
+    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
     SEED_IMAGE = 0
     EXPLICIT_STYLE = "digital art"
     NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
