@@ -31,6 +31,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
 # CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
 # CLOUD_TYPE = 'OLLAMA+qwen2'                    # ok,          censored
+# CLOUD_TYPE = 'OLLAMA+gemma2'                   # ok (gemma2:27b not working)
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI_PRO'                      # good
