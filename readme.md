@@ -8,7 +8,7 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 ## macOS  
 ![Example](doc/anim_neu_2.gif)  
 
-Note: Image generation with DALL-E-3 or SD3 needs far more time than in these animations.  
+Note: Image generation with DALL-E 3 or SD3 needs far more time than in these animations.  
 More animated examples are in the `doc` folder.
 
 ## Features
@@ -17,12 +17,12 @@ More animated examples are in the `doc` folder.
   - **Azure OpenAI** w/ ***GPT-4o*** (use your key or log in with Azure EntraID) -> **best tested**
   - **OpenAI** w/ ***GPT-4o*** (use your key) -> **best results**
   - **Anthropic** w/ ***Claude 3 / 3.5*** (use your key)  
-  - **Groq** (platform) w/ ***LLama3*** (use your key)
-  - **Perplexity** (platform) w/ ***LLama3*** (use your key)
+  - **Groq** (platform) w/ ***LLaMA3***, ***Mixtral***, ***Gemma2*** (use your key)
+  - **Perplexity** (platform) w/ ***LLaMA3***, ***Mixtral*** (use your key)
   - **Google Gemini** w/ ***Pro*** and ***Flash*** (use your key)  
   - **Google Vertex AI** w/ ***Gemini Pro*** and ***Gemini Flash*** (use your access token / OAuth2)
-  - **Ollama** (local) w/ any LLM (use ***LLama3***, ***Zephyr*** or ***Mixtral*** model for best results)
-  - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLama3*** model for best results)
+  - **Ollama** (local) w/ any LLM (use ***LLaMA3***, ***Zephyr*** or ***Mixtral*** model for best results)
+  - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLaMA3*** model for best results)
 
 ### Supported Image Generation Systems
   - **Azure OpenAI** w/ ***DALL-E 3*** (use your key or log in with Azure EntraID) -> **best tested**
@@ -51,7 +51,7 @@ More animated examples are in the `doc` folder.
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
-7. Image generation with DALL-E-3, SD3, Imagen2, MLX from topics
+7. Image generation with DALL-E 3, SD3, Imagen2, MLX from topics
 8. Professional translation of all topics by DeepL
 9. Generate a glossary of all terms
   
@@ -183,15 +183,15 @@ The solution is best tested with `Azure OpenAI`. Results are perfect for every u
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
 ### Ollama (hosted locally - no internet access needed)
-Ollama results are dependent on the used model. `LLama3`, `Zephyr` and `Mixtral` are working well.  
+Ollama results are dependent on the used model. `LLaMA3`, `Zephyr` and `Mixtral` are working well.  
 ### Anthropic Claude 3 / 3.5
-The newest Anthropic Claude 3.5 **Sonnet** model seems to be best in class. Anthropic Claude 3 **Opus* ist also very good but little bit expensive. Anthropic Claude 3 **Haiku** is very cheap and betteer than GPT-3.5.
+The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3 Haiku` is very cheap and betteer than `GPT-3.5`.
 ### Groq (platform)
-Groq is sure the fastest LLM platform by now. Payment for API usage is still unclear because there is no way to set a payment method (as of 2024-05-05).  
+Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
 ### Perplexity (platform)
 Perplexity works perfect as an universal LLM platform.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
-MLX results are dependent on the used model. `LLama3` works well.
+MLX results are dependent on the used model. `LLaMA3` works well.
 
 ## Image generation systems  
 ### Azure OpenAI / OpenAI - DALL-E 3  
