@@ -47,3 +47,54 @@ def validate_mermaid(mermaid_diagram, line_separator, indent_size):
         return False  # All lines match the pattern
     else:
         return True  # Some lines do not match the pattern
+
+def export_to_markmap(mermaid_diagram):
+    line_separator = config.LINE_SEPARATOR
+    indent_size = config.INDENT_SIZE
+
+    if validate_mermaid(mermaid_diagram, line_separator, indent_size):
+        return ""
+
+    max_topic_level = 1
+    lines = mermaid_diagram.split(line_separator)
+    for i in range(1, len(lines)):
+        level = (len(lines[i]) - len(lines[i].lstrip())) // indent_size
+        if level > max_topic_level:
+            max_topic_level = level
+        if i < len(lines) - 1:
+            next_level = (len(lines[i+1]) - len(lines[i+1].lstrip())) // indent_size
+            if next_level > level:
+                lines[i] = "#" * int(level) + " " + lines[i].lstrip()
+            else:
+                lines[i] = "- " + lines[i].lstrip()
+        else:
+            lines[i] = "#" * int(level) + " " + lines[i].lstrip()
+    return line_separator.join(lines[1:]), max_topic_level - 1
+
+def export_to_mermaid(mermaid_diagram):
+    line_separator = config.LINE_SEPARATOR
+    indent_size = config.INDENT_SIZE
+
+    if validate_mermaid(mermaid_diagram, line_separator, indent_size):
+        return ""
+
+    mermaid_diagram = mermaid_diagram.replace("(", "#40;").replace(")", "#41;") \
+                                     .replace("{", "#123;").replace("}", "#125;") \
+                                     .replace("[", "#91;").replace("]", "#93;")
+
+    max_topic_level = 1
+    lines = mermaid_diagram.split(line_separator)
+    for i in range(1, len(lines)):
+        level = (len(lines[i]) - len(lines[i].lstrip())) // indent_size
+        if level > max_topic_level:
+            max_topic_level = level
+        if i < len(lines) - 1:
+            next_level = (len(lines[i+1]) - len(lines[i+1].lstrip())) // indent_size
+            if next_level > level:
+                lines[i] = " " * indent_size * int(level) + "(" + lines[i].lstrip() + ")"
+            else:
+                lines[i] = " " * indent_size * int(level) + lines[i].lstrip()
+        else:
+            if len(lines[i].strip()) > 0:
+                lines[i] = " " * indent_size * int(level) + "(" + lines[i].lstrip() + ")"
+    return line_separator.join(lines), max_topic_level - 1

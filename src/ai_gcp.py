@@ -88,7 +88,7 @@ def call_llm_gcp(str_user):
 
     return result
 
-def call_image_ai(str_user, image_path):
+def call_image_ai(str_user, image_path, n_count = 1):
     from PIL import Image
     from io import BytesIO
     import base64
@@ -104,7 +104,7 @@ def call_image_ai(str_user, image_path):
             }
         ],
         "parameters": {
-            "sampleCount": 1,
+            "sampleCount": n_count,
             "addWatermark": config.ADD_WATERMARK,
         }
     }

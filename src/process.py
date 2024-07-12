@@ -78,10 +78,7 @@ def get_topic_texts(mindm, topic_texts):
     return topic_texts,central_topic_selected
 
 def generate_glossary_html(content, guid):
-    folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "docs")
-    if not os.path.exists(folder_path): os.makedirs(folder_path)
-    file_name = f"{guid}.html"
-    file_path = os.path.join(folder_path, file_name)
+    file_path = GetNewFilePaths("docs", guid)
 
     try:
         import markdown
@@ -91,15 +88,47 @@ def generate_glossary_html(content, guid):
             f.write(f'caught {str(e)}: e') 
         raise
 
-    html = prompts.convert_markdown_to_html("Glossary", html_fragment)
+    template = GetTemplateContent("glossary.html")
+    html = template.replace("{{title}}", "Glossary").replace("{{body}}", html_fragment.replace("</h2>", "</h2><hr/>"))
     with open(file_path, 'w') as f:
         f.write(html)
-    
+    OpenFile(file_path)
+
+def generate_markmap_html(content, max_topic_level, guid):
+    file_path = GetNewFilePaths("docs", guid)
+    template = GetTemplateContent("markmap.html")
+    html = template.replace("{{colorFreezeLevel}}", str(max_topic_level)).replace("{{title}}", "Markmap").replace("{{markmap}}", content)
+    with open(file_path, 'w') as f:
+        f.write(html)
+    OpenFile(file_path)
+
+def generate_mermaid_html(content, max_topic_level, guid):
+    file_path = GetNewFilePaths("docs", guid)
+    template = GetTemplateContent("mermaid.html")
+    html = template.replace("{{title}}", "Mermaid").replace("{{mermaid}}", content) 
+    with open(file_path, 'w') as f:
+        f.write(html)
+    OpenFile(file_path)
+
+def OpenFile(file_path):
     if platform == "darwin":
         os.system(f"open {file_path}")
     if platform == "win":
         import subprocess
         subprocess.Popen(f'cmd /k start explorer.exe "{file_path}"', shell=False)
+
+def GetTemplateContent(template_name):
+    templates_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "templates")
+    with open(os.path.join(templates_folder_path, template_name), 'r') as f:
+        template = f.read()
+    return template
+
+def GetNewFilePaths(folder_name, guid):
+    doc_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), folder_name)
+    if not os.path.exists(doc_folder_path): os.makedirs(doc_folder_path)
+    file_name = f"{guid}.html"
+    file_path = os.path.join(doc_folder_path, file_name)
+    return file_path
 
 def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid):
     central_topic_text = mindm.get_title_from_topic(central_topic)
@@ -168,6 +197,14 @@ def main(param, charttype):
                 markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
                 generate_glossary_html(markdown, guid)
 
+            elif param == "export_markmap":
+                content, max_topic_level = mermaid.export_to_markmap(mermaid_diagram)
+                generate_markmap_html(content, max_topic_level, guid)
+
+            elif param == "export_mermaid":
+                content, max_topic_level = mermaid.export_to_mermaid(mermaid_diagram)
+                generate_mermaid_html(content, max_topic_level, guid)
+
             elif "translate_deepl" in param:
                 language = param.split("+")[-1]
                 new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
@@ -197,6 +234,8 @@ if __name__ == "__main__":
     # image_nn (experimental)
     # translate_deepl+EN-US, translate_deepl+DE, ...
     # glossary
+    # export_markmap
+    # export_mermaid
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

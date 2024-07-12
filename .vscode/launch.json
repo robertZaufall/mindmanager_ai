@@ -79,6 +79,24 @@
       "args": ["glossary"],
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> Export Markmap",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["export_markmap"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> Export Mermaid",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["export_mermaid"],
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }

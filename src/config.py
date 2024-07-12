@@ -9,48 +9,49 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                    # best
-# CLOUD_TYPE = 'AZURE+gpt-4'                     # best
-# CLOUD_TYPE = 'AZURE+gpt-4-32k'                 # best
-# CLOUD_TYPE = 'AZURE+gpt-35'                    # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4'                       # best
+# CLOUD_TYPE = 'AZURE+gpt-4-32k'                   # best
+# CLOUD_TYPE = 'AZURE+gpt-35'                      # best
 
 # OpenAI
-# CLOUD_TYPE = 'OPENAI+gpt-4o'                   # best
-# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'              # best
-# CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'            # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o'                     # best
+# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                # best
+# CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'              # best
 
 # Ollama (local models), best results
-# CLOUD_TYPE = 'OLLAMA+mixtral'                  # best,        censored
-# CLOUD_TYPE = 'OLLAMA+solar'                    # best,        uncensored
-# CLOUD_TYPE = 'OLLAMA+mistral'                  # best,        uncensored
-# CLOUD_TYPE = 'OLLAMA+openchat'                 # very good,   uncensored
-# CLOUD_TYPE = 'OLLAMA+zephyr'                   # very good,   uncensored *
-# CLOUD_TYPE = 'OLLAMA+neural-chat'              # good,        uncensored
-# CLOUD_TYPE = 'OLLAMA+wizardlm2'                # very good,   uncensored (with warnings)
-# CLOUD_TYPE = 'OLLAMA+llama3'                   # good,        uncensored
-# CLOUD_TYPE = 'OLLAMA+llama3:70b'               # good,        censored, slow
-# CLOUD_TYPE = 'OLLAMA+phi3'                     # good,        censored
-# CLOUD_TYPE = 'OLLAMA+qwen2'                    # ok,          censored
-# CLOUD_TYPE = 'OLLAMA+gemma2'                   # ok (gemma2:27b not working)
+# CLOUD_TYPE = 'OLLAMA+mixtral'                    # best,        censored
+# CLOUD_TYPE = 'OLLAMA+solar'                      # best,        uncensored
+# CLOUD_TYPE = 'OLLAMA+mistral'                    # best,        uncensored
+# CLOUD_TYPE = 'OLLAMA+openchat'                   # very good,   uncensored
+# CLOUD_TYPE = 'OLLAMA+zephyr'                     # very good,   uncensored *
+# CLOUD_TYPE = 'OLLAMA+neural-chat'                # good,        uncensored
+# CLOUD_TYPE = 'OLLAMA+wizardlm2'                  # very good,   uncensored (with warnings)
+# CLOUD_TYPE = 'OLLAMA+llama3'                     # good,        uncensored
+# CLOUD_TYPE = 'OLLAMA+llama3:70b'                 # good,        censored, slow
+# CLOUD_TYPE = 'OLLAMA+phi3'                       # good,        censored
+# CLOUD_TYPE = 'OLLAMA+qwen2'                      # ok,          censored
+# CLOUD_TYPE = 'OLLAMA+gemma2'                     # ok
+# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                 # does not work!
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI_PRO'                      # good
-# CLOUD_TYPE = 'GEMINI_FLASH'                    # one-shot ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GEMINI_PRO'                        # good
+# CLOUD_TYPE = 'GEMINI_FLASH'                      # one-shot ok, generates maps only 3 levels deep
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
-# CLOUD_TYPE = 'GEMINIPROJECT_PRO'               # good, Vertex AI need pre-authentication
-# CLOUD_TYPE = 'GEMINIPROJECT_FLASH'             # one-shot ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GEMINIPROJECT_PRO'                 # good, Vertex AI need pre-authentication
+# CLOUD_TYPE = 'GEMINIPROJECT_FLASH'               # one-shot ok, generates maps only 3 levels deep
 
 # Claude3
-# CLOUD_TYPE = 'CLAUDE3_OPUS'                    # good
-CLOUD_TYPE = 'CLAUDE35_SONNET'                  # best (using 3-5 version)
-# CLOUD_TYPE = 'CLAUDE3_HAIKU'                   # good
+# CLOUD_TYPE = 'CLAUDE3_OPUS'                      # good
+# CLOUD_TYPE = 'CLAUDE35_SONNET'                   # best (using 3-5 version)
+# CLOUD_TYPE = 'CLAUDE3_HAIKU'                     # good
 
 # groq
-# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'         # good
-# CLOUD_TYPE = 'GROQ+llama3-8b-8192'             # reduced usability
-# CLOUD_TYPE = 'GROQ+llama3-70b-8192'            # good
-# CLOUD_TYPE = 'GROQ+gemma-7b-it'                # good
+# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'           # good
+# CLOUD_TYPE = 'GROQ+llama3-8b-8192'               # reduced usability
+# CLOUD_TYPE = 'GROQ+llama3-70b-8192'              # good
+# CLOUD_TYPE = 'GROQ+gemma-7b-it'                  # good
 
 # Perplexity
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-8b-instruct'            # ok
@@ -59,6 +60,7 @@ CLOUD_TYPE = 'CLAUDE35_SONNET'                  # best (using 3-5 version)
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-chat'   # good
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online' # reduced usability
 # CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online' # good
+# CLOUD_TYPE = 'PERPLEXITY+mixtral-8x7b-instruct'          # ok
 
 # MLX server, macOS only (pip install mlx-lm)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3-8B-Instruct-4bit --port 8080 --log-level DEBUG
@@ -119,6 +121,7 @@ elif "GEMINI" in CLOUD_TYPE:
         KEY_HEADER_TEXT = ""
         KEY_HEADER_VALUE = ""
     elif system == "GEMINIPROJECT":
+        # use GCP authentication or token from CLI authorization:
         # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
         # -> open console
         # gcloud auth print-access-token
@@ -201,20 +204,20 @@ else:
     raise Exception("Error: Unknown CLOUD_TYPE")
 
 
-# only used for action = image
+# only used for action = image, image_n
 
 
-#CLOUD_TYPE_IMAGE = ''
+# CLOUD_TYPE_IMAGE = ''
 CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
-#CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
-#CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
-#CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
-#CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
-#CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
-#CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
-#CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
-#CLOUD_TYPE_IMAGE = 'MLX+sd'                      # local generation, MacOS w/ Apple Silicon only
-#CLOUD_TYPE_IMAGE = 'MLX+sdxl'                    # local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
+# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
+# CLOUD_TYPE_IMAGE = 'MLX+sd'                      # local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+sdxl'                    # local generation, MacOS w/ Apple Silicon only
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 800  # source size is 1024
@@ -310,6 +313,7 @@ elif "MLX" in CLOUD_TYPE_IMAGE:
     NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
     STEPS_IMAGE = 5 
 
+
 # only used for action = DEEPL (translation)
 
 
@@ -319,6 +323,5 @@ if "DEEPL" in CLOUD_TYPE_TRANSLATION:
     DEEPL_API_KEY = os.getenv('DEEPL_API_KEY')
     #DEEPL_BASE_URL = "https://api.deepl.com/v2/translate"
     DEEPL_BASE_URL = "https://api-free.deepl.com/v2/translate"
-
     KEY_HEADER_TEXT_TRANSLATION = "Authorization"
     KEY_HEADER_VALUE_TRANSLATION = "DeepL-Auth-Key " + DEEPL_API_KEY

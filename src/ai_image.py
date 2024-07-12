@@ -20,7 +20,7 @@ def call_image_ai(image_path, str_user, n_count = 1):
 
         if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA:
             import ai_azure_entra
-            return ai_azure_entra.call_image_ai(str_user, image_path)
+            return ai_azure_entra.call_image_ai(str_user, image_path, n_count)
 
         # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
@@ -102,7 +102,7 @@ def call_image_ai(image_path, str_user, n_count = 1):
 
             if "GOOGLEPROJECT" in config.CLOUD_TYPE_IMAGE and config.USE_GCP_OA2:
                 import ai_gcp
-                return ai_gcp.call_image_ai(str_user, image_path)
+                return ai_gcp.call_image_ai(str_user, image_path, n_count)
 
             payload = {
                 "instances": [

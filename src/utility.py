@@ -14,6 +14,6 @@ def sanitize_folder_name(folder_name):
     return folder_name
 
 def create_folder_if_not_exists(root_path, central_topic_text):
-    folder_path = os.path.join(root_path, f"_{sanitize_folder_name(central_topic_text)}")
+    folder_path = os.path.join(root_path, f"⚡️{sanitize_folder_name(central_topic_text)}")
     if not os.path.exists(folder_path): os.makedirs(folder_path)
     return folder_path
