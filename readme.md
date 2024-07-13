@@ -53,12 +53,14 @@ More animated examples are in the `doc` folder.
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 7. Image generation with DALL-E 3, SD3, Imagen2, MLX from topics
 8. Professional translation of all topics by DeepL
-9. Generate a glossary of all terms
+9. Generate a glossary HTML document of all terms
+10. Export Mermaid HTML document
+11. Export Markmap HTML document
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
 
 ## Other Use Cases (implemented or easy to add)
-- Export mindmap to Mermaid syntax or any other text format
+- Export mindmap to any other text format
 - Change map layout by using a template (macOS)
 - Reorder topics by business value or importance
 - Misspelling or syntax correction
