@@ -97,6 +97,15 @@
       "args": ["export_mermaid"],
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> PDF to Mindmap",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["pdf_mindmap"],
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }

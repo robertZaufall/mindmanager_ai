@@ -56,6 +56,7 @@ More animated examples are in the `doc` folder.
 9. Generate a glossary HTML document of all terms
 10. Export Mermaid HTML document
 11. Export Markmap HTML document
+12. PDF to mindmap (w/ ***GPT-4o***, ***Gemini 1.5 Flash***)
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
 
@@ -176,7 +177,11 @@ On Windows the image can be automatically set as the background image of the map
 The results from the generation process are good with DALL-E 3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
 For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt). DALL-E 3 does not support a seed value anymore (by the time of writing).  
 The prompt for image generation can optionally be optimized using a LLM call.
-Images can also be generated locally on macOS with Apple Silicon using the native Apple MLX framework.
+Images can also be generated locally on macOS with Apple Silicon using the native Apple MLX framework.  
+
+### Generation using text summarization (eg. PDF to mindmap)
+Put the file into the `input`-folder and use the action `pdf_mindmap`. The PDF file ist first converted to markdown (MD) fromat. No OCR takes place and no optimization is done by now.  
+Lots of input-tokens are needed in order to summarize the text by the LLM. Use a model which allows a high input-token number. GPT-4o and Gemini 1.5 are working.  
 
 ## LLM systems
 ### Azure OpenAI / OpenAI

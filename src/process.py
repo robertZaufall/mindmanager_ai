@@ -11,6 +11,7 @@ import uuid
 import ai_llm
 import ai_image
 import ai_translation
+import ai_pdf
 
 if sys.platform.startswith('win'):
     import mindmanager_win as mindmanager
@@ -210,6 +211,14 @@ def main(param, charttype):
                 new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
                 create_map_and_finalize(mindm, new_mermaid_diagram)
 
+            elif param.startswith("pdf_"):
+                actions = param.split("_")[-1].split("+")
+                md_texts = ai_pdf.load_pdf_files()
+                for key, value in md_texts.items():
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key)
+                    create_map_and_finalize(mindm, new_mermaid_diagram)
+                    break
+
             else:
                 new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
                 create_map_and_finalize(mindm, new_mermaid_diagram)
@@ -236,6 +245,7 @@ if __name__ == "__main__":
     # glossary
     # export_markmap
     # export_mermaid
+    # pdf_mindmap
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

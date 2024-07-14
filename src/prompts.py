@@ -1,6 +1,7 @@
 import config
 
 prompt_prefix = "Given is the following Mermaid mindmap. "
+prompt_prefix_text = "Given is the following text to be summarized. "
 
 prompt_postfix = (
     f"Return back the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
@@ -67,23 +68,6 @@ def prompt_glossary(text, topic_texts):
         text
     )
     return str_user
-
-def convert_markdown_to_html(title, html_fragment):  
-    complete_html = f"""
-<!DOCTYPE html><html lang="en">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>{title}</title>
-<style>
-body {{font-family: Helvetica, Arial, sans-serif;}} 
-h2{{margin-block-start:0;margin-block-end:0}} 
-hr{{margin-block-start:0;margin-block-end:0}}
-ul{{margin-block-start:8px}}
-</style>
-</head>
-<body>{html_fragment.replace("</h2>", "</h2><hr/>")}</body></html>
-"""  
-    return complete_html  
 
 def prompt_refine(text, topic_texts=""):
     topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
@@ -212,6 +196,18 @@ def prompt_examples(text, topic_texts=""):
     )
     return str_user
 
+def prompt_text_to_mindmap(text, topic_texts=""):
+    central_topic = f"\"{topic_texts}\"" if topic_texts else "an expression of 1-3 words the text is about"
+
+    str_user = (
+        prompt_prefix_text +
+        f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
+        f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. " +
+        prompt_postfix +
+        text
+    )
+    return str_user
+
 def prompts_list_from_param(param):
     if   param == "complexity_1": return ["refine", "refine", "cluster"]
     elif param == "complexity_2": return ["exp_prj_prc_org", "refine"]
@@ -232,5 +228,6 @@ def prompt(param, text, topic_texts=""):
     elif param == "prj_org":         return prompt_prj_org(text_input, topic_texts=topic_texts)
     elif param == "capex_opex":      return prompt_capex_opex(text_input, topic_texts=topic_texts)
     elif param == "glossary":        return prompt_glossary(text_input, topic_texts=topic_texts)
+    elif param == "text2mindmap":    return prompt_text_to_mindmap (text_input, topic_texts=topic_texts)
     else:
         return ""

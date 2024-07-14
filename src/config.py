@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4'                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                   # best
 # CLOUD_TYPE = 'AZURE+gpt-35'                      # best
