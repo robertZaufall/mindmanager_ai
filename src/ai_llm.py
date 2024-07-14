@@ -10,8 +10,8 @@ import sys
 def call_llm_sequence(prompts_list, mermaid, topic_texts=""):
     new_mermaid = mermaid
 
-    log_input = "# Test at https://mermaid.live/edit\n\n"
-    log_output = "# Test at https://mermaid.live/edit\n\n"
+    log_input = ""
+    log_output = ""
     log_prompt = ""
     for prompt in prompts_list:
         log_input += new_mermaid + "\n\n"
