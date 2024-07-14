@@ -53,10 +53,10 @@ More animated examples are in the `doc` folder.
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 7. Image generation with DALL-E 3, SD3, Imagen2, MLX from topics
 8. Professional translation of all topics by DeepL
-9. Generate a glossary HTML document of all terms
-10. Export Mermaid HTML document
-11. Export Markmap HTML document
-12. PDF to mindmap (w/ ***GPT-4o***, ***Gemini 1.5 Flash***)
+9. Export Mermaid HTML document
+10. Export Markmap HTML document
+11. PDF to mindmap (w/ ***GPT-4o***, ***Gemini 1.5 Flash***)
+12. Generate a glossary HTML document of all terms
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
 
