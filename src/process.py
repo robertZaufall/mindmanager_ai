@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 import config
 import prompts
-import mermaid
-import utility
+
+import mermaid_helper
+import file_helper
+import pdf_helper
+import text_helper
 
 import sys
 import os
@@ -11,7 +14,6 @@ import uuid
 import ai_llm
 import ai_image
 import ai_translation
-import ai_pdf
 
 if sys.platform.startswith('win'):
     import mindmanager_win as mindmanager
@@ -23,11 +25,11 @@ elif sys.platform.startswith('darwin'):
 def recurse_topics(mindm, mermaid_diagram, this_topic, level):
     this_topic_text = mindm.get_title_from_topic(this_topic)
     if level == 0:
-        top_level = mermaid.get_mermaid_line(0, this_topic_text)
+        top_level = mermaid_helper.get_mermaid_line(0, this_topic_text)
         mermaid_diagram = recurse_topics(mindm, top_level, this_topic, 1)
         return mermaid_diagram
     if level > 1:
-        mermaid_diagram += mermaid.get_mermaid_line(level, this_topic_text)
+        mermaid_diagram += mermaid_helper.get_mermaid_line(level, this_topic_text)
     for child_topic in mindm.get_subtopics_from_topic(this_topic):
         mermaid_diagram = recurse_topics(mindm, mermaid_diagram, child_topic, level + 1)
     return mermaid_diagram
@@ -49,7 +51,7 @@ def create_sub_topics(mindm, mermaid_topics, index, parent_topic):
     return i
 
 def get_mermaid_topics(mindm, mermaid_diagram):
-    mermaid_topics = mermaid.parse_mermaid(mermaid_diagram, config.LINE_SEPARATOR, config.INDENT_SIZE)
+    mermaid_topics = mermaid_helper.parse_mermaid(mermaid_diagram, config.LINE_SEPARATOR, config.INDENT_SIZE)
     max_topic_level = max(topic.topic_level for topic in mermaid_topics)
     return (mermaid_topics, max_topic_level)
 
@@ -79,7 +81,7 @@ def get_topic_texts(mindm, topic_texts):
     return topic_texts,central_topic_selected
 
 def generate_glossary_html(content, guid):
-    file_path = GetNewFilePaths("docs", guid)
+    file_path = file_helper.get_new_file_paths("docs", guid)
 
     try:
         import markdown
@@ -89,47 +91,33 @@ def generate_glossary_html(content, guid):
             f.write(f'caught {str(e)}: e') 
         raise
 
-    template = GetTemplateContent("glossary.html")
+    template = get_template_content("glossary.html")
     html = template.replace("{{title}}", "Glossary").replace("{{body}}", html_fragment.replace("</h2>", "</h2><hr/>"))
     with open(file_path, 'w') as f:
         f.write(html)
-    OpenFile(file_path)
+    file_helper.open_file(file_path, platform)
 
 def generate_markmap_html(content, max_topic_level, guid):
-    file_path = GetNewFilePaths("docs", guid)
-    template = GetTemplateContent("markmap.html")
+    file_path = file_helper.get_new_file_paths("docs", guid)
+    template = get_template_content("markmap.html")
     html = template.replace("{{colorFreezeLevel}}", str(max_topic_level)).replace("{{title}}", "Markmap").replace("{{markmap}}", content)
     with open(file_path, 'w') as f:
         f.write(html)
-    OpenFile(file_path)
+    file_helper.open_file(file_path, platform)
 
 def generate_mermaid_html(content, max_topic_level, guid):
-    file_path = GetNewFilePaths("docs", guid)
-    template = GetTemplateContent("mermaid.html")
+    file_path = file_helper.get_new_file_paths("docs", guid)
+    template = get_template_content("mermaid.html")
     html = template.replace("{{title}}", "Mermaid").replace("{{mermaid}}", content) 
     with open(file_path, 'w') as f:
         f.write(html)
-    OpenFile(file_path)
+    file_helper.open_file(file_path, platform)
 
-def OpenFile(file_path):
-    if platform == "darwin":
-        os.system(f"open {file_path}")
-    if platform == "win":
-        import subprocess
-        subprocess.Popen(f'cmd /k start explorer.exe "{file_path}"', shell=False)
-
-def GetTemplateContent(template_name):
+def get_template_content(template_name):
     templates_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "templates")
     with open(os.path.join(templates_folder_path, template_name), 'r') as f:
         template = f.read()
     return template
-
-def GetNewFilePaths(folder_name, guid):
-    doc_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), folder_name)
-    if not os.path.exists(doc_folder_path): os.makedirs(doc_folder_path)
-    file_name = f"{guid}.html"
-    file_path = os.path.join(doc_folder_path, file_name)
-    return file_path
 
 def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid):
     central_topic_text = mindm.get_title_from_topic(central_topic)
@@ -145,7 +133,7 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
             top_most_topic = topics[0]
             subtopics = ",".join(topics[1:])
     
-    folder_path_images = utility.create_folder_if_not_exists(os.path.join(mindm.library_folder, "Images"), central_topic_text)
+    folder_path_images = file_helper.create_folder_if_not_exists(os.path.join(mindm.library_folder, "Images"), central_topic_text)
     file_name = f"{guid}.png"
     file_path = os.path.join(folder_path_images, file_name)      
 
@@ -172,20 +160,20 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
 
 
 def main(param, charttype):
-
     mindm = mindmanager.Mindmanager(charttype)
 
     if param.startswith("pdf_"):
-
         actions = param.split("_")[-1].split("+")
-        md_texts = ai_pdf.load_pdf_files()
+        md_texts = pdf_helper.load_pdf_files(remove_special_sections=True)
         for key, value in md_texts.items():
+            token_count = text_helper.num_tokens_from_string(value, "cl100k_base")
+            cleaned_text = text_helper.cleanse_markdown(value)
+            token_count_cleaned = text_helper.num_tokens_from_string(cleaned_text, "cl100k_base")
+
             if "mindmap" in actions:
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key)
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], cleaned_text, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
-
     else:
-
         if not mindm.document_exists():
             print("No document found.")    
             return
@@ -219,11 +207,11 @@ def main(param, charttype):
                     generate_glossary_html(markdown, guid)
 
                 elif param == "export_markmap":
-                    content, max_topic_level = mermaid.export_to_markmap(mermaid_diagram)
+                    content, max_topic_level = mermaid_helper.export_to_markmap(mermaid_diagram)
                     generate_markmap_html(content, max_topic_level, guid)
 
                 elif param == "export_mermaid":
-                    content, max_topic_level = mermaid.export_to_mermaid(mermaid_diagram)
+                    content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram)
                     generate_mermaid_html(content, max_topic_level, guid)
 
                 elif "translate_deepl" in param:
@@ -264,7 +252,10 @@ if __name__ == "__main__":
         if charttype != "orgchart" and charttype != "radial" and charttype != "auto":
             print("Invalid chart type. Use 'orgchart' or 'radial'.")
             sys.exit(1)
-        
+    
+    if param.startswith("pdf_") and charttype == "auto":
+        charttype = "radial"
+
     try:
         main(param, charttype)
     except Exception as e:

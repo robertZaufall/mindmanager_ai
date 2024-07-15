@@ -12,6 +12,7 @@ prompt_postfix = (
     f"Don't use only numbers as topics but replace them with something meaningful. "
     f"Do not add any additional text or explainings at the beginning or end to your answer. The answer must be pure Mermaid code only. "
     f"Suppress any text like 'Here is the refined mind map' or else in your answer. "
+    f"Don't add 'Here is the refined mind map in Mermaid syntax:' or 'Here is the mindmap in Mermaid syntax based on the summary:' or any other text to your answer, but just the code. "
     f"This is an example of a n level deep mindmap and how the output format has to look like: \n"
     f"'mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n'\n\n"
     f"Here is the data: \n"
@@ -46,13 +47,13 @@ def prompt_image_prompt(text):
 def prompt_glossary(text, topic_texts):
     if topic_texts != "":
         main_message = (
-            f"Please create an alphabetically sorted glossary with special terms and technical terms only included in this string: \"{topic_texts}\". "
+            f"Please create an alphabetically sorted glossary only with special terms and technical terms only included in this string: \"{topic_texts}\". "
             f"Use the attached mindmap in Mermaid syntax just as context. "
         )
         context = "context"
     else:
         main_message = (
-            f"Please create an alphabetically sorted glossary with all business relevant special terms and technical terms included in the whole attached mindmap in Mermaid syntax. "
+            f"Please create an alphabetically sorted glossary only with business relevant special terms and technical terms included in the whole attached mindmap in Mermaid syntax. "
         )
         context = "data"
 
@@ -60,7 +61,6 @@ def prompt_glossary(text, topic_texts):
         main_message +
         f"Eliminate duplicates. "
         f"Add a short explaining of each term in one sentence. "
-        f"Use the original used language. "
         f"Don't split terms and its descriptions within the same first character. "
         f"Do not add any additional text or explainings at the beginning or end to your answer. Do not use any technical keyword like 'html' or 'markdown' etc. at the start of the text.\n"
         f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n"

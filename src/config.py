@@ -171,6 +171,7 @@ elif "CLAUDE3" in CLOUD_TYPE:
         MODEL_ID = "claude-3-haiku-20240307"
     elif model == "SONNET":
         MODEL_ID = "claude-3-5-sonnet-20240620"
+        MAX_TOKENS = 8192
     elif model == "OPUS":
         MODEL_ID = "claude-3-opus-20240229"
     else:

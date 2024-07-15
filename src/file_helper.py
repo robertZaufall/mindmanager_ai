@@ -1,5 +1,6 @@
 import re
 import os
+import sys
 
 def sanitize_folder_name(folder_name):
     folder_name = re.sub(r'[<>:"/\\|?*]', '', folder_name)
@@ -17,3 +18,18 @@ def create_folder_if_not_exists(root_path, central_topic_text):
     folder_path = os.path.join(root_path, f"⚡️{sanitize_folder_name(central_topic_text)}")
     if not os.path.exists(folder_path): os.makedirs(folder_path)
     return folder_path
+
+def open_file(file_path, platform):
+    if platform == "darwin":
+        os.system(f"open {file_path}")
+    if platform == "win":
+        import subprocess
+        subprocess.Popen(f'cmd /k start explorer.exe "{file_path}"', shell=False)
+
+def get_new_file_paths(folder_name, guid):
+    doc_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), folder_name)
+    if not os.path.exists(doc_folder_path): os.makedirs(doc_folder_path)
+    file_name = f"{guid}.html"
+    file_path = os.path.join(doc_folder_path, file_name)
+    return file_path
+

@@ -2,3 +2,5 @@ requests
 httpx
 markdown
 Pillow
+tiktoken
+pymupdf4llm

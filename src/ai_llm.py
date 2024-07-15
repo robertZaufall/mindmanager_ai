@@ -1,6 +1,6 @@
 import config
 import prompts
-import mermaid as m
+import mermaid_helper as m
 
 import requests
 import json
@@ -208,13 +208,19 @@ def call_llm(str_user):
             ]
         }
 
+        headers = {
+            "content-type": "application/json",
+            "anthropic-version": config.ANTHROPIC_VERSION,
+            config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
+        }
+
+        # extend token output size for sonnet model
+        if config.MODEL_ID == "claude-3-5-sonnet-20240620":
+            headers["anthropic-beta"] = "max-tokens-3-5-sonnet-2024-07-15"
+
         response = requests.post(
             config.API_URL,
-            headers={
-                "content-type": "application/json",
-                "anthropic-version": config.ANTHROPIC_VERSION,
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
-            },
+            headers=headers,
             data=json.dumps(payload)
         )
         response_text = response.text
@@ -231,7 +237,13 @@ def call_llm(str_user):
         stop_reason = parsed_json["stop_reason"]
         stop_sequence = parsed_json["stop_sequence"]
 
-        result = parsed_json["content"][0]["text"].replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
+        result = parsed_json["content"][0]["text"] \
+                .replace("Here is the refined mind map in Mermaid syntax:", "") \
+                .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
+                .replace("```mermaid", "") \
+                .replace("```", "") \
+                .replace("mermaid\n", "") \
+                .lstrip("\n")
 
     # GROQ
     elif "GROQ" in config.CLOUD_TYPE:
