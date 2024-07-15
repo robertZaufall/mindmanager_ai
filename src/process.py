@@ -172,63 +172,68 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
 
 
 def main(param, charttype):
+
     mindm = mindmanager.Mindmanager(charttype)
-    if not mindm.document_exists():
-        print("No document found.")    
-        return
 
-    central_topic = mindm.get_central_topic()
-    mermaid_diagram = recurse_topics(mindm, "", central_topic, 0)
+    if param.startswith("pdf_"):
 
-    if param != "finalize":
-    
-        prompts_list = prompts.prompts_list_from_param(param)
-
-        if mindm.document_exists():
-            topic_texts = ""
-
-            if len(prompts_list) == 1:
-                topic_texts, central_topic_selected = get_topic_texts(mindm, topic_texts)
-
-            guid = uuid.uuid4()
-            if "image" in param:
-                generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid)
-
-            elif param == "glossary":
-                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
-                generate_glossary_html(markdown, guid)
-
-            elif param == "export_markmap":
-                content, max_topic_level = mermaid.export_to_markmap(mermaid_diagram)
-                generate_markmap_html(content, max_topic_level, guid)
-
-            elif param == "export_mermaid":
-                content, max_topic_level = mermaid.export_to_mermaid(mermaid_diagram)
-                generate_mermaid_html(content, max_topic_level, guid)
-
-            elif "translate_deepl" in param:
-                language = param.split("+")[-1]
-                new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
+        actions = param.split("_")[-1].split("+")
+        md_texts = ai_pdf.load_pdf_files()
+        for key, value in md_texts.items():
+            if "mindmap" in actions:
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key)
                 create_map_and_finalize(mindm, new_mermaid_diagram)
 
-            elif param.startswith("pdf_"):
-                actions = param.split("_")[-1].split("+")
-                md_texts = ai_pdf.load_pdf_files()
-                for key, value in md_texts.items():
-                    new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key)
-                    create_map_and_finalize(mindm, new_mermaid_diagram)
-                    break
+    else:
 
+        if not mindm.document_exists():
+            print("No document found.")    
+            return
+
+        central_topic = mindm.get_central_topic()
+        mermaid_diagram = recurse_topics(mindm, "", central_topic, 0)
+
+        if param == "finalize":
+        
+            if platform == "win":
+                max_topic_level = get_mermaid_topics(mindm, mermaid_diagram)[1]
             else:
-                new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
-                create_map_and_finalize(mindm, new_mermaid_diagram)
-    
-    else: # finalize
-        if platform == "win":
-            max_topic_level = get_mermaid_topics(mindm, mermaid_diagram)[1]
+                max_topic_level = create_new_map_from_mermaid(mindm, mermaid_diagram)
+            mindm.finalize(max_topic_level)
+
         else:
-            max_topic_level = create_new_map_from_mermaid(mindm, mermaid_diagram)
-        mindm.finalize(max_topic_level)
+            prompts_list = prompts.prompts_list_from_param(param)
+
+            if mindm.document_exists():
+                topic_texts = ""
+
+                if len(prompts_list) == 1:
+                    topic_texts, central_topic_selected = get_topic_texts(mindm, topic_texts)
+
+                guid = uuid.uuid4()
+                if "image" in param:
+                    generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid)
+
+                elif param == "glossary":
+                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+                    generate_glossary_html(markdown, guid)
+
+                elif param == "export_markmap":
+                    content, max_topic_level = mermaid.export_to_markmap(mermaid_diagram)
+                    generate_markmap_html(content, max_topic_level, guid)
+
+                elif param == "export_mermaid":
+                    content, max_topic_level = mermaid.export_to_mermaid(mermaid_diagram)
+                    generate_mermaid_html(content, max_topic_level, guid)
+
+                elif "translate_deepl" in param:
+                    language = param.split("+")[-1]
+                    new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
+                    create_map_and_finalize(mindm, new_mermaid_diagram)
+
+                else:
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+                    create_map_and_finalize(mindm, new_mermaid_diagram)
 
     print("Done.")
 

@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4'                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                   # best
 # CLOUD_TYPE = 'AZURE+gpt-35'                      # best
@@ -30,6 +30,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+llama3'                     # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'                 # good,        censored, slow
 # CLOUD_TYPE = 'OLLAMA+phi3'                       # good,        censored
+## CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M' # not working
 # CLOUD_TYPE = 'OLLAMA+qwen2'                      # ok,          censored
 # CLOUD_TYPE = 'OLLAMA+gemma2'                     # ok
 # CLOUD_TYPE = 'OLLAMA+gemma2:27b'                 # does not work!
