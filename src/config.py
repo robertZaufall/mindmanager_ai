@@ -20,20 +20,21 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'              # best
 
 # Ollama (local models), best results
-# CLOUD_TYPE = 'OLLAMA+mixtral'                    # best,        censored
-# CLOUD_TYPE = 'OLLAMA+solar'                      # best,        uncensored
-# CLOUD_TYPE = 'OLLAMA+mistral'                    # best,        uncensored
-# CLOUD_TYPE = 'OLLAMA+openchat'                   # very good,   uncensored
-# CLOUD_TYPE = 'OLLAMA+zephyr'                     # very good,   uncensored *
-# CLOUD_TYPE = 'OLLAMA+neural-chat'                # good,        uncensored
-# CLOUD_TYPE = 'OLLAMA+wizardlm2'                  # very good,   uncensored (with warnings)
-# CLOUD_TYPE = 'OLLAMA+llama3'                     # good,        uncensored
-# CLOUD_TYPE = 'OLLAMA+llama3:70b'                 # good,        censored, slow
-# CLOUD_TYPE = 'OLLAMA+phi3'                       # good,        censored
-## CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M' # not working
-# CLOUD_TYPE = 'OLLAMA+qwen2'                      # ok,          censored
-# CLOUD_TYPE = 'OLLAMA+gemma2'                     # ok
-# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                 # does not work!
+# CLOUD_TYPE = 'OLLAMA+mixtral'                              # best,        censored
+# CLOUD_TYPE = 'OLLAMA+solar'                                # best,        uncensored
+# CLOUD_TYPE = 'OLLAMA+mistral'                              # best,        uncensored
+# CLOUD_TYPE = 'OLLAMA+openchat'                             # very good,   uncensored
+# CLOUD_TYPE = 'OLLAMA+zephyr'                               # very good,   uncensored *
+# CLOUD_TYPE = 'OLLAMA+neural-chat'                          # good,        uncensored
+# CLOUD_TYPE = 'OLLAMA+wizardlm2'                            # very good,   uncensored (with warnings)
+# CLOUD_TYPE = 'OLLAMA+llama3'                               # good,        uncensored
+# CLOUD_TYPE = 'OLLAMA+llama3:70b'                           # good,        censored, slow
+# CLOUD_TYPE = 'OLLAMA+phi3'                                 # good,        censored
+##CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M'  # not working
+##CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                       # not good
+# CLOUD_TYPE = 'OLLAMA+qwen2'                                # ok,          censored
+# CLOUD_TYPE = 'OLLAMA+gemma2'                               # ok
+# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                           # does not work!
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI_PRO'                        # good

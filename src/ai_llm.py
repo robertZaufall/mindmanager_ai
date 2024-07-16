@@ -129,6 +129,10 @@ def call_llm(str_user):
             result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
         else:
             result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        
+        lines = result.split("\n")
+        if lines[0].startswith("  "):
+            result = "\n".join(line[2:] for line in lines)
 
     # GEMINI
     elif "GEMINI" in config.CLOUD_TYPE:

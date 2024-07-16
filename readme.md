@@ -55,7 +55,7 @@ More animated examples are in the `doc` folder.
 8. Professional translation of all topics by DeepL
 9. Export Mermaid HTML document
 10. Export Markmap HTML document
-11. PDF to mindmap (w/ ***GPT-4o***, ***Gemini 1.5 Flash***)
+11. PDF to mindmap, batch (w/ ***GPT-4o***, ***Gemini 1.5 Flash***, ***Claude 3.5 Sonnet***)
 12. Generate a glossary HTML document of all terms
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
@@ -180,8 +180,9 @@ The prompt for image generation can optionally be optimized using a LLM call.
 Images can also be generated locally on macOS with Apple Silicon using the native Apple MLX framework.  
 
 ### Generation using text summarization (eg. PDF to mindmap)
-Put the file into the `input`-folder and use the action `pdf_mindmap`. The PDF file ist first converted to markdown (MD) fromat. No OCR takes place and no optimization is done by now.  
-Lots of input-tokens are needed in order to summarize the text by the LLM. Use a model which allows a high input-token number. GPT-4o and Gemini 1.5 are working.  
+Put the files into the `input`-folder and use the action `pdf_mindmap`. The PDF files are first converted to markdown (MD) format. 'Reference' sections are removed as these contain no information but take a lot of tokens (e.g. Arxiv papers). No OCR takes place by now. Tables are removed and the content will be highly sanitized by removing irrelevant characters, code blocks, href-links, whitespace etc.  
+Still lots of input-tokens are needed in order to summarize the text by the LLM. These models have been tested and are working by now: **GPT-4o**, **Gemini 1.5** (**Flash** is doing a great job - even better than **Pro**!), **Claude 3.5 Sonnet** (after optimizing output errors).  
+There is no local LLM model using Ollama working for me by now.  
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
