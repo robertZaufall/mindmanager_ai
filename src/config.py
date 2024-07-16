@@ -32,6 +32,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'OLLAMA+phi3'                                 # good,        censored
 ##CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M'  # not working
 ##CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                       # not good
+##CLOUD_TYPE = 'OLLAMA+llama3-gradient'                      # not working for PDF
 # CLOUD_TYPE = 'OLLAMA+qwen2'                                # ok,          censored
 # CLOUD_TYPE = 'OLLAMA+gemma2'                               # ok
 # CLOUD_TYPE = 'OLLAMA+gemma2:27b'                           # does not work!

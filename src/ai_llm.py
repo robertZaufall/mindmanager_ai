@@ -113,6 +113,9 @@ def call_llm(str_user):
                 "options": { "temperature": config.LLM_TEMPERATURE },
             }
 
+            if config.model == "llama3-gradient":
+                payload["options"]["num_ctx"] = 256000
+
         response = requests.post(
             config.API_URL,
             data=json.dumps(payload)

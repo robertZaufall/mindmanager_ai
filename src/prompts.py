@@ -65,7 +65,7 @@ def prompt_glossary(text, topic_texts):
         f"Do not add any additional text or explainings at the beginning or end to your answer. Do not use any technical keyword like 'html' or 'markdown' etc. at the start of the text.\n"
         f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n"
         f"Here is the {context}: \n" +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -79,7 +79,7 @@ def prompt_refine(text, topic_texts=""):
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -93,7 +93,7 @@ def prompt_refine_dev(text, topic_texts=""):
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -104,7 +104,7 @@ def prompt_cluster(text, topic_texts=""):
         f"reduce complexity, simplify topics where possible and meaningful without loosing important information, "
         f"include missing most important topics or remove least import topics if there are any. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -116,7 +116,7 @@ def prompt_prc_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -128,7 +128,7 @@ def prompt_prj_prc_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -143,7 +143,7 @@ def prompt_exp_prj_prc_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        text
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -155,7 +155,7 @@ def prompt_exp(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -167,7 +167,7 @@ def prompt_capex_opex(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -179,7 +179,7 @@ def prompt_prj_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -192,7 +192,7 @@ def prompt_examples(text, topic_texts=""):
         f"and add a new level with up to {config.TOP_MOST_RESULTS} top most important examples or extend the existing ones, "
         f"with each example {config.MAX_RETURN_WORDS} words at maximum. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -204,7 +204,7 @@ def prompt_text_to_mindmap(text, topic_texts=""):
         f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
         f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. " +
         prompt_postfix +
-        f"```{text}```"
+        f"```\n{text}\n```"
     )
     return str_user
 
