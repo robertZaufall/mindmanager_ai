@@ -1,7 +1,7 @@
 import config
 
 prompt_prefix = "Given is the following Mermaid mindmap. "
-prompt_prefix_text = "Given is the following text to be summarized. "
+prompt_prefix_text = "Given is the following text to be summarized as a mindmap with Mermaid syntax. "
 
 prompt_postfix = (
     f"Return back the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
@@ -45,27 +45,29 @@ def prompt_image_prompt(text):
     return str_user
 
 def prompt_glossary(text, topic_texts):
+    message = "Please create a glossary of embedded business-relevant special terms and technical terms or phrases "
     if topic_texts != "":
-        main_message = (
-            f"Please create an alphabetically sorted glossary only with special terms and technical terms only included in this string: \"{topic_texts}\". "
-            f"Use the attached mindmap in Mermaid syntax just as context. "
-        )
+        main_message = message + f"only included in this string: \"{topic_texts}\". Use the attached mindmap in Mermaid syntax just as context. "
         context = "context"
     else:
-        main_message = (
-            f"Please create an alphabetically sorted glossary only with business relevant special terms and technical terms included in the whole attached mindmap in Mermaid syntax. "
-        )
+        main_message = message + "included in the whole attached mindmap in Mermaid syntax. "
         context = "data"
 
     str_user = (
         main_message +
-        f"Eliminate duplicates. "
-        f"Add a short explaining of each term in one sentence. "
-        f"Don't split terms and its descriptions within the same first character. "
-        f"Do not add any additional text or explainings at the beginning or end to your answer. Do not use any technical keyword like 'html' or 'markdown' etc. at the start of the text.\n"
-        f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n"
+        f"Ensure the following: \n"
+        f" 1. Eliminate duplicates. \n"
+        f" 2. Provide a one-sentence explanation for each term. \n"
+        f" 3. Group the terms or phrases by its first chracter. \n"
+        f" 4. Sort the groups alphabetically. \n"
+        f" 5. Combine groups with the same character. Don't split character-groups. \n"
+        f" 6. Do not include any additional text or explanations at the beginning or end of your answer. \n"
+        f" 7. Don't output the keywords 'html' or 'markdown' at the start of your text. \n"
+        f" 8. Check twice if the glossary is sorted alphabetically. \n"
+        f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n"
+        f"```\n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n```\n\n"
         f"Here is the {context}: \n" +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -79,7 +81,7 @@ def prompt_refine(text, topic_texts=""):
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -93,7 +95,7 @@ def prompt_refine_dev(text, topic_texts=""):
         f"Do not change the central topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -104,7 +106,7 @@ def prompt_cluster(text, topic_texts=""):
         f"reduce complexity, simplify topics where possible and meaningful without loosing important information, "
         f"include missing most important topics or remove least import topics if there are any. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -116,7 +118,7 @@ def prompt_prc_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -128,7 +130,7 @@ def prompt_prj_prc_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -143,7 +145,7 @@ def prompt_exp_prj_prc_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -167,7 +169,7 @@ def prompt_capex_opex(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -179,7 +181,7 @@ def prompt_prj_org(text, topic_texts=""):
         f"include missing most important topics or remove least import topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -192,7 +194,7 @@ def prompt_examples(text, topic_texts=""):
         f"and add a new level with up to {config.TOP_MOST_RESULTS} top most important examples or extend the existing ones, "
         f"with each example {config.MAX_RETURN_WORDS} words at maximum. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -204,7 +206,7 @@ def prompt_text_to_mindmap(text, topic_texts=""):
         f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
         f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. " +
         prompt_postfix +
-        f"```\n{text}\n```"
+        f"```\n{text}```"
     )
     return str_user
 

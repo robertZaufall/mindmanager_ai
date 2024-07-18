@@ -9,13 +9,14 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4'                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                   # best
 # CLOUD_TYPE = 'AZURE+gpt-35'                      # best
 
 # OpenAI
 # CLOUD_TYPE = 'OPENAI+gpt-4o'                     # best
+CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                # best
 # CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'              # best
 
@@ -96,6 +97,9 @@ if "OPENAI" in CLOUD_TYPE:
     API_URL = OPENAI_API_URL
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
+
+    if OPENAI_MODEL == "gpt-4o-mini":
+        MAX_TOKENS = 16383
 
 elif "AZURE" in CLOUD_TYPE:
     OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
