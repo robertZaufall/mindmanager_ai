@@ -19,6 +19,8 @@ def load_pdf_files(remove_special_sections=True):
                         if remove_special_sections:
                             pathlib.Path(output_file_path.replace(".md", "_original.md")).write_bytes(md_text.encode())
 
+                            md_text = text_helper.remove_section(md_text, "Introduction")
+                            md_text = text_helper.remove_section(md_text, "Conclusion")
                             md_text = text_helper.remove_section(md_text, "References")
 
                             pathlib.Path(output_file_path).write_bytes(md_text.encode())
