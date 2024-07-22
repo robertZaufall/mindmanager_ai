@@ -65,9 +65,27 @@ def prompt_glossary(text, topic_texts):
         f" 7. Don't output the keywords 'html' or 'markdown' at the start of your text. \n"
         f" 8. Check twice if the glossary is sorted alphabetically. \n"
         f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n"
-        f"```\n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n```\n\n"
+        f"`\n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n`\n\n"
         f"Here is the {context}: \n" +
-        f"```\n{text}```"
+        f"`\n{text}`"
+    )
+    return str_user
+
+def prompt_glossary_optimize(text):
+    str_user = (
+        f"Given is a glossary to be optimized by you. Ensure the following: \n"
+        f" 1. Non-technical or non-business relevant or trivial terms and phrases are removed. \n"
+        f" 2. Every term or phrase is explained, not only repeated. \n"
+        f" 3. Every term or phrase is explained in exactly one sentence. \n"
+        f" 4. Terms or phrases are grouped by the first chracter. \n"
+        f" 5. Each term or phrase is in its correct group. \n"
+        f" 6. Groups are not split. \n"
+        f" 7. All groups are sorted alphabetically. \n"
+        f" 8. There are not keywords like 'html' or 'markdown' at the start of the content. \n"
+        f" 9. There is not prefix for the terms or phrases like 'A_', 'B_'. \n"
+        f"Don't add any additional text, explainings or comments at the beginning or end to your answer like 'Here is the optimized (...)'. \n"
+        f"Here is the glossary: \n" +
+        f"'\n{text}'"
     )
     return str_user
 

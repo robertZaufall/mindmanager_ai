@@ -20,6 +20,11 @@ CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                # best
 # CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'              # best
 
+# Claude3
+# CLOUD_TYPE = 'CLAUDE3_OPUS'                      # good
+# CLOUD_TYPE = 'CLAUDE35_SONNET'                   # best (using 3-5 version)
+# CLOUD_TYPE = 'CLAUDE3_HAIKU'                     # ok
+
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+mixtral'                              # best,        censored
 # CLOUD_TYPE = 'OLLAMA+solar'                                # best,        uncensored
@@ -45,11 +50,6 @@ CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
 # CLOUD_TYPE = 'GEMINIPROJECT_PRO'                 # good, Vertex AI need pre-authentication
 # CLOUD_TYPE = 'GEMINIPROJECT_FLASH'               # one-shot ok, generates maps only 3 levels deep
-
-# Claude3
-# CLOUD_TYPE = 'CLAUDE3_OPUS'                      # good
-# CLOUD_TYPE = 'CLAUDE35_SONNET'                   # best (using 3-5 version)
-# CLOUD_TYPE = 'CLAUDE3_HAIKU'                     # good
 
 # groq
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'           # good
