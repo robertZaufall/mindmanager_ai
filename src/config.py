@@ -14,7 +14,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                   # best
 # CLOUD_TYPE = 'AZURE+gpt-35'                      # best
 
-# Azure serverless models from META
+# Azure serverless
 # CLOUD_TYPE = 'AZURE_META+LLAMA3170B'             # best, slow
 
 # OpenAI
@@ -32,6 +32,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'OLLAMA+mixtral'                              # best,        censored
 # CLOUD_TYPE = 'OLLAMA+solar'                                # best,        uncensored
 # CLOUD_TYPE = 'OLLAMA+mistral'                              # best,        uncensored
+# CLOUD_TYPE = 'OLLAMA+mistral-large'                        # does not work on MBP M2 96GB
 # CLOUD_TYPE = 'OLLAMA+openchat'                             # very good,   uncensored
 # CLOUD_TYPE = 'OLLAMA+zephyr'                               # very good,   uncensored *
 # CLOUD_TYPE = 'OLLAMA+neural-chat'                          # good,        uncensored
