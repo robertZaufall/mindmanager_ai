@@ -54,7 +54,7 @@ def call_llm(str_user):
         import ai_azure_entra
         return ai_azure_entra.call_llm_azure_entra(str_user)
     
-    if "AZURE+" in config.CLOUD_TYPE or "OPENAI+" or "AZURE_META+" in config.CLOUD_TYPE:
+    if "AZURE+" in config.CLOUD_TYPE or "OPENAI+" in config.CLOUD_TYPE or "AZURE_META+" in config.CLOUD_TYPE:
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
