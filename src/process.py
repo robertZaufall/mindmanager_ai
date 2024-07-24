@@ -204,7 +204,7 @@ def main(param, charttype):
 
                 elif param == "glossary":
                     markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
-                    if "-mini" in config.CLOUD_TYPE:
+                    if "-mini" in config.CLOUD_TYPE or "GROQ+llama-3.1-8b" in config.CLOUD_TYPE:
                         # take an optimization round
                         markdown = ai_llm.call_llm(prompts.prompt_glossary_optimize(markdown))
                     generate_glossary_html(markdown, guid)

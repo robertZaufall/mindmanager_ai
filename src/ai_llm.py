@@ -54,7 +54,7 @@ def call_llm(str_user):
         import ai_azure_entra
         return ai_azure_entra.call_llm_azure_entra(str_user)
     
-    if "AZURE" in config.CLOUD_TYPE or "OPENAI" in config.CLOUD_TYPE:
+    if "AZURE+" in config.CLOUD_TYPE or "OPENAI+" or "AZURE_META+" in config.CLOUD_TYPE:
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -63,7 +63,7 @@ def call_llm(str_user):
                 {"role": "user", "content": str_user}
             ]
         }
-        if "OPENAI" in config.CLOUD_TYPE:
+        if "OPENAI+" in config.CLOUD_TYPE:
             payload["model"] = config.OPENAI_MODEL
 
         response = requests.post(
@@ -93,7 +93,7 @@ def call_llm(str_user):
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
     
     # OLLAMA
-    elif "OLLAMA" in config.CLOUD_TYPE:
+    elif "OLLAMA+" in config.CLOUD_TYPE:
         if config.OPENAI_COMPATIBILITY:
             payload = {
                 "max_tokens": config.MAX_TOKENS,
@@ -202,7 +202,7 @@ def call_llm(str_user):
         result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     # CLAUDE3
-    elif "CLAUDE3" in config.CLOUD_TYPE:
+    elif "CLAUDE3+" in config.CLOUD_TYPE:
         # same like OpenAI but different
         payload = {
             "model": config.MODEL_ID,
@@ -253,7 +253,7 @@ def call_llm(str_user):
                 .lstrip("\n")
 
     # GROQ
-    elif "GROQ" in config.CLOUD_TYPE:
+    elif "GROQ+" in config.CLOUD_TYPE:
         # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
@@ -283,7 +283,7 @@ def call_llm(str_user):
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
        
     # Perplexity
-    elif "PERPLEXITY" in config.CLOUD_TYPE:
+    elif "PERPLEXITY+" in config.CLOUD_TYPE:
         # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
@@ -313,7 +313,7 @@ def call_llm(str_user):
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
 
     # MLX
-    elif "MLX" in config.CLOUD_TYPE:
+    elif "MLX+" in config.CLOUD_TYPE:
         # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,

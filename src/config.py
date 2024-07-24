@@ -9,14 +9,17 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4'                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                   # best
 # CLOUD_TYPE = 'AZURE+gpt-35'                      # best
 
+# Azure serverless models from META
+# CLOUD_TYPE = 'AZURE_META+LLAMA3170B'             # best, slow
+
 # OpenAI
 # CLOUD_TYPE = 'OPENAI+gpt-4o'                     # best
-CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
+# CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                # best
 # CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'              # best
 
@@ -35,6 +38,8 @@ CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                            # very good,   uncensored (with warnings)
 # CLOUD_TYPE = 'OLLAMA+llama3'                               # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+llama3:70b'                           # good,        censored, slow
+# CLOUD_TYPE = 'OLLAMA+llama3.1'                             # good
+# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                         # best,        sloooow   
 # CLOUD_TYPE = 'OLLAMA+phi3'                                 # good,        censored
 ##CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M'  # not working
 ##CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                       # not good
@@ -55,6 +60,8 @@ CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'           # good
 # CLOUD_TYPE = 'GROQ+llama3-8b-8192'               # reduced usability
 # CLOUD_TYPE = 'GROQ+llama3-70b-8192'              # good
+# CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'         # good
+# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'      # best
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                  # good
 # CLOUD_TYPE = 'GROQ+gemma2-9b-it'                 # ok, generates maps only 3 levels deep
 
@@ -86,7 +93,7 @@ INDENT_SIZE = int('2')
 LINE_SEPARATOR = "\n"
 OPENAI_COMPATIBILITY = False
 
-if "OPENAI" in CLOUD_TYPE:
+if "OPENAI+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
     OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
@@ -101,7 +108,7 @@ if "OPENAI" in CLOUD_TYPE:
     if OPENAI_MODEL == "gpt-4o-mini":
         MAX_TOKENS = 16383
 
-elif "AZURE" in CLOUD_TYPE:
+elif "AZURE+" in CLOUD_TYPE:
     OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
     OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
@@ -112,6 +119,19 @@ elif "AZURE" in CLOUD_TYPE:
     API_URL = f"{OPENAI_API_URL}openai/deployments/{OPENAI_DEPLOYMENT}/chat/completions?api-version={OPENAI_API_VERSION}"
     KEY_HEADER_TEXT = "api-key"
     KEY_HEADER_VALUE = OPENAI_API_KEY
+
+elif "AZURE_META+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    META_MODEL = CLOUD_TYPE.split("+")[-1]
+    OPENAI_API_KEY = os.getenv(f"AZURE_{META_MODEL}_KEY")
+    OPENAI_API_URL = os.getenv(f"AZURE_{META_MODEL}_ENDPOINT") + "/v1/chat/completions"
+    OPENAI_DEPLOYMENT = ""
+    OPENAI_API_VERSION = ""
+
+    OPENAI_MODEL = ""
+    API_URL = OPENAI_API_URL
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
 
 elif "GEMINI" in CLOUD_TYPE:
     system = CLOUD_TYPE.split("_")[0]
@@ -162,7 +182,7 @@ elif "GEMINI" in CLOUD_TYPE:
     else:
         raise Exception("Error: Unknown GEMINI system")
 
-elif "OLLAMA" in CLOUD_TYPE:
+elif "OLLAMA+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     if OPENAI_COMPATIBILITY:
@@ -170,7 +190,7 @@ elif "OLLAMA" in CLOUD_TYPE:
     else: 
         API_URL="http://localhost:11434/api/generate"
 
-elif "CLAUDE3" in CLOUD_TYPE:
+elif "CLAUDE3+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     model = CLOUD_TYPE.split("_")[-1]
     if model == "HAIKU":
@@ -188,7 +208,8 @@ elif "CLAUDE3" in CLOUD_TYPE:
     KEY_HEADER_VALUE = ANTHROPIC_API_KEY
     API_URL="https://api.anthropic.com/v1/messages"
 
-elif "GROQ" in CLOUD_TYPE:
+elif "GROQ+" in CLOUD_TYPE:
+    MAX_TOKENS = 8000
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     GROQ_API_KEY = os.getenv('GROQ_API_KEY')
@@ -196,7 +217,7 @@ elif "GROQ" in CLOUD_TYPE:
     KEY_HEADER_VALUE = "Bearer " + GROQ_API_KEY
     API_URL="https://api.groq.com/openai/v1/chat/completions"
 
-elif "PERPLEXITY" in CLOUD_TYPE:
+elif "PERPLEXITY+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
@@ -204,7 +225,7 @@ elif "PERPLEXITY" in CLOUD_TYPE:
     KEY_HEADER_VALUE = "Bearer " + PERPLEXITY_API_KEY
     API_URL="https://api.perplexity.ai/chat/completions"
 
-elif "MLX" in CLOUD_TYPE:
+elif "MLX+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1] # not used, depends on how the server was started
     API_URL="http://localhost:8080/v1/chat/completions"
@@ -234,12 +255,12 @@ RESIZE_IMAGE_HEIGHT = 800 # source size is 1024
 INSERT_IMAGE_AS_BACKGROUND = True
 OPTIMIZE_PROMPT_IMAGE = True # use a LLM call to optimize the prompt
 
-if "AZURE" in CLOUD_TYPE_IMAGE or "OPENAI" in CLOUD_TYPE_IMAGE:
+if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
     EXPLICIT_STYLE = "digital art"
     IMAGE_QUALITY = "hd"  # hd, standard
     IMAGE_STYLE = "vivid" # natural, vivid
 
-    if "AZURE" in CLOUD_TYPE_IMAGE:
+    if "AZURE+" in CLOUD_TYPE_IMAGE:
         OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
         OPENAI_API_VERSION_IMAGE = '2024-02-01'
         OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
@@ -250,7 +271,7 @@ if "AZURE" in CLOUD_TYPE_IMAGE or "OPENAI" in CLOUD_TYPE_IMAGE:
         KEY_HEADER_TEXT_IMAGE = "api-key"
         KEY_HEADER_VALUE_IMAGE = OPENAI_API_KEY_IMAGE
 
-    elif "OPENAI" in CLOUD_TYPE_IMAGE:
+    elif "OPENAI+" in CLOUD_TYPE_IMAGE:
         OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
         OPENAI_API_VERSION_IMAGE = ""
         OPENAI_DEPLOYMENT_IMAGE = ""
@@ -261,7 +282,7 @@ if "AZURE" in CLOUD_TYPE_IMAGE or "OPENAI" in CLOUD_TYPE_IMAGE:
         KEY_HEADER_TEXT_IMAGE = "Authorization"
         KEY_HEADER_VALUE_IMAGE = "Bearer " + OPENAI_API_KEY_IMAGE
 
-elif "STABILITYAI" in CLOUD_TYPE_IMAGE:
+elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
     MODEL_ENDPOINT = MODEL_ID_IMAGE.split("-")[0]
 
@@ -280,7 +301,7 @@ elif "STABILITYAI" in CLOUD_TYPE_IMAGE:
     STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
     API_URL_IMAGE = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"
 
-elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
+elif "GOOGLEPROJECT+" in CLOUD_TYPE_IMAGE:
     # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
     # -> open console
     # gcloud auth print-access-token
@@ -315,7 +336,7 @@ elif "GOOGLEPROJECT" in CLOUD_TYPE_IMAGE:
     GCP_ENDPOINT_IMAGE = API_ENDPOINT_IMAGE
     GCP_LOCATION_IMAGE = LOCATION_ID_IMAGE
 
-elif "MLX" in CLOUD_TYPE_IMAGE:
+elif "MLX+" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
     SEED_IMAGE = 0
     EXPLICIT_STYLE = "digital art"

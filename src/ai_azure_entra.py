@@ -44,27 +44,29 @@ class CachedTokenProvider:
         return token.token  
   
 def call_llm_azure_entra(str_user):  
-    interactive_browser_credential = InteractiveBrowserCredential()  
-    token_provider = CachedTokenProvider(interactive_browser_credential, "https://cognitiveservices.azure.com/.default")  
-  
-    client = AzureOpenAI(  
-        azure_endpoint=config.OPENAI_API_URL,  
-        azure_ad_token_provider=token_provider.get_token, 
-        api_version=config.OPENAI_API_VERSION  
-    )  
-  
-    response = client.chat.completions.create(  
-        model=config.OPENAI_DEPLOYMENT,  
-        temperature=config.LLM_TEMPERATURE,  
-        max_tokens=config.MAX_TOKENS,  
-        messages=[  
-            {"role": "system", "content": config.SYSTEM_PROMPT},  
-            {"role": "user", "content": str_user},  
-        ]  
-    )  
-  
-    result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
-    return result
+    if "AZURE+" in config.CLOUD_TYPE:
+        interactive_browser_credential = InteractiveBrowserCredential()  
+        token_provider = CachedTokenProvider(interactive_browser_credential, "https://cognitiveservices.azure.com/.default")  
+
+        client = AzureOpenAI(  
+            azure_endpoint=config.OPENAI_API_URL,  
+            azure_ad_token_provider=token_provider.get_token, 
+            api_version=config.OPENAI_API_VERSION  
+        )  
+    
+        response = client.chat.completions.create(  
+            model=config.OPENAI_DEPLOYMENT,  
+            temperature=config.LLM_TEMPERATURE,  
+            max_tokens=config.MAX_TOKENS,  
+            messages=[  
+                {"role": "system", "content": config.SYSTEM_PROMPT},  
+                {"role": "user", "content": str_user},  
+            ]  
+        )
+        result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
+        return result
+    else:
+        raise Exception(f"Error: Invalid CLOUD_TYPE: {config.CLOUD_TYPE} for EntraID flow.")
 
 def call_image_ai(str_user, image_path, n_count = 1):
 
