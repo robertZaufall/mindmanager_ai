@@ -9,75 +9,76 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                      # best
-# CLOUD_TYPE = 'AZURE+gpt-4'                       # best
-# CLOUD_TYPE = 'AZURE+gpt-4-32k'                   # best
-# CLOUD_TYPE = 'AZURE+gpt-35'                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
+# CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
+# CLOUD_TYPE = 'AZURE+gpt-35'                                      # best
 
 # Azure serverless
-# CLOUD_TYPE = 'AZURE_META+LLAMA3170B'             # best, slow
+# CLOUD_TYPE = 'AZURE_META+LLAMA3170B'                             # best, slow
 
 # OpenAI
-# CLOUD_TYPE = 'OPENAI+gpt-4o'                     # best
-# CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                # ok
-# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                # best
-# CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'              # best
+CLOUD_TYPE = 'OPENAI+gpt-4o'                                     # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                # ok
+# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                # best
+# CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'                              # best
 
 # Claude3
-# CLOUD_TYPE = 'CLAUDE3_OPUS'                      # good
-# CLOUD_TYPE = 'CLAUDE35_SONNET'                   # best (using 3-5 version)
-# CLOUD_TYPE = 'CLAUDE3_HAIKU'                     # ok
+# CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
+# CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best (using 3-5 version)
+# CLOUD_TYPE = 'CLAUDE3_HAIKU'                                     # ok
 
 # Ollama (local models), best results
-# CLOUD_TYPE = 'OLLAMA+mixtral'                              # best,        censored
-# CLOUD_TYPE = 'OLLAMA+solar'                                # best,        uncensored
-# CLOUD_TYPE = 'OLLAMA+mistral'                              # best,        uncensored
-# CLOUD_TYPE = 'OLLAMA+mistral-large'                        # does not work on MBP M2 96GB
-# CLOUD_TYPE = 'OLLAMA+openchat'                             # very good,   uncensored
-# CLOUD_TYPE = 'OLLAMA+zephyr'                               # very good,   uncensored *
-# CLOUD_TYPE = 'OLLAMA+neural-chat'                          # good,        uncensored
-# CLOUD_TYPE = 'OLLAMA+wizardlm2'                            # very good,   uncensored (with warnings)
-# CLOUD_TYPE = 'OLLAMA+llama3'                               # good,        uncensored
-# CLOUD_TYPE = 'OLLAMA+llama3:70b'                           # good,        censored, slow
-# CLOUD_TYPE = 'OLLAMA+llama3.1'                             # good
-# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                         # best,        sloooow   
-# CLOUD_TYPE = 'OLLAMA+phi3'                                 # good,        censored
-##CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M'  # not working
-##CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                       # not good
-##CLOUD_TYPE = 'OLLAMA+llama3-gradient'                      # not working for PDF
-# CLOUD_TYPE = 'OLLAMA+qwen2'                                # ok,          censored
-# CLOUD_TYPE = 'OLLAMA+gemma2'                               # ok
-# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                           # does not work!
+# CLOUD_TYPE = 'OLLAMA+mixtral'                                    # best,        censored
+# CLOUD_TYPE = 'OLLAMA+solar'                                      # best,        uncensored
+# CLOUD_TYPE = 'OLLAMA+mistral'                                    # best,        uncensored
+# CLOUD_TYPE = 'OLLAMA+mistral-large'                              # does not work on MBP M2 96GB
+# CLOUD_TYPE = 'OLLAMA+openchat'                                   # very good,   uncensored
+# CLOUD_TYPE = 'OLLAMA+zephyr'                                     # very good,   uncensored *
+# CLOUD_TYPE = 'OLLAMA+neural-chat'                                # good,        uncensored
+# CLOUD_TYPE = 'OLLAMA+wizardlm2'                                  # very good,   uncensored (with warnings)
+# CLOUD_TYPE = 'OLLAMA+llama3'                                     # good,        uncensored
+# CLOUD_TYPE = 'OLLAMA+llama3:70b'                                 # good,        censored, slow
+# CLOUD_TYPE = 'OLLAMA+llama3.1'                                   # good
+# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                               # best,        sloooow   
+# CLOUD_TYPE = 'OLLAMA+phi3'                                       # good,        censored
+##CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M'        # not working
+##CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                             # not good
+##CLOUD_TYPE = 'OLLAMA+llama3-gradient'                            # not working for PDF
+# CLOUD_TYPE = 'OLLAMA+qwen2'                                      # ok,          censored
+# CLOUD_TYPE = 'OLLAMA+gemma2'                                     # ok
+# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                                 # does not work!
+# CLOUD_TYPE = 'OLLAMA+CognitiveComputations/dolphin-mistral-nemo' # ok,          uncensored
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI_PRO'                        # good
-# CLOUD_TYPE = 'GEMINI_FLASH'                      # one-shot ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GEMINI_PRO'                                        # good
+# CLOUD_TYPE = 'GEMINI_FLASH'                                      # one-shot ok, generates maps only 3 levels deep
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
-# CLOUD_TYPE = 'GEMINIPROJECT_PRO'                 # good, Vertex AI need pre-authentication
-# CLOUD_TYPE = 'GEMINIPROJECT_FLASH'               # one-shot ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GEMINIPROJECT_PRO'                                 # good, Vertex AI need pre-authentication
+# CLOUD_TYPE = 'GEMINIPROJECT_FLASH'                               # one-shot ok, generates maps only 3 levels deep
 
 # groq
-# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'           # good
-# CLOUD_TYPE = 'GROQ+llama3-8b-8192'               # reduced usability
-# CLOUD_TYPE = 'GROQ+llama3-70b-8192'              # good
-# CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'         # good
-# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'      # best
-# CLOUD_TYPE = 'GROQ+gemma-7b-it'                  # good
-# CLOUD_TYPE = 'GROQ+gemma2-9b-it'                 # ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                           # good
+# CLOUD_TYPE = 'GROQ+llama3-8b-8192'                               # reduced usability
+# CLOUD_TYPE = 'GROQ+llama3-70b-8192'                              # good
+# CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                         # good
+# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best
+# CLOUD_TYPE = 'GROQ+gemma-7b-it'                                  # good
+# CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                 # ok, generates maps only 3 levels deep
 
 # Perplexity
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-8b-instruct'            # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-70b-instruct'           # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-chat'   # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-chat'   # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online' # reduced usability
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online' # good
-# CLOUD_TYPE = 'PERPLEXITY+mixtral-8x7b-instruct'          # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-8b-instruct'                    # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-70b-instruct'                   # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-chat'           # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-chat'           # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online'         # reduced usability
+# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online'         # good
+# CLOUD_TYPE = 'PERPLEXITY+mixtral-8x7b-instruct'                  # ok
 
 # MLX server, macOS only (pip install mlx-lm)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3-8B-Instruct-4bit --port 8080 --log-level DEBUG
-# CLOUD_TYPE = 'MLX+llama3-8b'                             # good
+# CLOUD_TYPE = 'MLX+llama3-8b'                                     # good
 
 USE_AZURE_ENTRA = False
 USE_GCP_OA2 = True # only relevant for GEMINIPROJECT by now
