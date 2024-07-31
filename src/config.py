@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
 # CLOUD_TYPE = 'AZURE+gpt-35'                                      # best
@@ -18,7 +18,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'AZURE_META+LLAMA3170B'                             # best, slow
 
 # OpenAI
-CLOUD_TYPE = 'OPENAI+gpt-4o'                                     # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o'                                     # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                # best
 # CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'                              # best
@@ -68,17 +68,16 @@ CLOUD_TYPE = 'OPENAI+gpt-4o'                                     # best
 # CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                 # ok, generates maps only 3 levels deep
 
 # Perplexity
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-8b-instruct'                    # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-70b-instruct'                   # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-chat'           # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-chat'           # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-small-32k-online'         # reduced usability
-# CLOUD_TYPE = 'PERPLEXITY+llama-3-sonar-large-32k-online'         # good
-# CLOUD_TYPE = 'PERPLEXITY+mixtral-8x7b-instruct'                  # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-8b-instruct'                  # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-70b-instruct'                 # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-chat'        # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-chat'        # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'      # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'      # ok, up to good
 
-# MLX server, macOS only (pip install mlx-lm)
-# python -m mlx_lm.server --model mlx-community/Meta-Llama-3-8B-Instruct-4bit --port 8080 --log-level DEBUG
-# CLOUD_TYPE = 'MLX+llama3-8b'                                     # good
+# MLX server, macOS only (pip install -r requirements_mlx.txt --upgrade)
+# python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
+# CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit' # good
 
 USE_AZURE_ENTRA = False
 USE_GCP_OA2 = True # only relevant for GEMINIPROJECT by now
@@ -95,6 +94,8 @@ INDENT_SIZE = int('2')
 LINE_SEPARATOR = "\n"
 OPENAI_COMPATIBILITY = False
 
+MARKDOWN_OPTIMIZATION_LEVEL = int('2')
+
 if "OPENAI+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
@@ -109,6 +110,8 @@ if "OPENAI+" in CLOUD_TYPE:
 
     if OPENAI_MODEL == "gpt-4o-mini":
         MAX_TOKENS = 16383
+    
+    MARKDOWN_OPTIMIZATION_LEVEL = 3
 
 elif "AZURE+" in CLOUD_TYPE:
     OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
@@ -121,6 +124,8 @@ elif "AZURE+" in CLOUD_TYPE:
     API_URL = f"{OPENAI_API_URL}openai/deployments/{OPENAI_DEPLOYMENT}/chat/completions?api-version={OPENAI_API_VERSION}"
     KEY_HEADER_TEXT = "api-key"
     KEY_HEADER_VALUE = OPENAI_API_KEY
+
+    MARKDOWN_OPTIMIZATION_LEVEL = 3
 
 elif "AZURE_META+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
@@ -192,7 +197,7 @@ elif "OLLAMA+" in CLOUD_TYPE:
     else: 
         API_URL="http://localhost:11434/api/generate"
 
-elif "CLAUDE3+" in CLOUD_TYPE:
+elif "CLAUDE3" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     model = CLOUD_TYPE.split("_")[-1]
     if model == "HAIKU":
@@ -200,8 +205,10 @@ elif "CLAUDE3+" in CLOUD_TYPE:
     elif model == "SONNET":
         MODEL_ID = "claude-3-5-sonnet-20240620"
         MAX_TOKENS = 8192
+        MARKDOWN_OPTIMIZATION_LEVEL = 3
     elif model == "OPUS":
         MODEL_ID = "claude-3-opus-20240229"
+        MARKDOWN_OPTIMIZATION_LEVEL = 3
     else:
         raise Exception("Error: Unknown CLAUDE3 model")
     ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
@@ -229,7 +236,7 @@ elif "PERPLEXITY+" in CLOUD_TYPE:
 
 elif "MLX+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1] # not used, depends on how the server was started
+    MODEL_ID = CLOUD_TYPE.split("+")[-1] # not used
     API_URL="http://localhost:8080/v1/chat/completions"
     
 else:
