@@ -225,6 +225,7 @@ def prompt_text_to_mindmap(text, topic_texts=""):
         prompt_prefix_text +
         f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
         f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. " +
+        f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
         prompt_postfix +
         f"```\n{text}```"
     )

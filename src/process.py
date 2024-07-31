@@ -5,7 +5,6 @@ import prompts
 import mermaid_helper
 import file_helper
 import pdf_helper
-import text_helper
 
 import sys
 import os
@@ -164,14 +163,10 @@ def main(param, charttype):
 
     if param.startswith("pdf_"):
         actions = param.split("_")[-1].split("+")
-        md_texts = pdf_helper.load_pdf_files(remove_special_sections=True)
+        md_texts = pdf_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
         for key, value in md_texts.items():
-            token_count = text_helper.num_tokens_from_string(value, "cl100k_base")
-            cleaned_text = text_helper.cleanse_markdown(value)
-            token_count_cleaned = text_helper.num_tokens_from_string(cleaned_text, "cl100k_base")
-
             if "mindmap" in actions:
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], cleaned_text, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
     else:
         if not mindm.document_exists():
@@ -204,7 +199,9 @@ def main(param, charttype):
 
                 elif param == "glossary":
                     markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
-                    if "-mini" in config.CLOUD_TYPE or "GROQ+llama-3.1-8b" in config.CLOUD_TYPE:
+                    if "-mini" in config.CLOUD_TYPE or \
+                        "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
+                        ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
                         # take an optimization round
                         markdown = ai_llm.call_llm(prompts.prompt_glossary_optimize(markdown))
                     generate_glossary_html(markdown, guid)
