@@ -56,14 +56,16 @@ def prompt_glossary(text, topic_texts):
     str_user = (
         main_message +
         f"Ensure the following: \n"
-        f" 1. Eliminate duplicates. \n"
+        f" 1. Eliminate duplicate lines in your answer. \n"
         f" 2. Provide a one-sentence explanation for each term. \n"
         f" 3. Group the terms or phrases by its first chracter. \n"
         f" 4. Sort the groups alphabetically. \n"
         f" 5. Combine groups with the same character. Don't split character-groups. \n"
-        f" 6. Do not include any additional text or explanations at the beginning or end of your answer. \n"
-        f" 7. Don't output the keywords 'html' or 'markdown' at the start of your text. \n"
-        f" 8. Check twice if the glossary is sorted alphabetically. \n"
+        f" 6. Eliminate any '_' in your answer. \n"
+        f" 7. Do not include any additional text or explanations at the beginning or end of your answer. \n"
+        f" 8. Don't output the keywords 'html' or 'markdown' at the start of your text. \n"
+        f" 9. Check twice if the glossary is sorted alphabetically. \n"
+        f"10. If there is no special term or phase for a character, just ignore this. Don't express this state. \n"
         f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n"
         f"`\n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n`\n\n"
         f"Here is the {context}: \n" +
