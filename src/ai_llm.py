@@ -202,7 +202,7 @@ def call_llm(str_user):
         result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     # CLAUDE3
-    elif "CLAUDE3+" in config.CLOUD_TYPE:
+    elif "CLAUDE3" in config.CLOUD_TYPE:
         # same like OpenAI but different
         payload = {
             "model": config.MODEL_ID,
