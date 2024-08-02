@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -52,7 +52,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OLLAMA+CognitiveComputations/dolphin-mistral-nemo' # ok,          uncensored
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI_PRO'                                        # good
+CLOUD_TYPE = 'GEMINI_PRO'                                        # best
 # CLOUD_TYPE = 'GEMINI_FLASH'                                      # one-shot ok, generates maps only 3 levels deep
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
@@ -146,7 +146,7 @@ elif "GEMINI" in CLOUD_TYPE:
     if system == "GEMINI":
         model = CLOUD_TYPE.split("_")[-1]
         if model == "PRO":
-            MODEL_ID = "gemini-1.5-pro-latest"
+            MODEL_ID = "gemini-1.5-pro-exp-0801" #gemini-1.5-pro-latest
         elif model == "FLASH":
             MODEL_ID = "gemini-1.5-flash-latest"
         else:
