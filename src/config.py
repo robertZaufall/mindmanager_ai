@@ -13,16 +13,14 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
-# CLOUD_TYPE = 'AZURE+gpt-35'                                      # best
 
 # Azure serverless
 # CLOUD_TYPE = 'AZURE_META+LLAMA3170B'                             # best, slow
 
 # OpenAI
-# CLOUD_TYPE = 'OPENAI+gpt-4o'                                     # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                          # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                # best
-# CLOUD_TYPE = 'OPENAI+gpt-3.5-turbo'                              # best
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
