@@ -107,7 +107,7 @@ if "OPENAI+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
 
-    if OPENAI_MODEL == "gpt-4o-mini":
+    if "gpt-4o" in OPENAI_MODEL:
         MAX_TOKENS = 16383
     
     MARKDOWN_OPTIMIZATION_LEVEL = 3
