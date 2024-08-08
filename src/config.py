@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -50,7 +50,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OLLAMA+CognitiveComputations/dolphin-mistral-nemo' # ok,          uncensored
 
 # Google Gemini
-CLOUD_TYPE = 'GEMINI_PRO'                                        # best
+# CLOUD_TYPE = 'GEMINI_PRO'                                        # best
 # CLOUD_TYPE = 'GEMINI_FLASH'                                      # one-shot ok, generates maps only 3 levels deep
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
@@ -124,6 +124,9 @@ elif "AZURE+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "api-key"
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
+    if "gpt-4o-mini" in OPENAI_MODEL:
+        MAX_TOKENS = 16383
+
     MARKDOWN_OPTIMIZATION_LEVEL = 3
 
 elif "AZURE_META+" in CLOUD_TYPE:
@@ -145,8 +148,10 @@ elif "GEMINI" in CLOUD_TYPE:
         model = CLOUD_TYPE.split("_")[-1]
         if model == "PRO":
             MODEL_ID = "gemini-1.5-pro-exp-0801" #gemini-1.5-pro-latest
+            MAX_TOKENS = 8191
         elif model == "FLASH":
             MODEL_ID = "gemini-1.5-flash-latest"
+            MAX_TOKENS = 8191
         else:
             raise Exception("Error: Unknown GEMINI model")
 
@@ -154,18 +159,15 @@ elif "GEMINI" in CLOUD_TYPE:
         API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={GOOGLE_API_KEY}"
         KEY_HEADER_TEXT = ""
         KEY_HEADER_VALUE = ""
+
     elif system == "GEMINIPROJECT":
-        # use GCP authentication or token from CLI authorization:
-        # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
-        # -> open console
-        # gcloud auth print-access-token
-        # (Service Account / Key -> Create new key -> JSON)
-        # (gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>)
         model = CLOUD_TYPE.split("_")[-1]
         if model == "PRO":
-            MODEL_ID = "gemini-1.5-pro-preview-0514"
+            MODEL_ID = "gemini-1.5-pro-001"
+            MAX_TOKENS = 8191
         elif model == "FLASH":
-            MODEL_ID = "gemini-1.5-flash-preview-0514"
+            MODEL_ID = "gemini-1.5-flash-001"
+            MAX_TOKENS = 8191
         else:
             raise Exception("Error: Unknown GEMINI model")
 
@@ -246,20 +248,22 @@ else:
 
 
 # CLOUD_TYPE_IMAGE = ''
-CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'              # better
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'             # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'      # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'       # good
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo' # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'            # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'           # good
-# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2-6'     # not so good
-# CLOUD_TYPE_IMAGE = 'MLX+sd'                      # local generation, MacOS w/ Apple Silicon only
-# CLOUD_TYPE_IMAGE = 'MLX+sdxl'                    # local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'               # better
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'              # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'       # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'        # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'  # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'             # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'            # good
+# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2'        # not so good
+CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN3'        #
+# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN3-fast'   #
+# CLOUD_TYPE_IMAGE = 'MLX+sd'                       # local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+sdxl'                     # local generation, MacOS w/ Apple Silicon only
 
 RESIZE_IMAGE = False
-RESIZE_IMAGE_WIDTH = 800  # source size is 1024
-RESIZE_IMAGE_HEIGHT = 800 # source size is 1024
+RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
+RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024
 INSERT_IMAGE_AS_BACKGROUND = True
 OPTIMIZE_PROMPT_IMAGE = True # use a LLM call to optimize the prompt
 
@@ -310,14 +314,13 @@ elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
     API_URL_IMAGE = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"
 
 elif "GOOGLEPROJECT+" in CLOUD_TYPE_IMAGE:
-    # cloud.google.com/vertex-ai/docs/generative-ai/start/quickstarts/quickstart-multimodal
-    # -> open console
-    # gcloud auth print-access-token
-    # (Service Account / Key -> Create new key -> JSON)
-    # (gcloud auth activate-service-account --key-file=<path/to/your/keyfile.json>)
     model = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if model == "IMAGEN2-6":
+    if model == "IMAGEN2":
         MODEL_ID_IMAGE = "imagegeneration@006"
+    elif model == "IMAGEN3":
+        MODEL_ID_IMAGE = "imagen-3.0-generate-001"
+    elif model == "IMAGEN3-fast":
+        MODEL_ID_IMAGE = "imagen-3.0-fast-generate-001"
     else:
         raise Exception("Error: Unknown GOOGLE image model")
 
@@ -330,19 +333,19 @@ elif "GOOGLEPROJECT+" in CLOUD_TYPE_IMAGE:
     PROJECT_ID_IMAGE = os.getenv('GOOGLE_PROJECT_ID_AI')
     API_ENDPOINT_IMAGE = "us-central1-aiplatform.googleapis.com"
     LOCATION_ID_IMAGE = "us-central1"
-    GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
-    API_URL_IMAGE = f"https://{API_ENDPOINT_IMAGE}/v1/projects/{PROJECT_ID_IMAGE}/locations/{LOCATION_ID_IMAGE}/publishers/google/models/{MODEL_ID_IMAGE}:predict"
-    
-    KEY_HEADER_TEXT_IMAGE = "Authorization"
-    KEY_HEADER_VALUE_IMAGE = "Bearer " + GOOGLE_ACCESS_TOKEN_IMAGE
 
-    # GCP
-    # gcloud auth application-default login
-    GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
-    GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
-    GCP_PROJECT_ID_IMAGE = PROJECT_ID_IMAGE
-    GCP_ENDPOINT_IMAGE = API_ENDPOINT_IMAGE
-    GCP_LOCATION_IMAGE = LOCATION_ID_IMAGE
+    KEY_HEADER_TEXT_IMAGE = "Authorization"
+
+    if USE_GCP_OA2 == False:
+        GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
+        KEY_HEADER_VALUE_IMAGE = "Bearer " + GOOGLE_ACCESS_TOKEN_IMAGE
+    else:
+        # GCP
+        # gcloud auth application-default login
+        GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
+        GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
+
+    API_URL_IMAGE = f"https://{API_ENDPOINT_IMAGE}/v1/projects/{PROJECT_ID_IMAGE}/locations/{LOCATION_ID_IMAGE}/publishers/google/models/{MODEL_ID_IMAGE}:predict"
 
 elif "MLX+" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
