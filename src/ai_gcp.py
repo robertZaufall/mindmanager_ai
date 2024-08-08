@@ -17,8 +17,8 @@ GCP_SCOPES = [
 
 credentials_info = {  
     "installed": {  
-        "client_id": config.GCP_CLIENT_ID_IMAGE,  
-        "client_secret": config.GCP_CLIENT_SECRET_IMAGE,  
+        "client_id": config.GCP_CLIENT_ID,  
+        "client_secret": config.GCP_CLIENT_SECRET,  
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",  
         "token_uri": "https://oauth2.googleapis.com/token"  
     }  
