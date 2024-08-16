@@ -6,8 +6,9 @@ from openai import AzureOpenAI
 from azure.identity import InteractiveBrowserCredential  
 from datetime import datetime, timedelta  
   
-TOKEN_CACHE_FILE = "token_cache.json"  
-  
+TOKEN_CACHE_FILE = "token_cache.json"
+TOKEN_PROVIDER_NS = "https://cognitiveservices.azure.com/.default"
+
 def load_token_cache():  
     if os.path.exists(TOKEN_CACHE_FILE):  
         with open(TOKEN_CACHE_FILE, "r") as f:  
@@ -44,36 +45,31 @@ class CachedTokenProvider:
         return token.token  
   
 def call_llm_azure_entra(str_user):  
-    if "AZURE+" in config.CLOUD_TYPE:
-        interactive_browser_credential = InteractiveBrowserCredential()  
-        token_provider = CachedTokenProvider(interactive_browser_credential, "https://cognitiveservices.azure.com/.default")  
+    interactive_browser_credential = InteractiveBrowserCredential()  
+    token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)  
 
-        client = AzureOpenAI(  
-            azure_endpoint=config.OPENAI_API_URL,  
-            azure_ad_token_provider=token_provider.get_token, 
-            api_version=config.OPENAI_API_VERSION  
-        )  
-    
-        response = client.chat.completions.create(  
-            model=config.OPENAI_DEPLOYMENT,  
-            temperature=config.LLM_TEMPERATURE,  
-            max_tokens=config.MAX_TOKENS,  
-            messages=[  
-                {"role": "system", "content": config.SYSTEM_PROMPT},  
-                {"role": "user", "content": str_user},  
-            ]  
-        )
-        result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
-        return result
-    else:
-        raise Exception(f"Error: Invalid CLOUD_TYPE: {config.CLOUD_TYPE} for EntraID flow.")
+    client = AzureOpenAI(  
+        azure_endpoint=config.OPENAI_API_URL,  
+        azure_ad_token_provider=token_provider.get_token, 
+        api_version=config.OPENAI_API_VERSION  
+    )  
+
+    response = client.chat.completions.create(  
+        model=config.OPENAI_DEPLOYMENT,  
+        temperature=config.LLM_TEMPERATURE,  
+        max_tokens=config.MAX_TOKENS,  
+        messages=[  
+            {"role": "system", "content": config.SYSTEM_PROMPT},  
+            {"role": "user", "content": str_user},  
+        ]  
+    )
+    result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
+    return result
 
 def call_image_ai(str_user, image_path, n_count = 1):
-
     from PIL import Image
-
     interactive_browser_credential = InteractiveBrowserCredential()  
-    token_provider = CachedTokenProvider(interactive_browser_credential, "https://cognitiveservices.azure.com/.default")  
+    token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)  
   
     client = AzureOpenAI(  
         azure_endpoint=config.OPENAI_API_URL,  

@@ -1,8 +1,8 @@
 import config
 import requests
 import json
-import os  
-import google.auth  
+import google.auth
+
 from google.auth.transport.requests import Request  
 from google_auth_oauthlib.flow import InstalledAppFlow  
 
@@ -45,7 +45,6 @@ def call_llm_gcp(str_user):
     credentials = get_credentials()  
     access_token = credentials.token   
     
-    # GEMINI
     payload = {
         "contents": {
             "role": "user",
