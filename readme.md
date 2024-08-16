@@ -8,28 +8,28 @@ These automations and macros enhance mindmaps created by **MindManager** on macO
 ## macOS  
 ![Example](doc/anim_neu_2.gif)  
 
-Note: Image generation with DALL-E 3 or SD3 needs far more time than in these animations.  
+Note: Image generation with `DALL-E 3` or `SD3` needs far more time than in these animations.  
 More animated examples are in the `doc` folder.
 
 ## Features
 
 ### Supported LLMs
-  - **Azure OpenAI** w/ ***GPT-4o*** (use your key or log in with Azure EntraID) -> **best tested**
-  - **OpenAI** w/ ***GPT-4o*** (use your key) -> **best results**
-  - **Anthropic** w/ ***Claude 3 / 3.5*** (use your key)  
-  - **Groq** (platform) w/ ***LLaMA3***, ***Mixtral***, ***Gemma2*** (use your key)
-  - **Perplexity** (platform) w/ ***LLaMA3***, ***Mixtral*** (use your key)
-  - **Google Gemini** w/ ***Pro*** and ***Flash*** (use your key)  
-  - **Google Vertex AI** w/ ***Gemini Pro*** and ***Gemini Flash*** (use your access token / OAuth2)
-  - **Ollama** (local) w/ any LLM (use ***LLaMA3***, ***Zephyr*** or ***Mixtral*** model for best results)
-  - **MLX** (local w/ Apple Silicon) w/ any LLM (use ***LLaMA3*** model for best results)
+  - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
+  - **OpenAI** w/ `GPT-4o` (use your key) -> **best results**
+  - **Anthropic** w/ `Claude 3 / 3.5` (use your key)  
+  - **Groq** (platform) w/ `LLaMA3.1`, `Mixtral`, `Gemma2` (use your key)
+  - **Perplexity** (platform) w/ `LLaMA3.1`, `Mixtral` (use your key)
+  - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
+  - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
+  - **Ollama** (local) w/ any LLM (use `LLaMA3.1`, `Zephyr` or `Mixtral` model for best results)
+  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LLaMA3.1` model for best results)
 
 ### Supported Image Generation Systems
-  - **Azure OpenAI** w/ ***DALL-E 3*** (use your key or log in with Azure EntraID) -> **best tested**
-  - **OpenAI** w/ ***DALL-E 3*** (use your key) -> **best results**
-  - **Stability AI** w/ ***Stable Diffusion 3 / Ultra / Core*** (use your key)  
-  - **Google Vertex AI** w/ ***Imagen2 V6*** (use your access token / OAuth2, GCP approval)  
-  - **MLX** (local w/ Apple Silicon) w/ ***SD, SDXL***
+  - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
+  - **OpenAI** w/ `DALL-E 3` (use your key) -> **best results**
+  - **Stability AI** w/ `Stable Diffusion 3` `SD3` / `Ultra` / `Core` (use your key)  
+  - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
+  - **MLX** (local w/ Apple Silicon) w/ `Flux1`, `SD2`, `SDXL`
 
 ### Supported Professional Translation Services
  - **DeepL** (use your key)
@@ -51,11 +51,11 @@ More animated examples are in the `doc` folder.
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
-7. Image generation with DALL-E 3, SD3, Imagen2, MLX from topics
+7. Image generation with `DALL-E 3`, `SD3`, `Imagen3`, `MLX` from topics
 8. Professional translation of all topics by DeepL
-9. Export Mermaid HTML document
-10. Export Markmap HTML document
-11. PDF to mindmap, batch (w/ ***GPT-4o***, ***Gemini 1.5 Flash***, ***Claude 3.5 Sonnet***)
+9. Export `Mermaid` mindmap HTML document
+10. Export `Markmap` mindmap HTML document
+11. PDF to mindmap, batch (w/ `GPT-4o`, `Gemini 1.5 Flash`, `Claude 3.5 Sonnet`)
 12. Generate a glossary HTML document of all terms
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
@@ -69,7 +69,7 @@ More animated examples are in the `doc` folder.
 
 ## Installation  
 ### Windows  
-First install the Windows package manager **Chocolatey** from an administration shell or choose any other way following https://chocolatey.org/install.  
+First install the Windows package manager `Chocolatey` from an administration shell or choose any other way following https://chocolatey.org/install.  
 This is one line:  
 ```
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -83,7 +83,7 @@ Change to `windows` folder:
 ```
 cd windows
 ```
-Run `install.bat` or  the following commands (requirements_auth.txt only if you want to use Azure Entra ID or GCP OAuth2):
+Run `install.bat` or  the following commands (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`):
 ```
 choco install python3
 pip install -r .\..\requirements.txt
@@ -104,7 +104,7 @@ You can also check here if the path to the python files is correct.
 
 ### macOS  
 Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
-Install required python libraries (requirements_auth.txt only if you want to use Azure Entra ID or GCP OAuth2, requirements_mac_mlx.txt is only needed for local image generation using MLX):
+Install required python libraries (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`, requirements_mac_mlx.txt is only needed for local image generation using MLX):
 ```
 pip install -r requirements.txt
 pip install -r requirements_mac.txt
@@ -158,7 +158,7 @@ There are some actions already predefined for quick execution.
 First of all you have to open the `config.py` in a text editor of your choice.  
 Don't be overwhelmed by the huge list of variables. Just pick the lines you need and set its values.  
 Use the apropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
-If you want to run local models with Ollama or GPT4All you have to have either a newer Apple Mac model with M1, M2, M3 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
+If you want to run local models with `Ollama` or `GPT4All` you have to have either a newer Apple Mac model with M1, M2, M3 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
 
 ### General
 You can have more than one open document in MindManager. The document which should be processed must be the active document. For every processing a new document with the new topics will be created.  
@@ -170,14 +170,14 @@ Select the central topic or deselect all topics and call the automation.
 You can also select one or more topics and start the automation for just these topics, e.g. to generate examples for these topics, refine just these topics etc.  
 
 ### Image generation
-Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image` or `image_n` (MLX only).  
-After a while, the image will be opened and also stored in the MindManager-Library `Images` folder.  
+Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image` or `image_n`.  
+After a while, the image will be opened and also stored in the MindManager-Library `Images`-folder.  
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
 On Windows the image can be automatically set as the background image of the map.  
-The results from the generation process are good with DALL-E 3 and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
-For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt). DALL-E 3 does not support a seed value anymore (by the time of writing).  
+The results from the generation process are good with `DALL-E 3` and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
+For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt). `DALL-E 3` does not support a seed value anymore (by the time of writing).  
 The prompt for image generation can optionally be optimized using a LLM call.
-Images can also be generated locally on macOS with Apple Silicon using the native Apple MLX framework.  
+Images can also be generated locally on macOS with Apple Silicon using the native `Apple MLX` framework.  
 
 ### Generation using text summarization (eg. PDF to mindmap)
 Put the files into the `input`-folder and use the action `pdf_mindmap`. The PDF files are first converted to markdown (MD) format. 'Reference' sections are removed as these contain no information but take a lot of tokens (e.g. arXiv papers). No OCR takes place by now. Tables are removed and the content will be highly sanitized by removing irrelevant characters, code blocks, href-links, whitespace etc.  
@@ -206,12 +206,12 @@ MLX results are dependent on the used model. `LLaMA3` works well.
 The solution is best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Stability AI - Stable Diffusion 3  
 Image generation with SD3 is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
-### Google Vertex AI - Imagen2  
-Image generation results are too simple by now as prompt engineering is also most important here. Imagen2 has the highest image resolution (1:1 with 1536x1536). Imagen2 is GA (globally available) but there is an approval process to get access to the API.  
-Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
-### MLX w/ Stable Diffusion 2
-This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are below average using the SDXL model and less good using the SD model. There is a new action defined (image_n eg. image=10) to generate a bunch of images in a row. A pre-executing step is implemented to optimize the prompt using a LLM call.
-When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The data amount > 3GB.
+### Google Vertex AI - Imagen3  
+Image generation results are too simple by now as prompt engineering is also most important here. Imagen3 has the highest image resolution (1:1 with 1536x1536). Imagen3 is GA (globally available) but there is an approval process to get access to the API.  
+### MLX w/ Flux1, Stable Diffusion 2
+This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The result are above average using `Flux1` model, below average using the `SDXL` model and less good using `SD2` model. There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step is implemented to optimize the prompt using a LLM call.
+When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The data amount ranges from 3GB (`SD`) to 50GB (`Flux1`).
+`Flux1` needs the highest hardware resources.
 
 ## Translation systems
 ### DeepL

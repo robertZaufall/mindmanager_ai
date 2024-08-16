@@ -31,8 +31,17 @@ def prompt_image_sd(top_most_topic, subtopics):
     explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
     topics = f" and also influenced by thought of {subtopics}" if subtopics != "" else ""
     str_user = (
-        f"One professional infographic, minimalistic, professional{explicit_style} on a white background about {top_most_topic}{topics}. "
-        f"Use an outstanding, visually appealing, polished and expensive look."
+        f"One professional graphic, minimalistic, professional{explicit_style} on a white background about {top_most_topic}{topics}. "
+        f"Use an outstanding, visually appealing, high-detailed, polished and expensive look."
+    )
+    return str_user
+
+def prompt_image_flux(top_most_topic, subtopics):
+    explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
+    topics = f" and also influenced by thought of {subtopics}" if subtopics != "" else ""
+    str_user = (
+        f"Business graphic, minimalistic, professional{explicit_style} on a mostly white background full-filled with typical big symbols or a strong scene representing {top_most_topic}{topics}. "
+        f"Outstanding, visually appealing, polished and expensive look and finish. No text."
     )
     return str_user
 

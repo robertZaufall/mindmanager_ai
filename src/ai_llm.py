@@ -137,13 +137,13 @@ def call_llm(str_user):
         if lines[0].startswith("  "):
             result = "\n".join(line[2:] for line in lines)
 
+    # Vertex AI
+    elif "GEMINIPROJECT" in config.CLOUD_TYPE:
+        import ai_gcp
+        return ai_gcp.call_llm_gcp(str_user)
+
     # GEMINI
     elif "GEMINI" in config.CLOUD_TYPE:
-
-        if "GEMINIPROJECT" in config.CLOUD_TYPE and config.USE_GCP_OA2:
-            import ai_gcp
-            return ai_gcp.call_llm_gcp(str_user)
-
         payload = {
             "contents": {
                 "role": "user",
@@ -161,22 +161,21 @@ def call_llm(str_user):
             }
         }
 
-        if config.CLOUD_TYPE.split("_")[0] == "GEMINI": # VertexAI does not support this settings right now (as of 2024-05-14)
-            payload["safety_settings"] = [
-                { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
-                { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
-                { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
-                { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
+        payload["safety_settings"] = [
+            { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
+            { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
+            { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
+            { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
 
-                # not supported by now
-                #{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_TOXICITY", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_VIOLENCE", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_SEXUAL", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_MEDICAL", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE" },
-                #{ "category": "HARM_CATEGORY_UNSPECIFIED", "threshold": "BLOCK_NONE" },
-            ]
+            # not supported by now
+            #{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" },
+            #{ "category": "HARM_CATEGORY_TOXICITY", "threshold": "BLOCK_NONE" },
+            #{ "category": "HARM_CATEGORY_VIOLENCE", "threshold": "BLOCK_NONE" },
+            #{ "category": "HARM_CATEGORY_SEXUAL", "threshold": "BLOCK_NONE" },
+            #{ "category": "HARM_CATEGORY_MEDICAL", "threshold": "BLOCK_NONE" },
+            #{ "category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE" },
+            #{ "category": "HARM_CATEGORY_UNSPECIFIED", "threshold": "BLOCK_NONE" },
+        ]
 
         if config.KEY_HEADER_TEXT != "":
             headers = {

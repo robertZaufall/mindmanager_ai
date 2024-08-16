@@ -31,15 +31,12 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OLLAMA+mixtral'                                    # best,        censored
 # CLOUD_TYPE = 'OLLAMA+solar'                                      # best,        uncensored
 # CLOUD_TYPE = 'OLLAMA+mistral'                                    # best,        uncensored
-# CLOUD_TYPE = 'OLLAMA+mistral-large'                              # does not work on MBP M2 96GB
 # CLOUD_TYPE = 'OLLAMA+openchat'                                   # very good,   uncensored
 # CLOUD_TYPE = 'OLLAMA+zephyr'                                     # very good,   uncensored *
 # CLOUD_TYPE = 'OLLAMA+neural-chat'                                # good,        uncensored
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                  # very good,   uncensored (with warnings)
-# CLOUD_TYPE = 'OLLAMA+llama3'                                     # good,        uncensored
-# CLOUD_TYPE = 'OLLAMA+llama3:70b'                                 # good,        censored, slow
 # CLOUD_TYPE = 'OLLAMA+llama3.1'                                   # good
-# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                               # best,        sloooow   
+# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                               # best,        sloooow
 # CLOUD_TYPE = 'OLLAMA+phi3'                                       # good,        censored
 ##CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M'        # not working
 ##CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                             # not good
@@ -79,7 +76,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit' # good
 
 USE_AZURE_ENTRA = False
-USE_GCP_OA2 = True # only relevant for GEMINIPROJECT by now
 
 LLM_TEMPERATURE = float('0.5')
 
@@ -255,17 +251,18 @@ else:
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'  # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'             # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'            # good
-# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN2'        # not so good
-CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN3'        #
-# CLOUD_TYPE_IMAGE = 'GOOGLEPROJECT+IMAGEN3-fast'   #
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # ok
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             #
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        #
 # CLOUD_TYPE_IMAGE = 'MLX+sd'                       # local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sdxl'                     # local generation, MacOS w/ Apple Silicon only
+CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # local generation, MacOS w/ Apple Silicon only
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
 RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024
 INSERT_IMAGE_AS_BACKGROUND = True
-OPTIMIZE_PROMPT_IMAGE = True # use a LLM call to optimize the prompt
+OPTIMIZE_PROMPT_IMAGE = False # use a LLM call to optimize the prompt
 
 if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
     EXPLICIT_STYLE = "digital art"
@@ -313,19 +310,21 @@ elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
     STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
     API_URL_IMAGE = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"
 
-elif "GOOGLEPROJECT+" in CLOUD_TYPE_IMAGE:
+elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
     model = CLOUD_TYPE_IMAGE.split("+")[-1]
     if model == "IMAGEN2":
         MODEL_ID_IMAGE = "imagegeneration@006"
+        OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1536x1536) 9:16 (1152x2016) 16:9 (2016x1134) 3:4 (1344x1792) 4:3 (1792x1344)
     elif model == "IMAGEN3":
         MODEL_ID_IMAGE = "imagen-3.0-generate-001"
+        OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
     elif model == "IMAGEN3-fast":
         MODEL_ID_IMAGE = "imagen-3.0-fast-generate-001"
+        OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
     else:
         raise Exception("Error: Unknown GOOGLE image model")
 
     EXPLICIT_STYLE = "digital art"
-    OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1536x1536) 9:16 (1152x2016) 16:9 (2016x1134) 3:4 (1344x1792) 4:3 (1792x1344)
     ADD_WATERMARK = False
 
     NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
@@ -336,23 +335,40 @@ elif "GOOGLEPROJECT+" in CLOUD_TYPE_IMAGE:
 
     KEY_HEADER_TEXT_IMAGE = "Authorization"
 
-    if USE_GCP_OA2 == False:
-        GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
-        KEY_HEADER_VALUE_IMAGE = "Bearer " + GOOGLE_ACCESS_TOKEN_IMAGE
-    else:
-        # GCP
-        # gcloud auth application-default login
-        GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
-        GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
+    GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
+    GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
 
     API_URL_IMAGE = f"https://{API_ENDPOINT_IMAGE}/v1/projects/{PROJECT_ID_IMAGE}/locations/{LOCATION_ID_IMAGE}/publishers/google/models/{MODEL_ID_IMAGE}:predict"
 
 elif "MLX+" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    SEED_IMAGE = 0
-    EXPLICIT_STYLE = "digital art"
-    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
-    STEPS_IMAGE = 5 
+    if MODEL_ID_IMAGE == "sd" or MODEL_ID_IMAGE == "sdxl":
+        SEED_IMAGE = 0
+        EXPLICIT_STYLE = "digital art"
+        NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+        STEPS_IMAGE = 5
+    elif MODEL_ID_IMAGE == "flux1":
+        SEED_IMAGE = 0
+        #https://enragedantelope.github.io/Styles-FluxDev/
+        #EXPLICIT_STYLE = "digital art"
+        #EXPLICIT_STYLE = "papercraft-kirigami art"
+        EXPLICIT_STYLE = "computer art"
+        NEGATIV_PROMPT_IMAGE = ""
+        STEPS_IMAGE = 4
+
+        IMAGE_HEIGHT = 512 # 1024 # 512
+        IMAGE_WIDTH = 512 # 1024 # 512
+        IMAGE_NUM_STEPS = 4
+        IMAGE_CFG_WEIGHT = 0. 
+
+        DIFF_MODEL = "argmaxinc/stable-diffusion"
+        DIFF_SHIFT = 1.0 # 3.16
+        DIFF_MODEL_VERSION = "FLUX.1-schnell"
+        DIFF_LOW_MEMORY_MODE = True
+        DIFF_A16 = True
+        DIFF_W16 = True
+    else:
+        raise Exception("Error: Unknown MLX image model")
 
 
 # only used for action = DEEPL (translation)

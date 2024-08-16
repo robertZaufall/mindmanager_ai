@@ -143,11 +143,18 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
         ai_image.call_image_ai(file_path, final_prompt, int(count))
 
     elif param == "image":
-        str_user = prompts.prompt_image(top_most_topic, subtopics)
-        if ("STABILITYAI" in config.CLOUD_TYPE_IMAGE or "MLX" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
+        if "MLX+" in config.CLOUD_TYPE_IMAGE:
+            if "flux" in config.MODEL_ID_IMAGE:
+                str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
+            else:
+                str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
+        else:
+            str_user = prompts.prompt_image(top_most_topic, subtopics)
+        if ("STABILITYAI+" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
             final_prompt = ai_llm.call_llm(prompts.prompt_image_prompt(str_user))
-        else: 
+        else:
             final_prompt = str_user
+
         image_path = ai_image.call_image_ai(file_path, final_prompt, 1)
 
         if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
