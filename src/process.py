@@ -180,7 +180,7 @@ def main(param, charttype):
                 guid = uuid.uuid4()
                 mermaid_diagram = ai_llm.call_llm_sequence(["text2knowledgegraph"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram, False)
-                generate_mermaid_html(content, max_topic_level, guid, False)
+                #generate_mermaid_html(content, max_topic_level, guid, False)
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
     else:
