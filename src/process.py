@@ -104,13 +104,14 @@ def generate_markmap_html(content, max_topic_level, guid):
         f.write(html)
     file_helper.open_file(file_path, platform)
 
-def generate_mermaid_html(content, max_topic_level, guid):
+def generate_mermaid_html(content, max_topic_level, guid, open_file = True):
     file_path = file_helper.get_new_file_paths("docs", guid)
     template = get_template_content("mermaid.html")
     html = template.replace("{{title}}", "Mermaid").replace("{{mermaid}}", content) 
     with open(file_path, 'w') as f:
         f.write(html)
-    file_helper.open_file(file_path, platform)
+    if open_file:
+        file_helper.open_file(file_path, platform)
 
 def get_template_content(template_name):
     templates_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "templates")
@@ -174,6 +175,13 @@ def main(param, charttype):
         for key, value in md_texts.items():
             if "mindmap" in actions:
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                create_map_and_finalize(mindm, new_mermaid_diagram)
+            if "knowledgegraph" in actions:
+                guid = uuid.uuid4()
+                mermaid_diagram = ai_llm.call_llm_sequence(["text2knowledgegraph"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram, False)
+                generate_mermaid_html(content, max_topic_level, guid, False)
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
     else:
         if not mindm.document_exists():
@@ -246,6 +254,7 @@ if __name__ == "__main__":
     # export_markmap
     # export_mermaid
     # pdf_mindmap
+    # pdf_knowledgegraph
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

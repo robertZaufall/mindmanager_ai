@@ -71,16 +71,17 @@ def export_to_markmap(mermaid_diagram):
             lines[i] = "#" * int(level) + " " + lines[i].lstrip()
     return line_separator.join(lines[1:]), max_topic_level - 1
 
-def export_to_mermaid(mermaid_diagram):
+def export_to_mermaid(mermaid_diagram, replacements = True):
     line_separator = config.LINE_SEPARATOR
     indent_size = config.INDENT_SIZE
 
     if validate_mermaid(mermaid_diagram, line_separator, indent_size):
         return ""
 
-    mermaid_diagram = mermaid_diagram.replace("(", "#40;").replace(")", "#41;") \
-                                     .replace("{", "#123;").replace("}", "#125;") \
-                                     .replace("[", "#91;").replace("]", "#93;")
+    if replacements:
+        mermaid_diagram = mermaid_diagram.replace("(", "#40;").replace(")", "#41;") \
+                                        .replace("{", "#123;").replace("}", "#125;") \
+                                        .replace("[", "#91;").replace("]", "#93;")
 
     max_topic_level = 1
     lines = mermaid_diagram.split(line_separator)

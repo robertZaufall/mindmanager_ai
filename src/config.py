@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -24,7 +24,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
-# CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
+CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                                     # ok
 
 # Ollama (local models), best results
@@ -40,7 +40,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OLLAMA+phi3'                                       # good,        censored
 ##CLOUD_TYPE = 'OLLAMA+phi3:3.8b-mini-128k-instruct-q3_K_M'        # not working
 ##CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                             # not good
-##CLOUD_TYPE = 'OLLAMA+llama3-gradient'                            # not working for PDF
 # CLOUD_TYPE = 'OLLAMA+qwen2'                                      # ok,          censored
 # CLOUD_TYPE = 'OLLAMA+gemma2'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+gemma2:27b'                                 # does not work!
@@ -56,8 +55,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 
 # groq
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                           # good
-# CLOUD_TYPE = 'GROQ+llama3-8b-8192'                               # reduced usability
-# CLOUD_TYPE = 'GROQ+llama3-70b-8192'                              # good
 # CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                         # good
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                                  # good
@@ -347,7 +344,6 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
         #EXPLICIT_STYLE = "papercraft-kirigami art"
         EXPLICIT_STYLE = "computer collage art"
         NEGATIV_PROMPT_IMAGE = ""
-        STEPS_IMAGE = 4
 
         IMAGE_HEIGHT = 512 # 1024 # 512
         IMAGE_WIDTH = 512 # 1024 # 512

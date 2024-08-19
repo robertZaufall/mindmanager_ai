@@ -240,6 +240,21 @@ def prompt_text_to_mindmap(text, topic_texts=""):
     )
     return str_user
 
+def prompt_text_to_knowledgegraph(text, topic_texts=""):
+    str_user = (
+        f"Please create a knowledge graph from the following text and return it in valid mermaid syntax. Don't add any additional text or explainings. "
+        f"```\n{text}```"
+    )
+    return str_user
+
+def prompt_knowledgegraph_to_mindmap(text, topic_texts=""):
+    str_user = (
+        f"Please create a mindmap from the following mermaid graph data and return it in valid mermaid syntax. Don't add any additional text or explainings. " +
+        prompt_postfix +
+        f"```\n{text}```"
+    )
+    return str_user
+
 def prompts_list_from_param(param):
     if   param == "complexity_1": return ["refine", "refine", "cluster"]
     elif param == "complexity_2": return ["exp_prj_prc_org", "refine"]
@@ -249,17 +264,19 @@ def prompts_list_from_param(param):
 
 def prompt(param, text, topic_texts=""):
     text_input = text.replace("\r", "\n")
-    if   param == "refine":          return prompt_refine(text_input, topic_texts=topic_texts)
-    elif param == "refine_dev":      return prompt_refine_dev(text_input, topic_texts=topic_texts)
-    elif param == "examples":        return prompt_examples(text_input, topic_texts=topic_texts)
-    elif param == "cluster":         return prompt_cluster(text_input, topic_texts=topic_texts)
-    elif param == "prc_org":         return prompt_prc_org(text_input, topic_texts=topic_texts)
-    elif param == "prj_prc_org":     return prompt_prj_prc_org(text_input, topic_texts=topic_texts)
-    elif param == "exp_prj_prc_org": return prompt_exp_prj_prc_org(text_input, topic_texts=topic_texts)
-    elif param == "exp":             return prompt_exp(text_input, topic_texts=topic_texts)
-    elif param == "prj_org":         return prompt_prj_org(text_input, topic_texts=topic_texts)
-    elif param == "capex_opex":      return prompt_capex_opex(text_input, topic_texts=topic_texts)
-    elif param == "glossary":        return prompt_glossary(text_input, topic_texts=topic_texts)
-    elif param == "text2mindmap":    return prompt_text_to_mindmap (text_input, topic_texts=topic_texts)
+    if   param == "refine":                 return prompt_refine(text_input, topic_texts=topic_texts)
+    elif param == "refine_dev":             return prompt_refine_dev(text_input, topic_texts=topic_texts)
+    elif param == "examples":               return prompt_examples(text_input, topic_texts=topic_texts)
+    elif param == "cluster":                return prompt_cluster(text_input, topic_texts=topic_texts)
+    elif param == "prc_org":                return prompt_prc_org(text_input, topic_texts=topic_texts)
+    elif param == "prj_prc_org":            return prompt_prj_prc_org(text_input, topic_texts=topic_texts)
+    elif param == "exp_prj_prc_org":        return prompt_exp_prj_prc_org(text_input, topic_texts=topic_texts)
+    elif param == "exp":                    return prompt_exp(text_input, topic_texts=topic_texts)
+    elif param == "prj_org":                return prompt_prj_org(text_input, topic_texts=topic_texts)
+    elif param == "capex_opex":             return prompt_capex_opex(text_input, topic_texts=topic_texts)
+    elif param == "glossary":               return prompt_glossary(text_input, topic_texts=topic_texts)
+    elif param == "text2mindmap":           return prompt_text_to_mindmap (text_input, topic_texts=topic_texts)
+    elif param == "text2knowledgegraph":    return prompt_text_to_knowledgegraph (text_input, topic_texts=topic_texts)
+    elif param == "knowledgegraph2mindmap": return prompt_knowledgegraph_to_mindmap (text_input, topic_texts=topic_texts)
     else:
         return ""
