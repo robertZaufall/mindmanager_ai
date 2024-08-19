@@ -254,8 +254,6 @@ else:
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # ok
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             #
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        #
-# CLOUD_TYPE_IMAGE = 'MLX+sd'                       # local generation, MacOS w/ Apple Silicon only
-# CLOUD_TYPE_IMAGE = 'MLX+sdxl'                     # local generation, MacOS w/ Apple Silicon only
 CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # local generation, MacOS w/ Apple Silicon only
 
 RESIZE_IMAGE = False
@@ -342,17 +340,12 @@ elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
 
 elif "MLX+" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if MODEL_ID_IMAGE == "sd" or MODEL_ID_IMAGE == "sdxl":
-        SEED_IMAGE = 0
-        EXPLICIT_STYLE = "digital art"
-        NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
-        STEPS_IMAGE = 5
-    elif MODEL_ID_IMAGE == "flux1":
+    if MODEL_ID_IMAGE == "flux1":
         SEED_IMAGE = 0
         #https://enragedantelope.github.io/Styles-FluxDev/
         #EXPLICIT_STYLE = "digital art"
         #EXPLICIT_STYLE = "papercraft-kirigami art"
-        EXPLICIT_STYLE = "computer art"
+        EXPLICIT_STYLE = "computer collage art"
         NEGATIV_PROMPT_IMAGE = ""
         STEPS_IMAGE = 4
 

@@ -29,7 +29,7 @@ More animated examples are in the `doc` folder.
   - **OpenAI** w/ `DALL-E 3` (use your key) -> **best results**
   - **Stability AI** w/ `Stable Diffusion 3` `SD3` / `Ultra` / `Core` (use your key)  
   - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
-  - **MLX** (local w/ Apple Silicon) w/ `Flux1`, `SD2`, `SDXL`
+  - **MLX** (local w/ Apple Silicon) w/ `Flux1`
 
 ### Supported Professional Translation Services
  - **DeepL** (use your key)
@@ -208,10 +208,9 @@ The solution is best tested with `Azure OpenAI`. Results are very good. There is
 Image generation with SD3 is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen3  
 Image generation results are too simple by now as prompt engineering is also most important here. Imagen3 has the highest image resolution (1:1 with 1536x1536). Imagen3 is GA (globally available) but there is an approval process to get access to the API.  
-### MLX w/ Flux1, Stable Diffusion 2
-This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The result are above average using `Flux1` model, below average using the `SDXL` model and less good using `SD2` model. There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step is implemented to optimize the prompt using a LLM call.
-When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The data amount ranges from 3GB (`SD`) to 50GB (`Flux1`).
-`Flux1` needs the highest hardware resources.
+### MLX w/ Flux1
+This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The result are above average using `Flux1` model. There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call.
+When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount to be downloaded is about 50GB using `Flux1`.
 
 ## Translation systems
 ### DeepL

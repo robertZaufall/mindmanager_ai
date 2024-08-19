@@ -136,13 +136,13 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
     file_name = f"{guid}.png"
     file_path = os.path.join(folder_path_images, file_name)      
 
-    if "image_" in param and platform == "darwin" and "MLX" in config.CLOUD_TYPE_IMAGE:
+    if "image" in param:
         count = param.split("_")[-1]
-        str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
-        final_prompt = ai_llm.call_llm(prompts.prompt_image_prompt(str_user))
-        ai_image.call_image_ai(file_path, final_prompt, int(count))
+        if count.isdigit():
+            count = int(count)
+        else:
+            count = 1
 
-    elif param == "image":
         if "MLX+" in config.CLOUD_TYPE_IMAGE:
             if "flux" in config.MODEL_ID_IMAGE:
                 str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
@@ -155,7 +155,7 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
         else:
             final_prompt = str_user
 
-        image_path = ai_image.call_image_ai(file_path, final_prompt, 1)
+        image_path = ai_image.call_image_ai(file_path, final_prompt, count)
 
         if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
             mindm.set_document_background_image(image_path)

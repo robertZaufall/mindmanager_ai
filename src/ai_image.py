@@ -17,11 +17,13 @@ def call_image_ai(image_path, str_user, n_count = 1):
     if config.CLOUD_TYPE_IMAGE != "":
 
         if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA:
+            n_count = 1 # override n_count to 1
             import ai_azure_entra
             return ai_azure_entra.call_image_ai(str_user, image_path, n_count)
 
         # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
             #format = "url"
             format = "b64_json"
             payload = {
@@ -66,6 +68,7 @@ def call_image_ai(image_path, str_user, n_count = 1):
 
         # Stability AI / Stable Diffusion
         elif "STABILITYAI" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
             negative_prompt = config.NEGATIV_PROMPT_IMAGE if config.MODEL_ID_IMAGE != "sd3-large-turbo" else ""
             seed = config.SEED_IMAGE if config.SEED_IMAGE != 0 else random.randint(0, 2**32 - 1)
             style = config.STYLE_PRESET if config.MODEL_ENDPOINT == "core" else ""
@@ -97,32 +100,16 @@ def call_image_ai(image_path, str_user, n_count = 1):
 
         # Google VertexAI            
         elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
             import ai_gcp
             return ai_gcp.call_image_ai(str_user, image_path, n_count)
 
         # MLX
         elif "MLX" in config.CLOUD_TYPE_IMAGE:
             seed = config.SEED_IMAGE if config.SEED_IMAGE != 0 else random.randint(0, 2**32 - 1)
-            if "sd" in config.MODEL_ID_IMAGE:
+            if "flux" in config.MODEL_ID_IMAGE:
                 import ai_image_mlx
                 image_path = ai_image_mlx.generate_image(
-                    config.MODEL_ID_IMAGE, 
-                    str_user, 
-                    config.NEGATIV_PROMPT_IMAGE, 
-                    n_count, 
-                    config.STEPS_IMAGE, 
-                    0, 
-                    1, 
-                    1, 
-                    True, 
-                    False, 
-                    False, 
-                    image_path, 
-                    seed)
-            
-            elif "flux" in config.MODEL_ID_IMAGE:
-                import ai_image_diff
-                image_path = ai_image_diff.generate_image(
                     str_user, 
                     config.NEGATIV_PROMPT_IMAGE, 
                     n_count, 
