@@ -16,6 +16,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 
 # Azure serverless
 # CLOUD_TYPE = 'AZURE_META+LLAMA3170B'                             # best, slow
+# CLOUD_TYPE = 'AZURE_Microsoft+PHI35MINIINSTRUCT'                 # good
 
 # OpenAI
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                          # best
@@ -54,15 +55,15 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'GEMINIPROJECT_FLASH'                               # one-shot ok, generates maps only 3 levels deep
 
 # groq
-# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                           # good
+# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best (error kg -> mm)
 # CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                         # good
-# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                                  # good
 # CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                 # ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                           # good (token limit 5000 per minute)
 
 # Perplexity
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-8b-instruct'                  # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-70b-instruct'                 # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-8b-instruct'                  # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-chat'        # good
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-chat'        # good
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'      # ok
@@ -127,6 +128,19 @@ elif "AZURE_META+" in CLOUD_TYPE:
     META_MODEL = CLOUD_TYPE.split("+")[-1]
     OPENAI_API_KEY = os.getenv(f"AZURE_{META_MODEL}_KEY")
     OPENAI_API_URL = os.getenv(f"AZURE_{META_MODEL}_ENDPOINT") + "/v1/chat/completions"
+    OPENAI_DEPLOYMENT = ""
+    OPENAI_API_VERSION = ""
+
+    OPENAI_MODEL = ""
+    API_URL = OPENAI_API_URL
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
+
+elif "AZURE_Microsoft+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    MICROSOFT_MODEL = CLOUD_TYPE.split("+")[-1]
+    OPENAI_API_KEY = os.getenv(f"AZURE_{MICROSOFT_MODEL}_KEY")
+    OPENAI_API_URL = os.getenv(f"AZURE_{MICROSOFT_MODEL}_ENDPOINT") + "/v1/chat/completions"
     OPENAI_DEPLOYMENT = ""
     OPENAI_API_VERSION = ""
 

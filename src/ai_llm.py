@@ -54,7 +54,7 @@ def call_llm(str_user):
         import ai_azure_entra
         return ai_azure_entra.call_llm_azure_entra(str_user)
     
-    if "AZURE+" in config.CLOUD_TYPE or "OPENAI+" in config.CLOUD_TYPE or "AZURE_META+" in config.CLOUD_TYPE:
+    if "AZURE+" in config.CLOUD_TYPE or "OPENAI+" in config.CLOUD_TYPE or "AZURE_META+" in config.CLOUD_TYPE or "AZURE_Microsoft+" in config.CLOUD_TYPE:
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -90,7 +90,7 @@ def call_llm(str_user):
         if finish_reason == "length":
             print("Warning: Result truncated!")
 
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
     
     # OLLAMA
     elif "OLLAMA+" in config.CLOUD_TYPE:
