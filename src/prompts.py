@@ -111,9 +111,9 @@ def prompt_refine(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding at least one more additional level with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
+        f"Please refine {topics} by adding at least one more additional child level with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
-        f"Do not change the central topic. "
+        f"Do not change the central topic which is the top most topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +
         f"```\n{text}```"
@@ -127,7 +127,7 @@ def prompt_refine_dev(text, topic_texts=""):
         prompt_prefix +
         f"Please refine {topics} by adding at least one more additional level with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
-        f"Do not change the central topic. "
+        f"Do not change the central topic which is the top most topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
         prompt_postfix +
         f"```\n{text}```"
@@ -139,7 +139,8 @@ def prompt_cluster(text, topic_texts=""):
         prompt_prefix +
         f"Please rethink, redo, rebalance and recluster the whole map from scratch, "
         f"reduce complexity, simplify topics where possible and meaningful without loosing important information, "
-        f"include missing most important topics or remove least import topics if there are any. " +
+        f"include missing most important topics or remove least import topics if there are any. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -151,7 +152,8 @@ def prompt_prc_org(text, topic_texts=""):
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
         f"dividing organizational topics ('organization') vs. process oriented topics ('process'), "
         f"include missing most important topics or remove least import topics if there are any, "
-        f"avoid duplicate topics and generalize or abstract more where applicable. " +
+        f"avoid duplicate topics and generalize or abstract more where applicable. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -163,7 +165,8 @@ def prompt_prj_prc_org(text, topic_texts=""):
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
         f"dividing organizational topics ('organization') vs. process oriented topics ('process') vs project management oriented topics ('project'), "
         f"include missing most important topics or remove least import topics if there are any, "
-        f"avoid duplicate topics and generalize or abstract more where applicable. " +
+        f"avoid duplicate topics and generalize or abstract more where applicable. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -178,7 +181,8 @@ def prompt_exp_prj_prc_org(text, topic_texts=""):
         f"project management oriented topics of this top level business case ('project') vs. "
         f"center of excellence oriented topics of this top level business case ('expertise'), "
         f"include missing most important topics or remove least import topics if there are any, "
-        f"avoid duplicate topics and generalize or abstract more where applicable. " +
+        f"avoid duplicate topics and generalize or abstract more where applicable. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -190,7 +194,8 @@ def prompt_exp(text, topic_texts=""):
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum regarding "
         f"expertiese and center of excellence oriented topics and from a strong top level business case centric perspective, "
         f"include missing most important topics or remove least import topics if there are any, "
-        f"avoid duplicate topics and generalize or abstract more where applicable. " +
+        f"avoid duplicate topics and generalize or abstract more where applicable. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}\n```"
     )
@@ -202,7 +207,8 @@ def prompt_capex_opex(text, topic_texts=""):
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
         f"dividing capex oriented topics ('capex') vs. opex oriented topics ('opex'), "
         f"include missing most important topics or remove least import topics if there are any, "
-        f"avoid duplicate topics and generalize or abstract more where applicable. " +
+        f"avoid duplicate topics and generalize or abstract more where applicable. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -214,7 +220,8 @@ def prompt_prj_org(text, topic_texts=""):
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
         f"dividing topics regarding the organizational structure (organization') vs. project management oriented topics ('project'), "
         f"include missing most important topics or remove least import topics if there are any, "
-        f"avoid duplicate topics and generalize or abstract more where applicable. " +
+        f"avoid duplicate topics and generalize or abstract more where applicable. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -227,7 +234,8 @@ def prompt_examples(text, topic_texts=""):
         prompt_prefix +
         f"Please add for {topics} a new subtopic 'examples' if not existant yet, "
         f"and add a new level with up to {config.TOP_MOST_RESULTS} top most important examples or extend the existing ones, "
-        f"with each example {config.MAX_RETURN_WORDS} words at maximum. " +
+        f"with each example {config.MAX_RETURN_WORDS} words at maximum. "
+        f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -239,7 +247,7 @@ def prompt_text_to_mindmap(text, topic_texts=""):
     str_user = (
         prompt_prefix_text +
         f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
-        f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. " +
+        f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
         f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
         prompt_postfix +
         f"```\n{text}```"

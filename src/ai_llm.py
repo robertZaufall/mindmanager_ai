@@ -129,9 +129,9 @@ def call_llm(str_user):
         parsed_json = json.loads(response_text)
 
         if config.OPENAI_COMPATIBILITY:
-            result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+            result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("Here is the refined mindmap data:", "").replace("```", "").lstrip("\n").lstrip()
         else:
-            result = parsed_json["response"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+            result = parsed_json["response"].replace("```mermaid", "").replace("```", "").replace("Here is the refined mindmap data:", "").lstrip("\n").lstrip()
         
         lines = result.split("\n")
         if lines[0].startswith("  "):
