@@ -80,8 +80,8 @@ def export_to_mermaid(mermaid_diagram, replacements = True):
 
     if replacements:
         mermaid_diagram = mermaid_diagram.replace("(", "#40;").replace(")", "#41;") \
-                                        .replace("{", "#123;").replace("}", "#125;") \
-                                        .replace("[", "#91;").replace("]", "#93;")
+                                         .replace("{", "#123;").replace("}", "#125;") \
+                                         .replace("[", "#91;").replace("]", "#93;")
 
     max_topic_level = 1
     lines = mermaid_diagram.split(line_separator)

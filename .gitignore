@@ -4,9 +4,7 @@ src/images/**
 src/docs/**
 src/input/**
 src/archive/**
-_ignore/**
 .DS_Store
 macos/automator/.DS_Store
 token_cache.json
 **.mp4
-src/stable_diffusion/__pycache__/**
