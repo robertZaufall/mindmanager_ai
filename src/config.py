@@ -261,10 +261,11 @@ else:
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'  # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'             # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'            # good
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # ok
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             #
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        #
-CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # (needs approval), ok
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # (needs approval)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # (needs approval)
+CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
@@ -349,26 +350,34 @@ elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
     API_URL_IMAGE = f"https://{API_ENDPOINT_IMAGE}/v1/projects/{PROJECT_ID_IMAGE}/locations/{LOCATION_ID_IMAGE}/publishers/google/models/{MODEL_ID_IMAGE}:predict"
 
 elif "MLX+" in CLOUD_TYPE_IMAGE:
+    SEED_IMAGE = 0
+    #https://enragedantelope.github.io/Styles-FluxDev/
+    #EXPLICIT_STYLE = "digital art"
+    #EXPLICIT_STYLE = "papercraft-kirigami art"
+    EXPLICIT_STYLE = "computer collage art"
+    NEGATIV_PROMPT_IMAGE = ""
+
+    IMAGE_HEIGHT = 512 # 1024 # 512
+    IMAGE_WIDTH = 512 # 1024 # 512
+
+    DIFF_MODEL = "argmaxinc/stable-diffusion"
+    DIFF_LOW_MEMORY_MODE = True
+    DIFF_A16 = True
+    DIFF_W16 = True
+
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
     if MODEL_ID_IMAGE == "flux1":
-        SEED_IMAGE = 0
-        #https://enragedantelope.github.io/Styles-FluxDev/
-        #EXPLICIT_STYLE = "digital art"
-        #EXPLICIT_STYLE = "papercraft-kirigami art"
-        EXPLICIT_STYLE = "computer collage art"
-        NEGATIV_PROMPT_IMAGE = ""
-
-        IMAGE_HEIGHT = 512 # 1024 # 512
-        IMAGE_WIDTH = 512 # 1024 # 512
         IMAGE_NUM_STEPS = 4
         IMAGE_CFG_WEIGHT = 0. 
-
-        DIFF_MODEL = "argmaxinc/stable-diffusion"
-        DIFF_SHIFT = 1.0 # 3.16
+        DIFF_SHIFT = 1.0
+        DIFF_USE_T5 = True
         DIFF_MODEL_VERSION = "FLUX.1-schnell"
-        DIFF_LOW_MEMORY_MODE = True
-        DIFF_A16 = True
-        DIFF_W16 = True
+    elif MODEL_ID_IMAGE == "sd3":
+        IMAGE_NUM_STEPS = 50
+        IMAGE_CFG_WEIGHT = 5. 
+        DIFF_SHIFT = 3.0
+        DIFF_USE_T5 = False
+        DIFF_MODEL_VERSION = "stable-diffusion-3-medium"
     else:
         raise Exception("Error: Unknown MLX image model")
 
