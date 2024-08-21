@@ -394,7 +394,7 @@ elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
         EXPLICIT_STYLE = "computer collage art"
 
     OUTPUT_FORMAT_IMAGE = "png"
-    SEED_IMAGE = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
+    SEED_IMAGE = 0
 
     NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
 
