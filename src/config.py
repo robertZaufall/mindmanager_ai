@@ -266,7 +266,10 @@ else:
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # (needs approval)
 # CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
-CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'              # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'               # best
+CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'         # best
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
@@ -384,8 +387,11 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
     
 elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    STYLE_PRESET = "DESIGN" # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
-    EXPLICIT_STYLE = STYLE_PRESET
+    if MODEL_ID_IMAGE == "V_2" or MODEL_ID_IMAGE == "V_2_TURBO":
+        STYLE_PRESET = "DESIGN" # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
+        EXPLICIT_STYLE = STYLE_PRESET
+    else:
+        EXPLICIT_STYLE = "computer collage art"
 
     OUTPUT_FORMAT_IMAGE = "png"
     SEED_IMAGE = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
