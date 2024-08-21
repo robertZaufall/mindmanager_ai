@@ -150,7 +150,7 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
             else:
                 str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
         else:
-            str_user = prompts.prompt_image(top_most_topic, subtopics)
+            str_user = prompts.prompt_image_flux(top_most_topic, subtopics) # prompts.prompt_image(top_most_topic, subtopics)
         if ("STABILITYAI+" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
             final_prompt = ai_llm.call_llm(prompts.prompt_image_prompt(str_user))
         else:

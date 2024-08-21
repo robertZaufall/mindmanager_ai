@@ -264,8 +264,9 @@ else:
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # (needs approval), ok
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # (needs approval)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # (needs approval)
-CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
+CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'              # best
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
@@ -380,6 +381,24 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
         DIFF_MODEL_VERSION = "stable-diffusion-3-medium"
     else:
         raise Exception("Error: Unknown MLX image model")
+    
+elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
+    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    STYLE_PRESET = "DESIGN" # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
+    EXPLICIT_STYLE = STYLE_PRESET
+
+    OUTPUT_FORMAT_IMAGE = "png"
+    SEED_IMAGE = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
+
+    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+
+    IMAGE_HEIGHT = 1024
+    IMAGE_WIDTH = 1024
+    IMAGE_RESOLUTION = f"RESOLUTION_{IMAGE_WIDTH}_{IMAGE_HEIGHT}"
+
+    KEY_HEADER_TEXT_IMAGE = "Api-Key"
+    KEY_HEADER_VALUE_IMAGE = os.getenv('IDEOGRAMAI_API_KEY')
+    API_URL_IMAGE = f"https://api.ideogram.ai/generate"
 
 
 # only used for action = DEEPL (translation)

@@ -98,6 +98,45 @@ def call_image_ai(image_path, str_user, n_count = 1):
             else:
                 raise Exception(str(response.json()))
 
+        # Ideogram AI
+        elif "IDEOGRAMAI" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
+            seed = config.SEED_IMAGE if config.SEED_IMAGE != 0 else random.randint(0, 2**16 - 1)
+
+            payload = { "image_request": {
+                "model": config.MODEL_ID_IMAGE,
+                "magic_prompt_option": "AUTO",
+                "prompt": str_user,
+                "seed": seed,
+                "negative_prompt": config.NEGATIV_PROMPT_IMAGE,
+                "resolution": config.IMAGE_RESOLUTION,
+                "style_type": config.EXPLICIT_STYLE
+            } }
+
+            headers = {
+                "accept": "application/json",
+                "content-type": "application/json",
+                config.KEY_HEADER_TEXT_IMAGE: config.KEY_HEADER_VALUE_IMAGE
+            }
+
+            response = requests.post(
+                config.API_URL_IMAGE,
+                json=payload,
+                headers=headers
+            )
+            response_text = response.text
+            response_status = response.status_code
+
+            if response_status != 200:
+                raise Exception(f"Error: {response_status} - {response_text}")
+
+            parsed_json = json.loads(response_text)
+
+            url = parsed_json['data'][0]['url']
+            generated_image = httpx.get(url).content
+            with open(image_path, "wb") as file:
+                file.write(generated_image)
+
         # Google VertexAI            
         elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
             n_count = 1 # override n_count to 1
