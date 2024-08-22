@@ -208,8 +208,10 @@ The solution is best tested with `Azure OpenAI`. Results are very good. There is
 Image generation with SD3 is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen3  
 Image generation results are too simple by now as prompt engineering is also most important here. Imagen3 has the highest image resolution (1:1 with 1536x1536). Imagen3 is GA (globally available) but there is an approval process to get access to the API.  
+### Ideogram.AI  
+Image generation is quite good using the V_2 model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
 ### MLX w/ Flux1, SD3
-This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The result are above average using `Flux1` model and under average using `SD3` mostly because the prompt is optimized for `Flux1`.  
+This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using `Flux1` model and under average using `SD3` mostly because the prompt is optimized for `Flux1`.  
 There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call. If there is only one topic selected there is a different prompt used as when more topics are selected. Only the first level of topics together with the central topic should be selected for better results.  
 When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount to be downloaded is about 50GB using `Flux1` and 6GB using `SD3`. If you are using `SD3` for the first time you have to login at **huggingface** with your token first as you have to agree to the terms of **Stability AI** and the usage of their model: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
 

@@ -264,12 +264,12 @@ else:
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # (needs approval), ok
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # (needs approval)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # (needs approval)
-# CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
+CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'               # best
-CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'         # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'         # best
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
