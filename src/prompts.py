@@ -32,29 +32,29 @@ def prompt_image_sd(top_most_topic, subtopics):
     topics = f" and also influenced by thought of {subtopics}" if subtopics != "" else ""
     str_user = (
         f"One professional graphic, minimalistic, professional{explicit_style} on a white background about {top_most_topic}{topics}. "
-        f"Use an outstanding, visually appealing, high-detailed, polished and expensive look."
+        f"Visually appealing, high-detailed, polished and expensive look."
     )
     return str_user
 
 def prompt_image_flux(top_most_topic, subtopics):
     if subtopics == "" and "," not in top_most_topic:
         str_user = (
-            f"One typical, minimalistic, professional big symbol or icon representing {top_most_topic} filling the whole image, white background, without text. "
+            f"One typical, minimalistic, professional big symbol or icon representing '{top_most_topic}' filling the whole image, white background, without text. "
             f"Outstanding, visually appealing, polished and expensive look and finish."
         )
     else:
         explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
-        topics = f" and also influenced by thought of {subtopics}" if subtopics != "" else ""
+        topics = f" and also influenced by thoughts on {{{subtopics}}}" if subtopics != "" else ""
         str_user = (
-            f"Business graphic, minimalistic, professional{explicit_style} on a mostly white background full-filled with typical big symbols or a strong scene representing {top_most_topic}{topics}. "
-            f"Outstanding, visually appealing, polished and expensive look and finish. No text."
+            f"Business graphic, minimalistic, professional{explicit_style} on a mostly white background full-filled with typical big symbols or a strong scene representing '{top_most_topic}'{topics}. "
+            f"Visually appealing, expensive look. No text."
         )
     return str_user
 
 def prompt_image_prompt(text):
     str_user = (
         f"Please optimize this prompt to generate a good marketing logo like image or pictogram on a white background without gradient "
-        f"using Stable Diffusion 2: ```{text}```\n "
+        f"using Stable Diffusion: ```{text}```\n "
         f"Return only the prompt without any further text or explainings."
     )
     return str_user

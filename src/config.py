@@ -356,9 +356,9 @@ elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
 elif "MLX+" in CLOUD_TYPE_IMAGE:
     SEED_IMAGE = 0
     #https://enragedantelope.github.io/Styles-FluxDev/
-    #EXPLICIT_STYLE = "digital art"
+    EXPLICIT_STYLE = "photorealistic 3D art"
     #EXPLICIT_STYLE = "papercraft-kirigami art"
-    EXPLICIT_STYLE = "computer collage art"
+    #EXPLICIT_STYLE = "computer collage art"
     NEGATIV_PROMPT_IMAGE = ""
 
     IMAGE_HEIGHT = 512 # 1024 # 512

@@ -67,17 +67,19 @@ def create_map_and_finalize(mindm, new_mermaid_diagram):
         max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
         mindm.finalize(max_topic_level)
 
-def get_topic_texts(mindm, topic_texts):
+def get_topic_texts(mindm):
     central_topic_selected = False
     selection = mindm.get_selection()
+    topic_texts = []
+    topic_levels = []
     if len(selection) > 0:
         for this_topic in selection:
             if mindm.get_level_from_topic(this_topic) > 0:
-                topic_texts += mindm.get_title_from_topic(this_topic) + ","
+                topic_texts.append(mindm.get_title_from_topic(this_topic))
+                topic_levels.append(mindm.get_level_from_topic(this_topic))
             else:
                 central_topic_selected = True
-        if len(topic_texts) > 0: topic_texts = topic_texts[:-1]
-    return topic_texts,central_topic_selected
+    return topic_texts, topic_levels, central_topic_selected
 
 def generate_glossary_html(content, guid):
     file_path = file_helper.get_new_file_paths("docs", guid)
@@ -119,21 +121,35 @@ def get_template_content(template_name):
         template = f.read()
     return template
 
-def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid):
+def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels):
     central_topic_text = mindm.get_title_from_topic(central_topic)
+    subtopics = ""
     if len(topic_texts) == 0: 
         top_most_topic = central_topic_text
-        subtopics = ""
     else:
         if central_topic_selected:
             top_most_topic = central_topic_text
-            subtopics = topic_texts
+            subtopics =  ",".join(topic_texts)
         else:
-            topics = topic_texts.split(",")
-            top_most_topic = topics[0]
-            subtopics = ",".join(topics[1:])
-    
-    folder_path_images = file_helper.create_folder_if_not_exists(os.path.join(mindm.library_folder, "Images"), central_topic_text)
+            min_level = min(topic_levels)
+            max_level = max(topic_levels)
+            if (min_level == max_level):
+                top_most_topic = central_topic_text
+                subtopics =  ",".join(topic_texts)
+            else:
+                top_most_topic = ""
+                for i in range(len(topic_levels)):
+                    if topic_levels[i] != max_level:
+                        top_most_topic += topic_texts[i] + "/"
+                    else:
+                        subtopics += topic_texts[i] + ","
+
+                if top_most_topic.endswith("/"):
+                    top_most_topic = top_most_topic[:-1]
+                if subtopics.endswith(","):
+                    subtopics = subtopics[:-1]
+
+    folder_path_images = file_helper.create_folder_if_not_exists(os.path.join(mindm.library_folder, "Images"), top_most_topic)
     file_name = f"{guid}.png"
     file_path = os.path.join(folder_path_images, file_name)      
 
@@ -203,17 +219,16 @@ def main(param, charttype):
             prompts_list = prompts.prompts_list_from_param(param)
 
             if mindm.document_exists():
-                topic_texts = ""
-
+                topic_texts = []
                 if len(prompts_list) == 1:
-                    topic_texts, central_topic_selected = get_topic_texts(mindm, topic_texts)
+                    topic_texts, topic_levels, central_topic_selected = get_topic_texts(mindm)
 
                 guid = uuid.uuid4()
                 if "image" in param:
-                    generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid)
+                    generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels)
 
                 elif param == "glossary":
-                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, ",".join(topic_texts))
                     if "-mini" in config.CLOUD_TYPE or \
                         "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
                         ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
@@ -235,7 +250,7 @@ def main(param, charttype):
                     create_map_and_finalize(mindm, new_mermaid_diagram)
 
                 else:
-                    new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts)
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, ",".join(topic_texts))
                     create_map_and_finalize(mindm, new_mermaid_diagram)
 
     print("Done.")
