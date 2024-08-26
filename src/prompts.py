@@ -37,18 +37,19 @@ def prompt_image_sd(top_most_topic, subtopics):
     return str_user
 
 def prompt_image_flux(top_most_topic, subtopics):
+    explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
+    prefix = f"Business graphic, minimalistic, professional{explicit_style}"
+    postfix = "on a gray gradient background, visually appealing, expensive look, no text."
+    topics = f" and also influenced by thoughts on {{{subtopics}}}" if subtopics != "" else ""
+
+    if "," not in subtopics:
+        top_most_topic = subtopics
+        subtopics = ""
+    
     if subtopics == "" and "," not in top_most_topic:
-        str_user = (
-            f"One typical, minimalistic, professional big symbol or icon representing '{top_most_topic}' filling the whole image, white background, without text. "
-            f"Outstanding, visually appealing, polished and expensive look and finish."
-        )
+        str_user = f"{prefix} showing a strong scene representing {{{top_most_topic}}}, {postfix}"
     else:
-        explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
-        topics = f" and also influenced by thoughts on {{{subtopics}}}" if subtopics != "" else ""
-        str_user = (
-            f"Business graphic, minimalistic, professional{explicit_style} on a mostly white background full-filled with typical big symbols or a strong scene representing '{top_most_topic}'{topics}. "
-            f"Visually appealing, expensive look. No text."
-        )
+        str_user = f"{prefix} stuffed with typical big symbols or a strong scene representing '{top_most_topic}'{topics}, {postfix}"
     return str_user
 
 def prompt_image_prompt(text):
@@ -73,9 +74,9 @@ def prompt_glossary(text, topic_texts):
         f"Ensure the following: \n"
         f" 1. Eliminate duplicate lines in your answer. \n"
         f" 2. Provide a one-sentence explanation for each term. \n"
-        f" 3. Group the terms or phrases by its first chracter. \n"
+        f" 3. Group the terms or phrases by its first character. \n"
         f" 4. Sort the groups alphabetically. \n"
-        f" 5. Combine groups with the same character. Don't split character-groups. \n"
+        f" 5. Combine groups of the same character. Don't split character-groups. \n"
         f" 6. Eliminate any '_' in your answer. \n"
         f" 7. Do not include any additional text or explanations at the beginning or end of your answer. \n"
         f" 8. Don't output the keywords 'html' or 'markdown' at the start of your text. \n"
@@ -94,13 +95,13 @@ def prompt_glossary_optimize(text):
         f" 1. Non-technical or non-business relevant or trivial terms and phrases are removed. \n"
         f" 2. Every term or phrase is explained, not only repeated. \n"
         f" 3. Every term or phrase is explained in exactly one sentence. \n"
-        f" 4. Terms or phrases are grouped by the first chracter. \n"
+        f" 4. Terms or phrases are grouped by the first character. \n"
         f" 5. Each term or phrase is in its correct group. \n"
         f" 6. Groups are not split. \n"
         f" 7. All groups are sorted alphabetically. \n"
-        f" 8. There are not keywords like 'html' or 'markdown' at the start of the content. \n"
-        f" 9. There is not prefix for the terms or phrases like 'A_', 'B_'. \n"
-        f"Don't add any additional text, explainings or comments at the beginning or end to your answer like 'Here is the optimized (...)'. \n"
+        f" 8. There are no keywords like 'html' or 'markdown' at the start of the content. \n"
+        f" 9. There is no prefix for the terms or phrases like 'A_', 'B_'. \n"
+        f"Don't add any additional text, explanations or comments at the beginning or end to your answer like 'Here is the optimized (...)'. \n"
         f"Here is the glossary: \n" +
         f"'\n{text}'"
     )
