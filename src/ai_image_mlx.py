@@ -11,9 +11,25 @@ def generate_image(prompt, negative_prompt, n_images, output, seed):
         output = original_output.replace(".png", f"_{i}_{seed}.png")
 
         if "FLUX" in config.DIFF_MODEL_VERSION:
-            pipeline = FluxPipeline(model=config.DIFF_MODEL,shift=config.DIFF_SHIFT,use_t5=config.DIFF_USE_T5,model_version=config.DIFF_MODEL_VERSION,low_memory_mode=config.DIFF_LOW_MEMORY_MODE,a16=config.DIFF_A16,w16=config.DIFF_W16)
+            pipeline = FluxPipeline(
+                model=config.DIFF_MODEL,
+                model_version=config.DIFF_MODEL_VERSION,
+                low_memory_mode=config.DIFF_LOW_MEMORY_MODE,
+                shift=config.DIFF_SHIFT,
+                use_t5=config.DIFF_USE_T5,
+                a16=config.DIFF_A16,
+                w16=config.DIFF_W16
+            )
         else:
-            pipeline = DiffusionPipeline(model=config.DIFF_MODEL,shift=config.DIFF_SHIFT,use_t5=config.DIFF_USE_T5,model_version=config.DIFF_MODEL_VERSION,low_memory_mode=config.DIFF_LOW_MEMORY_MODE,a16=config.DIFF_A16,w16=config.DIFF_W16)
+            pipeline = DiffusionPipeline(
+                model=config.DIFF_MODEL,
+                model_version=config.DIFF_MODEL_VERSION,
+                low_memory_mode=config.DIFF_LOW_MEMORY_MODE,
+                shift=config.DIFF_SHIFT,
+                use_t5=config.DIFF_USE_T5,
+                a16=config.DIFF_A16,
+                w16=config.DIFF_W16
+            )
 
         image, _ = pipeline.generate_image(
             prompt,
@@ -29,5 +45,7 @@ def generate_image(prompt, negative_prompt, n_images, output, seed):
 
         if n_images > 1 and i < n_images - 1:
             image.show()
+
+        del pipeline
     
     return output
