@@ -198,6 +198,8 @@ def call_llm(str_user):
 
         parsed_json = json.loads(response_text)
         result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
+        if "FLASH" in config.CLOUD_TYPE:
+            result = result.replace("2 space", "")
         result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     # CLAUDE3

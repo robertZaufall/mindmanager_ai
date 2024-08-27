@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -47,7 +47,8 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI_PRO'                                        # best
-# CLOUD_TYPE = 'GEMINI_FLASH'                                      # one-shot ok, generates maps only 3 levels deep
+CLOUD_TYPE = 'GEMINI_FLASH-8b'                                   # best
+# CLOUD_TYPE = 'GEMINI_FLASH'                                      # good, generates maps only 3 levels deep
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
 # CLOUD_TYPE = 'GEMINIPROJECT_PRO'                                 # good, Vertex AI need pre-authentication
@@ -156,7 +157,10 @@ elif "GEMINI" in CLOUD_TYPE:
             MODEL_ID = "gemini-1.5-pro-exp-0801" #gemini-1.5-pro-latest
             MAX_TOKENS = 8191
         elif model == "FLASH":
-            MODEL_ID = "gemini-1.5-flash-latest"
+            MODEL_ID = "gemini-1.5-flash-exp-0827"
+            MAX_TOKENS = 8191
+        elif model == "FLASH-8b":
+            MODEL_ID = "gemini-1.5-flash-8b-exp-0827"
             MAX_TOKENS = 8191
         else:
             raise Exception("Error: Unknown GEMINI model")
@@ -264,7 +268,8 @@ else:
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # (needs approval), ok
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # (needs approval)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # (needs approval)
-CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
+CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # does not work by now
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
@@ -365,23 +370,39 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
     IMAGE_WIDTH = 512 # 1024 # 512
 
     DIFF_MODEL = "argmaxinc/stable-diffusion"
-    DIFF_LOW_MEMORY_MODE = True
-    DIFF_A16 = True
-    DIFF_W16 = True
 
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if MODEL_ID_IMAGE == "flux1":
-        IMAGE_NUM_STEPS = 4
-        IMAGE_CFG_WEIGHT = 0. 
-        DIFF_SHIFT = 1.0
-        DIFF_USE_T5 = True
-        DIFF_MODEL_VERSION = "FLUX.1-schnell"
+    if MODEL_ID_IMAGE == "flux1" or MODEL_ID_IMAGE == "flux1-4bit":
+        if MODEL_ID_IMAGE == "flux1":
+            DIFF_MODEL_VERSION = "FLUX.1-schnell"
+            DIFF_LOW_MEMORY_MODE = True
+            DIFF_A16 = True
+            DIFF_W16 = True
+            IMAGE_NUM_STEPS = 4
+            IMAGE_CFG_WEIGHT = 0. 
+            DIFF_SHIFT = 1.0
+            DIFF_USE_T5 = True
+        elif MODEL_ID_IMAGE == "flux1-4bit":
+            DIFF_MODEL_VERSION = "FLUX.1-schnell-4bit-quantized"
+            DIFF_LOW_MEMORY_MODE = False
+            DIFF_A16 = True
+            DIFF_W16 = True
+            IMAGE_NUM_STEPS = 4
+            IMAGE_CFG_WEIGHT = 0. 
+            DIFF_SHIFT = 1.0
+            DIFF_USE_T5 = True
+        else:
+            raise Exception("Error: Unknown MLX image model")
+
     elif MODEL_ID_IMAGE == "sd3":
-        IMAGE_NUM_STEPS = 50
-        IMAGE_CFG_WEIGHT = 5. 
-        DIFF_SHIFT = 3.0
-        DIFF_USE_T5 = False
         DIFF_MODEL_VERSION = "stable-diffusion-3-medium"
+        DIFF_LOW_MEMORY_MODE = True  # models offloading
+        DIFF_A16 = True
+        DIFF_W16 = True
+        IMAGE_NUM_STEPS = 50         # Number of diffusion steps
+        IMAGE_CFG_WEIGHT = 5. 
+        DIFF_SHIFT = 3.0             # Shift for diffusion sampling
+        DIFF_USE_T5 = False          # Engages T5 for stronger text embeddings (uses significantly more memory)
     else:
         raise Exception("Error: Unknown MLX image model")
     
