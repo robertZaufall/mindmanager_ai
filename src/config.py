@@ -154,7 +154,7 @@ elif "GEMINI" in CLOUD_TYPE:
     if system == "GEMINI":
         model = CLOUD_TYPE.split("_")[-1]
         if model == "PRO":
-            MODEL_ID = "gemini-1.5-pro-exp-0801" #gemini-1.5-pro-latest
+            MODEL_ID = "gemini-1.5-pro-exp-0827"
             MAX_TOKENS = 8191
         elif model == "FLASH":
             MODEL_ID = "gemini-1.5-flash-exp-0827"
