@@ -12,7 +12,6 @@ def generate_image(prompt, negative_prompt, n_images, output, seed):
 
         if "FLUX" in config.DIFF_MODEL_VERSION:
             pipeline = FluxPipeline(
-                model=config.DIFF_MODEL,
                 model_version=config.DIFF_MODEL_VERSION,
                 low_memory_mode=config.DIFF_LOW_MEMORY_MODE,
                 shift=config.DIFF_SHIFT,
@@ -22,7 +21,6 @@ def generate_image(prompt, negative_prompt, n_images, output, seed):
             )
         else:
             pipeline = DiffusionPipeline(
-                model=config.DIFF_MODEL,
                 model_version=config.DIFF_MODEL_VERSION,
                 low_memory_mode=config.DIFF_LOW_MEMORY_MODE,
                 shift=config.DIFF_SHIFT,

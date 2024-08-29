@@ -269,7 +269,7 @@ else:
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # (needs approval)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # (needs approval)
 # CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
-CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # does not work by now
+CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
@@ -366,15 +366,15 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
     #EXPLICIT_STYLE = "computer collage art"
     NEGATIV_PROMPT_IMAGE = ""
 
-    IMAGE_HEIGHT = 512 # 1024 # 512
-    IMAGE_WIDTH = 512 # 1024 # 512
+    IMAGE_HEIGHT = 768 # 1024 # 512 # 768
+    IMAGE_WIDTH = 768 # 1024 # 512 # 768
 
     DIFF_MODEL = "argmaxinc/stable-diffusion"
 
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
     if MODEL_ID_IMAGE == "flux1" or MODEL_ID_IMAGE == "flux1-4bit":
         if MODEL_ID_IMAGE == "flux1":
-            DIFF_MODEL_VERSION = "FLUX.1-schnell"
+            DIFF_MODEL_VERSION = "argmaxinc/mlx-FLUX.1-schnell"
             DIFF_LOW_MEMORY_MODE = True
             DIFF_A16 = True
             DIFF_W16 = True
@@ -383,8 +383,8 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
             DIFF_SHIFT = 1.0
             DIFF_USE_T5 = True
         elif MODEL_ID_IMAGE == "flux1-4bit":
-            DIFF_MODEL_VERSION = "FLUX.1-schnell-4bit-quantized"
-            DIFF_LOW_MEMORY_MODE = False
+            DIFF_MODEL_VERSION = "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized"
+            DIFF_LOW_MEMORY_MODE = True
             DIFF_A16 = True
             DIFF_W16 = True
             IMAGE_NUM_STEPS = 4
@@ -395,7 +395,7 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
             raise Exception("Error: Unknown MLX image model")
 
     elif MODEL_ID_IMAGE == "sd3":
-        DIFF_MODEL_VERSION = "stable-diffusion-3-medium"
+        DIFF_MODEL_VERSION = "argmaxinc/mlx-stable-diffusion-3-medium"
         DIFF_LOW_MEMORY_MODE = True  # models offloading
         DIFF_A16 = True
         DIFF_W16 = True
