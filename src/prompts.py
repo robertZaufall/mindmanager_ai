@@ -7,7 +7,8 @@ prompt_postfix = (
     f"Return back the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
     f"Put also {config.INDENT_SIZE} space characters in front of the first topic i.e. central topic following the 'mermaid' keyword. Don't change or delete CentralTopic topic. "
     f"Don't include the phrase 'central topic' or similar to the central topic. "
-    f"Each topic or subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. If an existing topic has more than {config.MAX_RETURN_WORDS} words, reduce it to {config.MAX_RETURN_WORDS} words. "
+    f"Each topic or subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. If an existing topic has more than {config.MAX_RETURN_WORDS} words, "
+    f"reduce it to {config.MAX_RETURN_WORDS} words. "
     f"Use the 'mermaid' keyword only once at the beginning or suppress it. They keyword 'mindmap' must be present without any whitespace characters in front of this keyword. "
     f"Don't use only numbers as topics but replace them with something meaningful. "
     f"Do not add any additional text or explainings at the beginning or end to your answer. The answer must be pure Mermaid code only. "
@@ -255,7 +256,9 @@ def prompt_text_to_mindmap(text, topic_texts=""):
 
 def prompt_md_to_mindmap(text, topic_texts=""):
     str_user = (
-        f"Given is the folowing markdown code. Please convert it to a Mermaid mindmap using '{topic_texts}' as central topic, if there is no top most item. " + 
+        f"Given is the folowing markdown code. Please convert it to a 1:1 Mermaid mindmap. "
+        f"Don't cut off any topic or reduce the input in any way. "
+        f"Use '{topic_texts}' as central topic, if there is no top most item. " +
         prompt_postfix +
         f"```\n{text}```"
     )
