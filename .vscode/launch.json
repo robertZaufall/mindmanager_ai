@@ -99,6 +99,15 @@
       "justMyCode": true
     },
     {
+      "name": "Python: process.py -> Import Markdown",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["import_md"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
       "name": "Python: process.py -> PDF to Mindmap",
       "type": "python",
       "request": "launch",

@@ -7,7 +7,7 @@ import tiktoken
 
 def load_pdf_files(optimization_level=2):
     md_texts = {}
-    input_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "input")
+    input_folder_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "input"), "pdf")
     if os.path.exists(input_folder_path):
         for root, dirs, files in os.walk(input_folder_path):  
             for filename in files:  
@@ -40,5 +40,17 @@ def load_pdf_files(optimization_level=2):
                             pathlib.Path(output_file_path).write_bytes(md_text.encode())
                     
                     with open(output_file_path, 'r') as file:
+                        md_texts[filename] = file.read()
+    return md_texts
+
+def load_text_files(format="md"):
+    md_texts = {}
+    input_folder_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "input"), format)
+    if os.path.exists(input_folder_path):
+        for root, dirs, files in os.walk(input_folder_path):  
+            for filename in files:  
+                if filename.endswith("." + format):  
+                    input_file_path = os.path.join(root, filename)
+                    with open(input_file_path, 'r') as file:
                         md_texts[filename] = file.read()
     return md_texts

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+import gc
 import config
 import prompts
 
 import mermaid_helper
 import file_helper
-import pdf_helper
+import input_helper
 
 import sys
 import os
@@ -187,7 +188,7 @@ def main(param, charttype):
 
     if param.startswith("pdf_"):
         actions = param.split("_")[-1].split("+")
-        md_texts = pdf_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
+        md_texts = input_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
         for key, value in md_texts.items():
             if "mindmap" in actions:
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
@@ -198,6 +199,13 @@ def main(param, charttype):
                 content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram, False)
                 generate_mermaid_html(content, max_topic_level, guid, False)
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                create_map_and_finalize(mindm, new_mermaid_diagram)
+    elif param.startswith("import_"):
+        actions = param.split("_")[-1]
+        if actions == "md":
+            md_texts = input_helper.load_text_files("md")
+            for key, value in md_texts.items():
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["md2mindmap"], value, key.replace(".md", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
     else:
         if not mindm.document_exists():
@@ -257,6 +265,9 @@ def main(param, charttype):
 
 if __name__ == "__main__":
     
+    allocs, g1, g2 = gc.get_threshold()
+    gc.set_threshold(allocs*100, g1*5, g2*10)
+
     # refine, refine_dev
     # complexity_1, complexity_2, complexity_3
     # examples, cluster, exp, capex_opex
@@ -266,10 +277,10 @@ if __name__ == "__main__":
     # image_nn (experimental)
     # translate_deepl+EN-US, translate_deepl+DE, ...
     # glossary
-    # export_markmap
-    # export_mermaid
+    # export_markmap, export_mermaid
     # pdf_mindmap
     # pdf_knowledgegraph
+    # import_md
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

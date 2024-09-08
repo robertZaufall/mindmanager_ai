@@ -243,8 +243,6 @@ def prompt_examples(text, topic_texts=""):
     return str_user
 
 def prompt_text_to_mindmap(text, topic_texts=""):
-    central_topic = f"\"{topic_texts}\"" if topic_texts else "an expression of 1-3 words the text is about"
-
     str_user = (
         prompt_prefix_text +
         f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
@@ -255,9 +253,18 @@ def prompt_text_to_mindmap(text, topic_texts=""):
     )
     return str_user
 
+def prompt_md_to_mindmap(text, topic_texts=""):
+    str_user = (
+        f"Given is the folowing markdown code. Please convert it to a Mermaid mindmap using '{topic_texts}' as central topic, if there is no top most item. " + 
+        prompt_postfix +
+        f"```\n{text}```"
+    )
+    return str_user
+
 def prompt_text_to_knowledgegraph(text, topic_texts=""):
     str_user = (
-        f"Please create a knowledge graph from the following text and return it in valid mermaid syntax. Don't add any additional text or explainings. "
+        f"Please create a knowledge graph from the following text and return it in valid Mermaid syntax. Don't add any additional text or explainings. " + 
+        prompt_postfix +
         f"```\n{text}```"
     )
     return str_user
@@ -291,6 +298,8 @@ def prompt(param, text, topic_texts=""):
     elif param == "capex_opex":             return prompt_capex_opex(text_input, topic_texts=topic_texts)
     elif param == "glossary":               return prompt_glossary(text_input, topic_texts=topic_texts)
     elif param == "text2mindmap":           return prompt_text_to_mindmap (text_input, topic_texts=topic_texts)
+    elif param == "md2mindmap":             return prompt_md_to_mindmap (text_input, topic_texts=topic_texts)
+    elif param == "markmap2mindmap":        return prompt_markmap_to_mindmap (text_input, topic_texts=topic_texts)
     elif param == "text2knowledgegraph":    return prompt_text_to_knowledgegraph (text_input, topic_texts=topic_texts)
     elif param == "knowledgegraph2mindmap": return prompt_knowledgegraph_to_mindmap (text_input, topic_texts=topic_texts)
     else:

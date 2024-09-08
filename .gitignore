@@ -2,9 +2,12 @@ src/__pycache__/**
 src/log/**
 src/images/**
 src/docs/**
-src/input/**
+src/input/pdf/**
+src/input/md/**
+src/input/mermaid/**
 src/archive/**
 .DS_Store
 macos/automator/.DS_Store
 token_cache.json
 **.mp4
+.aider*

@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -47,7 +47,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI_PRO'                                        # best
-CLOUD_TYPE = 'GEMINI_FLASH-8b'                                   # best
+# CLOUD_TYPE = 'GEMINI_FLASH-8b'                                   # best
 # CLOUD_TYPE = 'GEMINI_FLASH'                                      # good, generates maps only 3 levels deep
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
@@ -118,7 +118,7 @@ elif "AZURE+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "api-key"
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
-    if "gpt-4o-mini" in OPENAI_MODEL:
+    if "gpt-4o" in OPENAI_MODEL: # use newest gpt-4o model (2024-08-06) for 16k token size
         MAX_TOKENS = 16383
 
     MARKDOWN_OPTIMIZATION_LEVEL = 3
@@ -278,7 +278,7 @@ CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacO
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
-RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024
+RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024clear
 INSERT_IMAGE_AS_BACKGROUND = True
 OPTIMIZE_PROMPT_IMAGE = False # use a LLM call to optimize the prompt
 
