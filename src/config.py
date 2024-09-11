@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -22,6 +22,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                          # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                # best
+
+# Github Models
+CLOUD_TYPE = 'GITHUB+gpt-4o'                                     # best
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
@@ -122,6 +125,24 @@ elif "AZURE+" in CLOUD_TYPE:
         MAX_TOKENS = 16383
 
     MARKDOWN_OPTIMIZATION_LEVEL = 3
+
+elif "GITHUB+" in CLOUD_TYPE:
+    model = CLOUD_TYPE.split("+")[-1]
+    if model == "gpt-4o":
+        OPENAI_COMPATIBILITY = True
+        GITHUB_TOKEN = os.getenv('GITHUB_MODELS_TOKEN')
+        GITHUB_API_URL = "https://models.inference.ai.azure.com/chat/completions"
+        OPENAI_MODEL = model
+
+        API_URL = GITHUB_API_URL
+        KEY_HEADER_TEXT = "Authorization"
+        KEY_HEADER_VALUE = "Bearer " + GITHUB_TOKEN
+
+        MAX_TOKENS = 16383
+
+        MARKDOWN_OPTIMIZATION_LEVEL = 3
+    else:
+        raise Exception("Error: GITHUB model support not implemented.")
 
 elif "AZURE_META+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
