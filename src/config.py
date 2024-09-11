@@ -290,11 +290,11 @@ else:
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'  # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'             # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'            # good
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # (needs approval), ok
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # (needs approval)
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # (needs approval)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # ok
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # best
+CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # best
 # CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
-CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
@@ -303,7 +303,7 @@ CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacO
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
-RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024clear
+RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024
 INSERT_IMAGE_AS_BACKGROUND = True
 OPTIMIZE_PROMPT_IMAGE = False # use a LLM call to optimize the prompt
 
