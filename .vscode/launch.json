@@ -103,7 +103,7 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/process.py",
-      "args": ["import_md"],
+      "args": ["import_md", "orgchart"],
       "console": "integratedTerminal",
       "justMyCode": true
     },

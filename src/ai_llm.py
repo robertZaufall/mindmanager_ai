@@ -58,6 +58,7 @@ def call_llm(str_user):
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_META+" in config.CLOUD_TYPE or \
        "AZURE_Microsoft+" in config.CLOUD_TYPE or \
+       "OPENROUTER+" in config.CLOUD_TYPE or \
        "GITHUB+" in config.CLOUD_TYPE:
 
         payload = {
@@ -68,7 +69,7 @@ def call_llm(str_user):
                 {"role": "user", "content": str_user}
             ]
         }
-        if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE:
+        if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE or "OPENROUTER+" in config.CLOUD_TYPE:
             payload["model"] = config.OPENAI_MODEL
 
         response = requests.post(

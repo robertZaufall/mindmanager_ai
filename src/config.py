@@ -23,6 +23,12 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                # best
 
+# Openrouter.ai
+# CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best in class, expensive
+# CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best, expensive
+# CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best, cheap
+# CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good, slow
+
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                     # best
 # CLOUD_TYPE = 'GITHUB+gpt-4o-mini'                                # ok
@@ -128,6 +134,21 @@ elif "AZURE+" in CLOUD_TYPE:
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
     if "gpt-4o" in OPENAI_MODEL:
+        MAX_TOKENS = 16383
+
+    MARKDOWN_OPTIMIZATION_LEVEL = 3
+
+if "OPENROUTER+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
+    OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
+
+    OPENAI_MODEL = CLOUD_TYPE.split("+")[-1]
+    API_URL = OPENROUTER_API_URL
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + OPENROUTER_API_KEY
+
+    if "gpt-4o" in OPENAI_MODEL or "o1-mini" in OPENAI_MODEL or "o1-preview" in OPENAI_MODEL:
         MAX_TOKENS = 16383
 
     MARKDOWN_OPTIMIZATION_LEVEL = 3
@@ -292,9 +313,9 @@ else:
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'            # good
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # ok
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # best
-CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # best
 # CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
-# CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacOS w/ Apple Silicon only
+CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
