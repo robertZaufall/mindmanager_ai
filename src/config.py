@@ -57,8 +57,8 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OLLAMA+zephyr'                                     # does not work
 # CLOUD_TYPE = 'OLLAMA+neural-chat'                                # does not work
 # CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                             # not good
-# CLOUD_TYPE = 'OLLAMA+qwen2'                                      # does not work
-# CLOUD_TYPE = 'OLLAMA+CognitiveComputations/dolphin-mistral-nemo' # does not work
+# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                    # good
+# CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                # good
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI_PRO'                                        # best
