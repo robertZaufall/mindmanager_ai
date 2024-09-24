@@ -144,7 +144,7 @@ def call_llm(str_user):
             result = "\n".join(line[2:] for line in lines)
 
     # Vertex AI
-    elif "GEMINIPROJECT" in config.CLOUD_TYPE:
+    elif "VERTEXAI" in config.CLOUD_TYPE:
         import ai_gcp
         return ai_gcp.call_llm_gcp(str_user)
 

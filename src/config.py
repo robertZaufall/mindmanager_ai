@@ -61,13 +61,16 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                # good
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI_PRO'                                        # best
-# CLOUD_TYPE = 'GEMINI_FLASH-8b'                                   # best
-# CLOUD_TYPE = 'GEMINI_FLASH'                                      # good, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                         # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                    # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                       # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'               # best
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
-# CLOUD_TYPE = 'GEMINIPROJECT_PRO'                                 # good, Vertex AI need pre-authentication
-# CLOUD_TYPE = 'GEMINIPROJECT_FLASH'                               # one-shot ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                       # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                  # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-8b-exp-0924'             # best
 
 # groq
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best (error kg -> mm)
@@ -195,43 +198,24 @@ elif "AZURE_Microsoft+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
 
-elif "GEMINI" in CLOUD_TYPE:
-    system = CLOUD_TYPE.split("_")[0]
+elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
+    system = CLOUD_TYPE.split("+")[0]
     if system == "GEMINI":
-        model = CLOUD_TYPE.split("_")[-1]
-        if model == "PRO":
-            MODEL_ID = "gemini-1.5-pro-exp-0827"
-            MAX_TOKENS = 8191
-        elif model == "FLASH":
-            MODEL_ID = "gemini-1.5-flash-exp-0827"
-            MAX_TOKENS = 8191
-        elif model == "FLASH-8b":
-            MODEL_ID = "gemini-1.5-flash-8b-exp-0827"
-            MAX_TOKENS = 8191
-        else:
-            raise Exception("Error: Unknown GEMINI model")
-
+        model = CLOUD_TYPE.split("+")[-1]
+        MAX_TOKENS = 8191
         GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
-        API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{MODEL_ID}:generateContent?key={GOOGLE_API_KEY}"
+        API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GOOGLE_API_KEY}"
         KEY_HEADER_TEXT = ""
         KEY_HEADER_VALUE = ""
 
-    elif system == "GEMINIPROJECT":
-        model = CLOUD_TYPE.split("_")[-1]
-        if model == "PRO":
-            MODEL_ID = "gemini-1.5-pro-001"
-            MAX_TOKENS = 8191
-        elif model == "FLASH":
-            MODEL_ID = "gemini-1.5-flash-001"
-            MAX_TOKENS = 8191
-        else:
-            raise Exception("Error: Unknown GEMINI model")
-
+    elif system == "VERTEXAI":
+        model = CLOUD_TYPE.split("+")[-1]
+        MAX_TOKENS = 8191
         PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
         API_ENDPOINT = "us-central1-aiplatform.googleapis.com"
         LOCATION_ID = "us-central1"
         GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
-        API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{MODEL_ID}:generateContent"
+        API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{model}:generateContent"
         KEY_HEADER_TEXT = "Authorization"
         KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
 
@@ -242,9 +226,6 @@ elif "GEMINI" in CLOUD_TYPE:
         GCP_PROJECT_ID = PROJECT_ID
         GCP_ENDPOINT = API_ENDPOINT
         GCP_LOCATION = LOCATION_ID
-
-    else:
-        raise Exception("Error: Unknown GEMINI system")
 
 elif "OLLAMA+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
