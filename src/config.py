@@ -143,7 +143,7 @@ elif "AZURE+" in CLOUD_TYPE:
 
     MARKDOWN_OPTIMIZATION_LEVEL = 3
 
-if "OPENROUTER+" in CLOUD_TYPE:
+elif "OPENROUTER+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
     OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
