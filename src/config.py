@@ -62,6 +62,16 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OLLAMA+qwen2.5'                                    # good
 # CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                # good
 
+# LMStudio
+# CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, sloooow
+# CLOUD_TYPE = 'LMSTUDIO+lmstudio-community/meta-llama-3.1-8b-instruct' # ok
+# CLOUD_TYPE = 'LMSTUDIO+mlx-community/meta-llama-3.1-8b-instruct'      # ok
+# CLOUD_TYPE = 'LMSTUDIO+bartowski/llama-3.2-3b-instruct'               # ok
+# CLOUD_TYPE = 'LMSTUDIO+llama-3-8b-lexi-uncensored'                    # does not work
+# CLOUD_TYPE = 'LMSTUDIO+phi-3.1-mini-4k-instruct'                      # does not work
+# CLOUD_TYPE = 'LMSTUDIO+mlx-community/llama-3.2-3b-instruct'           # does not work
+# CLOUD_TYPE = 'LMSTUDIO+nemotron-mini-4b-instruct'                     # does not work
+
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                         # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                    # best
@@ -236,6 +246,11 @@ elif "OLLAMA+" in CLOUD_TYPE:
         API_URL="http://localhost:11434/v1/chat/completions"
     else: 
         API_URL="http://localhost:11434/api/generate"
+
+elif "LMSTUDIO+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    API_URL="http://localhost:1234/v1"
 
 elif "CLAUDE3" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True

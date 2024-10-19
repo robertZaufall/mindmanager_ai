@@ -74,7 +74,7 @@ def call_llm(str_user):
 
         response = requests.post(
             config.API_URL,
-            headers={
+            headers = {
                 "Content-Type": "application/json",
                 config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
             },
@@ -138,6 +138,50 @@ def call_llm(str_user):
             result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("Here is the refined mindmap data:", "").replace("```", "").lstrip("\n").lstrip()
         else:
             result = parsed_json["response"].replace("```mermaid", "").replace("```", "").replace("Here is the refined mindmap data:", "").lstrip("\n").lstrip()
+        
+        lines = result.split("\n")
+        if lines[0].startswith("  "):
+            result = "\n".join(line[2:] for line in lines)
+    
+    # LMStudio
+    elif "LMSTUDIO+" in config.CLOUD_TYPE:
+        models_response = requests.get(config.API_URL + "/models")
+        if models_response.status_code != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+        models_data = json.loads(models_response.text)["data"]
+        models_ids = [model["id"] for model in models_data]
+        if config.MODEL_ID not in models_ids:
+            raise Exception(f"Error: Model ID {config.MODEL_ID} not found in LMStudio models")
+
+        payload = {
+            "max_tokens": config.MAX_TOKENS,
+            "temperature": config.LLM_TEMPERATURE,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ],
+            "model": config.MODEL_ID,
+            "stream": False,
+            "seed": 0
+        }
+        response = requests.post(
+            config.API_URL + "/chat/completions",
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer lm-studio"
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response.status_code != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+            
+        parsed_json = json.loads(response_text)
+
+        result_first = parsed_json["choices"][0]["message"]["content"]
+        result = result_first.replace("```mermaid", "").replace("Here is the refined mindmap data:", "").replace("```", "").lstrip("\n").lstrip()
         
         lines = result.split("\n")
         if lines[0].startswith("  "):
@@ -274,7 +318,7 @@ def call_llm(str_user):
 
         response = requests.post(
             config.API_URL,
-            headers={
+            headers = {
                 "Content-Type": "application/json",
                 config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
             },
@@ -304,7 +348,7 @@ def call_llm(str_user):
 
         response = requests.post(
             config.API_URL,
-            headers={
+            headers = {
                 "Content-Type": "application/json",
                 config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
             },
@@ -333,7 +377,7 @@ def call_llm(str_user):
 
         response = requests.post(
             config.API_URL,
-            headers={
+            headers = {
                 "Content-Type": "application/json"
             },
             data=json.dumps(payload)
