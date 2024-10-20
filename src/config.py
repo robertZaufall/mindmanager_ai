@@ -304,21 +304,34 @@ else:
 # CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'               # better
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'              # better
+
+# StabilityAI
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'       # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'        # good
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'  # bad results
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'             # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'            # good
+
+# VertexAI
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # ok
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # best
+
+# MLX
 # CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
 CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
+
+# IdeogramAI
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'               # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'         # best
+
+# Black Forrest Labs
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'             # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                 # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                 # best
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
@@ -470,6 +483,27 @@ elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
     KEY_HEADER_TEXT_IMAGE = "Api-Key"
     KEY_HEADER_VALUE_IMAGE = os.getenv('IDEOGRAMAI_API_KEY')
     API_URL_IMAGE = f"https://api.ideogram.ai/generate"
+
+elif "BFL+" in CLOUD_TYPE_IMAGE:
+    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    EXPLICIT_STYLE = "computer collage art"
+
+    OUTPUT_FORMAT_IMAGE = "jpg"
+    SEED_IMAGE = 0
+
+    IMAGE_HEIGHT = 1024
+    IMAGE_WIDTH = 1024
+
+    IMAGE_PROMPT_UPSAMPLING = False
+    IMAGE_SAFETY_TOLERANCE = 6 # 0-6, 6 least strict
+
+    IMAGE_INTERVAL = 2 # only for FluxPro
+    IMAGE_STEPS = 28 # only for for FluxPro / FluxDev
+    IMAGE_GUIDANCE = 3 # only for for FluxPro / FluxDev
+
+    KEY_HEADER_TEXT_IMAGE = "x-key"
+    KEY_HEADER_VALUE_IMAGE = os.getenv('BFL_API_KEY')
+    API_URL_IMAGE = f"https://api.bfl.ml/v1/"
 
 
 # only used for action = DEEPL (translation)

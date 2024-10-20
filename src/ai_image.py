@@ -1,3 +1,4 @@
+import time
 import config
 
 import requests
@@ -75,12 +76,12 @@ def call_image_ai(image_path, str_user, n_count = 1):
 
             response = requests.post(
                 config.API_URL_IMAGE,
-                headers={
+                headers = {
                     "authorization": f"Bearer {config.STABILITYAI_API_KEY}",
                     "accept": "image/*"
                 },
-                files={"none": ''},
-                data={
+                files = {"none": ''},
+                data = {
                     "prompt": str_user,
                     "model": config.MODEL_ID_IMAGE,
                     "output_format": config.OUTPUT_FORMAT_IMAGE,
@@ -138,6 +139,73 @@ def call_image_ai(image_path, str_user, n_count = 1):
             generated_image = httpx.get(url).content
             with open(image_path, "wb") as file:
                 file.write(generated_image)
+
+        # Black Forest Labs
+        elif "BFL" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
+            seed = config.SEED_IMAGE if config.SEED_IMAGE != 0 else random.randint(0, 2**16 - 1)
+
+            payload = {
+                "prompt": str_user,
+                "width": config.IMAGE_WIDTH,
+                "height": config.IMAGE_HEIGHT,
+                "prompt_upsampling": config.IMAGE_PROMPT_UPSAMPLING,
+                "seed": seed,
+                "safety_tolerance": config.IMAGE_SAFETY_TOLERANCE
+            }
+
+            if config.MODEL_ID_IMAGE == "flux-pro" or config.MODEL_ID_IMAGE == "flux-dev":
+                payload["steps"] = config.IMAGE_STEPS
+                payload["guidance"] = config.IMAGE_GUIDANCE
+
+            if config.MODEL_ID_IMAGE == "flux-pro":
+                payload["interval"] = config.IMAGE_INTERVAL
+
+            headers = {
+                "accept": "application/json",
+                "content-type": "application/json",
+                config.KEY_HEADER_TEXT_IMAGE: config.KEY_HEADER_VALUE_IMAGE
+            }
+
+            response = requests.post(
+                config.API_URL_IMAGE + config.MODEL_ID_IMAGE,
+                json=payload,
+                headers=headers
+            )
+            response_text = response.text
+            response_status = response.status_code
+
+            if response_status != 200:
+                raise Exception(f"Error: {response_status} - {response_text}")
+
+            parsed_json = json.loads(response_text)
+            id = parsed_json['id']
+
+            url = ""
+            while True:
+                result = requests.get(
+                    config.API_URL_IMAGE + 'get_result',
+                    headers = headers,
+                    params = {'id': id}
+                )
+
+                result_status = result.status_code
+                if result_status != 200:
+                    raise Exception(f"Error: {result_status} - {result.text}")
+
+                result_json = result.json()
+                if result_json["status"] == "Ready":
+                    url = result_json['result']['sample']
+                    break
+                
+                time.sleep(1)
+
+            if url != "":
+                generated_image = httpx.get(url).content
+                with open(image_path, "wb") as file:
+                    file.write(generated_image)
+            else:
+                raise Exception(f"Error generating image.")
 
         # Google VertexAI            
         elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
