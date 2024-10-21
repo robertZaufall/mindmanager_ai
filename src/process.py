@@ -281,6 +281,7 @@ if __name__ == "__main__":
     # pdf_mindmap
     # pdf_knowledgegraph
     # import_md
+    # news
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

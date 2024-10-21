@@ -303,6 +303,41 @@ def call_llm(str_user):
                 .replace("mermaid\n", "") \
                 .lstrip("\n")
 
+    # xAI
+    elif "XAI+" in config.CLOUD_TYPE:
+        # same like OpenAI
+        payload = {
+            "max_tokens": config.MAX_TOKENS,
+            "model": config.MODEL_ID,
+            "temperature": config.LLM_TEMPERATURE,
+            "stream": False,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ]
+        }        
+
+        response = requests.post(
+            config.API_URL,
+            headers = {
+                "Content-Type": "application/json",
+                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+
+        usage = parsed_json["usage"]
+        print("usage: " + json.dumps(usage))
+
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
     # GROQ
     elif "GROQ+" in config.CLOUD_TYPE:
         # same like OpenAI

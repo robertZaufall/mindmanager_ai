@@ -10,6 +10,7 @@ prompt_postfix = (
     f"Each topic or subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. If an existing topic has more than {config.MAX_RETURN_WORDS} words, "
     f"reduce it to {config.MAX_RETURN_WORDS} words. "
     f"Use the 'mermaid' keyword only once at the beginning or suppress it. They keyword 'mindmap' must be present without any whitespace characters in front of this keyword. "
+    f"There must be no whitespace in front of the 'mermaid' keyword. "
     f"Don't use only numbers as topics but replace them with something meaningful. "
     f"Do not add any additional text or explainings at the beginning or end to your answer. The answer must be pure Mermaid code only. "
     f"Suppress any text like 'Here is the refined mind map' or else in your answer. "
@@ -243,6 +244,17 @@ def prompt_examples(text, topic_texts=""):
     )
     return str_user
 
+def prompt_news_to_mindmap(text, topic_texts=""):
+    str_user = (
+        prompt_prefix +
+        f"What are the top 10 trending topics on Twitter and X about the given mindmap content? "
+        f"Please create a mindmap 6 levels deep from the trending topics including headlines and company names and using an incisive title of the words as central topic. "
+        f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
+        prompt_postfix +
+        f"```\n{text}```"
+    )
+    return str_user
+
 def prompt_text_to_mindmap(text, topic_texts=""):
     str_user = (
         prompt_prefix_text +
@@ -302,8 +314,8 @@ def prompt(param, text, topic_texts=""):
     elif param == "glossary":               return prompt_glossary(text_input, topic_texts=topic_texts)
     elif param == "text2mindmap":           return prompt_text_to_mindmap (text_input, topic_texts=topic_texts)
     elif param == "md2mindmap":             return prompt_md_to_mindmap (text_input, topic_texts=topic_texts)
-    elif param == "markmap2mindmap":        return prompt_markmap_to_mindmap (text_input, topic_texts=topic_texts)
     elif param == "text2knowledgegraph":    return prompt_text_to_knowledgegraph (text_input, topic_texts=topic_texts)
     elif param == "knowledgegraph2mindmap": return prompt_knowledgegraph_to_mindmap (text_input, topic_texts=topic_texts)
+    elif param == "news":                   return prompt_news_to_mindmap (text_input, topic_texts=topic_texts)
     else:
         return ""

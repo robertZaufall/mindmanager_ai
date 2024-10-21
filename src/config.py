@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -83,6 +83,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                  # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-8b-exp-0924'             # best
+
+# xAI
+CLOUD_TYPE = 'XAI+grok-beta'                                     # good
 
 # groq
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best (error kg -> mm)
@@ -271,6 +274,14 @@ elif "CLAUDE3" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "x-api-key"
     KEY_HEADER_VALUE = ANTHROPIC_API_KEY
     API_URL="https://api.anthropic.com/v1/messages"
+
+elif "XAI+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    XAI_API_KEY = os.getenv('XAI_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + XAI_API_KEY
+    API_URL="https://api.x.ai/v1/chat/completions"
 
 elif "GROQ+" in CLOUD_TYPE:
     MAX_TOKENS = 8000

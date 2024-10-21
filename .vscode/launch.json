@@ -124,6 +124,15 @@
       "args": ["pdf_knowledgegraph"],
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> News",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["news"],
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }

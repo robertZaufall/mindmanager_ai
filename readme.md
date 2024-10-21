@@ -14,17 +14,18 @@ More animated examples are in the `doc` folder.
 
 ### Supported LLMs
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
-  - **OpenAI** w/ `GPT-4o` (use your key) -> **best results**
-  - **GitHub Models** w/ `GPT-4o`, `Llama` (use your key)
+  - **OpenAI** w/ `GPT-4o` (use your key) -> **best results**  
+  - **GitHub Models** w/ `GPT-4o`, `Llama` (use your key)  
   - **Anthropic** w/ `Claude 3 / 3.5` (use your key)  
-  - **Groq** (platform) w/ `LLaMA3.1`, `Mixtral`, `Gemma2` (use your key)
-  - **Perplexity** (platform) w/ `LLaMA3.1`, `Mixtral` (use your key)
+  - **xAI** w/ `grok-beta` (use your key)  
+  - **Groq** (platform) w/ `LLaMA3.1`, `Mixtral`, `Gemma2` (use your key)  
+  - **Perplexity** (platform) w/ `LLaMA3.1`, `Mixtral` (use your key)  
   - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
   - **Open Router** w/ `o1-preview` and many more models (use your key)
   - **Ollama** (local) w/ any LLM (use `LLaMA3.1`, `Zephyr` or `Mixtral` model for best results)
-  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LLaMA3.1` model for best results)
   - **LMStudio** (local) w/ any llama.cpp or MLX model
+  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LLaMA3.1` model for best results)
 
 ### Supported Image Generation Systems
   - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
@@ -33,7 +34,7 @@ More animated examples are in the `doc` folder.
   - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
   - **Black Forrest Labs** w/ `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`  (use your key)  
-  - **MLX** (local w/ Apple Silicon) w/ `Flux1`, `SD3`
+  - **MLX** (local w/ Apple Silicon) w/ `Flux.1`, `SD3`
 
 ### Supported Professional Translation Services
  - **DeepL** (use your key)
@@ -194,16 +195,18 @@ The solution is best tested with `Azure OpenAI`. Results are perfect for every u
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
-### Ollama, LMStudio (hosted locally - no internet access needed)
-Results are dependent on the used model. `LLaMA3`, `Zephyr` and `Mixtral` are working well.  
 ### Anthropic Claude 3 / 3.5
 The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3 Haiku` is very cheap and betteer than `GPT-3.5`.
+### xAI grok
+Grok is very good and is able to refine mindmaps for several levels. By today (2024-10-21) only the `grok-beta` model is available in public preview.  
 ### Groq (platform)
 Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
 ### Perplexity (platform)
 Perplexity works perfect as an universal LLM platform.  
 ### Open Router (platform)  
 On the Open Router platform there are a variety of models and systems available. Also fallback scenarios are supported. Furthermore you get access here to the newest OpenAI models like `o1-preview`.  
+### Ollama, LMStudio (hosted locally - no internet access needed)
+Results are dependent on the used model. `LLaMA3`, `Zephyr` and `Mixtral` are working well.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
 MLX results are dependent on the used model. `LLaMA3` works well.
 
@@ -217,11 +220,11 @@ Image generation results are too simple by now as prompt engineering is also mos
 ### Ideogram.AI  
 Image generation is quite good using the V_2 model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
 ### Black Forrest Labs  
-Image generation is extraordinary. As usual token have to be prepaid and you need accepted for accessing the platform.  
-### MLX w/ Flux1, SD3
-This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using `Flux1` model and under average using `SD3` mostly because the prompt is optimized for `Flux1`.  
+Image generation is extraordinary. Flagship model is `Flux Pro 1.1`. As usual token have to be prepaid and you need accepted for accessing the platform.  
+### MLX w/ Flux.1, SD3
+This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using `Flux.1` model and under average using `SD3` mostly because the prompt is optimized for `Flux.1`.  
 There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call. If there is only one topic selected there is a different prompt used as when more topics are selected. Only the first level of topics together with the central topic should be selected for better results.  
-When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount to be downloaded is about 50GB using `Flux1` and 6GB using `SD3`. If you are using `SD3` for the first time you have to login at **huggingface** with your token first as you have to agree to the terms of **Stability AI** and the usage of their model: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
+When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount to be downloaded is about 50GB using `Flux.1` and 6GB using `SD3`. If you are using `SD3` for the first time you have to login at **huggingface** with your token first as you have to agree to the terms of **Stability AI** and the usage of their model: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
 
 ## Translation systems
 ### DeepL
