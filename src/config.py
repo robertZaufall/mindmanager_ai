@@ -313,36 +313,38 @@ else:
 
 
 # CLOUD_TYPE_IMAGE = ''
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'               # better
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'              # better
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                # better
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'               # better
 
 # StabilityAI
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'       # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'        # good
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'  # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'             # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'            # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'       # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo' # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'         # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'   # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'        # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'              # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'             # good
 
 # VertexAI
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'             # ok
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'             # best
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'        # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'              # ok
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'              # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'         # best
 
 # MLX
-# CLOUD_TYPE_IMAGE = 'MLX+flux1'                    # best, local generation, MacOS w/ Apple Silicon only
-CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'               # best, local generation, MacOS w/ Apple Silicon only
-# CLOUD_TYPE_IMAGE = 'MLX+sd3'                      # ok, local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+flux1'                     # best, local generation, MacOS w/ Apple Silicon only
+CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                # best, local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+sd3'                       # ok, local generation, MacOS w/ Apple Silicon only
 
 # IdeogramAI
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'               # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'         # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'               # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'         # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'          # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'          # best
 
 # Black Forrest Labs
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'             # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                 # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                 # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'              # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                  # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                  # best
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
@@ -379,7 +381,9 @@ if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
 
 elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
     MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+
     MODEL_ENDPOINT = MODEL_ID_IMAGE.split("-")[0]
+    MODEL_ENDPOINT = "sd3" if MODEL_ENDPOINT == "sd3.5" else MODEL_ENDPOINT
 
     # 3d-model analog-film anime cinematic comic-book digital-art 
     # enhance fantasy-art isometric line-art low-poly modeling-compound 

@@ -30,7 +30,7 @@ More animated examples are in the `doc` folder.
 ### Supported Image Generation Systems
   - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `DALL-E 3` (use your key) -> **best results**
-  - **Stability AI** w/ `Stable Diffusion 3` `SD3` / `Ultra` / `Core` (use your key)  
+  - **Stability AI** w/ `Stable Diffusion 3` `SD3.5` / `SD3` / `Ultra` / `Core` (use your key)  
   - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
   - **Black Forrest Labs** w/ `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`  (use your key)  
@@ -179,8 +179,8 @@ Just select the topics for which you want to generate an image and choose the ac
 After a while, the image will be opened and also stored in the MindManager-Library `Images`-folder.  
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
 On Windows the image can be automatically set as the background image of the map.  
-The results from the generation process are good with `DALL-E 3` and sometimes not as good with Stable Diffusion. Prompt crafting/engineering is still in progress.  
-For Stable Diffusion the filename is enriched with the generation **seed**. This seed is useful if you want to generate similar images (e.g. with different prompt). `DALL-E 3` does not support a seed value anymore (by the time of writing).  
+The results from the generation process are best with `FLUX.1`, good with `DALL-E 3` and `SD3.5`. Prompt crafting/engineering is still in progress.  
+The filename is enriched with the generation **seed** where this feature is supoported. This seed is useful if you want to generate similar images (e.g. with different prompt). `DALL-E 3` does not support a seed value anymore (by the time of writing).  
 The prompt for image generation can optionally be optimized using a LLM call.
 Images can also be generated locally on macOS with Apple Silicon using the native `Apple MLX` framework.  
 
@@ -213,12 +213,12 @@ MLX results are dependent on the used model. `LLaMA3` works well.
 ## Image generation systems  
 ### Azure OpenAI / OpenAI - DALL-E 3  
 The solution is best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images. Azure EntraID authentication can be used in enterprise scenarios.  
-### Stability AI - Stable Diffusion 3  
-Image generation with SD3 is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
+### Stability AI - Stable Diffusion 3 + 3.5  
+Image generation with `SD3.5` and `SD3` is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen3  
-Image generation results are too simple by now as prompt engineering is also most important here. Imagen3 has the highest image resolution (1:1 with 1536x1536). Imagen3 is GA (globally available) but there is an approval process to get access to the API.  
+Image generation results are too simple by now as prompt engineering is also most important here. `Imagen3` has the highest image resolution (1:1 with 1536x1536). `Imagen3` is GA (globally available) but there is an approval process to get access to the API.  
 ### Ideogram.AI  
-Image generation is quite good using the V_2 model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
+Image generation is quite good using the `V_2` model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
 ### Black Forrest Labs  
 Image generation is extraordinary. Flagship model is `Flux Pro 1.1`. As usual token have to be prepaid and you need accepted for accessing the platform.  
 ### MLX w/ Flux.1, SD3
