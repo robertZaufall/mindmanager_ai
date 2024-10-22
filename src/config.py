@@ -40,7 +40,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
-# CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
+CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                                     # ok
 
 # Ollama (local models), best results
@@ -85,7 +85,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-8b-exp-0924'             # best
 
 # xAI
-CLOUD_TYPE = 'XAI+grok-beta'                                     # good
+# CLOUD_TYPE = 'XAI+grok-beta'                                     # good
 
 # groq
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best (error kg -> mm)
@@ -261,7 +261,7 @@ elif "CLAUDE3" in CLOUD_TYPE:
     if model == "HAIKU":
         MODEL_ID = "claude-3-haiku-20240307"
     elif model == "SONNET":
-        MODEL_ID = "claude-3-5-sonnet-20240620"
+        MODEL_ID = "claude-3-5-sonnet-20241022"
         MAX_TOKENS = 8192
         MARKDOWN_OPTIMIZATION_LEVEL = 3
     elif model == "OPUS":
