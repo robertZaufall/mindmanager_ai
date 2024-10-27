@@ -40,7 +40,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
-CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
+# CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                                     # ok
 
 # Ollama (local models), best results
@@ -79,7 +79,7 @@ CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'               # best
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                       # best
+CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                       # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                  # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-8b-exp-0924'             # best
@@ -119,6 +119,7 @@ LEVELS_DEEP = int('5')
 INDENT_SIZE = int('2')
 LINE_SEPARATOR = "\n"
 OPENAI_COMPATIBILITY = False
+MULTIMODAL = False
 
 MARKDOWN_OPTIMIZATION_LEVEL = int('2')
 
@@ -214,6 +215,7 @@ elif "AZURE_Microsoft+" in CLOUD_TYPE:
     KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
 
 elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
+    MULTIMODAL = True
     system = CLOUD_TYPE.split("+")[0]
     if system == "GEMINI":
         model = CLOUD_TYPE.split("+")[-1]

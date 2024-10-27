@@ -39,7 +39,10 @@ def get_credentials():
 
     return credentials  
   
-def call_llm_gcp(str_user):
+def call_llm_gcp(str_user, data, mimeType):
+    if data != "" and config.MULTIMODAL == False:
+        raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
+
     result = ""
 
     credentials = get_credentials()  
@@ -61,6 +64,9 @@ def call_llm_gcp(str_user):
             "candidateCount": 1,
         }
     }
+
+    if data != "":
+            payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
 
     if config.KEY_HEADER_TEXT != "":
         headers = {

@@ -44,7 +44,10 @@ class CachedTokenProvider:
   
         return token.token  
   
-def call_llm_azure_entra(str_user):  
+def call_llm_azure_entra(str_user, data, mimeType):
+    if data != "" and config.MULTIMODAL == False:
+        raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
+
     interactive_browser_credential = InteractiveBrowserCredential()  
     token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)  
 

@@ -117,6 +117,15 @@
       "justMyCode": true
     },
     {
+      "name": "Python: process.py -> PDF to Mindmap (multimodal)",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["pdfsimple_mindmap"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
       "name": "Python: process.py -> PDF to Mindmap by Knowledge Graph",
       "type": "python",
       "request": "launch",

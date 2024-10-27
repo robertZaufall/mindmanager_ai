@@ -4,6 +4,7 @@ import pymupdf4llm
 import pathlib
 import text_helper
 import tiktoken
+import base64
 
 def load_pdf_files(optimization_level=2):
     md_texts = {}
@@ -42,6 +43,25 @@ def load_pdf_files(optimization_level=2):
                     with open(output_file_path, 'r') as file:
                         md_texts[filename] = file.read()
     return md_texts
+
+def load_pdfsimple_files():
+    docs_base64 = {}
+    input_folder_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "input"), "pdf")
+    if os.path.exists(input_folder_path):
+        for root, dirs, files in os.walk(input_folder_path):  
+            for filename in files:  
+                if filename.endswith('.pdf'):  
+                    input_file_path = os.path.join(root, filename)
+                    docs_base64[filename] = load_file_as_base64(input_file_path)
+    return docs_base64
+
+def load_file_as_base64(file_path):
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as file:
+            binary_data = file.read()
+            base64_encoded = base64.b64encode(binary_data)
+            base64_string = base64_encoded.decode('utf-8')                        
+            return base64_string
 
 def load_text_files(format="md"):
     md_texts = {}

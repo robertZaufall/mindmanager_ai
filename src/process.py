@@ -188,8 +188,8 @@ def main(param, charttype):
 
     if param.startswith("pdf_"):
         actions = param.split("_")[-1].split("+")
-        md_texts = input_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
-        for key, value in md_texts.items():
+        docs = input_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
+        for key, value in docs.items():
             if "mindmap" in actions:
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
@@ -200,11 +200,20 @@ def main(param, charttype):
                 generate_mermaid_html(content, max_topic_level, guid, False)
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
+    
+    elif param.startswith("pdfsimple"):
+        actions = param.split("_")[-1].split("+")
+        docs = input_helper.load_pdfsimple_files()
+        for key, value in docs.items():
+            if "mindmap" in actions:
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf")
+                create_map_and_finalize(mindm, new_mermaid_diagram)
+
     elif param.startswith("import_"):
         actions = param.split("_")[-1]
         if actions == "md":
-            md_texts = input_helper.load_text_files("md")
-            for key, value in md_texts.items():
+            docs = input_helper.load_text_files("md")
+            for key, value in docs.items():
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["md2mindmap"], value, key.replace(".md", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
     else:
@@ -280,6 +289,7 @@ if __name__ == "__main__":
     # export_markmap, export_mermaid
     # pdf_mindmap
     # pdf_knowledgegraph
+    # pdfsimple_mindmap
     # import_md
     # news
     param = "refine" 

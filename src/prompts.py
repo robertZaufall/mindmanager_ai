@@ -266,6 +266,16 @@ def prompt_text_to_mindmap(text, topic_texts=""):
     )
     return str_user
 
+def prompt_pdfsimple_to_mindmap(text, topic_texts=""):
+    str_user = (
+        prompt_prefix_text.replace("Given is the following text to be summarized as a mindmap with Mermaid syntax. ", "") +
+        f"Extract the content from the file, summarize it and and create a mindmap from the summary using '{topic_texts}' as central topic, "
+        f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
+        f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
+        prompt_postfix.replace("Here is the data: \n", "")
+    )
+    return str_user
+
 def prompt_md_to_mindmap(text, topic_texts=""):
     str_user = (
         f"Given is the folowing markdown code. Please convert it to a 1:1 Mermaid mindmap. "
@@ -313,6 +323,7 @@ def prompt(param, text, topic_texts=""):
     elif param == "capex_opex":             return prompt_capex_opex(text_input, topic_texts=topic_texts)
     elif param == "glossary":               return prompt_glossary(text_input, topic_texts=topic_texts)
     elif param == "text2mindmap":           return prompt_text_to_mindmap (text_input, topic_texts=topic_texts)
+    elif param == "pdfsimple2mindmap":      return prompt_pdfsimple_to_mindmap (text_input, topic_texts=topic_texts)
     elif param == "md2mindmap":             return prompt_md_to_mindmap (text_input, topic_texts=topic_texts)
     elif param == "text2knowledgegraph":    return prompt_text_to_knowledgegraph (text_input, topic_texts=topic_texts)
     elif param == "knowledgegraph2mindmap": return prompt_knowledgegraph_to_mindmap (text_input, topic_texts=topic_texts)

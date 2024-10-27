@@ -7,7 +7,7 @@ import json
 import os
 import sys
 
-def call_llm_sequence(prompts_list, mermaid, topic_texts=""):
+def call_llm_sequence(prompts_list, mermaid, topic_texts = "", data = "", mimeType = ""):
     new_mermaid = mermaid
 
     log_input = ""
@@ -21,8 +21,9 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts=""):
         not_valid = True
         retries = 0
         while (not_valid and retries < config.MAX_RETRIES):
-            new_mermaid = call_llm(this_prompt)
+            new_mermaid = call_llm(this_prompt, data, mimeType)
             not_valid = m.validate_mermaid(new_mermaid, config.LINE_SEPARATOR, config.INDENT_SIZE)
+
             if not_valid:
                 retries = retries + 1
                 
@@ -44,15 +45,17 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts=""):
     
     return new_mermaid
 
-def call_llm(str_user):
+def call_llm(str_user, data, mimeType):
+    if data != "" and config.MULTIMODAL == False:
+        raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
+
     result = ""
-    
     str_system = config.SYSTEM_PROMPT
 
     # Azure / OpenAI / GITHUB
     if "AZURE" in config.CLOUD_TYPE and config.USE_AZURE_ENTRA:
         import ai_azure_entra
-        return ai_azure_entra.call_llm_azure_entra(str_user)
+        return ai_azure_entra.call_llm_azure_entra(str_user, data, mimeType)
     
     if "AZURE+" in config.CLOUD_TYPE or \
        "OPENAI+" in config.CLOUD_TYPE or \
@@ -190,7 +193,7 @@ def call_llm(str_user):
     # Vertex AI
     elif "VERTEXAI" in config.CLOUD_TYPE:
         import ai_gcp
-        return ai_gcp.call_llm_gcp(str_user)
+        return ai_gcp.call_llm_gcp(str_user, data, mimeType)
 
     # GEMINI
     elif "GEMINI" in config.CLOUD_TYPE:
@@ -210,6 +213,9 @@ def call_llm(str_user):
                 "candidateCount": 1,
             }
         }
+
+        if data != "":
+            payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
 
         payload["safety_settings"] = [
             { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
