@@ -121,7 +121,7 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/src/process.py",
-      "args": ["pdfsimple_mindmap"],
+      "args": ["pdfsimple_mindmap", "orgchart"],
       "console": "integratedTerminal",
       "justMyCode": true
     },

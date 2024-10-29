@@ -14,6 +14,7 @@ prompt_postfix = (
     f"Don't use only numbers as topics but replace them with something meaningful. "
     f"Do not add any additional text or explainings at the beginning or end to your answer. The answer must be pure Mermaid code only. "
     f"Suppress any text like 'Here is the refined mind map' or else in your answer. "
+    f"Don't stop content generation and don't generate unfinished or placeholder topics like '..'. "
     f"Don't add 'Here is the refined mind map in Mermaid syntax:' or 'Here is the mindmap in Mermaid syntax based on the summary:' or any other text to your answer, but just the code. "
     f"This is an example of a n level deep mindmap and how the output format has to look like: \n"
     f"```mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n```\n\n"
@@ -269,8 +270,8 @@ def prompt_text_to_mindmap(text, topic_texts=""):
 def prompt_pdfsimple_to_mindmap(text, topic_texts=""):
     str_user = (
         prompt_prefix_text.replace("Given is the following text to be summarized as a mindmap with Mermaid syntax. ", "") +
-        f"Extract the content from the file, summarize it and and create a mindmap from the summary using '{topic_texts}' as central topic, "
-        f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
+        f"Extract the content from the file, thoroughly summarize it and create a mindmap from the summary using '{topic_texts}' as central topic, "
+        f"with at least 5 first level topics and add at least 3 more levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
         f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
         prompt_postfix.replace("Here is the data: \n", "")
     )
