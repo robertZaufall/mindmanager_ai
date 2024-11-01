@@ -46,7 +46,7 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts = "", data = "", mimeTy
     return new_mermaid
 
 def call_llm(str_user, data, mimeType):
-    if data != "" and config.MULTIMODAL == False:
+    if data != "" and (config.MULTIMODAL == False or mimeType not in config.MULTIMODAL_MIME_TYPES):
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 
     result = ""
@@ -267,20 +267,39 @@ def call_llm(str_user, data, mimeType):
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
                 {"role": "user", "content": "Hello, Claude."},
-                {"role": "assistant", "content": str_system.replace("You are ", "Hi, I'm Claude, ")},
-                {"role": "user", "content": str_user}
+                {"role": "assistant", "content": str_system.replace("You are ", "Hi, I'm Claude, ")}
             ]
         }
+
+        if data == "":
+            payload["messages"].append({ "role": "user", "content": str_user })
+        else:
+            payload["messages"].append({ 
+                "role": "user", 
+                "content": [
+                    {
+                        "type": "document", 
+                        "source":
+                        { 
+                            "type": "base64", 
+                            "media_type": mimeType, 
+                            "data": data
+                        }
+                    }, 
+                    {
+                        "type": "text", 
+                        "text": str_user
+                    }
+                ]
+            })
 
         headers = {
             "content-type": "application/json",
             "anthropic-version": config.ANTHROPIC_VERSION,
             config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
         }
-
-        # extend token output size for sonnet model
-        if config.MODEL_ID == "claude-3-5-sonnet-20240620":
-            headers["anthropic-beta"] = "max-tokens-3-5-sonnet-2024-07-15"
+        if config.BETA_HEADER_KEY != "":
+            headers[config.BETA_HEADER_KEY] = config.BETA_HEADER_TEXT
 
         response = requests.post(
             config.API_URL,

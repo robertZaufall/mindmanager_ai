@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -40,7 +40,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 
 # Claude3
 # CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
-# CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
+CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
 # CLOUD_TYPE = 'CLAUDE3_HAIKU'                                     # ok
 
 # Ollama (local models), best results
@@ -120,10 +120,13 @@ INDENT_SIZE = int('2')
 LINE_SEPARATOR = "\n"
 OPENAI_COMPATIBILITY = False
 MULTIMODAL = False
+MULTIMODAL_MIME_TYPES = []
 
 MARKDOWN_OPTIMIZATION_LEVEL = int('2')
 
 if "OPENAI+" in CLOUD_TYPE:
+    # MULTIMODAL = True
+    # MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
     OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
     OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
@@ -141,8 +144,10 @@ if "OPENAI+" in CLOUD_TYPE:
     MARKDOWN_OPTIMIZATION_LEVEL = 3
 
 elif "AZURE+" in CLOUD_TYPE:
-    OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
+    # MULTIMODAL = True
+    # MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
     OPENAI_COMPATIBILITY = True
+    OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
     OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
     OPENAI_API_URL = os.getenv('OPENAI2_API_BASE')
     OPENAI_API_VERSION = os.getenv('OPENAI2_API_VERSION')
@@ -216,6 +221,8 @@ elif "AZURE_Microsoft+" in CLOUD_TYPE:
 
 elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
     MULTIMODAL = True
+    MULTIMODAL_MIME_TYPES = ["application/pdf"]
+
     system = CLOUD_TYPE.split("+")[0]
     if system == "GEMINI":
         model = CLOUD_TYPE.split("+")[-1]
@@ -263,9 +270,15 @@ elif "CLAUDE3" in CLOUD_TYPE:
     if model == "HAIKU":
         MODEL_ID = "claude-3-haiku-20240307"
     elif model == "SONNET":
+        MULTIMODAL = True
+        MULTIMODAL_MIME_TYPES = ["application/pdf"]
+        BETA_HEADER_KEY = "anthropic-beta"
+        BETA_HEADER_TEXT = "pdfs-2024-09-25"
+        
         MODEL_ID = "claude-3-5-sonnet-20241022"
         MAX_TOKENS = 8192
         MARKDOWN_OPTIMIZATION_LEVEL = 3
+
     elif model == "OPUS":
         MODEL_ID = "claude-3-opus-20240229"
         MARKDOWN_OPTIMIZATION_LEVEL = 3
