@@ -4,19 +4,19 @@ prompt_prefix = "Given is the following Mermaid mindmap. "
 prompt_prefix_text = "Given is the following text to be summarized as a mindmap with Mermaid syntax. "
 
 prompt_postfix = (
-    f"Return back the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
-    f"Put also {config.INDENT_SIZE} space characters in front of the first topic i.e. central topic following the 'mermaid' keyword. Don't change or delete CentralTopic topic. "
+    f"Return the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
+    f"Put also {config.INDENT_SIZE} space characters in front of the first topic, i.e. central topic following the 'mermaid' keyword. Don't change or delete CentralTopic topic. "
     f"Don't include the phrase 'central topic' or similar to the central topic. "
     f"Each topic or subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. If an existing topic has more than {config.MAX_RETURN_WORDS} words, "
     f"reduce it to {config.MAX_RETURN_WORDS} words. "
-    f"Use the 'mermaid' keyword only once at the beginning or suppress it. They keyword 'mindmap' must be present without any whitespace characters in front of this keyword. "
+    f"Use the 'mermaid' keyword only once at the beginning or suppress it. The keyword 'mindmap' must be present without any whitespace characters in front of this keyword. "
     f"There must be no whitespace in front of the 'mermaid' keyword. "
     f"Don't use only numbers as topics but replace them with something meaningful. "
-    f"Do not add any additional text or explainings at the beginning or end to your answer. The answer must be pure Mermaid code only. "
+    f"Do not add any additional text or explanations at the beginning or end to your answer. The answer must be pure Mermaid code only. "
     f"Suppress any text like 'Here is the refined mind map' or else in your answer. "
     f"Don't stop content generation and don't generate unfinished or placeholder topics like '..'. "
     f"Don't add 'Here is the refined mind map in Mermaid syntax:' or 'Here is the mindmap in Mermaid syntax based on the summary:' or any other text to your answer, but just the code. "
-    f"This is an example of a n level deep mindmap and how the output format has to look like: \n"
+    f"This is an example of an n level deep mindmap and how the output format has to look like: \n"
     f"```mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n```\n\n"
     f"Here is the data: \n"
 )
@@ -43,7 +43,7 @@ def prompt_image_flux(top_most_topic, subtopics):
     explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
     prefix = f"Business graphic, minimalistic, professional{explicit_style}"
     postfix = "on a gray gradient background, visually appealing, expensive look, no text."
-    topics = f" and also influenced by thoughts on {{{subtopics}}}" if subtopics != "" else ""
+    topics = f" and also influenced by thought on {subtopics}" if subtopics != "" else ""
 
     if "," not in subtopics:
         top_most_topic = subtopics
@@ -59,7 +59,7 @@ def prompt_image_prompt(text):
     str_user = (
         f"Please optimize this prompt to generate a good marketing logo like image or pictogram on a white background without gradient "
         f"using Stable Diffusion: ```{text}```\n "
-        f"Return only the prompt without any further text or explainings."
+        f"Return only the prompt without any further text or explanations."
     )
     return str_user
 
@@ -77,14 +77,14 @@ def prompt_glossary(text, topic_texts):
         f"Ensure the following: \n"
         f" 1. Eliminate duplicate lines in your answer. \n"
         f" 2. Provide a one-sentence explanation for each term. \n"
-        f" 3. Group the terms or phrases by its first character. \n"
+        f" 3. Group the terms or phrases by their first character. \n"
         f" 4. Sort the groups alphabetically. \n"
         f" 5. Combine groups of the same character. Don't split character-groups. \n"
         f" 6. Eliminate any '_' in your answer. \n"
         f" 7. Do not include any additional text or explanations at the beginning or end of your answer. \n"
         f" 8. Don't output the keywords 'html' or 'markdown' at the start of your text. \n"
         f" 9. Check twice if the glossary is sorted alphabetically. \n"
-        f"10. If there is no special term or phase for a character, just ignore this. Don't express this state. \n"
+        f"10. If there is no special term or phrase for a character, just ignore this. Don't express this state. \n"
         f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n"
         f"`\n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n`\n\n"
         f"Here is the {context}: \n" +
