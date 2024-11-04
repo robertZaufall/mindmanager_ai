@@ -39,9 +39,10 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                        # best
 
 # Claude3
-# CLOUD_TYPE = 'CLAUDE3_OPUS'                                      # good
-CLOUD_TYPE = 'CLAUDE35_SONNET'                                   # best
-# CLOUD_TYPE = 'CLAUDE3_HAIKU'                                     # ok
+# CLOUD_TYPE = 'CLAUDE3+OPUS'                                      # good
+# CLOUD_TYPE = 'CLAUDE3+HAIKU'                                     # ok
+# CLOUD_TYPE = 'CLAUDE35+SONNET'                                   # best
+CLOUD_TYPE = 'CLAUDE35+HAIKU'                                    # best
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                  # best
@@ -266,24 +267,37 @@ elif "LMSTUDIO+" in CLOUD_TYPE:
 
 elif "CLAUDE3" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
-    model = CLOUD_TYPE.split("_")[-1]
-    if model == "HAIKU":
-        MODEL_ID = "claude-3-haiku-20240307"
-    elif model == "SONNET":
-        MULTIMODAL = True
-        MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        BETA_HEADER_KEY = "anthropic-beta"
-        BETA_HEADER_TEXT = "pdfs-2024-09-25"
-        
-        MODEL_ID = "claude-3-5-sonnet-20241022"
-        MAX_TOKENS = 8192
-        MARKDOWN_OPTIMIZATION_LEVEL = 3
+    generation = CLOUD_TYPE.split("+")[0]
+    model = CLOUD_TYPE.split("+")[-1]
+    BETA_HEADER_KEY = ""
 
-    elif model == "OPUS":
-        MODEL_ID = "claude-3-opus-20240229"
-        MARKDOWN_OPTIMIZATION_LEVEL = 3
+    if generation == "CLAUDE3":
+        if model == "HAIKU":
+            MODEL_ID = "claude-3-haiku-20240307"
+        elif model == "OPUS":
+            MODEL_ID = "claude-3-opus-20240229"
+            MARKDOWN_OPTIMIZATION_LEVEL = 3
+        else:
+            raise Exception("Error: Unsupported CLAUDE3 model")
+    
+    elif generation == "CLAUDE35":
+        MAX_TOKENS = 8192
+        if model == "HAIKU":
+            MODEL_ID = "claude-3-5-haiku-20241022"
+        elif model == "SONNET":
+            MULTIMODAL = True
+            MULTIMODAL_MIME_TYPES = ["application/pdf"]
+            BETA_HEADER_KEY = "anthropic-beta"
+            BETA_HEADER_TEXT = "pdfs-2024-09-25"
+            
+            MODEL_ID = "claude-3-5-sonnet-20241022"
+            MARKDOWN_OPTIMIZATION_LEVEL = 3
+        else:
+            raise Exception("Error: Unsupported CLAUDE3.5 model")
+
     else:
-        raise Exception("Error: Unknown CLAUDE3 model")
+        raise Exception("Error: Unknown CLAUDE model")
+    
     ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
     ANTHROPIC_VERSION="2023-06-01"
     KEY_HEADER_TEXT = "x-api-key"
