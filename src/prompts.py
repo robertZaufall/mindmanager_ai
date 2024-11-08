@@ -22,26 +22,26 @@ prompt_postfix = (
 )
 
 def prompt_image(top_most_topic, subtopics):
-    explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
+    IMAGE_EXPLICIT_STYLE = f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
     topics = f" and the subtopics {subtopics}" if subtopics != "" else ""
     str_user = (
-        f"A clean, minimalistic, professional marketing logo{explicit_style} on a white background with focus on {top_most_topic}{topics}. "
+        f"A clean, minimalistic, professional marketing logo{IMAGE_EXPLICIT_STYLE} on a white background with focus on {top_most_topic}{topics}. "
         f"Use a visually appealing and professional look."
     )
     return str_user
 
 def prompt_image_sd(top_most_topic, subtopics):
-    explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
+    IMAGE_EXPLICIT_STYLE = f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
     topics = f" and also influenced by thought of {subtopics}" if subtopics != "" else ""
     str_user = (
-        f"One professional graphic, minimalistic, professional{explicit_style} on a white background about {top_most_topic}{topics}. "
+        f"One professional graphic, minimalistic, professional{IMAGE_EXPLICIT_STYLE} on a white background about {top_most_topic}{topics}. "
         f"Visually appealing, high-detailed, polished and expensive look."
     )
     return str_user
 
 def prompt_image_flux(top_most_topic, subtopics):
-    explicit_style = f" using {config.EXPLICIT_STYLE} style" if config.EXPLICIT_STYLE != "" else ""
-    prefix = f"Business graphic, minimalistic, professional{explicit_style}"
+    IMAGE_EXPLICIT_STYLE = f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
+    prefix = f"Business graphic, minimalistic, professional{IMAGE_EXPLICIT_STYLE}"
     postfix = "on a gray gradient background, visually appealing, expensive look, no text."
     topics = f" and also influenced by thought on {subtopics}" if subtopics != "" else ""
 

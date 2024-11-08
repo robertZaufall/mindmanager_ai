@@ -42,7 +42,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'CLAUDE3+OPUS'                                      # good
 # CLOUD_TYPE = 'CLAUDE3+HAIKU'                                     # ok
 # CLOUD_TYPE = 'CLAUDE35+SONNET'                                   # best
-CLOUD_TYPE = 'CLAUDE35+HAIKU'                                    # best
+# CLOUD_TYPE = 'CLAUDE35+HAIKU'                                    # best
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                  # best
@@ -82,8 +82,7 @@ CLOUD_TYPE = 'CLAUDE35+HAIKU'                                    # best
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                       # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                  # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-8b-exp-0924'             # best
+CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
 
 # xAI
 # CLOUD_TYPE = 'XAI+grok-beta'                                     # good
@@ -340,10 +339,13 @@ else:
 
 # only used for action = image, image_n
 
+CLOUD_TYPE_IMAGE = ''
 
-# CLOUD_TYPE_IMAGE = ''
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                # better
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'               # better
+# Azure
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                # best
+
+# OpenAI
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'               # best
 
 # StabilityAI
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'       # better
@@ -356,9 +358,8 @@ else:
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'             # good
 
 # VertexAI
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN2'              # ok
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3'              # best
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+IMAGEN3-fast'         # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-001'      # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # better
 
 # MLX
 # CLOUD_TYPE_IMAGE = 'MLX+flux1'                     # best, local generation, MacOS w/ Apple Silicon only
@@ -372,6 +373,7 @@ CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                # best, local generation, Mac
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'          # best
 
 # Black Forrest Labs
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'        # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'              # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                  # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                  # best
@@ -383,7 +385,7 @@ INSERT_IMAGE_AS_BACKGROUND = True
 OPTIMIZE_PROMPT_IMAGE = False # use a LLM call to optimize the prompt
 
 if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
-    EXPLICIT_STYLE = "digital art"
+    IMAGE_EXPLICIT_STYLE = "digital art"
     IMAGE_QUALITY = "hd"  # hd, standard
     IMAGE_STYLE = "vivid" # natural, vivid
 
@@ -392,90 +394,80 @@ if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
         OPENAI_API_VERSION_IMAGE = '2024-02-01'
         OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
         OPENAI_MODEL_IMAGE = ""
-        OPENAI_API_URL_IMAGE = os.getenv('OPENAI2_API_BASE')
+        OPENAI_IMAGE_API_URL = os.getenv('OPENAI2_API_BASE')
 
-        API_URL_IMAGE = f"{OPENAI_API_URL_IMAGE}openai/deployments/{OPENAI_DEPLOYMENT_IMAGE}/images/generations?api-version={OPENAI_API_VERSION_IMAGE}"
-        KEY_HEADER_TEXT_IMAGE = "api-key"
-        KEY_HEADER_VALUE_IMAGE = OPENAI_API_KEY_IMAGE
+        IMAGE_API_URL = f"{OPENAI_IMAGE_API_URL}openai/deployments/{OPENAI_DEPLOYMENT_IMAGE}/images/generations?api-version={OPENAI_API_VERSION_IMAGE}"
+        IMAGE_KEY_HEADER_TEXT = "api-key"
+        IMAGE_KEY_HEADER_VALUE = OPENAI_API_KEY_IMAGE
 
     elif "OPENAI+" in CLOUD_TYPE_IMAGE:
         OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
         OPENAI_API_VERSION_IMAGE = ""
         OPENAI_DEPLOYMENT_IMAGE = ""
         OPENAI_MODEL_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-        OPENAI_API_URL_IMAGE = "https://api.openai.com/v1/images/generations"
+        OPENAI_IMAGE_API_URL = "https://api.openai.com/v1/images/generations"
 
-        API_URL_IMAGE = OPENAI_API_URL_IMAGE
-        KEY_HEADER_TEXT_IMAGE = "Authorization"
-        KEY_HEADER_VALUE_IMAGE = "Bearer " + OPENAI_API_KEY_IMAGE
+        IMAGE_API_URL = OPENAI_IMAGE_API_URL
+        IMAGE_KEY_HEADER_TEXT = "Authorization"
+        IMAGE_KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY_IMAGE
 
 elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
-    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
 
-    MODEL_ENDPOINT = MODEL_ID_IMAGE.split("-")[0]
+    MODEL_ENDPOINT = IMAGE_MODEL_ID.split("-")[0]
     MODEL_ENDPOINT = "sd3" if MODEL_ENDPOINT == "sd3.5" else MODEL_ENDPOINT
 
     # 3d-model analog-film anime cinematic comic-book digital-art 
     # enhance fantasy-art isometric line-art low-poly modeling-compound 
     # neon-punk origami photographic pixel-art tile-texture
-    STYLE_PRESET = "digital-art"
-    EXPLICIT_STYLE = STYLE_PRESET if MODEL_ENDPOINT != "core" else ""
+    IMAGE_STYLE_PRESET = "digital-art"
+    IMAGE_EXPLICIT_STYLE = IMAGE_STYLE_PRESET if MODEL_ENDPOINT != "core" else ""
 
-    OUTPUT_FORMAT_IMAGE = "png"         # png, jpeg, webp
-    OUTPUT_ASPECT_RATIO_IMAGE = "1:1"   # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
-    SEED_IMAGE = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
+    IMAGE_OUTPUT_FORMAT = "png"         # png, jpeg, webp
+    IMAGE_ASPECT_RATIO = "1:1"   # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
+    IMAGE_SEED = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
 
-    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+    IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
 
     STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
-    API_URL_IMAGE = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"
+    IMAGE_API_URL = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"
 
 elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
-    model = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if model == "IMAGEN2":
-        MODEL_ID_IMAGE = "imagegeneration@006"
-        OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1536x1536) 9:16 (1152x2016) 16:9 (2016x1134) 3:4 (1344x1792) 4:3 (1792x1344)
-    elif model == "IMAGEN3":
-        MODEL_ID_IMAGE = "imagen-3.0-generate-001"
-        OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
-    elif model == "IMAGEN3-fast":
-        MODEL_ID_IMAGE = "imagen-3.0-fast-generate-001"
-        OUTPUT_ASPECT_RATIO_IMAGE = "1:1" # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
-    else:
-        raise Exception("Error: Unknown GOOGLE image model")
+    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+    IMAGE_ASPECT_RATIO = "1:1" # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
 
-    EXPLICIT_STYLE = "digital art"
-    ADD_WATERMARK = False
+    IMAGE_EXPLICIT_STYLE = "digital art"
+    IMAGE_ADD_WATERMARK = False
 
-    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+    IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
 
-    PROJECT_ID_IMAGE = os.getenv('GOOGLE_PROJECT_ID_AI')
-    API_ENDPOINT_IMAGE = "us-central1-aiplatform.googleapis.com"
-    LOCATION_ID_IMAGE = "us-central1"
+    IMAGE_PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
+    IMAGE_API_ENDPOINT = "us-central1-aiplatform.googleapis.com"
+    IMAGE_LOCATION_ID = "us-central1"
 
-    KEY_HEADER_TEXT_IMAGE = "Authorization"
+    IMAGE_KEY_HEADER_TEXT = "Authorization"
 
     GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
     GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
 
-    API_URL_IMAGE = f"https://{API_ENDPOINT_IMAGE}/v1/projects/{PROJECT_ID_IMAGE}/locations/{LOCATION_ID_IMAGE}/publishers/google/models/{MODEL_ID_IMAGE}:predict"
+    IMAGE_API_URL = f"https://{IMAGE_API_ENDPOINT}/v1/projects/{IMAGE_PROJECT_ID}/locations/{IMAGE_LOCATION_ID}/publishers/google/models/{IMAGE_MODEL_ID}:predict"
 
 elif "MLX+" in CLOUD_TYPE_IMAGE:
-    SEED_IMAGE = 0
+    IMAGE_SEED = 0
     #https://enragedantelope.github.io/Styles-FluxDev/
-    EXPLICIT_STYLE = "photorealistic 3D art"
-    #EXPLICIT_STYLE = "papercraft-kirigami art"
-    #EXPLICIT_STYLE = "computer collage art"
-    NEGATIV_PROMPT_IMAGE = ""
+    IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
+    #IMAGE_EXPLICIT_STYLE = "papercraft-kirigami art"
+    #IMAGE_EXPLICIT_STYLE = "computer collage art"
+    IMAGE_NEGATIV_PROMPT = ""
 
     IMAGE_HEIGHT = 768 # 1024 # 512 # 768
     IMAGE_WIDTH = 768 # 1024 # 512 # 768
 
     DIFF_MODEL = "argmaxinc/stable-diffusion"
 
-    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if MODEL_ID_IMAGE == "flux1" or MODEL_ID_IMAGE == "flux1-4bit":
-        if MODEL_ID_IMAGE == "flux1":
+    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+    if IMAGE_MODEL_ID == "flux1" or IMAGE_MODEL_ID == "flux1-4bit":
+        if IMAGE_MODEL_ID == "flux1":
             DIFF_MODEL_VERSION = "argmaxinc/mlx-FLUX.1-schnell"
             DIFF_LOW_MEMORY_MODE = True
             DIFF_A16 = True
@@ -484,7 +476,7 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
             IMAGE_CFG_WEIGHT = 0. 
             DIFF_SHIFT = 1.0
             DIFF_USE_T5 = True
-        elif MODEL_ID_IMAGE == "flux1-4bit":
+        elif IMAGE_MODEL_ID == "flux1-4bit":
             DIFF_MODEL_VERSION = "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized"
             DIFF_LOW_MEMORY_MODE = True
             DIFF_A16 = True
@@ -496,7 +488,7 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
         else:
             raise Exception("Error: Unknown MLX image model")
 
-    elif MODEL_ID_IMAGE == "sd3":
+    elif IMAGE_MODEL_ID == "sd3":
         DIFF_MODEL_VERSION = "argmaxinc/mlx-stable-diffusion-3-medium"
         DIFF_LOW_MEMORY_MODE = True  # models offloading
         DIFF_A16 = True
@@ -509,46 +501,64 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
         raise Exception("Error: Unknown MLX image model")
     
 elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
-    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if MODEL_ID_IMAGE == "V_2" or MODEL_ID_IMAGE == "V_2_TURBO":
-        STYLE_PRESET = "GENERAL" # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
-        EXPLICIT_STYLE = STYLE_PRESET
+    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+    if IMAGE_MODEL_ID == "V_2" or IMAGE_MODEL_ID == "V_2_TURBO":
+        IMAGE_STYLE_PRESET = "GENERAL" # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
+        IMAGE_EXPLICIT_STYLE = IMAGE_STYLE_PRESET
     else:
-        EXPLICIT_STYLE = "computer collage art"
+        IMAGE_EXPLICIT_STYLE = "computer collage art"
 
-    OUTPUT_FORMAT_IMAGE = "png"
-    SEED_IMAGE = 0
+    IMAGE_OUTPUT_FORMAT = "png"
+    IMAGE_SEED = 0
 
-    NEGATIV_PROMPT_IMAGE = "text, characters, letters, words, labels"
+    IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
 
     IMAGE_HEIGHT = 1024
     IMAGE_WIDTH = 1024
     IMAGE_RESOLUTION = f"RESOLUTION_{IMAGE_WIDTH}_{IMAGE_HEIGHT}"
 
-    KEY_HEADER_TEXT_IMAGE = "Api-Key"
-    KEY_HEADER_VALUE_IMAGE = os.getenv('IDEOGRAMAI_API_KEY')
-    API_URL_IMAGE = f"https://api.ideogram.ai/generate"
+    IMAGE_KEY_HEADER_TEXT = "Api-Key"
+    IMAGE_KEY_HEADER_VALUE = os.getenv('IDEOGRAMAI_API_KEY')
+    IMAGE_API_URL = f"https://api.ideogram.ai/generate"
 
 elif "BFL+" in CLOUD_TYPE_IMAGE:
-    MODEL_ID_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-    EXPLICIT_STYLE = "computer collage art"
+    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+    IMAGE_EXPLICIT_STYLE = "computer collage art"
 
-    OUTPUT_FORMAT_IMAGE = "jpg"
-    SEED_IMAGE = 0
-
-    IMAGE_HEIGHT = 1024
-    IMAGE_WIDTH = 1024
-
-    IMAGE_PROMPT_UPSAMPLING = False
+    IMAGE_OUTPUT_FORMAT = "png" # png, jpeg
+    IMAGE_SEED = 0
     IMAGE_SAFETY_TOLERANCE = 6 # 0-6, 6 least strict
 
-    IMAGE_INTERVAL = 2 # only for FluxPro
-    IMAGE_STEPS = 28 # only for for FluxPro / FluxDev
-    IMAGE_GUIDANCE = 3 # only for for FluxPro / FluxDev
+    if IMAGE_MODEL_ID == "flux-pro-1.1-ultra":
+        IMAGE_RAW = False
+        IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
 
-    KEY_HEADER_TEXT_IMAGE = "x-key"
-    KEY_HEADER_VALUE_IMAGE = os.getenv('BFL_API_KEY')
-    API_URL_IMAGE = f"https://api.bfl.ml/v1/"
+    elif IMAGE_MODEL_ID == "flux-pro-1.1":
+        IMAGE_HEIGHT = 1024
+        IMAGE_WIDTH = 1024
+        IMAGE_PROMPT_UPSAMPLING = False
+
+    elif IMAGE_MODEL_ID == "flux-pro":
+        IMAGE_HEIGHT = 1024
+        IMAGE_WIDTH = 1024
+        IMAGE_STEPS = 28
+        IMAGE_INTERVAL = 2
+        IMAGE_PROMPT_UPSAMPLING = False
+        IMAGE_GUIDANCE = 3
+
+    elif IMAGE_MODEL_ID == "flux-dev":
+        IMAGE_HEIGHT = 1024
+        IMAGE_WIDTH = 1024
+        IMAGE_STEPS = 28
+        IMAGE_PROMPT_UPSAMPLING = False
+        IMAGE_GUIDANCE = 3
+
+    else:
+        raise Exception("Error: Unknown Flux image model")
+ 
+    IMAGE_KEY_HEADER_TEXT = "x-key"
+    IMAGE_KEY_HEADER_VALUE = os.getenv('BFL_API_KEY')
+    IMAGE_API_URL = f"https://api.bfl.ml/v1/"
 
 
 # only used for action = DEEPL (translation)

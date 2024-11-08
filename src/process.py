@@ -162,7 +162,7 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
             count = 1
 
         if "MLX+" in config.CLOUD_TYPE_IMAGE:
-            if "flux" in config.MODEL_ID_IMAGE:
+            if "flux" in config.IMAGE_MODEL_ID:
                 str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
             else:
                 str_user = prompts.prompt_image_sd(top_most_topic, subtopics)

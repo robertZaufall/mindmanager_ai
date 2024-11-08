@@ -110,20 +110,20 @@ def call_image_ai(str_user, image_path, n_count = 1):
         ],
         "parameters": {
             "sampleCount": n_count,
-            "addWatermark": config.ADD_WATERMARK,
+            "addWatermark": config.IMAGE_ADD_WATERMARK,
         }
     }
 
-    if config.KEY_HEADER_TEXT_IMAGE != "":
+    if config.IMAGE_KEY_HEADER_TEXT != "":
         headers = {
             "Content-Type": "application/json",
-            config.KEY_HEADER_TEXT_IMAGE : "Bearer " + access_token
+            config.IMAGE_KEY_HEADER_TEXT : "Bearer " + access_token
         }
     else:
         headers = { "Content-Type": "application/json" }
 
     response = requests.post(
-        config.API_URL_IMAGE,
+        config.IMAGE_API_URL,
         headers=headers,
         data=json.dumps(payload)
     )
