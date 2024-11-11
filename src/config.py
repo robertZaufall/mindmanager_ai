@@ -62,6 +62,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                             # not good
 # CLOUD_TYPE = 'OLLAMA+qwen2.5'                                    # good
 # CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                # good
+# CLOUD_TYPE = 'OLLAMA+nemotron'                                   # best, slow
 
 # LMStudio
 # CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, sloooow

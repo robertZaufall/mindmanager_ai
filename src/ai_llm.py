@@ -142,6 +142,9 @@ def call_llm(str_user, data, mimeType):
         else:
             result = parsed_json["response"].replace("```mermaid", "").replace("```", "").replace("Here is the refined mindmap data:", "").lstrip("\n").lstrip()
         
+        if config.MODEL_ID == "nemotron":
+            result = result.replace("mermaid mindmap\n", "")
+
         lines = result.split("\n")
         if lines[0].startswith("  "):
             result = "\n".join(line[2:] for line in lines)
