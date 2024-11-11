@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -82,7 +82,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                       # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                  # best
-CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
 
 # xAI
 # CLOUD_TYPE = 'XAI+grok-beta'                                     # good
