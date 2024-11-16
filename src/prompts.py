@@ -86,9 +86,9 @@ def prompt_glossary(text, topic_texts):
         f" 9. Check twice if the glossary is sorted alphabetically. \n"
         f"10. If there is no special term or phrase for a character, just ignore this. Don't express this state. \n"
         f"The desired target format is MARKDOWN and should mimic the following markdown format (also Helvetica font if appropriate for the format): \n"
-        f"`\n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n`\n\n"
-        f"Here is the {context}: \n" +
-        f"`\n{text}`"
+        f"```\n# Glossary\n\n## A\n- **A_Term1**: Explanation of Term1\n- **A_Term2**: Explanation of Term2\n\n## B\n- **B_Term1**: Explanation of B_Term1\n...\n```\n\n"
+        f"Here is the {context}: \n"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -104,9 +104,9 @@ def prompt_glossary_optimize(text):
         f" 7. All groups are sorted alphabetically. \n"
         f" 8. There are no keywords like 'html' or 'markdown' at the start of the content. \n"
         f" 9. There is no prefix for the terms or phrases like 'A_', 'B_'. \n"
-        f"Don't add any additional text, explanations or comments at the beginning or end to your answer like 'Here is the optimized (...)'. \n"
+        f"Don't add any additional text, explanations or comments at the beginning or end of your answer like 'Here is the optimized (...)'. \n"
         f"Here is the glossary: \n" +
-        f"'\n{text}'"
+        f"```\n{text}\n```"
     )
     return str_user
 
@@ -133,7 +133,7 @@ def prompt_argumentation(text, topic_texts):
         f" 9. Don't stop generating until all topics are really processed. \n"
         f"The desired target format is MARKDOWN (also Helvetica font if appropriate for the format). \n"
         f"Here is the {context}: \n" +
-        f"`\n{text}`"
+        f"```\n{text}```"
     )
     return str_user
 
@@ -146,7 +146,7 @@ def prompt_refine(text, topic_texts=""):
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Do not change the central topic which is the top most topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
-        prompt_postfix +
+        prompt_postfix + 
         f"```\n{text}```"
     )
     return str_user
@@ -169,8 +169,8 @@ def prompt_cluster(text, topic_texts=""):
     str_user = (
         prompt_prefix +
         f"Please rethink, redo, rebalance and recluster the whole map from scratch, "
-        f"reduce complexity, simplify topics where possible and meaningful without loosing important information, "
-        f"include missing most important topics or remove least import topics if there are any. "
+        f"reduce complexity, simplify topics where possible and meaningful without losing important information, "
+        f"include missing most important topics or remove least important topics if there are any. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
@@ -182,7 +182,7 @@ def prompt_prc_org(text, topic_texts=""):
         prompt_prefix +
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
         f"dividing organizational topics ('organization') vs. process oriented topics ('process'), "
-        f"include missing most important topics or remove least import topics if there are any, "
+        f"include missing most important topics or remove least important topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
@@ -195,7 +195,7 @@ def prompt_prj_prc_org(text, topic_texts=""):
         prompt_prefix +
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
         f"dividing organizational topics ('organization') vs. process oriented topics ('process') vs project management oriented topics ('project'), "
-        f"include missing most important topics or remove least import topics if there are any, "
+        f"include missing most important topics or remove least important topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
@@ -211,7 +211,7 @@ def prompt_exp_prj_prc_org(text, topic_texts=""):
         f"process oriented topics of this top level business case ('process') vs. "
         f"project management oriented topics of this top level business case ('project') vs. "
         f"center of excellence oriented topics of this top level business case ('expertise'), "
-        f"include missing most important topics or remove least import topics if there are any, "
+        f"include missing most important topics or remove least important topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
@@ -223,8 +223,8 @@ def prompt_exp(text, topic_texts=""):
     str_user = (
         prompt_prefix +
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum regarding "
-        f"expertiese and center of excellence oriented topics and from a strong top level business case centric perspective, "
-        f"include missing most important topics or remove least import topics if there are any, "
+        f"expertise and center of excellence oriented topics and from a strong top level business case centric perspective, "
+        f"include missing most important topics or remove least important topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
@@ -237,7 +237,7 @@ def prompt_capex_opex(text, topic_texts=""):
         prompt_prefix +
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
         f"dividing capex oriented topics ('capex') vs. opex oriented topics ('opex'), "
-        f"include missing most important topics or remove least import topics if there are any, "
+        f"include missing most important topics or remove least important topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
@@ -247,10 +247,10 @@ def prompt_capex_opex(text, topic_texts=""):
 
 def prompt_prj_org(text, topic_texts=""):
     str_user = (
-        prompt_prefix +
+        prompt_prefix + 
         f"Please recluster all topics of the whole map from scratch to 4 levels at maximum, "
-        f"dividing topics regarding the organizational structure (organization') vs. project management oriented topics ('project'), "
-        f"include missing most important topics or remove least import topics if there are any, "
+        f"dividing topics regarding the organizational structure ('organization') vs. project management oriented topics ('project'), "
+        f"include missing most important topics or remove least important topics if there are any, "
         f"avoid duplicate topics and generalize or abstract more where applicable. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
@@ -263,7 +263,7 @@ def prompt_examples(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please add for {topics} a new subtopic 'examples' if not existant yet, "
+        f"Please add for {topics} a new subtopic 'examples' if not existent yet, "
         f"and add a new level with up to {config.TOP_MOST_RESULTS} top most important examples or extend the existing ones, "
         f"with each example {config.MAX_RETURN_WORDS} words at maximum. "
         f"Do not change the central topic which is the top most topic. " +
@@ -277,7 +277,7 @@ def prompt_news_to_mindmap(text, topic_texts=""):
         prompt_prefix +
         f"What are the top 10 trending topics on Twitter and X about the given mindmap content? "
         f"Please create a mindmap 6 levels deep from the trending topics including headlines and company names and using an incisive title of the words as central topic. "
-        f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
+        f"For each topic generate a useful and sensible text without unnecessary abbreviations. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -288,7 +288,7 @@ def prompt_text_to_mindmap(text, topic_texts=""):
         prompt_prefix_text +
         f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
         f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
-        f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
+        f"For each topic generate a useful and sensible text without unnecessary abbreviations. " +
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -299,14 +299,14 @@ def prompt_pdfsimple_to_mindmap(text, topic_texts=""):
         prompt_prefix_text.replace("Given is the following text to be summarized as a mindmap with Mermaid syntax. ", "") +
         f"Extract the content from the file, thoroughly summarize it and create a mindmap from the summary using '{topic_texts}' as central topic, "
         f"with at least 5 first level topics and add at least 3 more levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
-        f"For each topic generate a usefull and sensible text without unnecessary abbreviations. " +
+        f"For each topic generate a useful and sensible text without unnecessary abbreviations. " +
         prompt_postfix.replace("Here is the data: \n", "")
     )
     return str_user
 
 def prompt_md_to_mindmap(text, topic_texts=""):
     str_user = (
-        f"Given is the folowing markdown code. Please convert it to a 1:1 Mermaid mindmap. "
+        f"Given is the following markdown code. Please convert it to a 1:1 Mermaid mindmap. "
         f"Don't cut off any topic or reduce the input in any way. "
         f"Use '{topic_texts}' as central topic, if there is no top most item. " +
         prompt_postfix +
@@ -316,7 +316,7 @@ def prompt_md_to_mindmap(text, topic_texts=""):
 
 def prompt_text_to_knowledgegraph(text, topic_texts=""):
     str_user = (
-        f"Please create a knowledge graph from the following text and return it in valid Mermaid syntax. Don't add any additional text or explainings. " + 
+        f"Please create a knowledge graph from the following text and return it in valid Mermaid syntax. Don't add any additional text or explanations. " + 
         prompt_postfix +
         f"```\n{text}```"
     )
@@ -324,7 +324,7 @@ def prompt_text_to_knowledgegraph(text, topic_texts=""):
 
 def prompt_knowledgegraph_to_mindmap(text, topic_texts=""):
     str_user = (
-        f"Please create a mindmap from the following mermaid graph data and return it in valid mermaid syntax. Don't add any additional text or explainings. " +
+        f"Please create a mindmap from the following mermaid graph data and return it in valid mermaid syntax. Don't add any additional text or explanations. " +
         prompt_postfix +
         f"```\n{text}```"
     )
