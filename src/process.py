@@ -99,6 +99,23 @@ def generate_glossary_html(content, guid):
         f.write(html)
     file_helper.open_file(file_path, platform)
 
+def generate_argumentation_html(content, guid):
+    file_path = file_helper.get_new_file_paths("docs", guid)
+
+    try:
+        import markdown
+        html_fragment = markdown.markdown(content)
+    except Exception as e:
+        with open(file_path + ".error", 'w') as f:
+            f.write(f'caught {str(e)}: e') 
+        raise
+
+    template = get_template_content("glossary.html")
+    html = template.replace("{{title}}", "Notes").replace("{{body}}", html_fragment.replace("</h2>", "</h2><hr/>"))
+    with open(file_path, 'w') as f:
+        f.write(html)
+    file_helper.open_file(file_path, platform)
+
 def generate_markmap_html(content, max_topic_level, guid):
     file_path = file_helper.get_new_file_paths("docs", guid)
     template = get_template_content("markmap.html")
@@ -253,6 +270,10 @@ def main(param, charttype):
                         markdown = ai_llm.call_llm(prompts.prompt_glossary_optimize(markdown))
                     generate_glossary_html(markdown, guid)
 
+                elif param == "argumentation":
+                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, ",".join(topic_texts))
+                    generate_argumentation_html(markdown, guid)
+
                 elif param == "export_markmap":
                     content, max_topic_level = mermaid_helper.export_to_markmap(mermaid_diagram)
                     generate_markmap_html(content, max_topic_level, guid)
@@ -292,6 +313,7 @@ if __name__ == "__main__":
     # pdfsimple_mindmap
     # import_md
     # news
+    # argumentation
     param = "refine" 
 
     # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)

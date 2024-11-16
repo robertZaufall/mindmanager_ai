@@ -110,6 +110,33 @@ def prompt_glossary_optimize(text):
     )
     return str_user
 
+def prompt_argumentation(text, topic_texts):
+    message = "Please create a structured argumentation following exactly the given hierarchy "
+    if topic_texts != "":
+        main_message = message + f"only included in this string: \"{topic_texts}\". Use the attached mindmap in Mermaid syntax just as context. "
+        context = "context"
+    else:
+        main_message = message + "included in the whole attached mindmap in Mermaid syntax. "
+        context = "data"
+
+    str_user = (
+        main_message +
+        f"Ensure the following: \n"
+        f" 1. Eliminate duplicate topics. \n"
+        f" 2. Use the predominat language of the whole map for the argumentation text generation. \n"
+        f" 3. Provide a short argumentation including point, evidence, explanation using at least two sentences for each and every topic. \n"
+        f" 4. If topics have subtopics output a short summarization of the immidiate subtopics and go on with argumenting for the subtopics. \n"
+        f" 5. Don't explicitely output 'point', 'evidence', 'explanation' or their corresponding language equivaltents. \n"
+        f" 6. Don't output the keywords 'html' or 'markdown' at the start of your text. \n"
+        f" 7. Seperate each hierarchy level and seperate each topic (new line, number formatting) by its corresponding markdown formatting. \n"
+        f" 8. Don't forget the summarizations for topics with subtopics. \n"
+        f" 9. Don't stop generating until all topics are really processed. \n"
+        f"The desired target format is MARKDOWN (also Helvetica font if appropriate for the format). \n"
+        f"Here is the {context}: \n" +
+        f"`\n{text}`"
+    )
+    return str_user
+
 def prompt_refine(text, topic_texts=""):
     topics = f"only the topic(s) \"{topic_texts}\" each" if topic_texts else "each subtopic"
 
@@ -323,6 +350,7 @@ def prompt(param, text, topic_texts=""):
     elif param == "prj_org":                return prompt_prj_org(text_input, topic_texts=topic_texts)
     elif param == "capex_opex":             return prompt_capex_opex(text_input, topic_texts=topic_texts)
     elif param == "glossary":               return prompt_glossary(text_input, topic_texts=topic_texts)
+    elif param == "argumentation":          return prompt_argumentation(text_input, topic_texts=topic_texts)
     elif param == "text2mindmap":           return prompt_text_to_mindmap (text_input, topic_texts=topic_texts)
     elif param == "pdfsimple2mindmap":      return prompt_pdfsimple_to_mindmap (text_input, topic_texts=topic_texts)
     elif param == "md2mindmap":             return prompt_md_to_mindmap (text_input, topic_texts=topic_texts)

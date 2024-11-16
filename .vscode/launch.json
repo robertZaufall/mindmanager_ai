@@ -81,6 +81,15 @@
       "justMyCode": true
     },
     {
+      "name": "Python: process.py -> Argumentation",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["argumentation"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
       "name": "Python: process.py -> Export Markmap",
       "type": "python",
       "request": "launch",
