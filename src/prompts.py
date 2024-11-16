@@ -105,7 +105,7 @@ def prompt_glossary_optimize(text):
         f" 8. There are no keywords like 'html' or 'markdown' at the start of the content. \n"
         f" 9. There is no prefix for the terms or phrases like 'A_', 'B_'. \n"
         f"Don't add any additional text, explanations or comments at the beginning or end of your answer like 'Here is the optimized (...)'. \n"
-        f"Here is the glossary: \n" +
+        f"Here is the glossary: \n"
         f"```\n{text}\n```"
     )
     return str_user
@@ -132,7 +132,7 @@ def prompt_argumentation(text, topic_texts):
         f" 8. Don't forget the summarizations for topics with subtopics. \n"
         f" 9. Don't stop generating until all topics are really processed. \n"
         f"The desired target format is MARKDOWN (also Helvetica font if appropriate for the format). \n"
-        f"Here is the {context}: \n" +
+        f"Here is the {context}: \n"
         f"```\n{text}```"
     )
     return str_user

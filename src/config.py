@@ -9,7 +9,7 @@ WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindj
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
@@ -77,7 +77,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                         # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                    # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                       # best
+CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                       # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'               # best
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)
@@ -364,7 +364,7 @@ CLOUD_TYPE_IMAGE = ''
 
 # MLX
 # CLOUD_TYPE_IMAGE = 'MLX+flux1'                     # best, local generation, MacOS w/ Apple Silicon only
-CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                # best, local generation, MacOS w/ Apple Silicon only
+# CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                # best, local generation, MacOS w/ Apple Silicon only
 # CLOUD_TYPE_IMAGE = 'MLX+sd3'                       # ok, local generation, MacOS w/ Apple Silicon only
 
 # IdeogramAI
@@ -378,6 +378,10 @@ CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                # best, local generation, Mac
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'              # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                  # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                  # best
+
+# Recraft.AI
+CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'           #
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'          #
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
@@ -560,6 +564,47 @@ elif "BFL+" in CLOUD_TYPE_IMAGE:
     IMAGE_KEY_HEADER_TEXT = "x-key"
     IMAGE_KEY_HEADER_VALUE = os.getenv('BFL_API_KEY')
     IMAGE_API_URL = f"https://api.bfl.ml/v1/"
+
+elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
+    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+
+    IMAGE_API_URL = "https://external.api.recraft.ai/v1/images/generation"
+    IMAGE_KEY_HEADER_TEXT = "Authorization"
+    IMAGE_KEY_HEADER_VALUE = "Bearer " + os.getenv('RECRAFT_API_TOKEN')
+
+    IMAGE_SIZE = "1024x1024" # 1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024"
+
+    IMAGE_STYLE = "digital_illustration" # realistic_image, digital_illustration, vector_illustration, icon, any
+    IMAGE_SUBSTYLE = ""
+
+    if IMAGE_MODEL_ID == "recraftv3":
+        
+        # digital_illustration
+        IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
+        
+        # realistic_image
+        # IMAGE_SUBSTYLE = "b_and_w" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
+        
+        # vector_illustration
+        # IMAGE_SUBSTYLE = "engraving" # engraving, line_art, line_circuit, linocut
+
+    elif IMAGE_MODEL_ID == "recraft20b":
+        
+        # digital_illustration
+        IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
+        
+        # realistic_image
+        # IMAGE_SUBSTYLE = "b_and_w" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
+        
+        # vector_illustration
+        # IMAGE_SUBSTYLE = "70s" # 70s, cartoon, doodle_line_art, engraving, flat_2, halloween_stickers, kawaii, line_art, line_circuit, linocut, seamless
+        
+        # icon
+        # IMAGE_SUBSTYLE = "broken_line" # broken_line, colored_outline, colored_shapes, colored_shapes_gradient, doodle_fill, doodle_offset_fill, offset_fill, outline, outline_gradient, uneven_fill
+
+    else:
+        raise Exception("Error: Unknown Recraft image model")
+
 
 
 # only used for action = DEEPL (translation)
