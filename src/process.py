@@ -84,7 +84,6 @@ def get_topic_texts(mindm):
 
 def generate_glossary_html(content, guid):
     file_path = file_helper.get_new_file_paths("docs", guid)
-
     try:
         import markdown
         html_fragment = markdown.markdown(content)
@@ -92,7 +91,6 @@ def generate_glossary_html(content, guid):
         with open(file_path + ".error", 'w') as f:
             f.write(f'caught {str(e)}: e') 
         raise
-
     template = get_template_content("glossary.html")
     html = template.replace("{{title}}", "Glossary").replace("{{body}}", html_fragment.replace("</h2>", "</h2><hr/>"))
     with open(file_path, 'w') as f:
@@ -101,7 +99,6 @@ def generate_glossary_html(content, guid):
 
 def generate_argumentation_html(content, guid):
     file_path = file_helper.get_new_file_paths("docs", guid)
-
     try:
         import markdown
         html_fragment = markdown.markdown(content)
@@ -109,8 +106,7 @@ def generate_argumentation_html(content, guid):
         with open(file_path + ".error", 'w') as f:
             f.write(f'caught {str(e)}: e') 
         raise
-
-    template = get_template_content("glossary.html")
+    template = get_template_content("argumentation.html")
     html = template.replace("{{title}}", "Notes").replace("{{body}}", html_fragment.replace("</h2>", "</h2><hr/>"))
     with open(file_path, 'w') as f:
         f.write(html)
@@ -118,16 +114,18 @@ def generate_argumentation_html(content, guid):
 
 def generate_markmap_html(content, max_topic_level, guid):
     file_path = file_helper.get_new_file_paths("docs", guid)
+    this_content = config.MARKMAP_TEMPLATE.replace("{{colorFreezeLevel}}", str(max_topic_level)).replace("{{markmap}}", content)
     template = get_template_content("markmap.html")
-    html = template.replace("{{colorFreezeLevel}}", str(max_topic_level)).replace("{{title}}", "Markmap").replace("{{markmap}}", content)
+    html = template.replace("{{body}}", this_content).replace("{{title}}", "Markmap")
     with open(file_path, 'w') as f:
         f.write(html)
     file_helper.open_file(file_path, platform)
 
 def generate_mermaid_html(content, max_topic_level, guid, open_file = True):
     file_path = file_helper.get_new_file_paths("docs", guid)
+    this_content = config.MERMAID_TEMPLATE.replace("{{mermaid}}", content)
     template = get_template_content("mermaid.html")
-    html = template.replace("{{title}}", "Mermaid").replace("{{mermaid}}", content) 
+    html = template.replace("{{body}}", this_content).replace("{{title}}", "Mermaid")
     with open(file_path, 'w') as f:
         f.write(html)
     if open_file:

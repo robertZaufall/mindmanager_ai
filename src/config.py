@@ -6,22 +6,42 @@ LOG = True # write source mindmaps, destination mindmaps and prompts to file
 MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "23", "English", "Library")
 WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindjet", "MindManager", "23", "Library", "ENU")
 
+MARKMAP_TEMPLATE = """
+<div class="markmap">
+<script type="text/template">
+---
+markmap:
+  colorFreezeLevel: {{colorFreezeLevel}}
+  initialExpandLevel: -1
+---
+{{markmap}}
+</script>
+</div>
+"""
+
+MERMAID_TEMPLATE= """
+<div class="mermaid">
+%%{init: {"theme": "dark"}}%% 
+{{mermaid}}
+</div>
+"""
+
 SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                      # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                 # ok
-# CLOUD_TYPE = 'AZURE+gpt-4'                                       # best
-# CLOUD_TYPE = 'AZURE+gpt-4-32k'                                   # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+# CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
+# CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
-# Azure serverless
-# CLOUD_TYPE = 'AZURE_META+LLAMA3170B'                             # best, slow
-# CLOUD_TYPE = 'AZURE_Microsoft+PHI35MINIINSTRUCT'                 # good
+# Azure serverless     
+# CLOUD_TYPE = 'AZURE_META+LLAMA3170B'                                  # best, slow
+# CLOUD_TYPE = 'AZURE_Microsoft+PHI35MINIINSTRUCT'                      # good
 
-# OpenAI
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                          # best
-# CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                # ok
-# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                # best
+# OpenAI     
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
+# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
 
 # Openrouter.ai
 # CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best in class, expensive
@@ -30,39 +50,39 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good, slow
 
 # Github Models
-# CLOUD_TYPE = 'GITHUB+gpt-4o'                                     # best
-# CLOUD_TYPE = 'GITHUB+gpt-4o-mini'                                # ok
-# CLOUD_TYPE = "GITHUB+Phi-3-medium-128k-instruct"                 # not so good
-# CLOUD_TYPE = "GITHUB+Phi-3.5-mini-instruct"                      # ok
-# CLOUD_TYPE = "GITHUB+meta-llama-3.1-70b-instruct"                # best
-# CLOUD_TYPE = "GITHUB+Mistral-large-2407"                         # good
-# CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                        # best
+# CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
+# CLOUD_TYPE = 'GITHUB+gpt-4o-mini'                                     # ok
+# CLOUD_TYPE = "GITHUB+Phi-3-medium-128k-instruct"                      # not so good
+# CLOUD_TYPE = "GITHUB+Phi-3.5-mini-instruct"                           # ok
+# CLOUD_TYPE = "GITHUB+meta-llama-3.1-70b-instruct"                     # best
+# CLOUD_TYPE = "GITHUB+Mistral-large-2407"                              # good
+# CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                             # best
 
-# Claude3
-# CLOUD_TYPE = 'CLAUDE3+OPUS'                                      # good
-# CLOUD_TYPE = 'CLAUDE3+HAIKU'                                     # ok
-# CLOUD_TYPE = 'CLAUDE35+SONNET'                                   # best
-# CLOUD_TYPE = 'CLAUDE35+HAIKU'                                    # best
+# Claude3     
+# CLOUD_TYPE = 'CLAUDE3+OPUS'                                           # good
+# CLOUD_TYPE = 'CLAUDE3+HAIKU'                                          # ok
+# CLOUD_TYPE = 'CLAUDE35+SONNET'                                        # best
+# CLOUD_TYPE = 'CLAUDE35+HAIKU'                                         # best
 
-# Ollama (local models), best results
-# CLOUD_TYPE = 'OLLAMA+wizardlm2'                                  # best
-# CLOUD_TYPE = 'OLLAMA+llama3.1'                                   # ok
-# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                               # ok, slow
-# CLOUD_TYPE = 'OLLAMA+llama3.2:1b'                                # does not work
-# CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                # ok
-# CLOUD_TYPE = 'OLLAMA+phi3.5'                                     # does not work
-# CLOUD_TYPE = 'OLLAMA+gemma2'                                     # ok
-# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                                 # does not work
-# CLOUD_TYPE = 'OLLAMA+mixtral'                                    # ok
-# CLOUD_TYPE = 'OLLAMA+solar'                                      # ok
-# CLOUD_TYPE = 'OLLAMA+mistral'                                    # does not work
-# CLOUD_TYPE = 'OLLAMA+openchat'                                   # does not work most of the time
-# CLOUD_TYPE = 'OLLAMA+zephyr'                                     # does not work
-# CLOUD_TYPE = 'OLLAMA+neural-chat'                                # does not work
-# CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                             # not good
-# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                    # good
-# CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                # good
-# CLOUD_TYPE = 'OLLAMA+nemotron'                                   # best, slow
+# Ollama (local models), best results     
+# CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
+# CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
+# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                                    # ok, slow
+# CLOUD_TYPE = 'OLLAMA+llama3.2:1b'                                     # does not work
+# CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
+# CLOUD_TYPE = 'OLLAMA+phi3.5'                                          # does not work
+# CLOUD_TYPE = 'OLLAMA+gemma2'                                          # ok
+# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                                      # does not work
+# CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
+# CLOUD_TYPE = 'OLLAMA+solar'                                           # ok
+# CLOUD_TYPE = 'OLLAMA+mistral'                                         # does not work
+# CLOUD_TYPE = 'OLLAMA+openchat'                                        # does not work most of the time
+# CLOUD_TYPE = 'OLLAMA+zephyr'                                          # does not work
+# CLOUD_TYPE = 'OLLAMA+neural-chat'                                     # does not work
+# CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                                  # not good
+# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
+# CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                     # good
+# CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
 
 # LMStudio
 # CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, sloooow
@@ -75,37 +95,37 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'LMSTUDIO+nemotron-mini-4b-instruct'                     # does not work
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                         # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                    # best
-CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                       # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'               # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                              # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                         # best
+CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'                    # best
 
-# Google Gemini Vertex AI (needs pre-authentication ie. token)
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                       # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                  # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                     # best
+# Google Gemini Vertex AI (needs pre-authentication ie. token)     
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                       # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
 
-# xAI
-# CLOUD_TYPE = 'XAI+grok-beta'                                     # good
+# xAI     
+# CLOUD_TYPE = 'XAI+grok-beta'                                          # good
 
-# groq
-# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                      # best (error kg -> mm)
-# CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                         # good
-# CLOUD_TYPE = 'GROQ+gemma-7b-it'                                  # good
-# CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                 # ok, generates maps only 3 levels deep
-# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                           # good (token limit 5000 per minute)
+# groq     
+# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                           # best (error kg -> mm)
+# CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                              # good
+# CLOUD_TYPE = 'GROQ+gemma-7b-it'                                       # good
+# CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                      # ok, generates maps only 3 levels deep
+# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                                # good (token limit 5000 per minute)
 
-# Perplexity
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-70b-instruct'                 # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-8b-instruct'                  # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-chat'        # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-chat'        # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'      # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'      # ok, up to good
+# Perplexity     
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-70b-instruct'                      # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-8b-instruct'                       # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-chat'             # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-chat'             # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'           # ok
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'           # ok, up to good
 
 # MLX server, macOS only (pip install -r requirements_mlx.txt --upgrade)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
-# CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit' # good
+# CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit'      # good
 
 USE_AZURE_ENTRA = False
 
@@ -618,3 +638,4 @@ if "DEEPL" in CLOUD_TYPE_TRANSLATION:
     DEEPL_BASE_URL = "https://api-free.deepl.com/v2/translate"
     KEY_HEADER_TEXT_TRANSLATION = "Authorization"
     KEY_HEADER_VALUE_TRANSLATION = "DeepL-Auth-Key " + DEEPL_API_KEY
+
