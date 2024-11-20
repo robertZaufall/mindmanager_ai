@@ -15,17 +15,17 @@ More animated examples are in the `doc` folder.
 ### Supported LLMs
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
-  - **GitHub Models** w/ `GPT-4o`, `LlaMA` (use your key)  
+  - **GitHub Models** w/ `GPT-4o`, `LLaMA` (use your key)  
   - **Anthropic** w/ `Claude 3/3.5` (use your key)  
   - **xAI** w/ `grok-beta` (use your key)  
-  - **Groq** (platform) w/ `LlaMA`, `Mixtral`, `Gemma2` (use your key)  
-  - **Perplexity** (platform) w/ `LlaMA`, `Mixtral` (use your key)  
+  - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
+  - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
   - **Open Router** w/ `o1-preview`, `o1-mini` and many more models (use your key)
   - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
   - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
-  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LlaMA`, `Qwen2.5` model for best results)
+  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LLaMA`, `Qwen2.5` model for best results)
 
 ### Supported Image Generation Systems
   - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
@@ -62,7 +62,7 @@ More animated examples are in the `doc` folder.
 9. Export `Mermaid` mindmap HTML document
 10. Export `Markmap` mindmap HTML document
 11. PDF to mindmap, batch (w/ `o1-preview`, `GPT-4o`, `Gemini 1.5 Flash`, `Claude 3.5 Sonnet`)
-12. Generate a argumentation article HTML document for a detailed mindmap
+12. Generate an argumentation article HTML document for a detailed mindmap
 13. Generate a glossary HTML document of all terms
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
@@ -201,12 +201,12 @@ Generation of larger text outputs needs a model with an higher max-token value l
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
-The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `GPT-4o` model. Azure EntraID authentication can be used in enterprise scenarios.  
+The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `o1`, `GPT-4o` models. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
 ### Anthropic Claude 3 / 3.5
-The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3 Haiku` is very cheap and betteer than `GPT-3.5`.
+The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3.5 Haiku` is good and cheap.
 ### xAI grok
 Grok is very good and is able to refine mindmaps for several levels. By today (2024-10-21) only the `grok-beta` model is available in public preview.  
 ### Groq (platform)
@@ -227,10 +227,13 @@ The solution is best tested with `Azure OpenAI`. Results are very good. There is
 Image generation with `SD3.5` and `SD3` is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen3  
 Image generation results are too simple by now as prompt engineering is also most important here. `Imagen3` has the highest image resolution (1:1 with 1536x1536). `Imagen3` is GA (globally available) but there is an approval process to get access to the API.  
-### Ideogram.AI  
+### Ideogram AI  
 Image generation is quite good using the `V_2` model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
 ### Black Forrest Labs  
-Image generation is extraordinary. Flagship model is `Flux Pro 1.1`. As usual token have to be prepaid and you need accepted for accessing the platform.  
+Image generation is extraordinary. Flagship model is `Flux Pro 1.1 / Ultra`. As usual token have to be prepaid and you need accepted for accessing the platform.  
+### Recraft.AI
+Image genration is very good. There are many pre-defined styles which can be activated as needed. Available Models are `RecraftV3` and `Recraft20B`.  
+
 ### MLX w/ Flux.1, SD3
 This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using `Flux.1` model and under average using `SD3` mostly because the prompt is optimized for `Flux.1`.  
 There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call. If there is only one topic selected there is a different prompt used as when more topics are selected. Only the first level of topics together with the central topic should be selected for better results.  
