@@ -14,18 +14,18 @@ More animated examples are in the `doc` folder.
 
 ### Supported LLMs
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
-  - **OpenAI** w/ `GPT-4o` (use your key) -> **best results**  
-  - **GitHub Models** w/ `GPT-4o`, `Llama` (use your key)  
-  - **Anthropic** w/ `Claude 3 / 3.5` (use your key)  
+  - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
+  - **GitHub Models** w/ `GPT-4o`, `LlaMA` (use your key)  
+  - **Anthropic** w/ `Claude 3/3.5` (use your key)  
   - **xAI** w/ `grok-beta` (use your key)  
-  - **Groq** (platform) w/ `LLaMA3.1`, `Mixtral`, `Gemma2` (use your key)  
-  - **Perplexity** (platform) w/ `LLaMA3.1`, `Mixtral` (use your key)  
+  - **Groq** (platform) w/ `LlaMA`, `Mixtral`, `Gemma2` (use your key)  
+  - **Perplexity** (platform) w/ `LlaMA`, `Mixtral` (use your key)  
   - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
-  - **Open Router** w/ `o1-preview` and many more models (use your key)
-  - **Ollama** (local) w/ any LLM (use `LLaMA3.1`, `Zephyr` or `Mixtral` model for best results)
-  - **LMStudio** (local) w/ any llama.cpp or MLX model
-  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LLaMA3.1` model for best results)
+  - **Open Router** w/ `o1-preview`, `o1-mini` and many more models (use your key)
+  - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
+  - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
+  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LlaMA`, `Qwen2.5` model for best results)
 
 ### Supported Image Generation Systems
   - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
@@ -33,7 +33,8 @@ More animated examples are in the `doc` folder.
   - **Stability AI** w/ `Stable Diffusion 3` `SD3.5` / `SD3` / `Ultra` / `Core` (use your key)  
   - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
-  - **Black Forrest Labs** w/ `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`  (use your key)  
+  - **Black Forrest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`  (use your key)  
+  - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
   - **MLX** (local w/ Apple Silicon) w/ `Flux.1`, `SD3`
 
 ### Supported Professional Translation Services
@@ -61,7 +62,8 @@ More animated examples are in the `doc` folder.
 9. Export `Mermaid` mindmap HTML document
 10. Export `Markmap` mindmap HTML document
 11. PDF to mindmap, batch (w/ `o1-preview`, `GPT-4o`, `Gemini 1.5 Flash`, `Claude 3.5 Sonnet`)
-12. Generate a glossary HTML document of all terms
+12. Generate a argumentation article HTML document for a detailed mindmap
+13. Generate a glossary HTML document of all terms
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
 
@@ -179,15 +181,23 @@ Just select the topics for which you want to generate an image and choose the ac
 After a while, the image will be opened and also stored in the MindManager-Library `Images`-folder.  
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
 On Windows the image can be automatically set as the background image of the map.  
+
 The results from the generation process are best with `FLUX.1`, good with `DALL-E 3` and `SD3.5`. Prompt crafting/engineering is still in progress.  
 The filename is enriched with the generation **seed** where this feature is supoported. This seed is useful if you want to generate similar images (e.g. with different prompt). `DALL-E 3` does not support a seed value anymore (by the time of writing).  
 The prompt for image generation can optionally be optimized using a LLM call.
 Images can also be generated locally on macOS with Apple Silicon using the native `Apple MLX` framework.  
 
+Recently there are more image generation plattforms trending. `Black Forrest Labs`, `Ideogram AI` and `Recraft AI` image generation from mindmaps is already implemented and the results are amazing.  
+
 ### Generation using text summarization (eg. PDF to mindmap)
 Put the files into the `input`-folder and use the action `pdf_mindmap`. The PDF files are first converted to markdown (MD) format. 'Reference' sections are removed as these contain no information but take a lot of tokens (e.g. arXiv papers). No OCR takes place by now. Tables are removed and the content will be highly sanitized by removing irrelevant characters, code blocks, href-links, whitespace etc.  
 Still lots of input-tokens are needed in order to summarize the text by the LLM. These models have been tested and are working by now: `GPT-4o`, `o1-preview`, `o1-mini`, `Gemini 1.5`, `Claude 3.5 Haiku` and `Claude 3.5 Sonnet`.  
 There is no local LLM model using Ollama working for me by now.  
+
+`Sonnet 3.5` lately supports native `PDF` processing, which is also implemented (action `pdfsimple_mindmap`).  
+
+### Text generation from mindmaps (argumentation article, glossary)
+Generation of larger text outputs needs a model with an higher max-token value like `GPT-4o`, `Gemini Flash`, `Sonnet 3.5`. Results are very good, most of the time. 
 
 ## LLM systems
 ### Azure OpenAI / OpenAI

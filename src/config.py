@@ -46,10 +46,10 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 
 # Openrouter.ai
-# CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best in class, expensive
-# CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best, expensive
-# CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best, cheap
-# CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good, slow
+# CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best
+# CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best
+# CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best
+# CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good
 
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
@@ -352,45 +352,45 @@ else:
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                # best
-
-# OpenAI
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'               # best
-
-# StabilityAI
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'       # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo' # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-medium'      # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'         # good
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'   # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'        # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'              # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'             # good
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                        # best
+        
+# OpenAI        
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                       # best
+        
+# StabilityAI        
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'               # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo'         # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-medium'              # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'                 # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'           # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'                # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                      # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                     # good
 
 # VertexAI
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-001'      # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # better
 
-# MLX
-# CLOUD_TYPE_IMAGE = 'MLX+flux1'                     # best, local generation, MacOS w/ Apple Silicon only
-# CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                # best, local generation, MacOS w/ Apple Silicon only
-# CLOUD_TYPE_IMAGE = 'MLX+sd3'                       # ok, local generation, MacOS w/ Apple Silicon only
+# MLX (local generation, MacOS w/ Apple Silicon only)
+# CLOUD_TYPE_IMAGE = 'MLX+flux1'                             # best 
+CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                        # best 
+# CLOUD_TYPE_IMAGE = 'MLX+sd3'                               # ok
+        
+# IdeogramAI        
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                        # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                  # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                        # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                  # best
+        
+# Black Forrest Labs        
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                      # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                          # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                          # best
 
-# IdeogramAI
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'          # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'          # best
-
-# Black Forrest Labs
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'        # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'              # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                  # best
-CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                  # best
-
-# Recraft.AI
-# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'           #
-# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'          #
+# RecraftAI
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                   # best
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'                  # best
 
 RESIZE_IMAGE = False
 RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
@@ -577,19 +577,21 @@ elif "BFL+" in CLOUD_TYPE_IMAGE:
 elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
     IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
 
-    IMAGE_API_URL = "https://external.api.recraft.ai/v1/images/generation"
+    IMAGE_API_URL = "https://external.api.recraft.ai/v1/images/generations"
     IMAGE_KEY_HEADER_TEXT = "Authorization"
     IMAGE_KEY_HEADER_VALUE = "Bearer " + os.getenv('RECRAFT_API_TOKEN')
 
     IMAGE_SIZE = "1024x1024" # 1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024"
+    IMAGE_RESPONSE_FORMAT = "url" # url, b64_json
 
-    IMAGE_STYLE = "digital_illustration" # realistic_image, digital_illustration, vector_illustration, icon, any
+    IMAGE_EXPLICIT_STYLE = ""
+    IMAGE_STYLE = "realistic_image" # realistic_image, digital_illustration, vector_illustration, icon, any
     IMAGE_SUBSTYLE = ""
 
     if IMAGE_MODEL_ID == "recraftv3":
         
         # digital_illustration
-        IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
+        IMAGE_SUBSTYLE = "enterprise" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
         
         # realistic_image
         # IMAGE_SUBSTYLE = "b_and_w" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
@@ -600,7 +602,7 @@ elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
     elif IMAGE_MODEL_ID == "recraft20b":
         
         # digital_illustration
-        IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
+        IMAGE_SUBSTYLE = "enterprise" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
         
         # realistic_image
         # IMAGE_SUBSTYLE = "b_and_w" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait

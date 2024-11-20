@@ -233,6 +233,53 @@ def call_image_ai(image_path, str_user, n_count = 1):
                     file.write(generated_image)
             else:
                 raise Exception(f"Error generating image.")
+            
+        # RecraftAI
+        elif "RECRAFTAI" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
+            format = config.IMAGE_RESPONSE_FORMAT
+
+            payload = {
+                "prompt": str_user,
+                "n": n_count,
+                #"style_id": config.IMAGE_STYLE_ID,
+                "style": config.IMAGE_STYLE,
+                "substyle": config.IMAGE_SUBSTYLE, 
+                "model": config.IMAGE_MODEL_ID,
+                "response_format": format,
+                "size": config.IMAGE_SIZE,
+                #"controls": {
+                #    "image_type": "realistic_image",
+                #    "colors": [ { "rgb": [0,255,0] } ]
+                #}
+            }
+
+            response = requests.post(
+                config.IMAGE_API_URL,
+                headers={
+                    "Content-Type": "application/json",
+                    config.IMAGE_KEY_HEADER_TEXT: config.IMAGE_KEY_HEADER_VALUE
+                },
+                data=json.dumps(payload)
+            )
+            response_text = response.text
+            response_status = response.status_code
+
+            if response_status != 200:
+                raise Exception(f"Error: {response_status} - {response_text}")
+
+            parsed_json = json.loads(response_text)
+
+            if format == "url":
+                url = parsed_json['data'][0]['url']
+                generated_image = httpx.get(url).content
+                with open(image_path, "wb") as file:
+                    file.write(generated_image)
+            else:
+                b64_image = parsed_json['data'][0]['b64_json']
+                image_data = base64.b64decode(b64_image)
+                image = Image.open(BytesIO(image_data))
+                image.save(image_path)
 
         # Google VertexAI            
         elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
