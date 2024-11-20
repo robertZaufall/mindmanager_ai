@@ -206,14 +206,14 @@ def main(param, charttype):
         docs = input_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
         for key, value in docs.items():
             if "mindmap" in actions:
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
             if "knowledgegraph" in actions:
                 guid = uuid.uuid4()
-                mermaid_diagram = ai_llm.call_llm_sequence(["text2knowledgegraph"], value, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                mermaid_diagram = ai_llm.call_llm_sequence(["text2knowledgegraph"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram, False)
                 generate_mermaid_html(content, max_topic_level, guid, False)
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
     
     elif param.startswith("pdfsimple"):
@@ -221,7 +221,7 @@ def main(param, charttype):
         docs = input_helper.load_pdfsimple_files()
         for key, value in docs.items():
             if "mindmap" in actions:
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf")
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf")
                 create_map_and_finalize(mindm, new_mermaid_diagram)
 
     elif param.startswith("import_"):
@@ -229,7 +229,7 @@ def main(param, charttype):
         if actions == "md":
             docs = input_helper.load_text_files("md")
             for key, value in docs.items():
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["md2mindmap"], value, key.replace(".md", "").replace("_", " ").replace("-", " "))
+                new_mermaid_diagram = ai_llm.call_llm_sequence(["md2mindmap"], value, topic_texts=key.replace(".md", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(mindm, new_mermaid_diagram)
     else:
         if not mindm.document_exists():
@@ -260,7 +260,7 @@ def main(param, charttype):
                     generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels)
 
                 elif param == "glossary":
-                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, ",".join(topic_texts))
+                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
                     if "-mini" in config.CLOUD_TYPE or \
                         "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
                         ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
@@ -269,7 +269,7 @@ def main(param, charttype):
                     generate_glossary_html(markdown, guid)
 
                 elif param == "argumentation":
-                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, ",".join(topic_texts))
+                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
                     generate_argumentation_html(markdown, guid)
 
                 elif param == "export_markmap":
@@ -286,7 +286,7 @@ def main(param, charttype):
                     create_map_and_finalize(mindm, new_mermaid_diagram)
 
                 else:
-                    new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, ",".join(topic_texts))
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts))
                     create_map_and_finalize(mindm, new_mermaid_diagram)
 
     print("Done.")

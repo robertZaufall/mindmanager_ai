@@ -42,6 +42,8 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
+# CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
+# CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 
 # Openrouter.ai
 # CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best in class, expensive
@@ -58,46 +60,16 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = "GITHUB+Mistral-large-2407"                              # good
 # CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                             # best
 
-# Claude3     
-# CLOUD_TYPE = 'CLAUDE3+OPUS'                                           # good
-# CLOUD_TYPE = 'CLAUDE3+HAIKU'                                          # ok
-# CLOUD_TYPE = 'CLAUDE35+SONNET'                                        # best
-# CLOUD_TYPE = 'CLAUDE35+HAIKU'                                         # best
-
-# Ollama (local models), best results     
-# CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
-# CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
-# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                                    # ok, slow
-# CLOUD_TYPE = 'OLLAMA+llama3.2:1b'                                     # does not work
-# CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
-# CLOUD_TYPE = 'OLLAMA+phi3.5'                                          # does not work
-# CLOUD_TYPE = 'OLLAMA+gemma2'                                          # ok
-# CLOUD_TYPE = 'OLLAMA+gemma2:27b'                                      # does not work
-# CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
-# CLOUD_TYPE = 'OLLAMA+solar'                                           # ok
-# CLOUD_TYPE = 'OLLAMA+mistral'                                         # does not work
-# CLOUD_TYPE = 'OLLAMA+openchat'                                        # does not work most of the time
-# CLOUD_TYPE = 'OLLAMA+zephyr'                                          # does not work
-# CLOUD_TYPE = 'OLLAMA+neural-chat'                                     # does not work
-# CLOUD_TYPE = 'OLLAMA+vicuna:13b-16k'                                  # not good
-# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
-# CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                     # good
-# CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
-
-# LMStudio
-# CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, sloooow
-# CLOUD_TYPE = 'LMSTUDIO+lmstudio-community/meta-llama-3.1-8b-instruct' # ok
-# CLOUD_TYPE = 'LMSTUDIO+mlx-community/meta-llama-3.1-8b-instruct'      # ok
-# CLOUD_TYPE = 'LMSTUDIO+bartowski/llama-3.2-3b-instruct'               # ok
-# CLOUD_TYPE = 'LMSTUDIO+llama-3-8b-lexi-uncensored'                    # does not work
-# CLOUD_TYPE = 'LMSTUDIO+phi-3.1-mini-4k-instruct'                      # does not work
-# CLOUD_TYPE = 'LMSTUDIO+mlx-community/llama-3.2-3b-instruct'           # does not work
-# CLOUD_TYPE = 'LMSTUDIO+nemotron-mini-4b-instruct'                     # does not work
+# Anthropic     
+# CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
+# CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best
+# CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
+# CLOUD_TYPE = 'ANTHROPIC+claude-3-haiku-20240307'                      # ok
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                              # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                         # best
-CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'                    # best
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)     
@@ -107,6 +79,7 @@ CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # best
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
+# CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # tbd
 
 # groq     
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                           # best (error kg -> mm)
@@ -122,6 +95,35 @@ CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # best
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-chat'             # good
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'           # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'           # ok, up to good
+
+# Ollama (local models), best results     
+# CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
+# CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
+# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                                    # ok, slow
+# CLOUD_TYPE = 'OLLAMA+llama3.2:1b'                                     # does not work
+# CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
+# CLOUD_TYPE = 'OLLAMA+phi3.5'                                          # does not work
+# CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
+# CLOUD_TYPE = 'OLLAMA+solar'                                           # ok
+# CLOUD_TYPE = 'OLLAMA+mistral'                                         # does not work
+# CLOUD_TYPE = 'OLLAMA+openchat'                                        # does not work most of the time
+# CLOUD_TYPE = 'OLLAMA+zephyr'                                          # does not work
+# CLOUD_TYPE = 'OLLAMA+neural-chat'                                     # does not work
+# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
+# CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                     # good
+# CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
+
+# LMStudio
+# CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, sloooow
+# CLOUD_TYPE = 'LMSTUDIO+lmstudio-community/meta-llama-3.1-8b-instruct' # ok
+# CLOUD_TYPE = 'LMSTUDIO+mlx-community/meta-llama-3.1-8b-instruct'      # ok
+# CLOUD_TYPE = 'LMSTUDIO+bartowski/llama-3.2-3b-instruct'               # ok
+# CLOUD_TYPE = 'LMSTUDIO+llama-3-8b-lexi-uncensored'                    # does not work
+# CLOUD_TYPE = 'LMSTUDIO+phi-3.1-mini-4k-instruct'                      # does not work
+# CLOUD_TYPE = 'LMSTUDIO+mlx-community/llama-3.2-3b-instruct'           # does not work
+# CLOUD_TYPE = 'LMSTUDIO+nemotron-mini-4b-instruct'                     # does not work
+# CLOUD_TYPE = 'LMSTUDIO+qwen2.5-14b-instruct'                          # best
+# CLOUD_TYPE = 'LMSTUDIO+qwen2.5-32b-instruct'                          # ok
 
 # MLX server, macOS only (pip install -r requirements_mlx.txt --upgrade)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
@@ -161,7 +163,11 @@ if "OPENAI+" in CLOUD_TYPE:
 
     if "gpt-4o" in OPENAI_MODEL:
         MAX_TOKENS = 16383
-    
+    elif "o1-mini" in OPENAI_MODEL:
+        MAX_TOKENS = 65535
+    elif "o1-preview" in OPENAI_MODEL:
+        MAX_TOKENS = 32767
+
     MARKDOWN_OPTIMIZATION_LEVEL = 3
 
 elif "AZURE+" in CLOUD_TYPE:
@@ -285,38 +291,21 @@ elif "LMSTUDIO+" in CLOUD_TYPE:
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     API_URL="http://localhost:1234/v1"
 
-elif "CLAUDE3" in CLOUD_TYPE:
+elif "ANTHROPIC" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
-    generation = CLOUD_TYPE.split("+")[0]
-    model = CLOUD_TYPE.split("+")[-1]
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
     BETA_HEADER_KEY = ""
+    BETA_HEADER_TEXT = ""
+    MARKDOWN_OPTIMIZATION_LEVEL = 3
 
-    if generation == "CLAUDE3":
-        if model == "HAIKU":
-            MODEL_ID = "claude-3-haiku-20240307"
-        elif model == "OPUS":
-            MODEL_ID = "claude-3-opus-20240229"
-            MARKDOWN_OPTIMIZATION_LEVEL = 3
-        else:
-            raise Exception("Error: Unsupported CLAUDE3 model")
-    
-    elif generation == "CLAUDE35":
+    if "claude-3-5" in MODEL_ID:
         MAX_TOKENS = 8192
-        if model == "HAIKU":
-            MODEL_ID = "claude-3-5-haiku-20241022"
-        elif model == "SONNET":
+        if "sonnet" in MODEL_ID:
             MULTIMODAL = True
             MULTIMODAL_MIME_TYPES = ["application/pdf"]
             BETA_HEADER_KEY = "anthropic-beta"
-            BETA_HEADER_TEXT = "pdfs-2024-09-25"
-            
-            MODEL_ID = "claude-3-5-sonnet-20241022"
-            MARKDOWN_OPTIMIZATION_LEVEL = 3
-        else:
-            raise Exception("Error: Unsupported CLAUDE3.5 model")
-
-    else:
-        raise Exception("Error: Unknown CLAUDE model")
+            beta = "pdfs-2024-09-25"
+            BETA_HEADER_TEXT = beta if BETA_HEADER_TEXT == "" else BETA_HEADER_TEXT + "," + beta
     
     ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
     ANTHROPIC_VERSION="2023-06-01"
@@ -397,10 +386,10 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'        # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'              # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                  # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                  # best
+CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                  # best
 
 # Recraft.AI
-CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'           #
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'           #
 # CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'          #
 
 RESIZE_IMAGE = False

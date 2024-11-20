@@ -7,7 +7,7 @@ import json
 import os
 import sys
 
-def call_llm_sequence(prompts_list, mermaid, topic_texts = "", data = "", mimeType = ""):
+def call_llm_sequence(prompts_list, mermaid, topic_texts = "", check_valid_mermaid = True, data = "", mimeType = ""):
     new_mermaid = mermaid
 
     log_input = ""
@@ -22,10 +22,13 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts = "", data = "", mimeTy
         retries = 0
         while (not_valid and retries < config.MAX_RETRIES):
             new_mermaid = call_llm(this_prompt, data, mimeType)
-            not_valid = m.validate_mermaid(new_mermaid, config.LINE_SEPARATOR, config.INDENT_SIZE)
 
-            if not_valid:
-                retries = retries + 1
+            if check_valid_mermaid:
+                not_valid = m.validate_mermaid(new_mermaid, config.LINE_SEPARATOR, config.INDENT_SIZE)
+                if not_valid:
+                    retries = retries + 1
+            else:
+                not_valid = False
                 
         log_output += new_mermaid + "\n\n"
         log_prompt += "Prompt = " + prompt + "\n-------\n" + this_prompt + "\n\n"
@@ -64,14 +67,22 @@ def call_llm(str_user, data, mimeType):
        "OPENROUTER+" in config.CLOUD_TYPE or \
        "GITHUB+" in config.CLOUD_TYPE:
 
-        payload = {
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
+        payload = {}
+
+        if "OPENAI+" in config.CLOUD_TYPE and "+o1" in config.CLOUD_TYPE:
+            payload["messages"] = [
+                {"role": "user", "content": str_user}
+            ]
+            payload["max_completion_tokens"] = config.MAX_TOKENS
+            payload["temperature"] = 1
+        else:
+            payload["messages"] = [
                 {"role": "system", "content": str_system},
                 {"role": "user", "content": str_user}
             ]
-        }
+            payload["max_tokens"] = config.MAX_TOKENS
+            payload["temperature"] = config.LLM_TEMPERATURE
+
         if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE or "OPENROUTER+" in config.CLOUD_TYPE:
             payload["model"] = config.OPENAI_MODEL
 
@@ -261,8 +272,8 @@ def call_llm(str_user, data, mimeType):
             result = result.replace("2 space", "")
         result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
-    # CLAUDE3
-    elif "CLAUDE3" in config.CLOUD_TYPE:
+    # Anthropic
+    elif "ANTHROPIC" in config.CLOUD_TYPE:
         # same like OpenAI but different
         payload = {
             "model": config.MODEL_ID,
