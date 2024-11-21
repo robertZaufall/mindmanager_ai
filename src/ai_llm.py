@@ -437,7 +437,7 @@ def call_llm(str_user, data, mimeType):
         parsed_json = json.loads(response_text)
         result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
 
-    # Deepseek
+    # DeepSeek
     elif "DEEPSEEK+" in config.CLOUD_TYPE:
         # same like OpenAI
         payload = {

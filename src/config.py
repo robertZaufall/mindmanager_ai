@@ -75,7 +75,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
 # CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # tbd
 
-# Deepseek
+# DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
 
 # groq     

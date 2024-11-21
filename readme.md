@@ -20,7 +20,7 @@ More animated examples are in the `doc` folder.
   - **xAI** w/ `grok-beta` (use your key)  
   - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
-  - **Deepseek** w/ `Deepseek V2.5` (use your key)  
+  - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **Open Router** w/ `o1-preview`, `o1-mini` and many more models (use your key)
@@ -210,8 +210,8 @@ Vertex AI needs an access token which has a default expiration time of just 1 ho
 The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3.5 Haiku` is good and cheap.
 ### xAI grok
 Grok is very good and is able to refine mindmaps for several levels. By today (2024-10-21) only the `grok-beta` model is available in public preview.  
-## Deepseek
-Deepseek created an extraordinary open source model Deepseek V2.5 which seems to be as good as GPT-4o.  
+## DeepSeek
+DeepSeek created an extraordinary open source model DeepSeek V2.5 which seems to be as good as GPT-4o.  
 ### Groq (platform)
 Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
 ### Perplexity (platform)
