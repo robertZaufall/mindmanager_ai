@@ -267,9 +267,13 @@ def call_llm(str_user, data, mimeType):
             raise Exception(f"Error: {response_status} - {response_text}")
 
         parsed_json = json.loads(response_text)
+        usage = parsed_json["usageMetadata"]
+        print("usage: " + json.dumps(usage))
+
         result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
         if "FLASH" in config.CLOUD_TYPE:
             result = result.replace("2 space", "")
+        
         result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
     # Anthropic
@@ -405,7 +409,16 @@ def call_llm(str_user, data, mimeType):
             raise Exception(f"Error: {response_status} - {response_text}")
 
         parsed_json = json.loads(response_text)
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
+        usage = parsed_json["usage"]
+        completion_tokens = parsed_json["usage"]["completion_tokens"]
+        print("usage: " + json.dumps(usage))
+
+        finish_reason = parsed_json["choices"][0]["finish_reason"]
+        if finish_reason == "length":
+            print("Warning: Result truncated!")
+
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
        
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
@@ -435,7 +448,16 @@ def call_llm(str_user, data, mimeType):
             raise Exception(f"Error: {response_status} - {response_text}")
 
         parsed_json = json.loads(response_text)
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
+        usage = parsed_json["usage"]
+        completion_tokens = parsed_json["usage"]["completion_tokens"]
+        print("usage: " + json.dumps(usage))
+
+        finish_reason = parsed_json["choices"][0]["finish_reason"]
+        if finish_reason == "length":
+            print("Warning: Result truncated!")
+
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
 
     # DeepSeek
     elif "DEEPSEEK+" in config.CLOUD_TYPE:

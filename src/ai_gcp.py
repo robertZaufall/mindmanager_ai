@@ -88,6 +88,9 @@ def call_llm_gcp(str_user, data, mimeType):
         raise Exception(f"Error: {response_status} - {response_text}")
 
     parsed_json = json.loads(response_text)
+    usage = parsed_json["usageMetadata"]
+    print("usage: " + json.dumps(usage))
+
     result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
     result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
 
