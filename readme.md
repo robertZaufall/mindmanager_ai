@@ -18,10 +18,11 @@ More animated examples are in the `doc` folder.
   - **GitHub Models** w/ `GPT-4o`, `LLaMA` (use your key)  
   - **Anthropic** w/ `Claude 3/3.5` (use your key)  
   - **xAI** w/ `grok-beta` (use your key)  
-  - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
-  - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
+  - **Deepseek** w/ `Deepseek V2.5` (use your key)  
+  - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
+  - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **Open Router** w/ `o1-preview`, `o1-mini` and many more models (use your key)
   - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
   - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
@@ -209,6 +210,8 @@ Vertex AI needs an access token which has a default expiration time of just 1 ho
 The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3.5 Haiku` is good and cheap.
 ### xAI grok
 Grok is very good and is able to refine mindmaps for several levels. By today (2024-10-21) only the `grok-beta` model is available in public preview.  
+## Deepseek
+Deepseek created an extraordinary open source model Deepseek V2.5 which seems to be as good as GPT-4o.  
 ### Groq (platform)
 Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
 ### Perplexity (platform)
@@ -236,7 +239,9 @@ Image genration is very good. There are many pre-defined styles which can be act
 
 ### MLX w/ Flux.1, SD3
 This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using `Flux.1` model and under average using `SD3` mostly because the prompt is optimized for `Flux.1`.  
+
 There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call. If there is only one topic selected there is a different prompt used as when more topics are selected. Only the first level of topics together with the central topic should be selected for better results.  
+
 When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount to be downloaded is about 50GB using `Flux.1` and 6GB using `SD3`. If you are using `SD3` for the first time you have to login at **huggingface** with your token first as you have to agree to the terms of **Stability AI** and the usage of their model: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
 
 ## Translation systems

@@ -45,12 +45,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 
-# Openrouter.ai
-# CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best
-# CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best
-# CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best
-# CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good
-
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
 # CLOUD_TYPE = 'GITHUB+gpt-4o-mini'                                     # ok
@@ -81,6 +75,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
 # CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # tbd
 
+# Deepseek
+# CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
+
 # groq     
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                           # best (error kg -> mm)
 # CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                              # good
@@ -95,6 +92,12 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-chat'             # good
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'           # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'           # ok, up to good
+
+# Openrouter.ai
+# CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best
+# CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best
+# CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best
+# CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good
 
 # Ollama (local models), best results     
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
@@ -337,6 +340,15 @@ elif "PERPLEXITY+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + PERPLEXITY_API_KEY
     API_URL="https://api.perplexity.ai/chat/completions"
+
+elif "DEEPSEEK+" in CLOUD_TYPE:
+    MAX_TOKENS = 8000
+    OPENAI_COMPATIBILITY = False
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + DEEPSEEK_API_KEY
+    API_URL="https://api.deepseek.com/beta/chat/completions"
 
 elif "MLX+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
@@ -585,32 +597,31 @@ elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
     IMAGE_RESPONSE_FORMAT = "url" # url, b64_json
 
     IMAGE_EXPLICIT_STYLE = ""
-    IMAGE_STYLE = "realistic_image" # realistic_image, digital_illustration, vector_illustration, icon, any
     IMAGE_SUBSTYLE = ""
 
     if IMAGE_MODEL_ID == "recraftv3":
         
-        # digital_illustration
-        IMAGE_SUBSTYLE = "enterprise" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
+        # IMAGE_STYLE = "digital_illustration"
+        # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
         
-        # realistic_image
-        # IMAGE_SUBSTYLE = "b_and_w" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
+        IMAGE_STYLE = "realistic_image"
+        IMAGE_SUBSTYLE = "enterprise" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
         
-        # vector_illustration
+        # IMAGE_STYLE = "vector_illustration"
         # IMAGE_SUBSTYLE = "engraving" # engraving, line_art, line_circuit, linocut
 
     elif IMAGE_MODEL_ID == "recraft20b":
         
-        # digital_illustration
-        IMAGE_SUBSTYLE = "enterprise" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
+        # IMAGE_STYLE = "digital_illustration"
+        # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
         
-        # realistic_image
-        # IMAGE_SUBSTYLE = "b_and_w" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
+        IMAGE_STYLE = "realistic_image"
+        IMAGE_SUBSTYLE = "enterprise" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
         
-        # vector_illustration
+        # IMAGE_STYLE = "vector_illustration"
         # IMAGE_SUBSTYLE = "70s" # 70s, cartoon, doodle_line_art, engraving, flat_2, halloween_stickers, kawaii, line_art, line_circuit, linocut, seamless
         
-        # icon
+        # IMAGE_STYLE = "icon"
         # IMAGE_SUBSTYLE = "broken_line" # broken_line, colored_outline, colored_shapes, colored_shapes_gradient, doodle_fill, doodle_offset_fill, offset_fill, outline, outline_gradient, uneven_fill
 
     else:
