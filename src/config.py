@@ -65,6 +65,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                         # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'                    # best
+# CLOUD_TYPE = 'GEMINI+gemini-exp-1121'                                 # best in class
 
 # Google Gemini Vertex AI (needs pre-authentication ie. token)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best
