@@ -23,7 +23,7 @@ More animated examples are in the `doc` folder.
   - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
-  - **Open Router** w/ `o1-preview`, `o1-mini` and many more models (use your key)
+  - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
   - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
   - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
   - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LLaMA`, `Qwen2.5` model for best results)
@@ -58,12 +58,12 @@ More animated examples are in the `doc` folder.
 4. Clustering topics from scratch.  
 5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
-7. Image generation with `DALL-E 3`, `SD3`, `Imagen3`, `MLX` from topics
+7. Image generation from topics
 8. Professional translation of all topics by DeepL
 9. Export `Mermaid` mindmap HTML document
 10. Export `Markmap` mindmap HTML document
-11. PDF to mindmap, batch (w/ `o1-preview`, `GPT-4o`, `Gemini 1.5 Flash`, `Claude 3.5 Sonnet`)
-12. Generate an argumentation article HTML document for a detailed mindmap
+11. PDF to mindmap (multiple files / batch processing)
+12. Generate a working paper (argumentation) HTML document for a detailed mindmap
 13. Generate a glossary HTML document of all terms
   
 ![Refinemnt + Glossary](doc/glossary.gif)  
@@ -183,7 +183,7 @@ After a while, the image will be opened and also stored in the MindManager-Libra
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
 On Windows the image can be automatically set as the background image of the map.  
 
-The results from the generation process are best with `FLUX.1`, good with `DALL-E 3` and `SD3.5`. Prompt crafting/engineering is still in progress.  
+The results from the generation process are best with `FLUX.1`, good with `DALL-E 3` and `SD 3.5`. Prompt crafting/engineering is still in progress.  
 The filename is enriched with the generation **seed** where this feature is supoported. This seed is useful if you want to generate similar images (e.g. with different prompt). `DALL-E 3` does not support a seed value anymore (by the time of writing).  
 The prompt for image generation can optionally be optimized using a LLM call.
 Images can also be generated locally on macOS with Apple Silicon using the native `Apple MLX` framework.  
@@ -197,7 +197,7 @@ There is no local LLM model using Ollama working for me by now.
 
 `Sonnet 3.5` lately supports native `PDF` processing, which is also implemented (action `pdfsimple_mindmap`).  
 
-### Text generation from mindmaps (argumentation article, glossary)
+### Text generation from mindmaps (working paper (argumentation), glossary)
 Generation of larger text outputs needs a model with an higher max-token value like `GPT-4o`, `Gemini Flash`, `Sonnet 3.5`. Results are very good, most of the time. 
 
 ## LLM systems
@@ -210,7 +210,7 @@ Vertex AI needs an access token which has a default expiration time of just 1 ho
 The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3.5 Haiku` is good and cheap.
 ### xAI grok
 Grok is very good and is able to refine mindmaps for several levels. By today (2024-10-21) only the `grok-beta` model is available in public preview.  
-## DeepSeek
+### DeepSeek
 DeepSeek created an extraordinary open source model DeepSeek V2.5 which seems to be as good as GPT-4o.  
 ### Groq (platform)
 Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
