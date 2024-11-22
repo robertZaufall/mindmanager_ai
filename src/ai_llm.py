@@ -278,7 +278,6 @@ def call_llm(str_user, data, mimeType):
 
     # Anthropic
     elif "ANTHROPIC" in config.CLOUD_TYPE:
-        # same like OpenAI but different
         payload = {
             "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS,
@@ -348,7 +347,6 @@ def call_llm(str_user, data, mimeType):
 
     # xAI
     elif "XAI+" in config.CLOUD_TYPE:
-        # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "model": config.MODEL_ID,
@@ -383,7 +381,6 @@ def call_llm(str_user, data, mimeType):
 
     # GROQ
     elif "GROQ+" in config.CLOUD_TYPE:
-        # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -422,7 +419,6 @@ def call_llm(str_user, data, mimeType):
        
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
-        # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -461,7 +457,6 @@ def call_llm(str_user, data, mimeType):
 
     # DeepSeek
     elif "DEEPSEEK+" in config.CLOUD_TYPE:
-        # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
@@ -501,7 +496,6 @@ def call_llm(str_user, data, mimeType):
 
     # Alibaba Cloud
     elif "ALIBABACLOUD+" in config.CLOUD_TYPE:
-        # same like OpenAI
         payload = {
             "model": config.MODEL_ID,
             "input": {
@@ -547,7 +541,6 @@ def call_llm(str_user, data, mimeType):
 
     # MLX
     elif "MLX+" in config.CLOUD_TYPE:
-        # same like OpenAI
         payload = {
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
