@@ -30,7 +30,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -39,7 +39,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE_Microsoft+PHI35MINIINSTRUCT'                      # good
 
 # OpenAI     
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best
+CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
