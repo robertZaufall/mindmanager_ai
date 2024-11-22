@@ -22,6 +22,7 @@ More animated examples are in the `doc` folder.
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
   - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
   - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
+  - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral`
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
@@ -215,6 +216,8 @@ Grok is very good and is able to refine mindmaps for several levels. By today (2
 DeepSeek created an extraordinary open source model DeepSeek V2.5 which seems to be as good as GPT-4o.  
 ### Alibaba Cloud
 Alibaba Cloud models cannot generate large amounts of tokens (`Qwen-Max`: 2000, `Qwen-Plus` + `Qwen-Turbo`: 1500) but the results are good. `Qwen-Turbo` is very fast. `Qwen 2.5` model is still not available outside China by now (2024-11-22).  
+### Mistral AI
+Mistral AI is hosting their commercial flagship models `Mixtral-Large` and `Pixtral-Large`. `Mixtral-Large` is a 'best in class' model. The maximum numer of possible output tokens is a little bit unclear (max_tokens may meant to be the sum of input and output tokens).  
 ### Groq (platform)
 Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
 ### Perplexity (platform)

@@ -103,7 +103,6 @@ def call_llm(str_user, data, mimeType):
         parsed_json = json.loads(response_text)
 
         usage = parsed_json["usage"]
-        completion_tokens = parsed_json["usage"]["completion_tokens"]
         print("usage: " + json.dumps(usage))
 
         finish_reason = parsed_json["choices"][0]["finish_reason"]
@@ -348,8 +347,8 @@ def call_llm(str_user, data, mimeType):
     # xAI
     elif "XAI+" in config.CLOUD_TYPE:
         payload = {
-            "max_tokens": config.MAX_TOKENS,
             "model": config.MODEL_ID,
+            "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "stream": False,
             "messages": [
@@ -382,6 +381,7 @@ def call_llm(str_user, data, mimeType):
     # GROQ
     elif "GROQ+" in config.CLOUD_TYPE:
         payload = {
+            "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
@@ -389,7 +389,6 @@ def call_llm(str_user, data, mimeType):
                 {"role": "user", "content": str_user}
             ]
         }
-        payload["model"] = config.MODEL_ID
 
         response = requests.post(
             config.API_URL,
@@ -408,7 +407,6 @@ def call_llm(str_user, data, mimeType):
         parsed_json = json.loads(response_text)
 
         usage = parsed_json["usage"]
-        completion_tokens = parsed_json["usage"]["completion_tokens"]
         print("usage: " + json.dumps(usage))
 
         finish_reason = parsed_json["choices"][0]["finish_reason"]
@@ -420,6 +418,7 @@ def call_llm(str_user, data, mimeType):
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
         payload = {
+            "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
@@ -427,7 +426,6 @@ def call_llm(str_user, data, mimeType):
                 {"role": "user", "content": str_user}
             ]
         }        
-        payload["model"] = config.MODEL_ID
 
         response = requests.post(
             config.API_URL,
@@ -446,7 +444,6 @@ def call_llm(str_user, data, mimeType):
         parsed_json = json.loads(response_text)
 
         usage = parsed_json["usage"]
-        completion_tokens = parsed_json["usage"]["completion_tokens"]
         print("usage: " + json.dumps(usage))
 
         finish_reason = parsed_json["choices"][0]["finish_reason"]
@@ -458,15 +455,15 @@ def call_llm(str_user, data, mimeType):
     # DeepSeek
     elif "DEEPSEEK+" in config.CLOUD_TYPE:
         payload = {
+            "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
+            "stream": False,
             "messages": [
                 {"role": "system", "content": str_system},
                 {"role": "user", "content": str_user}
-            ],
-            "stream": False
+            ]
         }        
-        payload["model"] = config.MODEL_ID
 
         response = requests.post(
             config.API_URL,
@@ -485,7 +482,6 @@ def call_llm(str_user, data, mimeType):
         parsed_json = json.loads(response_text)
 
         usage = parsed_json["usage"]
-        completion_tokens = parsed_json["usage"]["completion_tokens"]
         print("usage: " + json.dumps(usage))
 
         finish_reason = parsed_json["choices"][0]["finish_reason"]
@@ -538,6 +534,45 @@ def call_llm(str_user, data, mimeType):
             print("Warning: Result truncated!")
 
         result = parsed_json["output"]["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+
+    # Mistral AI
+    elif "MISTRAL+" in config.CLOUD_TYPE:
+        payload = {
+            "model": config.MODEL_ID,
+            "max_tokens": config.MAX_TOKENS,
+            "temperature": config.LLM_TEMPERATURE,
+            "stream": False,
+            "response_format": { "type": "text" },
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ]
+        }        
+
+        response = requests.post(
+            config.API_URL,
+            headers = {
+                "Content-Type": "application/json",
+                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        parsed_json = json.loads(response_text)
+
+        usage = parsed_json["usage"]
+        print("usage: " + json.dumps(usage))
+
+        finish_reason = parsed_json["choices"][0]["finish_reason"]
+        if finish_reason == "length":
+            print("Warning: Result truncated!")
+
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
 
     # MLX
     elif "MLX+" in config.CLOUD_TYPE:

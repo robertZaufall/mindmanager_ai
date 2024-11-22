@@ -30,7 +30,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -83,6 +83,13 @@ CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-max'                                  # best, max token output only 2000
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo'                                # good, max token output only 1500
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus'                                 # good, max token output only 1500
+
+# Mistral AI
+# CLOUD_TYPE = 'MISTRAL+mistral-large-latest'                           # best in class
+# CLOUD_TYPE = 'MISTRAL+ministral-3b-latest'                            # ok
+# CLOUD_TYPE = 'MISTRAL+ministral-8b-latest'                            # ok
+# CLOUD_TYPE = 'MISTRAL+mistral-small-latest'                           # best
+# CLOUD_TYPE = 'MISTRAL+pixtral-large-latest'                           # best
 
 # groq     
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                           # best (error kg -> mm)
@@ -364,6 +371,14 @@ elif "ALIBABACLOUD+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + ALIBABACLOUD_API_KEY
     API_URL="https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
+
+elif "MISTRAL+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + MISTRAL_API_KEY
+    API_URL="https://api.mistral.ai/v1/chat/completions"
 
 elif "MLX+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
