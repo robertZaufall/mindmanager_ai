@@ -79,6 +79,11 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
 
+# Alibaba Cloud
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-max'                                  # best, max token output only 2000
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo'                                # good, max token output only 1500
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus'                                 # good, max token output only 1500
+
 # groq     
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                           # best (error kg -> mm)
 # CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                              # good
@@ -350,6 +355,15 @@ elif "DEEPSEEK+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + DEEPSEEK_API_KEY
     API_URL="https://api.deepseek.com/beta/chat/completions"
+
+elif "ALIBABACLOUD+" in CLOUD_TYPE:
+    MAX_TOKENS = 2000 if "qwen-max" in CLOUD_TYPE else 1500
+    OPENAI_COMPATIBILITY = True
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    ALIBABACLOUD_API_KEY = os.getenv('ALIBABACLOUD_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + ALIBABACLOUD_API_KEY
+    API_URL="https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
 
 elif "MLX+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True

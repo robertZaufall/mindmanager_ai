@@ -21,6 +21,7 @@ More animated examples are in the `doc` folder.
   - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
   - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
+  - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
@@ -108,7 +109,7 @@ Macros can also be executed by the macro editor. The macros are similar but the 
 
 ![Automator](doc/windows_macroeditor.png)  
 
-You can also check here if the path to the python files is correct.  
+You can also check here if the path to the python file is correct.  
 
 ### macOS  
 Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
@@ -212,6 +213,8 @@ The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthro
 Grok is very good and is able to refine mindmaps for several levels. By today (2024-10-21) only the `grok-beta` model is available in public preview.  
 ### DeepSeek
 DeepSeek created an extraordinary open source model DeepSeek V2.5 which seems to be as good as GPT-4o.  
+### Alibaba Cloud
+Alibaba Cloud models cannot generate large amounts of tokens (`Qwen-Max`: 2000, `Qwen-Plus` + `Qwen-Turbo`: 1500) but the results are good. `Qwen-Turbo` is very fast. `Qwen 2.5` model is still not available outside China by now (2024-11-22).  
 ### Groq (platform)
 Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
 ### Perplexity (platform)
