@@ -27,6 +27,7 @@ More animated examples are in the `doc` folder.
   - **AWS Bedrock** (platform)  w/ `Anthropic`, `Mistral` models (use your key + secret)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
+  - **Hugging Face** (platform)  w/ `LLaMA` and more model (use your token)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
   - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
   - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
@@ -224,6 +225,8 @@ Mistral AI is hosting their commercial flagship models `Mixtral-Large` and `Pixt
 Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
 ### Perplexity (platform)
 Perplexity works perfect as an universal LLM platform.  
+### Hugging Face (platform)
+To access better models a pro-subscription is needed. `LLama-3-8B` still can be used.  
 ### Open Router (platform)  
 On the Open Router platform there are a variety of models and systems available. Also fallback scenarios are supported. Furthermore you get access here to the newest OpenAI models like `o1-preview`.  
 ### Ollama, LMStudio (hosted locally - no internet access needed)

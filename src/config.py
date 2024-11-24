@@ -116,6 +116,11 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best
 # CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good
 
+# Hugging Face
+# CLOUD_TYPE = 'HF+meta-llama/Meta-Llama-3-8B-Instruct'                 # good
+# CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-70B-Instruct'                   # needs pro-subscription
+# CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-8B-Instruct'                    # needs pro-subscription
+
 # Ollama (local models), best results     
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
 # CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
@@ -399,6 +404,14 @@ elif "MISTRAL+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + MISTRAL_API_KEY
     API_URL="https://api.mistral.ai/v1/chat/completions"
+
+elif "HF+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    HF_API_KEY = os.getenv('HF_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + HF_API_KEY
+    API_URL=f"https://api-inference.huggingface.co/models/{MODEL_ID}/v1/chat/completions"
 
 elif "MLX+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
