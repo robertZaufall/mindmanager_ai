@@ -30,7 +30,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -39,7 +39,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE_Microsoft+PHI35MINIINSTRUCT'                      # good
 
 # OpenAI     
-CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
@@ -71,6 +71,9 @@ CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                       # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
+
+# AWS Bedrock
+CLOUD_TYPE = 'BEDROCK+anthropic.claude-3-5-sonnet-20240620-v1:0'      # best
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
@@ -293,6 +296,18 @@ elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
         GCP_PROJECT_ID = PROJECT_ID
         GCP_ENDPOINT = API_ENDPOINT
         GCP_LOCATION = LOCATION_ID
+
+elif "BEDROCK" in CLOUD_TYPE:
+    AWS_MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
+    AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
+    AWS_SERVICE_NAME = "bedrock-runtime"
+    AWS_REGION = "eu-central-1"
+    if AWS_MODEL_ID.startswith("anthropic."):
+        AWS_MODEL_VERSION_KEY = "anthropic_version"
+        AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
+    else:
+        raise Exception("Error: Unsupported AWS Bedrock model.")
 
 elif "OLLAMA+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True

@@ -60,6 +60,11 @@ def call_llm(str_user, data, mimeType):
         import ai_azure_entra
         return ai_azure_entra.call_llm_azure_entra(str_user, data, mimeType)
     
+    # AWS Bedrock
+    if "BEDROCK" in config.CLOUD_TYPE:
+        import ai_aws
+        return ai_aws.call_llm(str_user, data, mimeType)
+    
     if "AZURE+" in config.CLOUD_TYPE or \
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_META+" in config.CLOUD_TYPE or \

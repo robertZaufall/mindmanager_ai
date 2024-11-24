@@ -15,7 +15,6 @@ More animated examples are in the `doc` folder.
 ### Supported LLMs
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
-  - **GitHub Models** w/ `GPT-4o`, `LLaMA` (use your key)  
   - **Anthropic** w/ `Claude 3/3.5` (use your key)  
   - **xAI** w/ `grok-beta` (use your key)  
   - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
@@ -23,6 +22,9 @@ More animated examples are in the `doc` folder.
   - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
   - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
   - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral`
+  - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` models (use your key)  
+  - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` (use your key)  
+  - **AWS Bedrock** (platform)  w/ `Anthropic`, `Mistral` models (use your key + secret)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
