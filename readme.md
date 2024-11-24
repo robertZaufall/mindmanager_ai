@@ -27,7 +27,7 @@ More animated examples are in the `doc` folder.
   - **AWS Bedrock** (platform)  w/ `Anthropic`, `Mistral` models (use your key + secret)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
-  - **Hugging Face** (platform)  w/ `LLaMA` and more model (use your token)  
+  - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
   - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
   - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
