@@ -18,21 +18,22 @@ def call_llm(str_user, data, mimeType):
     )
 
     payload = {
-        config.AWS_MODEL_VERSION_KEY: config.AWS_MODEL_VERSION_TEXT,
         "max_tokens": config.MAX_TOKENS,
         "temperature": config.LLM_TEMPERATURE,
         "messages": [
         ]
     }
 
+    if config.AWS_MODEL_VERSION_KEY != "":
+        payload[config.AWS_MODEL_VERSION_KEY] = config.AWS_MODEL_VERSION_TEXT
+    
     if model_id.startswith("anthropic."):
         payload["messages"].append({ "role": "user", "content": "Hello, Claude." })
         payload["messages"].append({ "role": "assistant", "content": str_system.replace("You are ", "Hi, I'm Claude, ") })
+        payload["messages"].append({ "role": "user", "content": str_user })
     else:
         payload["messages"].append({ "role": "system", "content": str_system })
-        payload["messages"].append({ "role": "user", "content": str_user })
-                
-    payload["messages"].append({ "role": "user", "content": str_user })
+        payload["messages"].append({ "role": "user", "content": str_user })                
 
     response = bedrock_client.invoke_model(modelId=model_id, body=json.dumps(payload))
 
@@ -44,18 +45,19 @@ def call_llm(str_user, data, mimeType):
 
     parsed_json = json.loads(response_text)
 
-    usage = parsed_json["usage"]
-    print("usage: " + json.dumps(usage))
+    usage = parsed_json.get("usage", {})
+    if len(usage) > 0:
+        print("usage: " + json.dumps(usage))
 
-    stop_reason = parsed_json["stop_reason"]
-    stop_sequence = parsed_json["stop_sequence"]
-
-    result = parsed_json["content"][0]["text"] \
-            .replace("Here is the refined mind map in Mermaid syntax:", "") \
-            .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
-            .replace("```mermaid", "") \
-            .replace("```", "") \
-            .replace("mermaid\n", "") \
-            .lstrip("\n")
+    if model_id.startswith("anthropic."):
+        result = parsed_json["content"][0]["text"] \
+                .replace("Here is the refined mind map in Mermaid syntax:", "") \
+                .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
+                .replace("```mermaid", "") \
+                .replace("```", "") \
+                .replace("mermaid\n", "") \
+                .lstrip("\n")
+    else:
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
 
     return result

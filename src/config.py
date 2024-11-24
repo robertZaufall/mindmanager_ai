@@ -30,7 +30,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -73,7 +73,8 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
 
 # AWS Bedrock
-CLOUD_TYPE = 'BEDROCK+anthropic.claude-3-5-sonnet-20240620-v1:0'      # best
+# CLOUD_TYPE = 'BEDROCK+anthropic.claude-3-5-sonnet-20240620-v1:0'      # best
+# CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
@@ -302,10 +303,14 @@ elif "BEDROCK" in CLOUD_TYPE:
     AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
     AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
     AWS_SERVICE_NAME = "bedrock-runtime"
-    AWS_REGION = "eu-central-1"
     if AWS_MODEL_ID.startswith("anthropic."):
+        AWS_REGION = "eu-central-1"
         AWS_MODEL_VERSION_KEY = "anthropic_version"
         AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
+    elif AWS_MODEL_ID.startswith("mistral."):
+        AWS_REGION = "us-east-1"
+        AWS_MODEL_VERSION_KEY = ""
+        AWS_MODEL_VERSION_TEXT = ""
     else:
         raise Exception("Error: Unsupported AWS Bedrock model.")
 
