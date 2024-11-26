@@ -94,6 +94,8 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'MISTRAL+ministral-8b-latest'                            # ok
 # CLOUD_TYPE = 'MISTRAL+mistral-small-latest'                           # best
 # CLOUD_TYPE = 'MISTRAL+pixtral-large-latest'                           # best
+# CLOUD_TYPE = 'MISTRAL+pixtral-12b-2409'                               # good, free
+# CLOUD_TYPE = 'MISTRAL+open-mistral-nemo'                              # not working, free
 
 # groq     
 # CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                           # best (error kg -> mm)
