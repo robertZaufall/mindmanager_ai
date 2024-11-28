@@ -112,6 +112,11 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'           # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'           # ok, up to good
 
+# Firekworks.ai
+# CLOUD_TYPE = 'FIREWORKS+qwen-qwq-32b-preview'                         # does not work
+# CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
+
+
 # Openrouter.ai
 # CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best
 # CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best
@@ -414,6 +419,15 @@ elif "HF+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + HF_API_KEY
     API_URL=f"https://api-inference.huggingface.co/models/{MODEL_ID}/v1/chat/completions"
+
+elif "FIREWORKS+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    model_prefix = "accounts/fireworks/models/"
+    MODEL_ID = model_prefix + CLOUD_TYPE.split("+")[-1]
+    FIREWORKS_API_KEY = os.getenv('FIREWORKS_API_KEY')
+    KEY_HEADER_TEXT = "Authorization"
+    KEY_HEADER_VALUE = "Bearer " + FIREWORKS_API_KEY
+    API_URL=f"https://api.fireworks.ai/inference/v1/chat/completions"
 
 elif "MLX+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True

@@ -12,7 +12,7 @@ More animated examples are in the `doc` folder.
 
 ## Features
 
-### Supported LLMs
+### Supported AI platforms and LLMs
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
   - **Anthropic** w/ `Claude 3/3.5` (use your key)  
@@ -28,6 +28,7 @@ More animated examples are in the `doc` folder.
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
+  - **Fireworks AI** (platform)  w/ `Qwen 2.5`, `QwQ` (serverless) and more models (use your key)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
   - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
   - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
