@@ -75,6 +75,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+anthropic.claude-3-5-sonnet-20240620-v1:0'      # best
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
+# CLOUD_TYPE = 'BEDROCK+amazon.titan-text-premier-v1:0'                 # ok, max token output only 3000
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
@@ -320,6 +321,11 @@ elif "BEDROCK" in CLOUD_TYPE:
         AWS_MODEL_VERSION_KEY = "anthropic_version"
         AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
     elif AWS_MODEL_ID.startswith("mistral."):
+        AWS_REGION = "us-east-1"
+        AWS_MODEL_VERSION_KEY = ""
+        AWS_MODEL_VERSION_TEXT = ""
+    elif AWS_MODEL_ID.startswith("amazon."):
+        MAX_TOKENS = 3000
         AWS_REGION = "us-east-1"
         AWS_MODEL_VERSION_KEY = ""
         AWS_MODEL_VERSION_TEXT = ""

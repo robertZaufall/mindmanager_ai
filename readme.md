@@ -22,9 +22,9 @@ More animated examples are in the `doc` folder.
   - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
   - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
   - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral`
+  - **AWS Bedrock** w/ `Titan Text G1 Premier` (native), `Anthropic`, `Mistral` models (use your key + secret)  
   - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` models (use your key)  
   - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` (use your key)  
-  - **AWS Bedrock** (platform)  w/ `Anthropic`, `Mistral` models (use your key + secret)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
