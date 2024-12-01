@@ -5,6 +5,9 @@ import pymupdf
 import pathlib
 import text_helper
 import base64
+from math import ceil
+from PIL import Image
+import io
 
 def load_pdf_files(optimization_level=2, as_images=False, mime_type="image/png", as_base64=False):
     docs = {}
@@ -93,3 +96,26 @@ def load_text_files(format="md"):
                     with open(input_file_path, 'r') as file:
                         md_texts[filename] = file.read()
     return md_texts
+
+def calculate_image_tokens(base64_image: str) -> int:
+    image_data = base64.b64decode(base64_image)
+    image = Image.open(io.BytesIO(image_data))
+    width, height = image.size
+
+    if width > 2048 or height > 2048:
+        aspect_ratio = width / height
+        if aspect_ratio > 1:
+            width, height = 2048, int(2048 / aspect_ratio)
+        else:
+            width, height = int(2048 * aspect_ratio), 2048
+
+    if width >= height and height > 768:
+        width, height = int((768 / height) * width), 768
+    elif height > width and width > 768:
+        width, height = 768, int((768 / width) * height)
+
+    tiles_width = ceil(width / 512)
+    tiles_height = ceil(height / 512)
+
+    total_tokens = 85 + 170 * (tiles_width * tiles_height)
+    return total_tokens

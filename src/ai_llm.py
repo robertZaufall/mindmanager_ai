@@ -1,11 +1,13 @@
 import config
 import prompts
 import mermaid_helper as m
+import input_helper
 
 import requests
 import json
 import os
 import sys
+
 
 def call_llm_sequence(prompts_list, mermaid, topic_texts = "", check_valid_mermaid = True, data = "", mimeType = ""):
     new_mermaid = mermaid
@@ -393,25 +395,23 @@ def call_llm(str_user, data, mimeType):
                     {"role": "user", "content": str_user}
             ]
         elif mimeType == "image/png":
-            payload["messages"] = [
-                    {"role": "system", "content": str_system}
-            ]
-            n = 0
+            payload["messages"] = [{"role": "system", "content": str_system}]
+            number_tokens = 0
             for image in data:
-                n = n + 1
-                payload["messages"].append({ "role": "user", "content": [
-                    {
-                        "type": "image_url",
-                        "image_url": {
-                            "url": f"data:image/jpeg;base64,{image}",
-                            "detail": "high",
-                        },
-                    }
-                ] })
-                if n > 3:
+                number_tokens = number_tokens + input_helper.calculate_image_tokens(image)
+                if number_tokens > config.MAX_TOKENS:
                     break
+                payload["messages"].append({ 
+                    "role": "user", 
+                    "content": [{ 
+                        "type": "image_url", 
+                        "image_url": { 
+                            "url": f"data:image/jpeg;base64,{image}", 
+                            "detail": "high" 
+                        } 
+                    }] 
+                })
             payload["messages"].append({ "role": "user", "content": str_user })
-
         else:
             raise Exception(f"Error: {mimeType} not supported by XAI")
             
