@@ -1,4 +1,6 @@
-import config  
+import config
+import input_helper
+
 import json  
 import os
 import requests
@@ -55,16 +57,41 @@ def call_llm_azure_entra(str_user, data, mimeType):
         azure_endpoint=config.OPENAI_API_URL,  
         azure_ad_token_provider=token_provider.get_token, 
         api_version=config.OPENAI_API_VERSION  
-    )  
+    ) 
+
+    str_system = config.SYSTEM_PROMPT
+
+    if data == "":  
+        messages = [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+        ]
+    elif mimeType == "image/png":
+        messages = [{"role": "system", "content": str_system}]
+        number_tokens = 0
+        for image in data:
+            number_tokens = number_tokens + input_helper.calculate_image_tokens(image)
+            if number_tokens > config.MAX_TOKENS:
+                break
+            messages.append({ 
+                "role": "user", 
+                "content": [{ 
+                    "type": "image_url", 
+                    "image_url": { 
+                        "url": f"data:image/jpeg;base64,{image}", 
+                        "detail": "high" 
+                    } 
+                }] 
+            })
+        messages.append({ "role": "user", "content": str_user })
+    else:
+        raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")
 
     response = client.chat.completions.create(  
         model=config.OPENAI_DEPLOYMENT,  
         temperature=config.LLM_TEMPERATURE,  
         max_tokens=config.MAX_TOKENS,  
-        messages=[  
-            {"role": "system", "content": config.SYSTEM_PROMPT},  
-            {"role": "user", "content": str_user},  
-        ]  
+        messages=messages 
     )
     result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
     return result

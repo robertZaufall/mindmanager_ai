@@ -83,10 +83,32 @@ def call_llm(str_user, data, mimeType):
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
         else:
-            payload["messages"] = [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
+            if data == "":  
+                payload["messages"] = [
+                        {"role": "system", "content": str_system},
+                        {"role": "user", "content": str_user}
+                ]
+            elif mimeType == "image/png":
+                payload["messages"] = [{"role": "system", "content": str_system}]
+                number_tokens = 0
+                for image in data:
+                    number_tokens = number_tokens + input_helper.calculate_image_tokens(image)
+                    if number_tokens > config.MAX_TOKENS:
+                        break
+                    payload["messages"].append({ 
+                        "role": "user", 
+                        "content": [{ 
+                            "type": "image_url", 
+                            "image_url": { 
+                                "url": f"data:image/jpeg;base64,{image}", 
+                                "detail": "high" 
+                            } 
+                        }] 
+                    })
+                payload["messages"].append({ "role": "user", "content": str_user })
+            else:
+                raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")
+            
             payload["max_tokens"] = config.MAX_TOKENS
             payload["temperature"] = config.LLM_TEMPERATURE
 
@@ -413,7 +435,7 @@ def call_llm(str_user, data, mimeType):
                 })
             payload["messages"].append({ "role": "user", "content": str_user })
         else:
-            raise Exception(f"Error: {mimeType} not supported by XAI")
+            raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")
             
         response = requests.post(
             config.API_URL,

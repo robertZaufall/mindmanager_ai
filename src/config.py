@@ -30,7 +30,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -79,7 +79,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
-CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # best
+# CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # best
 
 # DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
@@ -180,8 +180,9 @@ MULTIMODAL_MIME_TYPES = []
 MARKDOWN_OPTIMIZATION_LEVEL = int('2')
 
 if "OPENAI+" in CLOUD_TYPE:
-    # MULTIMODAL = True
-    # MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+    if "gpt-4o" in CLOUD_TYPE:
+        MULTIMODAL = True
+        MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
     OPENAI_COMPATIBILITY = True
     OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
     OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
@@ -203,8 +204,9 @@ if "OPENAI+" in CLOUD_TYPE:
     MARKDOWN_OPTIMIZATION_LEVEL = 3
 
 elif "AZURE+" in CLOUD_TYPE:
-    # MULTIMODAL = True
-    # MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+    if "gpt-4o" in CLOUD_TYPE:
+        MULTIMODAL = True
+        MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
     OPENAI_COMPATIBILITY = True
     OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
     OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
@@ -216,7 +218,7 @@ elif "AZURE+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "api-key"
     KEY_HEADER_VALUE = OPENAI_API_KEY
 
-    if "gpt-4o" in OPENAI_MODEL:
+    if "gpt-4o" in CLOUD_TYPE:
         MAX_TOKENS = 16383
 
     MARKDOWN_OPTIMIZATION_LEVEL = 3
