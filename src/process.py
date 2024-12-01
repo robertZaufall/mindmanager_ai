@@ -228,7 +228,7 @@ def main(param, charttype):
                     new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf")
                     create_map_and_finalize(mindm, new_mermaid_diagram)
         elif "image/png" in config.MULTIMODAL_MIME_TYPES:
-            docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, mime_type="image/png", as_base64=True)
+            docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, as_images_dpi=config.MULTIMODAL_PDF_TO_IMAGE_DPI, mime_type="image/png", as_base64=True)
             for key, value in docs.items():
                 if "mindmap" in actions:
                     new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="image/png")

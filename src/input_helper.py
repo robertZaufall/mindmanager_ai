@@ -9,7 +9,7 @@ from math import ceil
 from PIL import Image
 import io
 
-def load_pdf_files(optimization_level=2, as_images=False, mime_type="image/png", as_base64=False):
+def load_pdf_files(optimization_level=2, as_images=False, as_images_dpi=200, mime_type="image/png", as_base64=False):
     docs = {}
     input_folder_path = os.path.join(os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "input"), "pdf")
     if os.path.exists(input_folder_path):
@@ -31,7 +31,7 @@ def load_pdf_files(optimization_level=2, as_images=False, mime_type="image/png",
                     else:
                         images = []
                         for page in pymupdf.open(input_file_path):
-                            pix = page.get_pixmap()
+                            pix = page.get_pixmap(dpi=as_images_dpi)
                             output_file_path = input_file_path.lower().replace(".pdf", ("-page-%i.png" % page.number))
                             if not os.path.exists(output_file_path):
                                 pix.save(output_file_path)
