@@ -299,7 +299,7 @@ def prompt_text_to_mindmap(text, topic_texts=""):
 def prompt_pdfsimple_to_mindmap(text, topic_texts=""):
     str_user = (
         prompt_prefix_text.replace("Given is the following text to be summarized as a mindmap with Mermaid syntax. ", "") +
-        f"Extract the content from the file, thoroughly summarize it and create a mindmap from the summary using '{topic_texts}' as central topic, "
+        f"Extract the content from the file or files, thoroughly summarize it and create a mindmap from the summary using '{topic_texts}' as central topic, "
         f"with at least 5 first level topics and add at least 3 more levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
         f"For each topic generate a useful and sensible text without unnecessary abbreviations. " +
         prompt_postfix.replace("Here is the data: \n", "")

@@ -79,7 +79,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
-# CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # tbd
+# CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # best
 
 # DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
@@ -116,7 +116,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # Firekworks.ai
 # CLOUD_TYPE = 'FIREWORKS+qwen-qwq-32b-preview'                         # does not work
 # CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
-
 
 # Openrouter.ai
 # CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best
@@ -374,6 +373,9 @@ elif "XAI+" in CLOUD_TYPE:
     KEY_HEADER_TEXT = "Authorization"
     KEY_HEADER_VALUE = "Bearer " + XAI_API_KEY
     API_URL="https://api.x.ai/v1/chat/completions"
+    if "-vision-" in MODEL_ID:
+        MULTIMODAL = True
+        MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
 
 elif "GROQ+" in CLOUD_TYPE:
     MAX_TOKENS = 8000

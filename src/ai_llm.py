@@ -233,7 +233,13 @@ def call_llm(str_user, data, mimeType):
         }
 
         if data != "":
-            payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
+            if mimeType == "application/pdf":
+                payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
+            elif mimeType == "image/png":
+                for image in data:
+                    payload["contents"]["parts"].append({ "inlineData": {"data": image, "mimeType": mimeType } })
+            else:
+                raise Exception(f"Error: {mimeType} not supported by GEMINI")
 
         payload["safety_settings"] = [
             { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
@@ -295,24 +301,47 @@ def call_llm(str_user, data, mimeType):
         if data == "":
             payload["messages"].append({ "role": "user", "content": str_user })
         else:
-            payload["messages"].append({ 
-                "role": "user", 
-                "content": [
-                    {
-                        "type": "document", 
-                        "source":
-                        { 
-                            "type": "base64", 
-                            "media_type": mimeType, 
-                            "data": data
+            if mimeType == "application/pdf":
+                payload["messages"].append({ 
+                    "role": "user", 
+                    "content": [
+                        {
+                            "type": "document", 
+                            "source":
+                            { 
+                                "type": "base64", 
+                                "media_type": mimeType, 
+                                "data": data
+                            }
+                        }, 
+                        {
+                            "type": "text", 
+                            "text": str_user
                         }
-                    }, 
-                    {
-                        "type": "text", 
-                        "text": str_user
-                    }
-                ]
-            })
+                    ]
+                })
+            elif mimeType == "image/png":
+                for image in data:
+                    payload["messages"].append({ 
+                        "role": "user", 
+                        "content": [
+                            {
+                                "type": "image", 
+                                "source":
+                                { 
+                                    "type": "base64", 
+                                    "media_type": mimeType, 
+                                    "data": image
+                                }
+                            }, 
+                            {
+                                "type": "text", 
+                                "text": str_user
+                            }
+                        ]
+                    })
+            else:
+                raise
 
         headers = {
             "content-type": "application/json",
@@ -355,13 +384,37 @@ def call_llm(str_user, data, mimeType):
             "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
-            "stream": False,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }        
+            "stream": False
+        }      
 
+        if data == "":  
+            payload["messages"] = [
+                    {"role": "system", "content": str_system},
+                    {"role": "user", "content": str_user}
+            ]
+        elif mimeType == "image/png":
+            payload["messages"] = [
+                    {"role": "system", "content": str_system}
+            ]
+            n = 0
+            for image in data:
+                n = n + 1
+                payload["messages"].append({ "role": "user", "content": [
+                    {
+                        "type": "image_url",
+                        "image_url": {
+                            "url": f"data:image/jpeg;base64,{image}",
+                            "detail": "high",
+                        },
+                    }
+                ] })
+                if n > 3:
+                    break
+            payload["messages"].append({ "role": "user", "content": str_user })
+
+        else:
+            raise Exception(f"Error: {mimeType} not supported by XAI")
+            
         response = requests.post(
             config.API_URL,
             headers = {

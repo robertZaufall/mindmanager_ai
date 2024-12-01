@@ -203,26 +203,38 @@ def main(param, charttype):
 
     if param.startswith("pdf_"):
         actions = param.split("_")[-1].split("+")
-        docs = input_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
-        for key, value in docs.items():
-            if "mindmap" in actions:
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
-                create_map_and_finalize(mindm, new_mermaid_diagram)
-            if "knowledgegraph" in actions:
-                guid = uuid.uuid4()
-                mermaid_diagram = ai_llm.call_llm_sequence(["text2knowledgegraph"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
-                content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram, False)
-                generate_mermaid_html(content, max_topic_level, guid, False)
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
-                create_map_and_finalize(mindm, new_mermaid_diagram)
+        if "application/pdf" in config.MULTIMODAL_MIME_TYPES:
+            docs = input_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
+            for key, value in docs.items():
+                if "mindmap" in actions:
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                    create_map_and_finalize(mindm, new_mermaid_diagram)
+                if "knowledgegraph" in actions:
+                    guid = uuid.uuid4()
+                    mermaid_diagram = ai_llm.call_llm_sequence(["text2knowledgegraph"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                    content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram, False)
+                    generate_mermaid_html(content, max_topic_level, guid, False)
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
+                    create_map_and_finalize(mindm, new_mermaid_diagram)
+        else:
+            raise Exception("PDF is not supported for this multimodal AI model.")
     
     elif param.startswith("pdfsimple"):
         actions = param.split("_")[-1].split("+")
-        docs = input_helper.load_pdfsimple_files()
-        for key, value in docs.items():
-            if "mindmap" in actions:
-                new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf")
-                create_map_and_finalize(mindm, new_mermaid_diagram)
+        if "application/pdf" in config.MULTIMODAL_MIME_TYPES:
+            docs = input_helper.load_pdfsimple_files()
+            for key, value in docs.items():
+                if "mindmap" in actions:
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf")
+                    create_map_and_finalize(mindm, new_mermaid_diagram)
+        elif "image/png" in config.MULTIMODAL_MIME_TYPES:
+            docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, mime_type="image/png", as_base64=True)
+            for key, value in docs.items():
+                if "mindmap" in actions:
+                    new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="image/png")
+                    create_map_and_finalize(mindm, new_mermaid_diagram)
+        else:
+            raise Exception("PDF Simple is not supported for this multimodal AI model.")
 
     elif param.startswith("import_"):
         actions = param.split("_")[-1]
