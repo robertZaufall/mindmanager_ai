@@ -140,7 +140,7 @@ the latest industry trends and best practices, offering practical solutions and 
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
 # CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
-CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
+# CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
 # CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
 # CLOUD_TYPE = 'OLLAMA+solar'                                           # ok
 # CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
@@ -154,6 +154,7 @@ CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, sl
 # CLOUD_TYPE = 'LMSTUDIO+bartowski/llama-3.2-3b-instruct'               # ok
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-14b-instruct'                          # best
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-32b-instruct'                          # ok
+CLOUD_TYPE = 'LMSTUDIO+llama-3.3-70b-instruct'                        # best, slow
 
 # MLX server, macOS only (pip install -r requirements_mlx.txt --upgrade)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
