@@ -107,7 +107,7 @@ the latest industry trends and best practices, offering practical solutions and 
 
 # groq     
 # CLOUD_TYPE = 'GROQ+llama-3.3-70b-specdec'                             # best (6000 token per minute limit)
-CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best (6000 token per minute limit)
+# CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best (6000 token per minute limit)
 # CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                              # good
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                                       # good
 # CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                      # ok, generates maps only 3 levels deep
@@ -139,29 +139,19 @@ CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best (60
 # Ollama (local models), best results     
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
 # CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
-# CLOUD_TYPE = 'OLLAMA+llama3.1:70b'                                    # ok, slow
-# CLOUD_TYPE = 'OLLAMA+llama3.2:1b'                                     # does not work
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
-# CLOUD_TYPE = 'OLLAMA+phi3.5'                                          # does not work
+CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
 # CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
 # CLOUD_TYPE = 'OLLAMA+solar'                                           # ok
-# CLOUD_TYPE = 'OLLAMA+mistral'                                         # does not work
-# CLOUD_TYPE = 'OLLAMA+openchat'                                        # does not work most of the time
-# CLOUD_TYPE = 'OLLAMA+zephyr'                                          # does not work
-# CLOUD_TYPE = 'OLLAMA+neural-chat'                                     # does not work
 # CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
 # CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                     # good
 # CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
 
 # LMStudio
-# CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, sloooow
+# CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, slow
 # CLOUD_TYPE = 'LMSTUDIO+lmstudio-community/meta-llama-3.1-8b-instruct' # ok
 # CLOUD_TYPE = 'LMSTUDIO+mlx-community/meta-llama-3.1-8b-instruct'      # ok
 # CLOUD_TYPE = 'LMSTUDIO+bartowski/llama-3.2-3b-instruct'               # ok
-# CLOUD_TYPE = 'LMSTUDIO+llama-3-8b-lexi-uncensored'                    # does not work
-# CLOUD_TYPE = 'LMSTUDIO+phi-3.1-mini-4k-instruct'                      # does not work
-# CLOUD_TYPE = 'LMSTUDIO+mlx-community/llama-3.2-3b-instruct'           # does not work
-# CLOUD_TYPE = 'LMSTUDIO+nemotron-mini-4b-instruct'                     # does not work
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-14b-instruct'                          # best
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-32b-instruct'                          # ok
 
