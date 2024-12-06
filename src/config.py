@@ -26,11 +26,15 @@ MERMAID_TEMPLATE= """
 </div>
 """
 
-SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
-
+SYSTEM_PROMPT = """
+You are a highly experienced business consultant with expertise in 
+strategic planning, financial analysis, marketing, and organizational development. 
+Provide detailed, insightful, and professional advice tailored to the needs of business clients. Your responses should reflect 
+the latest industry trends and best practices, offering practical solutions and actionable recommendations.
+"""
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -61,10 +65,11 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-haiku-20240307'                      # ok
 
 # Google Gemini
+CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-exp-1121'                                 # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # good
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # better
-# CLOUD_TYPE = 'GEMINI+gemini-exp-1121'                                 # best in class
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # good (frequent 'recitation' errors)
@@ -101,7 +106,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'MISTRAL+open-mistral-nemo'                              # not working, free
 
 # groq     
-# CLOUD_TYPE = 'GROQ+llama-3.1-70b-versatile'                           # best (error kg -> mm)
 # CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                              # good
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                                       # good
 # CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                      # ok, generates maps only 3 levels deep
