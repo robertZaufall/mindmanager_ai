@@ -65,7 +65,7 @@ the latest industry trends and best practices, offering practical solutions and 
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-haiku-20240307'                      # ok
 
 # Google Gemini
-CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-exp-1121'                                 # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # good
@@ -106,6 +106,8 @@ CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in 
 # CLOUD_TYPE = 'MISTRAL+open-mistral-nemo'                              # not working, free
 
 # groq     
+# CLOUD_TYPE = 'GROQ+llama-3.3-70b-specdec'                             # best (6000 token per minute limit)
+CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best (6000 token per minute limit)
 # CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                              # good
 # CLOUD_TYPE = 'GROQ+gemma-7b-it'                                       # good
 # CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                      # ok, generates maps only 3 levels deep
