@@ -30,7 +30,7 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -61,23 +61,23 @@ SYSTEM_PROMPT = "You are a business consultant and helpful assistant."
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-haiku-20240307'                      # ok
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                              # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-exp-0827'                         # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-exp-0924'                    # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # good
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # better
 # CLOUD_TYPE = 'GEMINI+gemini-exp-1121'                                 # best in class
 
-# Google Gemini Vertex AI (needs pre-authentication ie. token)     
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-exp-0827'                       # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
+# Google Gemini Vertex AI (OAuth2)     
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # good (frequent 'recitation' errors)
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # good
+# CLOUD_TYPE = 'VERTEXAI+gemini-pro-experimental'                       # best, does not come to an end every time
+# CLOUD_TYPE = 'VERTEXAI+gemini-flash-experimental'                     # good
 
 # AWS Bedrock
+# CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
+# CLOUD_TYPE = 'BEDROCK+amazon.nova-lite-v1:0'                          # best, max token output only 5120
+# CLOUD_TYPE = 'BEDROCK+amazon.titan-text-premier-v1:0'                 # ok, max token output only 3000
 # CLOUD_TYPE = 'BEDROCK+anthropic.claude-3-5-sonnet-20240620-v1:0'      # best
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
-# CLOUD_TYPE = 'BEDROCK+amazon.titan-text-premier-v1:0'                 # ok, max token output only 3000
-# CLOUD_TYPE = 'BEDROCK+amazon.nova-lite-v1:0'                          # best, max token output only 5120
-CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
