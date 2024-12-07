@@ -2,48 +2,39 @@ import random
 import config
 from PIL import Image
 
-from diffusionkit.mlx import FluxPipeline, DiffusionPipeline
-
 def generate_image(prompt, negative_prompt, n_images, output, seed):
+
+    from mflux import Flux1, Config
+
     original_output = output
 
-    for i in range(n_images):
-        output = original_output.replace(".png", f"_{i}_{seed}.png")
+    if "-flux1" in config.IMAGE_MODEL_ID:
 
-        if "FLUX" in config.DIFF_MODEL_VERSION:
-            pipeline = FluxPipeline(
-                model_version=config.DIFF_MODEL_VERSION,
-                low_memory_mode=config.DIFF_LOW_MEMORY_MODE,
-                shift=config.DIFF_SHIFT,
-                use_t5=config.DIFF_USE_T5,
-                a16=config.DIFF_A16,
-                w16=config.DIFF_W16
-            )
-        else:
-            pipeline = DiffusionPipeline(
-                model_version=config.DIFF_MODEL_VERSION,
-                low_memory_mode=config.DIFF_LOW_MEMORY_MODE,
-                shift=config.DIFF_SHIFT,
-                use_t5=config.DIFF_USE_T5,
-                a16=config.DIFF_A16,
-                w16=config.DIFF_W16
-            )
-
-        image, _ = pipeline.generate_image(
-            prompt,
-            cfg_weight=config.IMAGE_CFG_WEIGHT,
-            num_steps=config.IMAGE_NUM_STEPS,
-            latent_size=(config.IMAGE_HEIGHT // 8, config.IMAGE_WIDTH // 8),
-            seed = seed,
-            negative_text=negative_prompt,
+        flux = Flux1.from_alias(
+            alias = config.IMAGE_MODEL_VERSION,
+            quantize = config.IMAGE_MODEL_QUANTIZATION,
         )
 
-        image.save(output)
-        seed = random.randint(0, 2**32 - 1)
+        for i in range(n_images):
+            output = original_output.replace(".png", f"_{i}_{seed}.png")
 
-        if n_images > 1 and i < n_images - 1:
-            image.show()
+            image = flux.generate_image(
+                seed=seed,
+                prompt=prompt,
+                config=Config(
+                    num_inference_steps=config.IMAGE_NUM_STEPS,  # "schnell" works well with 2-4 steps, "dev" works well with 20-25 steps
+                    height=config.IMAGE_HEIGHT,
+                    width=config.IMAGE_WIDTH,
+                )
+            )
 
-        del pipeline
-    
-    return output
+            image.save(output)
+            seed = random.randint(0, 2**32 - 1)
+
+            if n_images > 1 and i < n_images - 1:
+                pimage = Image.open(output)  
+                pimage.show()
+
+        return output
+    else:
+        raise ValueError("Only FLUX model is supported")

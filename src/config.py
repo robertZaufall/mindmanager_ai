@@ -34,7 +34,7 @@ the latest industry trends and best practices, offering practical solutions and 
 """
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -154,7 +154,7 @@ the latest industry trends and best practices, offering practical solutions and 
 # CLOUD_TYPE = 'LMSTUDIO+bartowski/llama-3.2-3b-instruct'               # ok
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-14b-instruct'                          # best
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-32b-instruct'                          # ok
-CLOUD_TYPE = 'LMSTUDIO+llama-3.3-70b-instruct'                        # best, slow
+# CLOUD_TYPE = 'LMSTUDIO+llama-3.3-70b-instruct'                        # best, slow
 
 # MLX server, macOS only (pip install -r requirements_mlx.txt --upgrade)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
@@ -474,9 +474,8 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # better
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-# CLOUD_TYPE_IMAGE = 'MLX+flux1'                             # best 
-CLOUD_TYPE_IMAGE = 'MLX+flux1-4bit'                        # best 
-# CLOUD_TYPE_IMAGE = 'MLX+sd3'                               # ok
+CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-dev-4bit'              # good 
         
 # IdeogramAI        
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                        # best
@@ -576,45 +575,30 @@ elif "MLX+" in CLOUD_TYPE_IMAGE:
     #IMAGE_EXPLICIT_STYLE = "computer collage art"
     IMAGE_NEGATIV_PROMPT = ""
 
-    IMAGE_HEIGHT = 768 # 1024 # 512 # 768
-    IMAGE_WIDTH = 768 # 1024 # 512 # 768
-
-    DIFF_MODEL = "argmaxinc/stable-diffusion"
+    IMAGE_HEIGHT = 1024 # 1024 # 512 # 768
+    IMAGE_WIDTH = 1024 # 1024 # 512 # 768
 
     IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if IMAGE_MODEL_ID == "flux1" or IMAGE_MODEL_ID == "flux1-4bit":
-        if IMAGE_MODEL_ID == "flux1":
-            DIFF_MODEL_VERSION = "argmaxinc/mlx-FLUX.1-schnell"
-            DIFF_LOW_MEMORY_MODE = True
-            DIFF_A16 = True
-            DIFF_W16 = True
-            IMAGE_NUM_STEPS = 4
-            IMAGE_CFG_WEIGHT = 0. 
-            DIFF_SHIFT = 1.0
-            DIFF_USE_T5 = True
-        elif IMAGE_MODEL_ID == "flux1-4bit":
-            DIFF_MODEL_VERSION = "argmaxinc/mlx-FLUX.1-schnell-4bit-quantized"
-            DIFF_LOW_MEMORY_MODE = True
-            DIFF_A16 = True
-            DIFF_W16 = True
-            IMAGE_NUM_STEPS = 4
-            IMAGE_CFG_WEIGHT = 0. 
-            DIFF_SHIFT = 1.0
-            DIFF_USE_T5 = True
-        else:
-            raise Exception("Error: Unknown MLX image model")
+    if "-flux1" in IMAGE_MODEL_ID:
 
-    elif IMAGE_MODEL_ID == "sd3":
-        DIFF_MODEL_VERSION = "argmaxinc/mlx-stable-diffusion-3-medium"
-        DIFF_LOW_MEMORY_MODE = True  # models offloading
-        DIFF_A16 = True
-        DIFF_W16 = True
-        IMAGE_NUM_STEPS = 50         # Number of diffusion steps
-        IMAGE_CFG_WEIGHT = 5. 
-        DIFF_SHIFT = 3.0             # Shift for diffusion sampling
-        DIFF_USE_T5 = False          # Engages T5 for stronger text embeddings (uses significantly more memory)
+        if "-schnell" in IMAGE_MODEL_ID:
+            IMAGE_MODEL_VERSION = "schnell"
+            IMAGE_NUM_STEPS = 2 # 2-4
+        elif "-dev" in IMAGE_MODEL_ID:
+            IMAGE_MODEL_VERSION = "dev"
+            IMAGE_NUM_STEPS = 20 # 20-25
+        else:
+            raise Exception("Error: image model version not supported using MLX")
+        
+        if "-4bit" in IMAGE_MODEL_ID:
+            IMAGE_MODEL_QUANTIZATION = 4
+        elif "-8bit" in IMAGE_MODEL_ID:
+            IMAGE_MODEL_QUANTIZATION = 8
+        else:
+            raise Exception("Error: image model quantization not supported using MLX")
+        
     else:
-        raise Exception("Error: Unknown MLX image model")
+        raise Exception("Error: image model not supported using MLX")
     
 elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
     IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
