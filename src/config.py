@@ -158,6 +158,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 
 # GPT4All
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
+# CLOUD_TYPE = 'GPT4ALL+Llama-3.3-70B-Instruct-Q4_K_M.gguf'             # best, slow
 
 # MLX server, macOS only (pip install -r requirements_mlx.txt --upgrade)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
@@ -354,6 +355,7 @@ elif "GPT4ALL+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     MODEL_PATH = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "nomic.ai", "GPT4ALL") # <- App default, SDK default -> "~/.cache/gpt4all/"
+    MAX_TOKENS = 2000
     ALLOW_DOWNLOAD = False
     DEVICE = "gpu"
     API_URL = ""

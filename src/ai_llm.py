@@ -8,7 +8,6 @@ import json
 import os
 import sys
 
-
 def call_llm_sequence(prompts_list, mermaid, topic_texts = "", check_valid_mermaid = True, data = "", mimeType = ""):
     new_mermaid = mermaid
 
@@ -234,11 +233,20 @@ def call_llm(str_user, data, mimeType):
 
     # GPT4ALL
     elif "GPT4ALL+" in config.CLOUD_TYPE:
+        if not os.path.exists(os.path.join(config.MODEL_PATH, config.MODEL_ID)):
+            for root, dirs, files in os.walk(config.MODEL_PATH):
+                for filename in files:
+                    if filename == config.MODEL_ID:
+                        config.MODEL_PATH = root
+                        break
+            if not os.path.exists(os.path.join(config.MODEL_PATH, config.MODEL_ID)):
+                raise Exception(f"Error: Model ID {config.MODEL_ID} not found in {config.MODEL_PATH}")
+
         from gpt4all import GPT4All
         model = GPT4All(config.MODEL_ID, model_path=config.MODEL_PATH, device=config.DEVICE, allow_download=config.ALLOW_DOWNLOAD)
 
         with model.chat_session(str_system):
-            response = model.generate(str_user, temp=config.LLM_TEMPERATURE)
+            response = model.generate(str_user, temp=config.LLM_TEMPERATURE, max_tokens=config.MAX_TOKENS)
 
         result = response.replace("```mermaid", "").replace("```", "").lstrip("\n")
 
