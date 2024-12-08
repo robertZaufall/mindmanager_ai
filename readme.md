@@ -173,7 +173,7 @@ There are some actions already predefined for quick execution.
 First of all you have to open the `config.py` in a text editor of your choice.  
 Don't be overwhelmed by the huge list of variables. Just pick the lines you need and set its values.  
 Use the apropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
-If you want to run local models with `Ollama` or `GPT4All` you have to have either a newer Apple Mac model with M1, M2, M3 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
+If you want to run local models with `Ollama`, `GPT4All`, `LMStudio`, `MLX` you have to have either a newer Apple Mac model with M1-M4 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
 
 ### General
 You can have more than one open document in MindManager. The document which should be processed must be the active document. For every processing a new document with the new topics will be created.  
