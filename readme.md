@@ -15,24 +15,25 @@ More animated examples are in the `doc` folder.
 ### Supported AI platforms and LLMs
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
-  - **Anthropic** w/ `Claude 3/3.5` (use your key)  
-  - **xAI** w/ `grok-beta` (use your key)  
-  - **Google** `Gemini` w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
+  - **Anthropic** w/ `Claude 3.5` models (use your key)  
+  - **xAI** w/ `grok-beta`, `grok-vision-beta` (use your key)  
+  - **Google Gemini** w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
   - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
   - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
   - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
-  - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral`
-  - **AWS Bedrock** w/ `Titan Text G1 Premier` (native), `Anthropic`, `Mistral` models (use your key + secret)  
+  - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral` (use your key)
+  - **AWS Bedrock** w/ `Nova`, `Titan` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
   - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` models (use your key)  
-  - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` (use your key)  
+  - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` models (use your key)  
   - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
   - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
   - **Fireworks AI** (platform)  w/ `Qwen 2.5`, `QwQ` (serverless) and more models (use your key)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
-  - **Ollama** (local) w/ any LLM (use `LLaMA`, `Zephyr` or `Mixtral` model for best results)
-  - **LMStudio** (local) w/ any `llama.cpp` or `MLX` model
-  - **MLX** (local w/ Apple Silicon) w/ any LLM (use `LLaMA`, `Qwen2.5` model for best results)
+  - **GPT4ALL** (local w/ SDK) w/ any `llama.cpp` model
+  - **Ollama** (local w/ API) w/ any `llama.cpp` model
+  - **LMStudio** (local w/ API) w/ any `llama.cpp` or `MLX` model
+  - **MLX** (local w/ API, Apple Silicon) w/ any `MLX` model
 
 ### Supported Image Generation Systems
   - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
@@ -42,7 +43,7 @@ More animated examples are in the `doc` folder.
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
   - **Black Forrest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`  (use your key)  
   - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
-  - **MLX** (local w/ Apple Silicon) w/ `Flux.1`, `SD3`
+  - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux.1` models
 
 ### Supported Professional Translation Services
  - **DeepL** (use your key)
@@ -212,10 +213,12 @@ The solution is best tested with `Azure OpenAI`. Results are perfect for every u
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
 Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
-### Anthropic Claude 3 / 3.5
-The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3 Opus` ist also very good but little bit expensive. Anthropic `Claude 3.5 Haiku` is good and cheap.
+### Anthropic Claude 3.5
+The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3.5 Haiku` is good and cheap.
 ### xAI grok
-Grok is very good and is able to refine mindmaps for several levels. By today (2024-10-21) only the `grok-beta` model is available in public preview.  
+Grok is very good and is able to refine mindmaps for several levels. The beta models `grok-beta` and `grok-vision-beta` are available. The vision model can be used for pdf ocr.  
+### Amazon Bedrock
+Amazon Bedrock has some native models as `Nova` (best), `Titan` (good) and host also 3rd party models of `Anthropic Claude 3.5` and `Mistral`.
 ### DeepSeek
 DeepSeek created an extraordinary open source model DeepSeek V2.5 which seems to be as good as GPT-4o.  
 ### Alibaba Cloud
@@ -227,10 +230,10 @@ Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` a
 ### Perplexity (platform)
 Perplexity works perfect as an universal LLM platform.  
 ### Hugging Face (platform)
-To access better models a pro-subscription is needed. `LLama-3-8B` still can be used.  
+To access better models a pro-subscription is needed. `LLaMA-3-8B` still can be used.  
 ### Open Router (platform)  
 On the Open Router platform there are a variety of models and systems available. Also fallback scenarios are supported. Furthermore you get access here to the newest OpenAI models like `o1-preview`.  
-### Ollama, LMStudio (hosted locally - no internet access needed)
+### GPT4ALL, Ollama, LMStudio (hosted locally - no internet access needed)
 Results are dependent on the used model. `LLaMA3`, `Zephyr` and `Mixtral` are working well.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
 MLX results are dependent on the used model. `LLaMA3` works well.
