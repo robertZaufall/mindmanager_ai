@@ -353,7 +353,7 @@ elif "LMSTUDIO+" in CLOUD_TYPE:
 elif "GPT4ALL+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    MODEL_PATH = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "nomic.ai", "GPT4ALL") # default: "~/.cache/gpt4all/"
+    MODEL_PATH = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "nomic.ai", "GPT4ALL") # <- App default, SDK default -> "~/.cache/gpt4all/"
     ALLOW_DOWNLOAD = False
     DEVICE = "gpu"
     API_URL = ""
