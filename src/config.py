@@ -28,9 +28,9 @@ MERMAID_TEMPLATE= """
 
 SYSTEM_PROMPT = """
 You are a highly experienced business consultant with expertise in 
-strategic planning, financial analysis, marketing, and organizational development. 
-Provide detailed, insightful, and professional advice tailored to the needs of business clients. Your responses should reflect 
-the latest industry trends and best practices, offering practical solutions and actionable recommendations.
+strategic planning, financial analysis, marketing, and organizational development.
+Provide detailed, insightful, and professional advice tailored to the needs of business clients.
+Your responses should reflect the latest industry trends and best practices.
 """
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
@@ -155,6 +155,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-14b-instruct'                          # best
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-32b-instruct'                          # ok
 # CLOUD_TYPE = 'LMSTUDIO+llama-3.3-70b-instruct'                        # best, slow
+
+# GPT4All
+# CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
 
 # MLX server, macOS only (pip install -r requirements_mlx.txt --upgrade)
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
@@ -346,6 +349,14 @@ elif "LMSTUDIO+" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True
     MODEL_ID = CLOUD_TYPE.split("+")[-1]
     API_URL="http://localhost:1234/v1"
+
+elif "GPT4ALL+" in CLOUD_TYPE:
+    OPENAI_COMPATIBILITY = True
+    MODEL_ID = CLOUD_TYPE.split("+")[-1]
+    MODEL_PATH = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "nomic.ai", "GPT4ALL") # default: "~/.cache/gpt4all/"
+    ALLOW_DOWNLOAD = False
+    DEVICE = "gpu"
+    API_URL = ""
 
 elif "ANTHROPIC" in CLOUD_TYPE:
     OPENAI_COMPATIBILITY = True

@@ -232,6 +232,20 @@ def call_llm(str_user, data, mimeType):
         if lines[0].startswith("  "):
             result = "\n".join(line[2:] for line in lines)
 
+    # GPT4ALL
+    elif "GPT4ALL+" in config.CLOUD_TYPE:
+        from gpt4all import GPT4All
+        model = GPT4All(config.MODEL_ID, model_path=config.MODEL_PATH, device=config.DEVICE, allow_download=config.ALLOW_DOWNLOAD)
+
+        with model.chat_session(str_system):
+            response = model.generate(str_user, temp=config.LLM_TEMPERATURE)
+
+        result = response.replace("```mermaid", "").replace("```", "").lstrip("\n")
+
+        lines = result.split("\n")
+        if lines[0].startswith("  "):
+            result = "\n".join(line[2:] for line in lines)
+
     # Vertex AI
     elif "VERTEXAI" in config.CLOUD_TYPE:
         import ai_gcp
