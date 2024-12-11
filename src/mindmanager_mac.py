@@ -76,6 +76,12 @@ class Mindmanager:
         topic_instance = topic.get()
         return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
 
+    def set_topic_from_mindmap_topic(self, topic, mindmap_topic):
+        pass
+
+    def add_relationship(self, guid1, guid2, label):
+        pass
+
     def set_title_to_topic(self, topic, topic_text):
         topic_instance = topic.get()
         topic_instance.title.set(topic_text)

@@ -13,12 +13,12 @@ class Mindmanager:
         self.library_folder = config.WINDOWS_LIBRARY_FOLDER
     
     def set_document_background_image(self, path):
-        bg_object = self.mindmanager.ActiveDocument.Background
-        if bg_object.HasImage:
-            bg_object.RemoveImage
-        bg_object.InsertImage(path)
-        bg_object.TileOption = 1 # center
-        bg_object.Transparency = 88
+        background = self.mindmanager.ActiveDocument.Background
+        if background.HasImage:
+            background.RemoveImage
+        background.InsertImage(path)
+        background.TileOption = 1 # center
+        background.Transparency = 88
 
     def document_exists(self):
         return True if self.mindmanager.ActiveDocument else False
@@ -84,9 +84,9 @@ class Mindmanager:
     def get_tags_from_topic(self, topic) -> list[mindmap_helper.MindmapTag]:
         tags = []
         text_labels = topic.TextLabels
-        if text_labels.Count > 0:
+        if text_labels.Count > 0 and text_labels.IsValid == True:
             for text_label in text_labels:
-                if text_label.IsValid == True:
+                if text_label.IsValid == True and text_label.GroupId == "":
                     tags.append(mindmap_helper.MindmapTag(
                         tag_text = text_label.Name
                     ))
@@ -100,10 +100,7 @@ class Mindmanager:
                 if relation.IsValid == True:
                     connected_object1 = relation.ConnectedObject1
                     connected_object2 = relation.ConnectedObject2
-                    if connected_object1 == topic:
-                        reference_direction = "OUT"
-                    else:
-                        reference_direction = "IN"
+                    reference_direction = 'OUT' if connected_object1 == topic else 'IN'
                     references.append(mindmap_helper.MindmapReference(
                         reference_object1 = str(connected_object1.Guid),
                         reference_object2 = str(connected_object2.Guid),
@@ -117,6 +114,36 @@ class Mindmanager:
         
     def add_subtopic_to_topic(self, topic, topic_text):
         return topic.AddSubtopic(topic_text)
+
+    def set_topic_from_mindmap_topic(self, topic, mindmap_topic):
+        if len(mindmap_topic.topic_tags) > 0:
+            for topic_tag in mindmap_topic.topic_tags:
+                topic.TextLabels.AddTextLabel(topic_tag.tag_text, True) # toggleIfMapMarker
+        
+        if mindmap_topic.topic_notes:
+            topic.Notes.Text = mindmap_topic.topic_notes.note_text
+        
+        if len(mindmap_topic.topic_icons) > 0:
+            for topic_icon in mindmap_topic.topic_icons:
+                topic.UserIcons.AddStockIcon(topic_icon.icon_index)
+        
+        if mindmap_topic.topic_image:
+            topic.CreateImage(mindmap_topic.topic_image.image_text)
+        
+        if mindmap_topic.topic_link:
+            topic.CreateHyperlink(mindmap_topic.topic_link.link_url)
+            for link in topic.Hyperlinks:
+                link.Title = mindmap_topic.topic_link.link_text
+                break
+        
+        if mindmap_topic.topic_guid:
+            mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
+        mindmap_topic.topic_guid = topic.Guid
+
+    def add_relationship(self, guid1, guid2, label):
+        object1 = self.mindmanager.ActiveDocument.FindByGuid(guid1)
+        object2 = self.mindmanager.ActiveDocument.FindByGuid(guid2)
+        object1.AllRelationships.AddToTopic(object2, label)
 
     def set_title_to_topic(self, topic, topic_text):
         topic.Text = topic_text
