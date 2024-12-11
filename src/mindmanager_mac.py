@@ -53,6 +53,13 @@ class Mindmanager:
 
     def get_link_from_topic(self, topic) -> mindmap_helper.MindmapLink:
         return None
+        
+        # this results in a severe runtime error of MindManager
+        link = topic.hyperlink_URL.get()
+        if link == k.missing_value:
+            link = None
+        label = topic.label.get() if link else None
+        return mindmap_helper.MindmapLink(link=link, label=label) if link else None
 
     def get_image_from_topic(self, topic) -> mindmap_helper.MindmapImage:
         return None
@@ -61,16 +68,29 @@ class Mindmanager:
         return []
 
     def get_notes_from_topic(self, topic) -> mindmap_helper.MindmapNotes:
-        return None
+        return topic.notes.get()
 
     def get_tags_from_topic(self, topic) -> list[mindmap_helper.MindmapTag]:
         return []
 
     def get_references_from_topic(self, topic) -> list[mindmap_helper.MindmapReference]:
-        return []
+        references = []
+        relationships = topic.relationships.get()
+        for relationship in relationships:
+            relationship_instance = relationship.get()
+            starting_location = relationship_instance.starting_location.get()
+            ending_location = relationship_instance.ending_location.get()
+            if starting_location == topic:
+                references.append(mindmap_helper.MindmapReference(
+                    reference_direction = 'OUT',
+                    reference_object1 = starting_location.id.get(),
+                    reference_object2 = ending_location.id.get()
+                ))
+            
+        return references
 
     def get_guid_from_topic(self, topic) -> str:
-        return None
+        return topic.id.get()
         
     def add_subtopic_to_topic(self, topic, topic_text):
         topic_instance = topic.get()
@@ -80,7 +100,10 @@ class Mindmanager:
         pass
 
     def add_relationship(self, guid1, guid2, label):
-        pass
+        object1 = self.mindmanager.documents[1].FindByGuid(guid1)
+        object2 = self.mindmanager.documents[1].FindByGuid(guid2)
+        # to be implemented
+        return
 
     def set_title_to_topic(self, topic, topic_text):
         topic_instance = topic.get()
