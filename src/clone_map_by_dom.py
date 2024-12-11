@@ -6,8 +6,9 @@ import mindmap_helper
 if sys.platform.startswith('win'):
     import mindmanager_win as mindmanager
     platform = "win"
-else:
-    raise Exception("Unsupported platform")
+elif sys.platform.startswith('darwin'):
+    import mindmanager_mac as mindmanager
+    platform = "darwin"
 
 def get_mindmap(mindm, topic=None):
     if topic is None:
