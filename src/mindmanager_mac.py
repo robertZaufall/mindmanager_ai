@@ -1,6 +1,7 @@
 import os
 import config
 from appscript import *
+import mindmap_helper
 
 class Mindmanager:
 
@@ -49,6 +50,24 @@ class Mindmanager:
 
     def get_subtopics_from_topic(self, topic):
         return topic.subtopics.get()
+
+    def get_link_from_topic(self, topic) -> mindmap_helper.MindmapLink:
+        return None
+
+    def get_image_from_topic(self, topic) -> mindmap_helper.MindmapImage:
+        return None
+
+    def get_icons_from_topic(self, topic) -> list[mindmap_helper.MindmapIcon]:
+        return []
+
+    def get_notes_from_topic(self, topic) -> mindmap_helper.MindmapNotes:
+        return None
+
+    def get_tags_from_topic(self, topic) -> list[mindmap_helper.MindmapTag]:
+        return []
+
+    def get_references_from_topic(self, topic) -> list[mindmap_helper.MindmapReference]:
+        return []
 
     def add_subtopic_to_topic(self, topic, topic_text):
         topic_instance = topic.get()

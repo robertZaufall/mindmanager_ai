@@ -1,6 +1,8 @@
 import win32com.client
 import config
 import os
+import mindmap_helper
+import tempfile
 
 class Mindmanager:
 
@@ -38,7 +40,53 @@ class Mindmanager:
 
     def get_subtopics_from_topic(self, topic):
         return topic.AllSubTopics
+    
+    def get_link_from_topic(self, topic) -> mindmap_helper.MindmapLink:
+        if topic.HasHyperlink:
+            hyperlink = topic.Hyperlink
+            return mindmap_helper.MindmapLink(
+                link_text = hyperlink.Title,
+                link_url = hyperlink.Address
+            )
+        return None
 
+    def get_image_from_topic(self, topic) -> mindmap_helper.MindmapImage:
+        if topic.HasImage:
+            image = topic.Image
+            temp_filename = tempfile.mktemp(suffix=".png")
+            image.Save(temp_filename, 3) # 3=PNG
+            return mindmap_helper.MindmapImage(
+                image_text = temp_filename
+            )
+        return None
+
+    def get_icons_from_topic(self, topic) -> list[mindmap_helper.MindmapIcon]:
+        icons = []
+        user_icons = topic.UserIcons
+        if user_icons.Count > 0:
+            for icon in user_icons:
+                if icon.Type == 1 and icon.IsValid == True: # Stock Icon
+                    icons.append(mindmap_helper.MindmapIcon(
+                        icon_text = icon.Name,
+                        icon_index = icon.StockIcon
+                    ))
+        return icons
+
+    def get_notes_from_topic(self, topic) -> mindmap_helper.MindmapNotes:
+        topic_notes = topic.Notes
+        if topic_notes:
+            if topic_notes.IsPlainTextOnly == True and topic_notes.IsValid == True and not topic_notes.IsTextEmpty:
+                return mindmap_helper.MindmapNotes(
+                    note_text = topic_notes.Text
+                )
+        return None
+
+    def get_tags_from_topic(self, topic) -> list[mindmap_helper.MindmapTag]:
+        return []
+
+    def get_references_from_topic(self, topic) -> list[mindmap_helper.MindmapReference]:
+        return []
+        
     def add_subtopic_to_topic(self, topic, topic_text):
         return topic.AddSubtopic(topic_text)
 
