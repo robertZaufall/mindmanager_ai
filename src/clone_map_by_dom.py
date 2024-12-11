@@ -12,13 +12,10 @@ else:
 def get_mindmap(mindm, topic=None):
     if topic is None:
         topic = mindm.get_central_topic()
-    
-    mindmap = get_mindmap_topic_from_topic(mindm, topic)
-
+        mindmap = get_mindmap_topic_from_topic(mindm, topic)
     return (mindmap)
 
 def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None):
-
     mindmap_topic = mindmap_helper.MindmapTopic(
         topic_guid=mindm.get_guid_from_topic(topic),
         topic_text=mindm.get_title_from_topic(topic), 
@@ -40,7 +37,6 @@ def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None):
         mindmap_subtopics.append(mindmap_subtopic)
 
     mindmap_topic.topic_subtopics = mindmap_subtopics
-
     return mindmap_topic 
 
 def set_topic_from_mindmap_topic(mindm, topic, mindmap_topic):
@@ -49,14 +45,13 @@ def set_topic_from_mindmap_topic(mindm, topic, mindmap_topic):
     for mindmap_subtopic in mindmap_topic.topic_subtopics:
         subtopic = mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
         set_topic_from_mindmap_topic(mindm, subtopic, mindmap_subtopic)
-
     return mindmap_topic
 
 def get_relationships_from_mindmap(mindmap, references):
     for reference in mindmap.topic_references:
         if reference.reference_direction == 'OUT':
             references.append(reference)
-
+            
     for mindmap_subtopic in mindmap.topic_subtopics:
         get_relationships_from_mindmap(mindmap_subtopic, references)
 
@@ -68,7 +63,6 @@ def get_guid_from_originalguid(mindmap, original_guid):
         guid = get_guid_from_originalguid(mindmap_subtopic, original_guid)
         if guid:
             return guid
-
     return None
 
 def create_mindmap(mindm, mindmap):
@@ -95,13 +89,8 @@ def main(charttype="auto"):
     mindmap = get_mindmap(mindm)
     create_mindmap(mindm, mindmap)
 
-    print(mindmap.topic_text)
-
 if __name__ == "__main__":
-    
     try:
         main()
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-
-
