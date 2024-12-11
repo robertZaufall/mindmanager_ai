@@ -18,16 +18,18 @@ class MindmapIcon:
 
 class MindmapTag:
     def __init__(self, tag_text: str = ''):
-        self.icon_text = tag_text
+        self.tag_text = tag_text
 
 class MindmapReference:
-    def __init__(self, reference_text: str = '', reference_direction: str = '', reference_label: str = ''):
-        self.icon_text = reference_text
-        self.reference_direction = reference_direction
+    def __init__(self, reference_object1: str = '', reference_object2: str = '', reference_direction: str = '', reference_label: str = ''):
+        self.reference_object1 = reference_object1,
+        self.reference_object2 = reference_object2,
+        self.reference_direction = reference_direction,
         self.reference_label = reference_label
 
 class MindmapTopic:
     def __init__(self, 
+                 topic_guid: str = '', # ok
                  topic_text: str = '', # ok
                  topic_level: int = 0, # ok
                  topic_parent: 'MindmapTopic' = None, # ok 
@@ -37,8 +39,9 @@ class MindmapTopic:
                  topic_icons: list['MindmapIcon'] = [], # ok
                  topic_notes: 'MindmapNotes' = None, # ok
                  topic_tags: list['MindmapTag'] = [], 
-                 topic_references: list['MindmapReference'] = []
+                 topic_references: list['MindmapReference'] = [] # ok
         ):
+        self.topic_guid = topic_guid
         self.topic_text = topic_text
         self.topic_level = topic_level
         self.topic_parent = topic_parent

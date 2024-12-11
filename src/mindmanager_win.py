@@ -82,10 +82,38 @@ class Mindmanager:
         return None
 
     def get_tags_from_topic(self, topic) -> list[mindmap_helper.MindmapTag]:
-        return []
+        tags = []
+        text_labels = topic.TextLabels
+        if text_labels.Count > 0:
+            for text_label in text_labels:
+                if text_label.IsValid == True:
+                    tags.append(mindmap_helper.MindmapTag(
+                        tag_text = text_label.Name
+                    ))
+        return tags
 
     def get_references_from_topic(self, topic) -> list[mindmap_helper.MindmapReference]:
-        return []
+        references = []
+        relationships = topic.AllRelationships
+        if relationships.Count > 0 and relationships.IsValid == True:
+            for relation in relationships:
+                if relation.IsValid == True:
+                    connected_object1 = relation.ConnectedObject1
+                    connected_object2 = relation.ConnectedObject2
+                    if connected_object1 == topic:
+                        reference_direction = "OUT"
+                    else:
+                        reference_direction = "IN"
+                    references.append(mindmap_helper.MindmapReference(
+                        reference_object1 = str(connected_object1.Guid),
+                        reference_object2 = str(connected_object2.Guid),
+                        reference_direction = reference_direction,
+                        reference_label = ''
+                    ))
+        return references
+    
+    def get_guid_from_topic(self, topic) -> str:
+        return topic.Guid
         
     def add_subtopic_to_topic(self, topic, topic_text):
         return topic.AddSubtopic(topic_text)

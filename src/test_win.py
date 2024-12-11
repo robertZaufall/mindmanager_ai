@@ -13,6 +13,7 @@ else:
 def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None):
 
     mindmap_topic = mindmap_helper.MindmapTopic(
+        topic_guid=mindm.get_guid_from_topic(topic),
         topic_text=mindm.get_title_from_topic(topic), 
         topic_level=mindm.get_level_from_topic(topic),
         topic_link=mindm.get_link_from_topic(topic),

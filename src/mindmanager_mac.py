@@ -69,6 +69,9 @@ class Mindmanager:
     def get_references_from_topic(self, topic) -> list[mindmap_helper.MindmapReference]:
         return []
 
+    def get_guid_from_topic(self, topic) -> str:
+        return None
+        
     def add_subtopic_to_topic(self, topic, topic_text):
         topic_instance = topic.get()
         return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
