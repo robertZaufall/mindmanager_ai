@@ -1,16 +1,21 @@
-import win32com.client
-import config
 import os
-import mindmap_helper
+import sys
+import win32com.client
 import tempfile
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from mindmap.mindmap_helper import *
+
+
 class Mindmanager:
+
+    WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindjet", "MindManager", "23", "Library", "ENU")
 
     def __init__(self, charttype):
         self.mindmanager = win32com.client.Dispatch("Mindmanager.Application")
         self.mindmanager.Options.BalanceNewMainTopics = True
         self.charttype = charttype
-        self.library_folder = config.WINDOWS_LIBRARY_FOLDER
+        self.library_folder = self.WINDOWS_LIBRARY_FOLDER
     
     def set_document_background_image(self, path):
         background = self.mindmanager.ActiveDocument.Background
@@ -41,58 +46,58 @@ class Mindmanager:
     def get_subtopics_from_topic(self, topic):
         return topic.AllSubTopics
     
-    def get_link_from_topic(self, topic) -> mindmap_helper.MindmapLink:
+    def get_link_from_topic(self, topic) -> MindmapLink:
         if topic.HasHyperlink:
             hyperlink = topic.Hyperlink
-            return mindmap_helper.MindmapLink(
+            return MindmapLink(
                 link_text = hyperlink.Title,
                 link_url = hyperlink.Address
             )
         return None
 
-    def get_image_from_topic(self, topic) -> mindmap_helper.MindmapImage:
+    def get_image_from_topic(self, topic) -> MindmapImage:
         if topic.HasImage:
             image = topic.Image
             temp_filename = tempfile.mktemp(suffix=".png")
             image.Save(temp_filename, 3) # 3=PNG
-            return mindmap_helper.MindmapImage(
+            return MindmapImage(
                 image_text = temp_filename
             )
         return None
 
-    def get_icons_from_topic(self, topic) -> list[mindmap_helper.MindmapIcon]:
+    def get_icons_from_topic(self, topic) -> list[MindmapIcon]:
         icons = []
         user_icons = topic.UserIcons
         if user_icons.Count > 0:
             for icon in user_icons:
                 if icon.Type == 1 and icon.IsValid == True: # Stock Icon
-                    icons.append(mindmap_helper.MindmapIcon(
+                    icons.append(MindmapIcon(
                         icon_text = icon.Name,
                         icon_index = icon.StockIcon
                     ))
         return icons
 
-    def get_notes_from_topic(self, topic) -> mindmap_helper.MindmapNotes:
+    def get_notes_from_topic(self, topic) -> MindmapNotes:
         topic_notes = topic.Notes
         if topic_notes:
             if topic_notes.IsPlainTextOnly == True and topic_notes.IsValid == True and not topic_notes.IsTextEmpty:
-                return mindmap_helper.MindmapNotes(
+                return MindmapNotes(
                     note_text = topic_notes.Text
                 )
         return None
 
-    def get_tags_from_topic(self, topic) -> list[mindmap_helper.MindmapTag]:
+    def get_tags_from_topic(self, topic) -> list[MindmapTag]:
         tags = []
         text_labels = topic.TextLabels
         if text_labels.Count > 0 and text_labels.IsValid == True:
             for text_label in text_labels:
                 if text_label.IsValid == True and text_label.GroupId == "":
-                    tags.append(mindmap_helper.MindmapTag(
+                    tags.append(MindmapTag(
                         tag_text = text_label.Name
                     ))
         return tags
 
-    def get_references_from_topic(self, topic) -> list[mindmap_helper.MindmapReference]:
+    def get_references_from_topic(self, topic) -> list[MindmapReference]:
         references = []
         relationships = topic.AllRelationships
         if relationships.Count > 0 and relationships.IsValid == True:
@@ -101,7 +106,7 @@ class Mindmanager:
                     connected_object1 = relation.ConnectedObject1
                     connected_object2 = relation.ConnectedObject2
                     reference_direction = 'OUT' if connected_object1 == topic else 'IN'
-                    references.append(mindmap_helper.MindmapReference(
+                    references.append(MindmapReference(
                         reference_object1 = str(connected_object1.Guid),
                         reference_object2 = str(connected_object2.Guid),
                         reference_direction = reference_direction,

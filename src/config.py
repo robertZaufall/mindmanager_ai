@@ -2,10 +2,6 @@ import os
 
 LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
-# set either MACOS_LIBRARY_FOLDER or WINDOWS_LIBRARY_FOLDER
-MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "23", "English", "Library")
-WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindjet", "MindManager", "23", "Library", "ENU")
-
 MARKMAP_TEMPLATE = """
 <div class="markmap">
 <script type="text/template">

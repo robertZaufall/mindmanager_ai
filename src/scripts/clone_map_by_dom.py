@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
 import sys
-import mindmap_helper
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from mindmap.mindmap_helper import *
 
 if sys.platform.startswith('win'):
-    import mindmanager_win as mindmanager
+    import mindmanager.mindmanager_win as mindmanager
     platform = "win"
 elif sys.platform.startswith('darwin'):
-    import mindmanager_mac as mindmanager
+    import mindmanager.mindmanager_mac as mindmanager
     platform = "darwin"
 
 def get_mindmap(mindm, topic=None):
@@ -17,7 +20,7 @@ def get_mindmap(mindm, topic=None):
     return (mindmap)
 
 def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None):
-    mindmap_topic = mindmap_helper.MindmapTopic(
+    mindmap_topic = MindmapTopic(
         topic_guid=mindm.get_guid_from_topic(topic),
         topic_text=mindm.get_title_from_topic(topic), 
         topic_level=mindm.get_level_from_topic(topic),

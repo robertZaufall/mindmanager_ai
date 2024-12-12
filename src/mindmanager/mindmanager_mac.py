@@ -1,14 +1,18 @@
 import os
-import config
+import sys
 from appscript import *
-import mindmap_helper
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from mindmap.mindmap_helper import *
 
 class Mindmanager:
+
+    MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "23", "English", "Library")
 
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
         self.charttype = charttype
-        self.library_folder = config.MACOS_LIBRARY_FOLDER
+        self.library_folder = self.MACOS_LIBRARY_FOLDER
         self.orgchart_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Org-Chart Map.mmat"))
         self.radial_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Radial Map.mmat"))
     
@@ -51,7 +55,7 @@ class Mindmanager:
     def get_subtopics_from_topic(self, topic):
         return topic.subtopics.get()
 
-    def get_link_from_topic(self, topic) -> mindmap_helper.MindmapLink:
+    def get_link_from_topic(self, topic) -> MindmapLink:
         return None
         
         # this results in a severe runtime error of MindManager
@@ -59,21 +63,21 @@ class Mindmanager:
         if link == k.missing_value:
             link = None
         label = topic.label.get() if link else None
-        return mindmap_helper.MindmapLink(link=link, label=label) if link else None
+        return MindmapLink(link=link, label=label) if link else None
 
-    def get_image_from_topic(self, topic) -> mindmap_helper.MindmapImage:
+    def get_image_from_topic(self, topic) -> MindmapImage:
         return None
 
-    def get_icons_from_topic(self, topic) -> list[mindmap_helper.MindmapIcon]:
+    def get_icons_from_topic(self, topic) -> list[MindmapIcon]:
         return []
 
-    def get_notes_from_topic(self, topic) -> mindmap_helper.MindmapNotes:
+    def get_notes_from_topic(self, topic) -> MindmapNotes:
         return topic.notes.get()
 
-    def get_tags_from_topic(self, topic) -> list[mindmap_helper.MindmapTag]:
+    def get_tags_from_topic(self, topic) -> list[MindmapTag]:
         return []
 
-    def get_references_from_topic(self, topic) -> list[mindmap_helper.MindmapReference]:
+    def get_references_from_topic(self, topic) -> list[MindmapReference]:
         references = []
         relationships = topic.relationships.get()
         for relationship in relationships:
@@ -81,7 +85,7 @@ class Mindmanager:
             starting_location = relationship_instance.starting_location.get()
             ending_location = relationship_instance.ending_location.get()
             if starting_location == topic:
-                references.append(mindmap_helper.MindmapReference(
+                references.append(MindmapReference(
                     reference_direction = 'OUT',
                     reference_object1 = starting_location.id.get(),
                     reference_object2 = ending_location.id.get()

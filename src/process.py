@@ -16,10 +16,10 @@ import ai_image
 import ai_translation
 
 if sys.platform.startswith('win'):
-    import mindmanager_win as mindmanager
+    import mindmanager.mindmanager_win as mindmanager
     platform = "win"
 elif sys.platform.startswith('darwin'):
-    import mindmanager_mac as mindmanager
+    import mindmanager.mindmanager_mac as mindmanager
     platform = "darwin"
 
 def recurse_topics(mindm, mermaid_diagram, this_topic, level):

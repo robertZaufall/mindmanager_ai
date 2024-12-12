@@ -13,3 +13,4 @@ token_cache.json
 .aider*
 test/~$Test_DOM.mmap.~$lock
 src/import/**
+**.cpython-312.pyc
