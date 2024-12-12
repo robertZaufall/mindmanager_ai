@@ -34,7 +34,7 @@ Your responses should reflect the latest industry trends and best practices.
 """
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -70,13 +70,14 @@ Your responses should reflect the latest industry trends and best practices.
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # good
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # better
-CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-exp'                            # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-exp'                            # best in class
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # good (frequent 'recitation' errors)
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # good
 # CLOUD_TYPE = 'VERTEXAI+gemini-pro-experimental'                       # best, does not come to an end every time
 # CLOUD_TYPE = 'VERTEXAI+gemini-flash-experimental'                     # good
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-exp'                          # best in class
 
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
