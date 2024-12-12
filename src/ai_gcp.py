@@ -97,7 +97,7 @@ def call_llm_gcp(str_user, data, mimeType):
         print("finishReason is " + finish_reason)
 
     result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
-    result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
+    result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n").lstrip()
 
     return result
 

@@ -335,7 +335,7 @@ def call_llm(str_user, data, mimeType):
         if "FLASH" in config.CLOUD_TYPE:
             result = result.replace("2 space", "")
         
-        result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n")
+        result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n").lstrip()
 
     # Anthropic
     elif "ANTHROPIC" in config.CLOUD_TYPE:
