@@ -2,6 +2,7 @@ import os
 import sys
 import win32com.client
 import tempfile
+from PIL import Image
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import *
@@ -75,6 +76,15 @@ class Mindmanager:
                         icon_text = icon.Name,
                         icon_index = icon.StockIcon
                     ))
+                elif icon.Type == 2 and icon.IsValid == True:
+                    temp_filename = tempfile.mktemp(suffix=".png")
+                    icon.Save(temp_filename, 3) # 3=PNG
+                    icons.append(MindmapIcon(
+                        icon_text = icon.Name,
+                        icon_is_stock_icon = False,
+                        icon_signature = icon.CustomIconSignature,
+                        icon_path = temp_filename
+                    ))
         return icons
 
     def get_notes_from_topic(self, topic) -> MindmapNotes:
@@ -123,7 +133,10 @@ class Mindmanager:
     def add_subtopic_to_topic(self, topic, topic_text):
         return topic.AddSubtopic(topic_text)
 
-    def set_topic_from_mindmap_topic(self, topic, mindmap_topic):
+    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
+        if topic.Text != mindmap_topic.topic_text:
+            topic.Text = mindmap_topic.topic_text
+
         if len(mindmap_topic.topic_tags) > 0:
             for topic_tag in mindmap_topic.topic_tags:
                 topic.TextLabels.AddTextLabel(topic_tag.tag_text, True) # toggleIfMapMarker
@@ -140,7 +153,14 @@ class Mindmanager:
         
         if len(mindmap_topic.topic_icons) > 0:
             for topic_icon in mindmap_topic.topic_icons:
-                topic.UserIcons.AddStockIcon(topic_icon.icon_index)
+                if topic_icon.icon_is_stock_icon:
+                    topic.UserIcons.AddStockIcon(topic_icon.icon_index)
+                else:
+                    if len(map_icons) > 0 and topic_icon.icon_signature != "":
+                        topic.UserIcons.AddCustomIconFromMap(topic_icon.icon_signature)
+                    else:
+                        if os.path.exists(topic_icon.icon_path):
+                            topic.UserIcons.AddCustomIcon(topic_icon.icon_path)
         
         if mindmap_topic.topic_image:
             topic.CreateImage(mindmap_topic.topic_image.image_text)

@@ -6,73 +6,11 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import *
 
-if sys.platform.startswith('win'):
-    import mindmanager.mindmanager_win as mindmanager
-    platform = "win"
-elif sys.platform.startswith('darwin'):
-    import mindmanager.mindmanager_mac as mindmanager
-    platform = "darwin"
-
-def get_mindmap(mindm, topic=None):
-    if topic is None:
-        topic = mindm.get_central_topic()
-        mindmap = get_mindmap_topic_from_topic(mindm, topic)
-    return (mindmap)
-
-def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None):
-    mindmap_topic = MindmapTopic(
-        topic_guid=mindm.get_guid_from_topic(topic),
-        topic_text=mindm.get_title_from_topic(topic), 
-        topic_level=mindm.get_level_from_topic(topic),
-        topic_link=mindm.get_link_from_topic(topic),
-        topic_image=mindm.get_image_from_topic(topic),
-        topic_icons=mindm.get_icons_from_topic(topic),
-        topic_notes=mindm.get_notes_from_topic(topic),
-        topic_tags=mindm.get_tags_from_topic(topic),
-        topic_references=mindm.get_references_from_topic(topic),
-        topic_parent=parent_topic
-    )
-
-    subtopics = mindm.get_subtopics_from_topic(topic)
-    mindmap_subtopics = []
-
-    for subtopic in subtopics:
-        mindmap_subtopic = get_mindmap_topic_from_topic(mindm, subtopic, mindmap_topic)
-        mindmap_subtopics.append(mindmap_subtopic)
-
-    mindmap_topic.topic_subtopics = mindmap_subtopics
-    return mindmap_topic 
-
-def set_topic_from_mindmap_topic(mindm, topic, mindmap_topic):
-    mindm.set_topic_from_mindmap_topic(topic, mindmap_topic)
-
-    for mindmap_subtopic in mindmap_topic.topic_subtopics:
-        subtopic = mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
-        set_topic_from_mindmap_topic(mindm, subtopic, mindmap_subtopic)
-    return mindmap_topic
-
-def get_relationships_from_mindmap(mindmap, references):
-    for reference in mindmap.topic_references:
-        if reference.reference_direction == 'OUT':
-            references.append(reference)
-            
-    for mindmap_subtopic in mindmap.topic_subtopics:
-        get_relationships_from_mindmap(mindmap_subtopic, references)
-
-def get_guid_from_originalguid(mindmap, original_guid):
-    if mindmap.topic_originalguid == original_guid:
-        return mindmap.topic_guid
-
-    for mindmap_subtopic in mindmap.topic_subtopics:
-        guid = get_guid_from_originalguid(mindmap_subtopic, original_guid)
-        if guid:
-            return guid
-    return None
-
 def create_mindmap(mindm, mindmap):
     mindm.add_document(0)
+    map_icons = []
     topic = mindm.get_central_topic()
-    set_topic_from_mindmap_topic(mindm, topic, mindmap)
+    set_topic_from_mindmap_topic(mindm, topic, mindmap, map_icons)
 
     references = []
     get_relationships_from_mindmap(mindmap, references)
