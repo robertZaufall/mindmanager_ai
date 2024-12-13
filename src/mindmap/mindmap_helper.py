@@ -8,8 +8,10 @@ class MindmapImage:
         self.image_text = image_text
 
 class MindmapNotes:
-    def __init__(self, note_text: str = ''):
+    def __init__(self, note_text: str = '', note_xhtml: str = '', note_rtf: str = ''):
         self.note_text = note_text
+        self.note_xhtml = note_xhtml
+        self.note_rtf = note_rtf
 
 class MindmapIcon:
     def __init__(self, icon_text: str = '', icon_index: int = 1): # 1=unknown
@@ -40,7 +42,8 @@ class MindmapTopic:
                  topic_icons: list['MindmapIcon'] = [], # ok
                  topic_notes: 'MindmapNotes' = None, # ok
                  topic_tags: list['MindmapTag'] = [], 
-                 topic_references: list['MindmapReference'] = [] # ok
+                 topic_references: list['MindmapReference'] = [], # ok
+                 topic_internalinfo: str = ''
         ):
         self.topic_guid = topic_guid
         self.topic_originalguid = topic_originalguid
@@ -54,6 +57,7 @@ class MindmapTopic:
         self.topic_tags = topic_tags
         self.topic_references = topic_references
         self.topic_subtopics = topic_subtopics
+        self.topic_internalinfo = topic_internalinfo
 
 class MindMapGuidMap:
     def __init__(self, guid: str = '', original_guid: str = ''):

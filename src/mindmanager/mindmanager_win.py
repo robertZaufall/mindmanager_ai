@@ -80,10 +80,13 @@ class Mindmanager:
     def get_notes_from_topic(self, topic) -> MindmapNotes:
         topic_notes = topic.Notes
         if topic_notes:
-            if topic_notes.IsPlainTextOnly == True and topic_notes.IsValid == True and not topic_notes.IsTextEmpty:
-                return MindmapNotes(
-                    note_text = topic_notes.Text
-                )
+            if topic_notes.IsValid == True and not topic_notes.IsEmpty: 
+                if topic_notes.TextRTF != "":
+                    return MindmapNotes(note_rtf = topic_notes.TextRTF)
+                if topic_notes.TextXHTML != "":
+                    return MindmapNotes(note_xhtml = topic_notes.TextXHTML)
+                if topic_notes.Text != "":
+                    return MindmapNotes(note_text = topic_notes.Text)
         return None
 
     def get_tags_from_topic(self, topic) -> list[MindmapTag]:
@@ -126,7 +129,14 @@ class Mindmanager:
                 topic.TextLabels.AddTextLabel(topic_tag.tag_text, True) # toggleIfMapMarker
         
         if mindmap_topic.topic_notes:
-            topic.Notes.Text = mindmap_topic.topic_notes.note_text
+            if mindmap_topic.topic_notes.note_text:
+                topic.Notes.Text = mindmap_topic.topic_notes.note_text
+            else:
+                if mindmap_topic.topic_notes.note_xhtml:
+                    topic.Notes.TextXHTML = mindmap_topic.topic_notes.note_xhtml
+                else:
+                    if mindmap_topic.topic_notes.note_rtf:
+                        topic.Notes.TextRTF = mindmap_topic.topic_notes.note_rtf
         
         if len(mindmap_topic.topic_icons) > 0:
             for topic_icon in mindmap_topic.topic_icons:
