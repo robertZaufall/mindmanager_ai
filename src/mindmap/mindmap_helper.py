@@ -21,12 +21,14 @@ class MindmapIcon:
                  icon_is_stock_icon = True, 
                  icon_index: int = 1, 
                  icon_signature: str = '', 
-                 icon_path: str = ""): # index 1=unknown
+                 icon_path: str = "",
+                 icon_group = ''):
         self.icon_text = icon_text
         self.icon_is_stock_icon = icon_is_stock_icon
         self.icon_index = icon_index
         self.icon_signature = icon_signature
         self.icon_path = icon_path
+        self.icon_group = icon_group
 
 class MindmapTag:
     def __init__(self, tag_text: str = ''):
@@ -52,7 +54,7 @@ class MindmapTopic:
                  topic_parent: 'MindmapTopic' = None, # ok 
                  topic_subtopics: list['MindmapTopic'] = [], # ok
                  topic_link: 'MindmapLink' = None, # ok
-                 topic_image: str = None, # ok
+                 topic_image: 'MindmapImage' = None, # ok
                  topic_icons: list['MindmapIcon'] = [], # ok
                  topic_notes: 'MindmapNotes' = None, # ok
                  topic_tags: list['MindmapTag'] = [], 
