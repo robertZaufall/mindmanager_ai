@@ -103,6 +103,9 @@ class Mindmanager:
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic):
         pass
 
+    def create_map_icons(self, map_icons, map_icons_goup=None):
+        pass
+
     def add_relationship(self, guid1, guid2, label):
         object1 = self.mindmanager.documents[1].FindByGuid(guid1)
         object2 = self.mindmanager.documents[1].FindByGuid(guid2)
