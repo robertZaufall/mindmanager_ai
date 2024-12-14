@@ -30,7 +30,7 @@ Your responses should reflect the latest industry trends and best practices.
 """
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -85,6 +85,8 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
 # CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # best
+# CLOUD_TYPE = 'XAI+grok-2-1212'                                        # best
+CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # best
 
 # DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
