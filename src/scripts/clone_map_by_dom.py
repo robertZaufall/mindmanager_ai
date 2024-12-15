@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-
 import sys
 import os
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import *
 
-def create_mindmap(mindm, mindmap):
+def create_mindmap(mindm, mindmap, map_icons):
     mindm.add_document(0)
-    map_icons = []
+    mindm.create_map_icons(map_icons)
     topic = mindm.get_central_topic()
     set_topic_from_mindmap_topic(mindm, topic, mindmap, map_icons)
 
@@ -23,13 +21,13 @@ def create_mindmap(mindm, mindmap):
 
 def main(charttype="auto"):
     mindm = mindmanager.Mindmanager(charttype)
-
     if not mindm.document_exists():
         print("No document found.")    
         return
 
+    map_icons = []
     mindmap = get_mindmap(mindm)
-    create_mindmap(mindm, mindmap)
+    create_mindmap(mindm, mindmap, map_icons)
 
 if __name__ == "__main__":
     try:

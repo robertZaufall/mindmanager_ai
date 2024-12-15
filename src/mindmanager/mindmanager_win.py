@@ -175,20 +175,19 @@ class Mindmanager:
             mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
         mindmap_topic.topic_guid = topic.Guid
 
-    def create_map_icons(self, map_icons, map_icons_group=None):
-        if map_icons_group:
-            if len(map_icons) > 0:
-                document = self.mindmanager.ActiveDocument
+    def create_map_icons(self, map_icons):
+        if len(map_icons) > 0:
+            document = self.mindmanager.ActiveDocument
 
-                icon_groups = set(map_icon.icon_group for map_icon in map_icons if map_icon.icon_group)
-                for icon_group in icon_groups:
-                    group = document.MapMarkerGroups.AddIconMarkerGroup(icon_group)
-                    i = 1
-                    for map_icon in map_icons:
-                        if map_icon.icon_group == icon_group:
-                            label = map_icon.icon_text
-                            marker = group.AddCustomIconMarker(label, map_icon.icon_path)
-                            map_icon.icon_signature = marker.Icon.CustomIconSignature
+            icon_groups = set(map_icon.icon_group for map_icon in map_icons if map_icon.icon_group)
+            for icon_group in icon_groups:
+                group = document.MapMarkerGroups.AddIconMarkerGroup(icon_group)
+                i = 1
+                for map_icon in map_icons:
+                    if map_icon.icon_group == icon_group:
+                        label = map_icon.icon_text
+                        marker = group.AddCustomIconMarker(label, map_icon.icon_path)
+                        map_icon.icon_signature = marker.Icon.CustomIconSignature
 
     def add_relationship(self, guid1, guid2, label):
         object1 = self.mindmanager.ActiveDocument.FindByGuid(guid1)

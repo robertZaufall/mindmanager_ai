@@ -100,10 +100,10 @@ class Mindmanager:
         topic_instance = topic.get()
         return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
 
-    def set_topic_from_mindmap_topic(self, topic, mindmap_topic):
+    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         pass
 
-    def create_map_icons(self, map_icons, map_icons_goup=None):
+    def create_map_icons(self, map_icons):
         pass
 
     def add_relationship(self, guid1, guid2, label):
