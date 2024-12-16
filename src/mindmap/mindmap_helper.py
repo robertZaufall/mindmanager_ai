@@ -30,6 +30,12 @@ class MindmapIcon:
         self.icon_path = icon_path
         self.icon_group = icon_group
 
+class MindmapAttribute:
+    def __init__(self, attribute_namespace: str = 'mindmanager.ai', attribute_name: str = '', attribute_value: str = ''):
+        self.attribute_namespace = attribute_namespace
+        self.attribute_name = attribute_name
+        self.attribute_value = attribute_value
+
 class MindmapTag:
     def __init__(self, tag_text: str = ''):
         self.tag_text = tag_text
@@ -59,8 +65,8 @@ class MindmapTopic:
                  topic_notes: 'MindmapNotes' = None, # ok
                  topic_tags: list['MindmapTag'] = [], 
                  topic_references: list['MindmapReference'] = [], # ok
-                 topic_internalinfo: str = '',
-                 map_icons: list['MindmapIcon'] = []
+                 topic_attributes: list['MindmapAttribute'] = [MindmapAttribute(attribute_name='id')],
+                 map_icons: list['MindmapIcon'] = [],
         ):
         self.topic_guid = topic_guid
         self.topic_originalguid = topic_originalguid
@@ -74,7 +80,7 @@ class MindmapTopic:
         self.topic_tags = topic_tags
         self.topic_references = topic_references
         self.topic_subtopics = topic_subtopics
-        self.topic_internalinfo = topic_internalinfo
+        self.topic_attributes = topic_attributes
         self.map_icons = map_icons
 
 class MindMapGuidMap:
@@ -89,13 +95,13 @@ elif sys.platform.startswith('darwin'):
     import mindmanager.mindmanager_mac as mindmanager
     platform = "darwin"
 
-def get_mindmap(mindm, topic=None):
+def get_mindmap(mindm, topic=None, attributes_template=[MindmapAttribute(attribute_name='id')]):
     if topic is None:
         topic = mindm.get_central_topic()
-        mindmap = get_mindmap_topic_from_topic(mindm, topic)
+        mindmap = get_mindmap_topic_from_topic(mindm, topic, attributes_template=attributes_template)
     return (mindmap)
 
-def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None):
+def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None, attributes_template=[]):
     mindmap_topic = MindmapTopic(
         topic_guid=mindm.get_guid_from_topic(topic),
         topic_text=mindm.get_title_from_topic(topic), 
@@ -106,14 +112,15 @@ def get_mindmap_topic_from_topic(mindm, topic, parent_topic=None):
         topic_notes=mindm.get_notes_from_topic(topic),
         topic_tags=mindm.get_tags_from_topic(topic),
         topic_references=mindm.get_references_from_topic(topic),
-        topic_parent=parent_topic
+        topic_parent=parent_topic,
+        topic_attributes=mindm.get_attributes_from_topic(topic, attributes_template),
     )
 
     subtopics = mindm.get_subtopics_from_topic(topic)
     mindmap_subtopics = []
 
     for subtopic in subtopics:
-        mindmap_subtopic = get_mindmap_topic_from_topic(mindm, subtopic, mindmap_topic)
+        mindmap_subtopic = get_mindmap_topic_from_topic(mindm, subtopic, mindmap_topic, attributes_template)
         mindmap_subtopics.append(mindmap_subtopic)
 
     mindmap_topic.topic_subtopics = mindmap_subtopics
@@ -144,4 +151,3 @@ def set_topic_from_mindmap_topic(mindm, topic, mindmap_topic, map_icons):
         subtopic = mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
         set_topic_from_mindmap_topic(mindm, subtopic, mindmap_subtopic, map_icons)
     return mindmap_topic
-

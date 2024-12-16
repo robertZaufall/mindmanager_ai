@@ -93,6 +93,10 @@ class Mindmanager:
             
         return references
 
+    def get_attributes_from_topic(self, topic, attributes_template: list[MindmapAttribute]=[]) -> list[MindmapAttribute]:
+        attributes = []
+        return attributes
+
     def get_guid_from_topic(self, topic) -> str:
         return topic.id.get()
         

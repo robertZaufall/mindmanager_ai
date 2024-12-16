@@ -26,7 +26,8 @@ def main(charttype="auto"):
         return
 
     map_icons = []
-    mindmap = get_mindmap(mindm)
+    attributes = [MindmapAttribute(attribute_name='id'), MindmapAttribute(attribute_name='typeId')]
+    mindmap = get_mindmap(mindm, attributes_template=attributes)
     create_mindmap(mindm, mindmap, map_icons)
 
 if __name__ == "__main__":
