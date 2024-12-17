@@ -399,7 +399,7 @@ def call_llm(str_user, data, mimeType):
             "anthropic-version": config.ANTHROPIC_VERSION,
             config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
         }
-        if config.BETA_HEADER_KEY != "":
+        if config.BETA_HEADER_KEY and config.BETA_HEADER_KEY != "":
             headers[config.BETA_HEADER_KEY] = config.BETA_HEADER_TEXT
 
         response = requests.post(

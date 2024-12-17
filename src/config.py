@@ -42,6 +42,7 @@ Your responses should reflect the latest industry trends and best practices.
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
+# CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 
@@ -55,7 +56,7 @@ Your responses should reflect the latest industry trends and best practices.
 # CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                             # best
 
 # Anthropic     
-# CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
+CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-haiku-20240307'                      # ok
@@ -86,7 +87,7 @@ Your responses should reflect the latest industry trends and best practices.
 # CLOUD_TYPE = 'XAI+grok-beta'                                          # good
 # CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # best
 # CLOUD_TYPE = 'XAI+grok-2-1212'                                        # best
-CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # best
+# CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # best
 
 # DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
@@ -372,9 +373,9 @@ elif "ANTHROPIC" in CLOUD_TYPE:
         if "sonnet" in MODEL_ID:
             MULTIMODAL = True
             MULTIMODAL_MIME_TYPES = ["application/pdf"]
-            BETA_HEADER_KEY = "anthropic-beta"
-            beta = "pdfs-2024-09-25"
-            BETA_HEADER_TEXT = beta if BETA_HEADER_TEXT == "" else BETA_HEADER_TEXT + "," + beta
+            #BETA_HEADER_KEY = "anthropic-beta"
+            #beta = "pdfs-2024-09-25"
+            #BETA_HEADER_TEXT = beta if BETA_HEADER_TEXT == "" else BETA_HEADER_TEXT + "," + beta
     
     ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
     ANTHROPIC_VERSION="2023-06-01"
