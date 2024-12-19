@@ -29,7 +29,7 @@ Provide detailed, insightful, and professional advice tailored to the needs of b
 Your responses should reflect the latest industry trends and best practices.
 """
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
@@ -56,7 +56,7 @@ Your responses should reflect the latest industry trends and best practices.
 # CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                             # best
 
 # Anthropic     
-CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
+# CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-haiku-20240307'                      # ok
@@ -68,6 +68,7 @@ CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # good
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # better
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-exp'                            # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-1219'              # response not compatible
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # good (frequent 'recitation' errors)
