@@ -223,10 +223,13 @@ class Mindmanager:
                         marker = group.AddCustomIconMarker(label, map_icon.icon_path)
                         map_icon.icon_signature = marker.Icon.CustomIconSignature
 
-    def add_relationship(self, guid1, guid2, label):
+    def add_relationship(self, guid1, guid2, label=''):
         object1 = self.mindmanager.ActiveDocument.FindByGuid(guid1)
         object2 = self.mindmanager.ActiveDocument.FindByGuid(guid2)
-        object1.AllRelationships.AddToTopic(object2, label)
+        if object1 and object2:
+            if object1.ParentTopic == object2 or object2.ParentTopic == object1:
+                return
+            object1.AllRelationships.AddToTopic(object2, label)
 
     def set_title_to_topic(self, topic, topic_text):
         topic.Text = topic_text

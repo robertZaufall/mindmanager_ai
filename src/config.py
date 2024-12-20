@@ -29,7 +29,7 @@ Provide detailed, insightful, and professional advice tailored to the needs of b
 Your responses should reflect the latest industry trends and best practices.
 """
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
@@ -42,7 +42,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
-# CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
+CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 

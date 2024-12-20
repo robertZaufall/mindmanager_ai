@@ -144,10 +144,33 @@ def get_guid_from_originalguid(mindmap, original_guid):
             return guid
     return None
 
-def set_topic_from_mindmap_topic(mindm, topic, mindmap_topic, map_icons):
+def get_attribute_from_mindmap_topic(attributes, attribute_name, attribute_namespace='mindmanager.ai'):
+    for attribute in attributes:
+        if attribute.attribute_name == attribute_name and attribute.attribute_namespace == attribute_namespace:
+            return attribute.attribute_value
+    return None
+
+def set_topic_from_mindmap_topic(mindm, topic, mindmap_topic, map_icons, done = {}, level=0):
     mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
 
+    if level <= 1:
+        done = {}
+    elif level >= 2: 
+        topic_id = get_attribute_from_mindmap_topic(mindmap_topic.topic_attributes, 'id')
+        if topic_id:
+            done[topic_id] = topic.guid
+
     for mindmap_subtopic in mindmap_topic.topic_subtopics:
-        subtopic = mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
-        set_topic_from_mindmap_topic(mindm, subtopic, mindmap_subtopic, map_icons)
+        subtopic_id = get_attribute_from_mindmap_topic(mindmap_subtopic.topic_attributes, 'id')
+        if subtopic_id in done:
+            parent = mindmap_subtopic.topic_parent
+            parent_id = get_attribute_from_mindmap_topic(parent.topic_attributes, 'id')
+            if parent_id:
+                link_from = mindmap_subtopic.topic_guid
+                if parent_id in done:
+                    link_to = done[parent_id]
+                    mindm.add_relationship(link_from, link_to)
+        else:
+            subtopic = mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
+            set_topic_from_mindmap_topic(mindm, subtopic, mindmap_subtopic, map_icons, done, level+1)
     return mindmap_topic

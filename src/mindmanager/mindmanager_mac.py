@@ -110,7 +110,7 @@ class Mindmanager:
     def create_map_icons(self, map_icons):
         pass
 
-    def add_relationship(self, guid1, guid2, label):
+    def add_relationship(self, guid1, guid2, label = ''):
         object1 = self.mindmanager.documents[1].FindByGuid(guid1)
         object2 = self.mindmanager.documents[1].FindByGuid(guid2)
         # to be implemented
