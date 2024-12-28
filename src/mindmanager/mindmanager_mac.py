@@ -24,16 +24,19 @@ class Mindmanager:
 
     def get_central_topic(self):
         object = self.mindmanager.documents[1].central_topic.get()
+
         return object
         '''
-        object_ = object.properties.get()
-        object__ = object.attributes.get()
-        object__1 = object__[0].get()
-        object__2 = object__[1].get()
-        object__1_ = object__1.properties.get()
-        object__2_ = object__2.properties.get()
+        props = object.properties.get()
+        print(props)
+
+        attributes = object.attributes.get()
+        print(attributes)
+
         task = object.task.get()
-        task_ = task.properties.get()
+        task_properties = task.properties.get()
+        print(task_properties)
+
         callouts = object.callouts.get()
         relationships = object.relationships.get()
         subtopics = object.subtopics.get()
