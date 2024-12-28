@@ -30,7 +30,7 @@ Your responses should reflect the latest industry trends and best practices.
 """
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
 # CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
@@ -42,7 +42,7 @@ Your responses should reflect the latest industry trends and best practices.
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
 # CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
-CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
+# CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 
@@ -91,7 +91,7 @@ CLOUD_TYPE = 'OPENAI+o1'                                              # not avai
 # CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # best
 
 # DeepSeek
-# CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
+# CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
 
 # Alibaba Cloud
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-max'                                  # best, max token output only 2000
@@ -116,16 +116,14 @@ CLOUD_TYPE = 'OPENAI+o1'                                              # not avai
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                                # good (token limit 5000 per minute)
 
 # Perplexity     
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-70b-instruct'                      # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-8b-instruct'                       # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-chat'             # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-chat'             # good
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'           # ok
-# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'           # ok, up to good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-small-128k-online'           # good
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-large-128k-online'           # better, slow
+# CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-huge-128k-online'            # best, slow
 
 # Firekworks.ai
 # CLOUD_TYPE = 'FIREWORKS+qwen-qwq-32b-preview'                         # does not work
 # CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
+# CLOUD_TYPE = 'FIREWORKS+llama-v3p3-70b-instruct'                      # good
 
 # Openrouter.ai
 # CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best

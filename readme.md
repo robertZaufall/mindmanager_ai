@@ -16,19 +16,19 @@ More animated examples are in the `doc` folder.
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
   - **Anthropic** w/ `Claude 3.5` models (use your key)  
-  - **xAI** w/ `grok-beta`, `grok-vision-beta` (use your key)  
-  - **Google Gemini** w/ `Pro`, `Pro-Exp` and `Flash` (use your key)  
-  - **Google Vertex AI** w/ `Gemini Pro` and `Gemini Flash` (use your access token / OAuth2)
-  - **DeepSeek** w/ `DeepSeek V2.5` (use your key)  
+  - **xAI** w/ `grok-2`, `grok-2-vision` (use your key)  
+  - **Google Gemini** w/ `Pro`, `Pro-Exp` and `2.0-Flash` (use your key)  
+  - **Google Vertex AI** w/ `Gemini Pro` and `Gemini 2.0 Flash` (use your access token / OAuth2)
+  - **DeepSeek** w/ `DeepSeek V3` (use your key)  
   - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
   - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral` (use your key)
   - **AWS Bedrock** w/ `Nova`, `Titan` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
   - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` models (use your key)  
   - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` models (use your key)  
-  - **Perplexity** (platform) w/ `LLaMA`, `Mixtral` (use your key)  
-  - **Groq** (platform) w/ `LLaMA`, `Mixtral`, `Gemma2` (use your key)  
+  - **Perplexity** (platform) w/ `LLaMA 3.1-Sonar` (use your key)  
+  - **Groq** (platform) w/ `LLaMA 3.3`, `Mixtral`, `Gemma2` (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
-  - **Fireworks AI** (platform)  w/ `Qwen 2.5`, `QwQ` (serverless) and more models (use your key)  
+  - **Fireworks AI** (platform)  w/ `LLaMa 3`, `Qwen 2.5`, `QwQ` (serverless) and more models (use your key)  
   - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
   - **GPT4ALL** (local w/ SDK) w/ any `llama.cpp` model
   - **Ollama** (local w/ API) w/ any `llama.cpp` model
