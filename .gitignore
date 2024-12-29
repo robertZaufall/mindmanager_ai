@@ -1,4 +1,4 @@
-src/__pycache__/**
+__pycache__
 src/log/**
 src/images/**
 src/docs/**

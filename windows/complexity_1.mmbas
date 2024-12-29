@@ -1,4 +1,4 @@
-'#Reference {F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}#1.0#0#C:\Windows\System32\wshom.ocx#Windows Script Host Object Model#IWshRuntimeLibrary
+﻿'#Reference {F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}#1.0#0#C:\Windows\System32\wshom.ocx#Windows Script Host Object Model#IWshRuntimeLibrary
 '#Language "WWB-COM"
 
 Option Explicit

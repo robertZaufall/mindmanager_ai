@@ -1,5 +1,29 @@
-# Define the base registry path  
-$baseRegistryPath = "HKCU:\Software\Mindjet\MindManager\23\Macro"  
+$mindManagerVersion = $null
+
+if (Test-Path "HKCU:\Software\Mindjet\MindManager\23\AddIns") {
+    $mindManagerVersion = "23"
+}
+elseif (Test-Path "HKCU:\Software\Mindjet\MindManager\24\AddIns") {
+    $mindManagerVersion = "24"
+}
+elseif (Test-Path "HKCU:\Software\Mindjet\MindManager\25\AddIns") {
+    $mindManagerVersion = "25"
+}
+elseif (Test-Path "HKCU:\Software\Mindjet\MindManager\26\AddIns") {
+    $mindManagerVersion = "26"
+}
+
+if ($null -eq $mindManagerVersion) {
+    Write-Output "No MindManager version registry keys found."
+    exit 1
+}
+else {
+    Write-Output "Using MindManager version $mindManagerVersion."
+}
+
+$localAppDataPath = [System.Environment]::GetFolderPath('LocalApplicationData')  
+$baseRegistryPath = "HKCU:\Software\Mindjet\MindManager\$mindManagerVersion\Macro"
+$appMacrosPath = (Join-Path $localAppDataPath "Mindjet\MindManager\$mindManagerVersion\macros\windows")
   
 # Define the macros with their respective GUIDs, names, and file paths  
 $macros = @(  
@@ -18,13 +42,10 @@ $macros = @(
     @{ GUID = "{8133688c-2aa4-4faa-ab9c-07b8cde5d5bf}"; Name = "Complexity_1"; Path = "complexity_1.mmbas" },  
     @{ GUID = "{875aed98-dd01-4667-a3ef-2a87d3fb00b7}"; Name = "Complexity_2"; Path = "complexity_2.mmbas" },  
     @{ GUID = "{e53fe7fc-645d-437a-a8c2-92226dfb5a65}"; Name = "Complexity_3"; Path = "complexity_3.mmbas" },  
-    @{ GUID = "{e9e5ac24-228c-46e0-867b-9df3bb2c372a}"; Name = "Generate Image"; Path = "generate_image.mmbas" }  
+    @{ GUID = "{e9e5ac24-228c-46e0-867b-9df3bb2c372a}"; Name = "Generate Image"; Path = "generate_image.mmbas" } , 
     @{ GUID = "{eca7391c-87c7-4ba2-be26-5ce7db82f457}"; Name = "Generate Glossary"; Path = "generate_glossary.mmbas" }
 )  
 
-# Get the local app data path  
-$localAppDataPath = [System.Environment]::GetFolderPath('LocalApplicationData')  
-  
 # Loop through each macro and process it  
 foreach ($macro in $macros) {  
     # Construct the full registry path for the current macro  
@@ -40,9 +61,23 @@ foreach ($macro in $macros) {
   
     # Set the required registry values  
     Set-ItemProperty -Path $registryPath -Name "Name" -Value $macro.Name  
-    Set-ItemProperty -Path $registryPath -Name "Path" -Value (Join-Path $localAppDataPath "Mindjet\MindManager\23\macros\windows\$($macro.Path)")  
+    Set-ItemProperty -Path $registryPath -Name "Path" -Value (Join-Path $appMacrosPath $macro.Path)
     Set-ItemProperty -Path $registryPath -Name "Description" -Value ""  
     Set-ItemProperty -Path $registryPath -Name "Menu" -Value 17 # 0x11 in hexadecimal  
+
+    # Update version references inside the .mmbas file
+    $filePath = Join-Path $appMacrosPath $macro.Path
+    if (Test-Path $filePath) {
+        $fileContent = Get-Content $filePath -Raw
+        # Replace any existing digit(s) after 'MindManager\' with the configured version
+        $updatedContent = $fileContent -replace '(?<=MindManager\\)\d+', $mindManagerVersion
+        
+        # Trim trailing newlines
+        $updatedContent = $updatedContent.TrimEnd("`r","`n")
+
+        # Write back without adding extra newlines
+        [System.IO.File]::WriteAllText($filePath, $updatedContent, [System.Text.Encoding]::UTF8)
+    }
 }  
   
 Write-Output "Registry keys have been successfully created or updated."  
