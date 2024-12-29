@@ -100,11 +100,12 @@ cd windows
 ```
 Run `install.bat` or  the following commands (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`):
 ```
+cd ..
 choco install python3
-pip install -r .\..\requirements.txt
-pip install -r .\..\requirements_win.txt
-pip install -r .\..\requirements_auth.txt
-powershell -ExecutionPolicy Bypass -File .\macro_registration.ps1
+pip install -r .\src\requirements.txt
+pip install -r .\src\requirements_win.txt
+pip install -r .\src\requirements_auth.txt
+powershell -ExecutionPolicy Bypass -File .\windows\macro_registration.ps1
 ```
 Check in registry and MindManager, if the macros are available (right click on topic).  
 Hint: The macro list is ordered according to the GUID-string, not the macro name.   
