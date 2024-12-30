@@ -7,7 +7,19 @@ from mindmap.mindmap_helper import *
 
 class Mindmanager:
 
-    MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "23", "English", "Library")
+    def get_mindmanager_version():
+        versions = ["26", "25", "24", "23"]
+        for version in versions:
+            path = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", version, "English", "Library")
+            if os.path.exists(path):
+                return version
+        return None
+
+    mindmanager_version = get_mindmanager_version()
+    if mindmanager_version:
+        MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", mindmanager_version, "English", "Library")
+    else:
+        raise Exception("No MindManager version folders found.")
 
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
@@ -115,7 +127,7 @@ class Mindmanager:
 
     def add_relationship(self, guid1, guid2, label = ''):
         pass
-    
+
     def set_title_to_topic(self, topic, topic_text):
         topic_instance = topic.get()
         topic_instance.title.set(topic_text)
