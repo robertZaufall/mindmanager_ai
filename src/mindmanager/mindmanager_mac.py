@@ -1,33 +1,36 @@
 import os
 import sys
 from appscript import *
+import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import *
 
 class Mindmanager:
 
-    def get_mindmanager_version():
-        versions = ["26", "25", "24", "23"]
-        for version in versions:
-            path = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", version, "English", "Library")
-            if os.path.exists(path):
-                return version
-        return None
+    MACOS_MERGE_ALL_WINDOWS = False
+    MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "XX", "English", "Library")
 
-    mindmanager_version = get_mindmanager_version()
-    if mindmanager_version:
-        MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", mindmanager_version, "English", "Library")
-    else:
-        raise Exception("No MindManager version folders found.")
+    master_window = None
 
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
+
+        self.MACOS_LIBRARY_FOLDER = self.MACOS_LIBRARY_FOLDER.replace("XX", self.mindmanager.version.get().split('.')[0])
+        self.master_window = self.mindmanager.windows[1].id.get()
+
         self.charttype = charttype
         self.library_folder = self.MACOS_LIBRARY_FOLDER
         self.orgchart_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Org-Chart Map.mmat"))
         self.radial_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Radial Map.mmat"))
     
+    def merge_windows(self):
+        for window in self.mindmanager.windows():
+            if window.id.get() == self.master_window:
+                window.activate()
+        system_events = app("System Events")
+        system_events.processes["MindManager"].menu_bars[1].menu_bar_items["Window"].menus["Window"].menu_items["Merge All Windows"].click()
+
     def set_document_background_image(self, path):
         pass
     
@@ -148,3 +151,5 @@ class Mindmanager:
     def finalize(self, max_topic_level):
         self.mindmanager.documents[1].balance_map()
         self.mindmanager.activate()
+        if self.MACOS_MERGE_ALL_WINDOWS:
+            self.merge_windows()
