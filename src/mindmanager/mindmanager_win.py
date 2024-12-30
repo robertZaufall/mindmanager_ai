@@ -2,16 +2,31 @@ import os
 import sys
 import re
 import win32com.client
+import winreg
 import tempfile
 from PIL import Image
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import *
 
-
 class Mindmanager:
 
-    WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindjet", "MindManager", "23", "Library", "ENU")
+    def get_mindmanager_version():
+        versions = ["26", "25", "24", "23"]
+        for version in versions:
+            try:
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, f"Software\\Mindjet\\MindManager\\{version}\\AddIns")
+                winreg.CloseKey(key)
+                return version
+            except FileNotFoundError:
+                continue
+        return None
+
+    mindmanager_version = get_mindmanager_version()
+    if mindmanager_version:
+        WINDOWS_LIBRARY_FOLDER = os.path.join(os.environ.get("LOCALAPPDATA", ""), "Mindjet", "MindManager", mindmanager_version, "Library", "ENU")
+    else:
+        raise Exception("No MindManager version registry keys found.")
 
     def __init__(self, charttype):
         self.mindmanager = win32com.client.Dispatch("Mindmanager.Application")
