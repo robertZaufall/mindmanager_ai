@@ -114,11 +114,8 @@ class Mindmanager:
         pass
 
     def add_relationship(self, guid1, guid2, label = ''):
-        object1 = self.mindmanager.documents[1].FindByGuid(guid1)
-        object2 = self.mindmanager.documents[1].FindByGuid(guid2)
-        # to be implemented
-        return
-
+        pass
+    
     def set_title_to_topic(self, topic, topic_text):
         topic_instance = topic.get()
         topic_instance.title.set(topic_text)
