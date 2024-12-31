@@ -10,11 +10,14 @@ def create_mindmap(mindm, mindmap, map_icons):
     topic = mindm.get_central_topic()
     set_topic_from_mindmap_topic(mindm, topic, mindmap, map_icons)
 
+    guid_map = {}
+    get_guid_map(mindmap, guid_map)
+
     references = []
     get_relationships_from_mindmap(mindmap, references)
     for reference in references:
-        object1_guid = get_guid_from_originalguid(mindmap, reference.reference_object1)
-        object2_guid = get_guid_from_originalguid(mindmap, reference.reference_object2)
+        object1_guid = guid_map[reference.reference_object1]
+        object2_guid = guid_map[reference.reference_object2]
         if object1_guid and object2_guid:
             mindm.add_relationship(object1_guid, object2_guid, reference.reference_label)
     return
