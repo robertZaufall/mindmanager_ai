@@ -11,16 +11,11 @@ class Mindmanager:
     MACOS_MERGE_ALL_WINDOWS = False
     MACOS_LIBRARY_FOLDER = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "Mindjet", "MindManager", "XX", "English", "Library")
 
-    master_window = None
-
     def __init__(self, charttype):
         self.mindmanager = app('MindManager')
-
-        self.MACOS_LIBRARY_FOLDER = self.MACOS_LIBRARY_FOLDER.replace("XX", self.mindmanager.version.get().split('.')[0])
         self.master_window = self.mindmanager.windows[1].id.get()
-
         self.charttype = charttype
-        self.library_folder = self.MACOS_LIBRARY_FOLDER
+        self.library_folder = self.MACOS_LIBRARY_FOLDER.replace("XX", self.mindmanager.version.get().split('.')[0])
         self.orgchart_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Org-Chart Map.mmat"))
         self.radial_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Radial Map.mmat"))
     
@@ -39,24 +34,15 @@ class Mindmanager:
 
     def get_central_topic(self):
         object = self.mindmanager.documents[1].central_topic.get()
-
+        #callouts = object.callouts.get()
+        #relationships = object.relationships.get()
+        #subtopics = object.subtopics.get()
+        #shape = object.shape.get()
+        #attributes = object.attributes.get()
+        #props = object.properties.get()
+        #task = object.task.get()
+        #task_properties = task.properties.get()
         return object
-        '''
-        props = object.properties.get()
-        print(props)
-
-        attributes = object.attributes.get()
-        print(attributes)
-
-        task = object.task.get()
-        task_properties = task.properties.get()
-        print(task_properties)
-
-        callouts = object.callouts.get()
-        relationships = object.relationships.get()
-        subtopics = object.subtopics.get()
-        shape = object.shape.get()
-        '''
     
     def get_selection(self):
         return self.mindmanager.documents[1].selection.get()
@@ -65,10 +51,7 @@ class Mindmanager:
         return topic.level.get()
     
     def get_title_from_topic(self, topic):
-        return topic.title.get()
-
-    def get_text_from_topic(self, topic):
-        return topic.text.get()
+        return topic.name.get()
 
     def get_subtopics_from_topic(self, topic):
         return topic.subtopics.get()

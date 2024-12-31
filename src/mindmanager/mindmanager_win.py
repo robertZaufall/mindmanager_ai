@@ -57,9 +57,6 @@ class Mindmanager:
     def get_title_from_topic(self, topic):
         return topic.Text
 
-    def get_text_from_topic(self, topic):
-        return topic.Text
-
     def get_subtopics_from_topic(self, topic):
         return topic.AllSubTopics
     
@@ -165,6 +162,9 @@ class Mindmanager:
     def add_subtopic_to_topic(self, topic, topic_text):
         return topic.AddSubtopic(topic_text)
 
+    def set_title_to_topic(self, topic, topic_text):
+        topic.Text = topic_text
+
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         if topic.Text != mindmap_topic.topic_text:
             topic.Text = mindmap_topic.topic_text
@@ -245,9 +245,6 @@ class Mindmanager:
             if object1.ParentTopic == object2 or object2.ParentTopic == object1:
                 return
             object1.AllRelationships.AddToTopic(object2, label)
-
-    def set_title_to_topic(self, topic, topic_text):
-        topic.Text = topic_text
 
     def add_document(self, max_topic_level):
         style = self.mindmanager.ActiveDocument.StyleXml
