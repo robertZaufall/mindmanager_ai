@@ -226,6 +226,7 @@ class Mindmanager:
                 customAttributes.SetAttributeValue(attribute.attribute_name, attribute.attribute_value)
 
         mindmap_topic.topic_guid = topic.Guid
+        return topic
     
     def create_map_icons(self, map_icons):
         if len(map_icons) > 0:

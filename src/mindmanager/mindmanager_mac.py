@@ -112,9 +112,17 @@ class Mindmanager:
         return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
+        id = topic.id.get()
+
+        topic.title.set(mindmap_topic.topic_text)
+
+        refreshed_topic = self.get_topic_by_id(id)
+
         if mindmap_topic.topic_guid:
             mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
-        mindmap_topic.topic_guid = topic.id.get()
+        mindmap_topic.topic_guid = id
+        
+        return refreshed_topic
 
     def create_map_icons(self, map_icons):
         pass

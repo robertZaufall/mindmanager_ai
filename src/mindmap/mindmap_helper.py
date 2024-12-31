@@ -155,7 +155,7 @@ def get_attribute_from_mindmap_topic(attributes, attribute_name, attribute_names
     return None
 
 def set_topic_from_mindmap_topic(mindm, topic, mindmap_topic, map_icons, done = {}, level=0):
-    mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
+    topic = mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
 
     if level <= 1:
         done = {}
