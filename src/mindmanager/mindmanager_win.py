@@ -48,6 +48,9 @@ class Mindmanager:
     def get_central_topic(self):
         return self.mindmanager.ActiveDocument.CentralTopic
     
+    def get_topic_by_id(self, id):
+        return self.mindmanager.ActiveDocument.FindByGuid(id)
+    
     def get_selection(self):
         return self.mindmanager.ActiveDocument.Selection
     
@@ -239,8 +242,8 @@ class Mindmanager:
                         map_icon.icon_signature = marker.Icon.CustomIconSignature
 
     def add_relationship(self, guid1, guid2, label=''):
-        object1 = self.mindmanager.ActiveDocument.FindByGuid(guid1)
-        object2 = self.mindmanager.ActiveDocument.FindByGuid(guid2)
+        object1 = self.get_topic_by_id(guid1)
+        object2 = self.get_topic_by_id(guid2)
         if object1 and object2:
             if object1.ParentTopic == object2 or object2.ParentTopic == object1:
                 return

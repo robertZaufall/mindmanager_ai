@@ -83,11 +83,6 @@ class MindmapTopic:
         self.topic_attributes = topic_attributes
         self.map_icons = map_icons
 
-class MindMapGuidMap:
-    def __init__(self, guid: str = '', original_guid: str = ''):
-        self.guid = guid
-        self.original_guid = original_guid
-
 if sys.platform.startswith('win'):
     import mindmanager.mindmanager_win as mindmanager
     platform = "win"
@@ -143,6 +138,15 @@ def get_guid_from_originalguid(mindmap, original_guid):
         if guid:
             return guid
     return None
+
+def get_guid_map(mindmap, guid_map = {}):
+    if mindmap.topic_originalguid:
+        if mindmap.topic_originalguid != '':
+            guid_map[mindmap.topic_originalguid] = mindmap.topic_guid
+    else:
+        pass
+    for mindmap_subtopic in mindmap.topic_subtopics:
+        get_guid_map(mindmap_subtopic, guid_map)
 
 def get_attribute_from_mindmap_topic(attributes, attribute_name, attribute_namespace='mindmanager.ai'):
     for attribute in attributes:

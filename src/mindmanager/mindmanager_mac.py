@@ -44,6 +44,12 @@ class Mindmanager:
         #task_properties = task.properties.get()
         return object
     
+    def get_topic_by_id(self, id):
+        found_topics = self.mindmanager.documents[1].topics[its.id == id]
+        if found_topics.count() == 0:
+            return None
+        return found_topics[0].get()
+    
     def get_selection(self):
         return self.mindmanager.documents[1].selection.get()
     
@@ -106,13 +112,17 @@ class Mindmanager:
         return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
-        pass
+        if mindmap_topic.topic_guid:
+            mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
+        mindmap_topic.topic_guid = topic.id.get()
 
     def create_map_icons(self, map_icons):
         pass
 
     def add_relationship(self, guid1, guid2, label = ''):
-        pass
+        topic1 = self.get_topic_by_id(guid1)
+        topic2 = self.get_topic_by_id(guid2)
+        topic1.make(new=k.relationship, with_properties={k.starting_location: topic1, k.ending_location: topic2})
 
     def set_title_to_topic(self, topic, topic_text):
         topic_instance = topic.get()
