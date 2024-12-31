@@ -137,7 +137,7 @@ def get_template_content(template_name):
         template = f.read()
     return template
 
-def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels):
+def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels, count=1):
     central_topic_text = mindm.get_title_from_topic(central_topic)
     subtopics = ""
     if len(topic_texts) == 0: 
@@ -169,33 +169,26 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
     file_name = f"{guid}.png"
     file_path = os.path.join(folder_path_images, file_name)      
 
-    if "image" in param:
-        count = param.split("_")[-1]
-        if count.isdigit():
-            count = int(count)
+    if "MLX+" in config.CLOUD_TYPE_IMAGE:
+        if "flux" in config.IMAGE_MODEL_ID:
+            str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
         else:
-            count = 1
+            str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
+    else:
+        str_user = prompts.prompt_image_flux(top_most_topic, subtopics) # prompts.prompt_image(top_most_topic, subtopics)
+    if ("STABILITYAI+" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
+        final_prompt = ai_llm.call_llm(prompts.prompt_image_prompt(str_user))
+    else:
+        final_prompt = str_user
 
-        if "MLX+" in config.CLOUD_TYPE_IMAGE:
-            if "flux" in config.IMAGE_MODEL_ID:
-                str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
-            else:
-                str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
-        else:
-            str_user = prompts.prompt_image_flux(top_most_topic, subtopics) # prompts.prompt_image(top_most_topic, subtopics)
-        if ("STABILITYAI+" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
-            final_prompt = ai_llm.call_llm(prompts.prompt_image_prompt(str_user))
-        else:
-            final_prompt = str_user
+    image_path = ai_image.call_image_ai(file_path, final_prompt, count)
 
-        image_path = ai_image.call_image_ai(file_path, final_prompt, count)
-
-        if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
-            mindm.set_document_background_image(image_path)
-        else:
-            from PIL import Image
-            image = Image.open(image_path)  
-            image.show()
+    if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
+        mindm.set_document_background_image(image_path)
+    else:
+        from PIL import Image
+        image = Image.open(image_path)  
+        image.show()
 
 
 def main(param, charttype):
@@ -266,7 +259,12 @@ def main(param, charttype):
 
                 guid = uuid.uuid4()
                 if "image" in param:
-                    generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels)
+                    count = param.split("_")[-1]
+                    if count.isdigit():
+                        count = int(count)
+                    else:
+                        count = 1
+                    generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels, count)
 
                 elif param == "glossary":
                     markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
