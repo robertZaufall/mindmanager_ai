@@ -233,27 +233,6 @@ class MindmapDocument:
                 else:
                     central_topic_selected = True
         return topic_texts, topic_levels, central_topic_selected
-
-    def create_mindmap(self, map_icons):
-        self.mindm.add_document(0)
-        self.mindm.create_map_icons(map_icons)
-        topic = self.mindm.get_central_topic()
-        self.set_topic_from_mindmap_topic(topic, self.mindmap, map_icons)
-
-        relationships = []
-        self.get_relationships_from_mindmap(self.mindmap, relationships)
-
-        guid_map = {}
-        self.get_guid_map(self.mindmap, guid_map)
-
-        self.guid_map = guid_map
-        self.relationships = relationships
-
-        for reference in relationships:
-            object1_guid = guid_map[reference.reference_object1]
-            object2_guid = guid_map[reference.reference_object2]
-            if object1_guid and object2_guid:
-                self.mindm.add_relationship(object1_guid, object2_guid, reference.reference_label)
             
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done = {}, level=0):
         topic = self.mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
@@ -280,3 +259,27 @@ class MindmapDocument:
                 self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, level+1)
         return mindmap_topic
 
+    def create_mindmap(self, map_icons):
+        self.mindm.add_document(0)
+        self.mindm.create_map_icons(map_icons)
+        topic = self.mindm.get_central_topic()
+        self.set_topic_from_mindmap_topic(topic, self.mindmap, map_icons)
+
+        relationships = []
+        self.get_relationships_from_mindmap(self.mindmap, relationships)
+
+        guid_map = {}
+        self.get_guid_map(self.mindmap, guid_map)
+
+        self.guid_map = guid_map
+        self.relationships = relationships
+
+        for reference in relationships:
+            object1_guid = guid_map[reference.reference_object1]
+            object2_guid = guid_map[reference.reference_object2]
+            if object1_guid and object2_guid:
+                self.mindm.add_relationship(object1_guid, object2_guid, reference.reference_label)
+
+    def create_mindmap_and_finalize(self, map_icons, max_topic_level):
+        self.create_mindmap(map_icons)
+        self.mindm.finalize(max_topic_level)
