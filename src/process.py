@@ -152,7 +152,7 @@ def generate_image(document, topic_texts, central_topic_selected, guid, topic_le
                 if subtopics.endswith(","):
                     subtopics = subtopics[:-1]
 
-    folder_path_images = file_helper.create_folder_if_not_exists(os.path.join(document.mindm.library_folder, "Images"), top_most_topic)
+    folder_path_images = file_helper.create_folder_if_not_exists(os.path.join(document.get_library_folder(), "Images"), top_most_topic)
     file_name = f"{guid}.png"
     file_path = os.path.join(folder_path_images, file_name)      
 
@@ -171,7 +171,7 @@ def generate_image(document, topic_texts, central_topic_selected, guid, topic_le
     image_path = ai_image.call_image_ai(file_path, final_prompt, count)
 
     if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
-        document.mindm.set_document_background_image(image_path)
+        document.set_background_image(image_path)
     else:
         from PIL import Image
         image = Image.open(image_path)  
@@ -221,11 +221,9 @@ def main(param, charttype):
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["md2mindmap"], value, topic_texts=key.replace(".md", "").replace("_", " ").replace("-", " "))
                 create_map_and_finalize(document, new_mermaid_diagram)
     else:
-        if not document.mindm.document_exists():
-            print("No document found.")    
+        if not document.get_mindmap():
             return
-
-        document.get_mindmap()
+        
         central_topic = document.mindmap.topic_text
 
         mermaid_diagram = recurse_topics("", document.mindmap, 0)
@@ -236,56 +234,55 @@ def main(param, charttype):
                 max_topic_level = get_mermaid_topics(mermaid_diagram)[1]
             else:
                 max_topic_level = create_new_map_from_mermaid(mermaid_diagram)                
-            document.mindm.finalize(max_topic_level)
+            document.finalize(max_topic_level)
 
         else:
             prompts_list = prompts.prompts_list_from_param(param)
 
-            if document.mindm.document_exists():
-                topic_texts = []
-                if len(prompts_list) == 1:
-                    topic_texts = document.selected_topic_texts
-                    topic_levels = document.selected_topic_levels
-                    central_topic_selected = document.central_topic_selected
+            topic_texts = []
+            if len(prompts_list) == 1:
+                topic_texts = document.selected_topic_texts
+                topic_levels = document.selected_topic_levels
+                central_topic_selected = document.central_topic_selected
 
-                guid = uuid.uuid4()
-                if "image" in param:
-                    count = param.split("_")[-1]
-                    if count.isdigit():
-                        count = int(count)
-                    else:
-                        count = 1
-                    generate_image(document, topic_texts, central_topic_selected, guid, topic_levels, count)
-
-                elif param == "glossary":
-                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
-                    if "-mini" in config.CLOUD_TYPE or \
-                        "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
-                        ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
-                        # take an optimization round
-                        markdown = ai_llm.call_llm(prompts.prompt_glossary_optimize(markdown))
-                    generate_glossary_html(markdown, guid)
-
-                elif param == "argumentation":
-                    markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
-                    generate_argumentation_html(markdown, guid)
-
-                elif param == "export_markmap":
-                    content, max_topic_level = mermaid_helper.export_to_markmap(mermaid_diagram)
-                    generate_markmap_html(content, max_topic_level, guid)
-
-                elif param == "export_mermaid":
-                    content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram)
-                    generate_mermaid_html(content, max_topic_level, guid)
-
-                elif "translate_deepl" in param:
-                    language = param.split("+")[-1]
-                    new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
-                    create_map_and_finalize(document, new_mermaid_diagram)
-
+            guid = uuid.uuid4()
+            if "image" in param:
+                count = param.split("_")[-1]
+                if count.isdigit():
+                    count = int(count)
                 else:
-                    new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts))
-                    create_map_and_finalize(document, new_mermaid_diagram)
+                    count = 1
+                generate_image(document, topic_texts, central_topic_selected, guid, topic_levels, count)
+
+            elif param == "glossary":
+                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
+                if "-mini" in config.CLOUD_TYPE or \
+                    "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
+                    ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
+                    # take an optimization round
+                    markdown = ai_llm.call_llm(prompts.prompt_glossary_optimize(markdown))
+                generate_glossary_html(markdown, guid)
+
+            elif param == "argumentation":
+                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
+                generate_argumentation_html(markdown, guid)
+
+            elif param == "export_markmap":
+                content, max_topic_level = mermaid_helper.export_to_markmap(mermaid_diagram)
+                generate_markmap_html(content, max_topic_level, guid)
+
+            elif param == "export_mermaid":
+                content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram)
+                generate_mermaid_html(content, max_topic_level, guid)
+
+            elif "translate_deepl" in param:
+                language = param.split("+")[-1]
+                new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
+                create_map_and_finalize(document, new_mermaid_diagram)
+
+            else:
+                new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts))
+                create_map_and_finalize(document, new_mermaid_diagram)
 
     print("Done.")
 
