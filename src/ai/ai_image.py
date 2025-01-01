@@ -19,7 +19,7 @@ def call_image_ai(image_path, str_user, n_count = 1):
 
         if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA:
             n_count = 1 # override n_count to 1
-            import ai_azure_entra
+            import ai.ai_azure_entra as ai_azure_entra
             return ai_azure_entra.call_image_ai(str_user, image_path, n_count)
 
         # Azure + OpenAI Dall-e 3
@@ -284,14 +284,14 @@ def call_image_ai(image_path, str_user, n_count = 1):
         # Google VertexAI            
         elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
             n_count = 1 # override n_count to 1
-            import ai_gcp
+            import ai.ai_gcp as ai_gcp
             return ai_gcp.call_image_ai(str_user, image_path, n_count)
 
         # MLX
         elif "MLX" in config.CLOUD_TYPE_IMAGE:
             seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**32 - 1)
             if "flux" in config.IMAGE_MODEL_ID or "sd3" in config.IMAGE_MODEL_ID:
-                import ai_image_mlx
+                import ai.ai_image_mlx as ai_image_mlx
                 image_path = ai_image_mlx.generate_image(
                     str_user, 
                     config.IMAGE_NEGATIV_PROMPT, 

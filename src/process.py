@@ -13,9 +13,9 @@ import sys
 import os
 import uuid
 
-import ai_llm
-import ai_image
-import ai_translation
+import ai.ai_llm as ai_llm
+import ai.ai_image as ai_image
+import ai.ai_translation as ai_translation
 
 if sys.platform.startswith('win'):
     platform = "win"
