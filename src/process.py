@@ -4,6 +4,8 @@ import config
 import prompts
 
 import mermaid_helper
+from mindmap.mindmap_helper import *
+
 import file_helper
 import input_helper
 
@@ -16,71 +18,56 @@ import ai_image
 import ai_translation
 
 if sys.platform.startswith('win'):
-    import mindmanager.mindmanager_win as mindmanager
     platform = "win"
 elif sys.platform.startswith('darwin'):
-    import mindmanager.mindmanager_mac as mindmanager
     platform = "darwin"
 
-def recurse_topics(mindm, mermaid_diagram, this_topic, level):
-    this_topic_text = mindm.get_title_from_topic(this_topic)
+def recurse_topics(mermaid_diagram, this_topic, level):
+    this_topic_text = this_topic.topic_text
     if level == 0:
         top_level = mermaid_helper.get_mermaid_line(0, this_topic_text)
-        mermaid_diagram = recurse_topics(mindm, top_level, this_topic, 1)
+        mermaid_diagram = recurse_topics(top_level, this_topic, 1)
         return mermaid_diagram
     if level > 1:
         mermaid_diagram += mermaid_helper.get_mermaid_line(level, this_topic_text)
-    for child_topic in mindm.get_subtopics_from_topic(this_topic):
-        mermaid_diagram = recurse_topics(mindm, mermaid_diagram, child_topic, level + 1)
+    for child_topic in this_topic.topic_subtopics:
+        mermaid_diagram = recurse_topics(mermaid_diagram, child_topic, level + 1)
     return mermaid_diagram
 
-def create_sub_topics(mindm, mermaid_topics, index, parent_topic):
+def create_sub_topics(mermaid_topics, index, parent_topic): # MindmapTopic
     i = index
-    parent_topic_level = mindm.get_level_from_topic(parent_topic)
+    parent_topic_level = parent_topic.topic_level
     last_topic = None
     while i < len(mermaid_topics):
         topic_level = mermaid_topics[i].topic_level
         topic_text = mermaid_topics[i].topic_text
-        if topic_level <= parent_topic_level: return i
+        if topic_level <= parent_topic_level: 
+            return i
         if topic_level == parent_topic_level + 1:
-            new_topic = mindm.add_subtopic_to_topic(parent_topic, topic_text)
+            new_topic = MindmapTopic(topic_text=topic_text, topic_level=topic_level, topic_subtopics=[])
+            parent_topic.topic_subtopics.append(new_topic)
             last_topic = new_topic
         if topic_level > parent_topic_level + 1:
-            i = create_sub_topics(mindm, mermaid_topics, i, last_topic) - 1
+            i = create_sub_topics(mermaid_topics, i, last_topic) - 1
         i += 1
     return i
 
-def get_mermaid_topics(mindm, mermaid_diagram):
+def get_mermaid_topics(mermaid_diagram):
     mermaid_topics = mermaid_helper.parse_mermaid(mermaid_diagram, config.LINE_SEPARATOR, config.INDENT_SIZE)
     max_topic_level = max(topic.topic_level for topic in mermaid_topics)
     return (mermaid_topics, max_topic_level)
 
-def create_new_map_from_mermaid(mindm, mermaid_diagram):
-    (mermaid_topics, max_topic_level) = get_mermaid_topics(mindm, mermaid_diagram)
-    mindm.add_document(max_topic_level)
-    parent_topic = mindm.get_central_topic()
-    mindm.set_title_to_topic(parent_topic, mermaid_topics[0].topic_text)
-    create_sub_topics(mindm, mermaid_topics, 1, mindm.get_central_topic())
-    return max_topic_level
+def create_new_map_from_mermaid(document, mermaid_diagram):
+    (mermaid_topics, max_topic_level) = get_mermaid_topics(mermaid_diagram)
+    parent_topic = MindmapTopic(topic_text=mermaid_topics[0].topic_text, topic_level=0)
+    create_sub_topics(mermaid_topics, 1, parent_topic)
+    document.mindmap = parent_topic
 
-def create_map_and_finalize(mindm, new_mermaid_diagram):
+def create_map_and_finalize(document, new_mermaid_diagram):
     if new_mermaid_diagram != "":
-        max_topic_level = create_new_map_from_mermaid(mindm, new_mermaid_diagram)
-        mindm.finalize(max_topic_level)
-
-def get_topic_texts(mindm):
-    central_topic_selected = False
-    selection = mindm.get_selection()
-    topic_texts = []
-    topic_levels = []
-    if len(selection) > 0:
-        for this_topic in selection:
-            if mindm.get_level_from_topic(this_topic) > 0:
-                topic_texts.append(mindm.get_title_from_topic(this_topic))
-                topic_levels.append(mindm.get_level_from_topic(this_topic))
-            else:
-                central_topic_selected = True
-    return topic_texts, topic_levels, central_topic_selected
+        create_new_map_from_mermaid(document, new_mermaid_diagram)
+        max_topic_level = document.get_max_topic_level(document.mindmap)
+        document.create_mindmap_and_finalize([], max_topic_level)
 
 def generate_glossary_html(content, guid):
     file_path = file_helper.get_new_file_paths("docs", guid)
@@ -137,8 +124,8 @@ def get_template_content(template_name):
         template = f.read()
     return template
 
-def generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels, count=1):
-    central_topic_text = mindm.get_title_from_topic(central_topic)
+def generate_image(document, topic_texts, central_topic_selected, guid, topic_levels, count=1):
+    central_topic_text = document.mindmap.topic_text
     subtopics = ""
     if len(topic_texts) == 0: 
         top_most_topic = central_topic_text
@@ -165,7 +152,7 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
                 if subtopics.endswith(","):
                     subtopics = subtopics[:-1]
 
-    folder_path_images = file_helper.create_folder_if_not_exists(os.path.join(mindm.library_folder, "Images"), top_most_topic)
+    folder_path_images = file_helper.create_folder_if_not_exists(os.path.join(document.mindm.library_folder, "Images"), top_most_topic)
     file_name = f"{guid}.png"
     file_path = os.path.join(folder_path_images, file_name)      
 
@@ -184,7 +171,7 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
     image_path = ai_image.call_image_ai(file_path, final_prompt, count)
 
     if config.INSERT_IMAGE_AS_BACKGROUND and central_topic_selected and platform == "win":
-        mindm.set_document_background_image(image_path)
+        document.mindm.set_document_background_image(image_path)
     else:
         from PIL import Image
         image = Image.open(image_path)  
@@ -192,7 +179,7 @@ def generate_image(mindm, central_topic, topic_texts, central_topic_selected, gu
 
 
 def main(param, charttype):
-    mindm = mindmanager.Mindmanager(charttype)
+    document = MindmapDocument(charttype=charttype)
 
     if param.startswith("pdf_"):
         actions = param.split("_")[-1].split("+")
@@ -200,14 +187,14 @@ def main(param, charttype):
         for key, value in docs.items():
             if "mindmap" in actions:
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["text2mindmap"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
-                create_map_and_finalize(mindm, new_mermaid_diagram)
+                create_map_and_finalize(document, new_mermaid_diagram)
             if "knowledgegraph" in actions:
                 guid = uuid.uuid4()
                 mermaid_diagram = ai_llm.call_llm_sequence(["text2knowledgegraph"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
                 content, max_topic_level = mermaid_helper.export_to_mermaid(mermaid_diagram, False)
                 generate_mermaid_html(content, max_topic_level, guid, False)
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "))
-                create_map_and_finalize(mindm, new_mermaid_diagram)
+                create_map_and_finalize(document, new_mermaid_diagram)
     
     elif param.startswith("pdfsimple"):
         actions = param.split("_")[-1].split("+")
@@ -216,13 +203,13 @@ def main(param, charttype):
             for key, value in docs.items():
                 if "mindmap" in actions:
                     new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf")
-                    create_map_and_finalize(mindm, new_mermaid_diagram)
+                    create_map_and_finalize(document, new_mermaid_diagram)
         elif "image/png" in config.MULTIMODAL_MIME_TYPES:
             docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, as_images_dpi=config.MULTIMODAL_PDF_TO_IMAGE_DPI, mime_type="image/png", as_base64=True)
             for key, value in docs.items():
                 if "mindmap" in actions:
                     new_mermaid_diagram = ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="image/png")
-                    create_map_and_finalize(mindm, new_mermaid_diagram)
+                    create_map_and_finalize(document, new_mermaid_diagram)
         else:
             raise Exception("PDF Simple is not supported for this multimodal AI model.")
 
@@ -232,30 +219,34 @@ def main(param, charttype):
             docs = input_helper.load_text_files("md")
             for key, value in docs.items():
                 new_mermaid_diagram = ai_llm.call_llm_sequence(["md2mindmap"], value, topic_texts=key.replace(".md", "").replace("_", " ").replace("-", " "))
-                create_map_and_finalize(mindm, new_mermaid_diagram)
+                create_map_and_finalize(document, new_mermaid_diagram)
     else:
-        if not mindm.document_exists():
+        if not document.mindm.document_exists():
             print("No document found.")    
             return
 
-        central_topic = mindm.get_central_topic()
-        mermaid_diagram = recurse_topics(mindm, "", central_topic, 0)
+        document.get_mindmap()
+        central_topic = document.mindmap.topic_text
 
+        mermaid_diagram = recurse_topics("", document.mindmap, 0)
+        
         if param == "finalize":
         
             if platform == "win":
-                max_topic_level = get_mermaid_topics(mindm, mermaid_diagram)[1]
+                max_topic_level = get_mermaid_topics(mermaid_diagram)[1]
             else:
-                max_topic_level = create_new_map_from_mermaid(mindm, mermaid_diagram)
-            mindm.finalize(max_topic_level)
+                max_topic_level = create_new_map_from_mermaid(mermaid_diagram)                
+            document.mindm.finalize(max_topic_level)
 
         else:
             prompts_list = prompts.prompts_list_from_param(param)
 
-            if mindm.document_exists():
+            if document.mindm.document_exists():
                 topic_texts = []
                 if len(prompts_list) == 1:
-                    topic_texts, topic_levels, central_topic_selected = get_topic_texts(mindm)
+                    topic_texts = document.selected_topic_texts
+                    topic_levels = document.selected_topic_levels
+                    central_topic_selected = document.central_topic_selected
 
                 guid = uuid.uuid4()
                 if "image" in param:
@@ -264,7 +255,7 @@ def main(param, charttype):
                         count = int(count)
                     else:
                         count = 1
-                    generate_image(mindm, central_topic, topic_texts, central_topic_selected, guid, topic_levels, count)
+                    generate_image(document, topic_texts, central_topic_selected, guid, topic_levels, count)
 
                 elif param == "glossary":
                     markdown = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
@@ -290,11 +281,11 @@ def main(param, charttype):
                 elif "translate_deepl" in param:
                     language = param.split("+")[-1]
                     new_mermaid_diagram = ai_translation.call_translation_ai(mermaid_diagram, language)
-                    create_map_and_finalize(mindm, new_mermaid_diagram)
+                    create_map_and_finalize(document, new_mermaid_diagram)
 
                 else:
                     new_mermaid_diagram = ai_llm.call_llm_sequence(prompts_list, mermaid_diagram, topic_texts=",".join(topic_texts))
-                    create_map_and_finalize(mindm, new_mermaid_diagram)
+                    create_map_and_finalize(document, new_mermaid_diagram)
 
     print("Done.")
 
