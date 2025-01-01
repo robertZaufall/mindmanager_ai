@@ -7,7 +7,7 @@ import tempfile
 from PIL import Image
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from mindmap.mindmap_helper import *
+from mindmap.mindmap_helper  import MindmapLink, MindmapImage, MindmapNotes, MindmapIcon, MindmapAttribute, MindmapTag, MindmapReference
 
 class Mindmanager:
 

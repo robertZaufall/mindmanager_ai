@@ -4,7 +4,7 @@ from appscript import *
 import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from mindmap.mindmap_helper import *
+from mindmap.mindmap_helper import MindmapLink, MindmapImage, MindmapNotes, MindmapIcon, MindmapAttribute, MindmapTag, MindmapReference, MindmapTopic
 
 class Mindmanager:
 
@@ -121,7 +121,7 @@ class Mindmanager:
         if mindmap_topic.topic_guid:
             mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
         mindmap_topic.topic_guid = id
-        
+
         return refreshed_topic
 
     def create_map_icons(self, map_icons):
