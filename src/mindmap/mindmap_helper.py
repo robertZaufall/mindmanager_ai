@@ -94,8 +94,9 @@ class MindmapDocument:
                  selection: list['MindmapTopic'] = [],
                  relationships: list['MindmapReference'] = [],
                  central_topic_selected: bool = False,
-                 topic_texts: list[str] = [],
-                 topic_levels: list[int] = []
+                 selected_topic_texts: list[str] = [],
+                 selected_topic_levels: list[int] = [],
+                 max_topic_level: int = 0
          ):
         self.charttype = charttype
         self.mindmap = mindmap
@@ -104,8 +105,9 @@ class MindmapDocument:
         self.selection = selection
         self.relationships = relationships
         self.central_topic_selected = central_topic_selected
-        self.topic_texts = topic_texts
-        self.topic_levels = topic_levels
+        self.selected_topic_texts = selected_topic_texts
+        self.selected_topic_levels = selected_topic_levels
+        self.max_topic_level = max_topic_level
 
         sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
         if sys.platform.startswith('win'):
@@ -130,15 +132,23 @@ class MindmapDocument:
         #self.get_guid_map(mindmap, guid_map)
 
         selection = self.get_selection()
-        topic_texts, topic_levels, central_topic_selected = self.get_topic_texts_from_selection(selection)
+        selected_topic_texts, selected_topic_levels, central_topic_selected = self.get_topic_texts_from_selection(selection)
 
         #self.guid_map = guid_map
         #self.relationships = relationships
         self.selection = selection
         self.central_topic_selected = central_topic_selected
-        self.topic_texts = topic_texts
-        self.topic_levels = topic_levels
+        self.selected_topic_texts = selected_topic_texts
+        self.selected_topic_levels = selected_topic_levels
+        self.max_topic_level = self.get_max_topic_level(mindmap)
         self.mindmap = mindmap
+
+    def get_max_topic_level(self, mindmap_topic, max_topic_level = 0):
+        for mindmap_topic in mindmap_topic.topic_subtopics:
+            if mindmap_topic.topic_level > max_topic_level:
+                max_topic_level = mindmap_topic.topic_level
+            max_topic_level = self.get_max_topic_level(mindmap_topic, max_topic_level)
+        return max_topic_level
 
     def get_selection(self):
         selection = self.mindm.get_selection()
