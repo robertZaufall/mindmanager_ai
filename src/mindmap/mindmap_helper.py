@@ -120,6 +120,10 @@ class MindmapDocument:
         self.mindm = mindmanager.Mindmanager(charttype)
 
     def get_mindmap(self, topic=None, attributes_template=[MindmapAttribute(attribute_name='id')]):
+        if not self.mindm.document_exists():
+            print("No document found.")    
+            return False
+
         if topic is None:
             topic = self.mindm.get_central_topic()
         
@@ -142,6 +146,8 @@ class MindmapDocument:
         self.selected_topic_levels = selected_topic_levels
         self.max_topic_level = self.get_max_topic_level(mindmap)
         self.mindmap = mindmap
+
+        return True
 
     def get_max_topic_level(self, mindmap_topic, max_topic_level = 0):
         for mindmap_topic in mindmap_topic.topic_subtopics:
@@ -283,3 +289,12 @@ class MindmapDocument:
     def create_mindmap_and_finalize(self, map_icons, max_topic_level):
         self.create_mindmap(map_icons)
         self.mindm.finalize(max_topic_level)
+
+    def finalize(self, max_topic_level):
+        self.mindm.finalize(max_topic_level)
+    
+    def set_background_image(self, image_path):
+        self.mindm.set_document_background_image(image_path)
+    
+    def get_library_folder(self):
+        return self.mindm.library_folder
