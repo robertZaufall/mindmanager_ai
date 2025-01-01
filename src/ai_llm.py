@@ -49,7 +49,7 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts = "", check_valid_merma
     
     return new_mermaid
 
-def call_llm(str_user, data, mimeType):
+def call_llm(str_user, data="", mimeType=""):
     if data != "" and (config.MULTIMODAL == False or mimeType not in config.MULTIMODAL_MIME_TYPES):
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 
