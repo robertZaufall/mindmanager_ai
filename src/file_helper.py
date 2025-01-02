@@ -2,6 +2,13 @@ import re
 import os
 import sys
 
+import config
+
+if sys.platform.startswith('win'):
+    platform = "win"
+elif sys.platform.startswith('darwin'):
+    platform = "darwin"
+
 def sanitize_folder_name(folder_name):
     folder_name = re.sub(r'[<>:"/\\|?*]', '', folder_name)
     folder_name = folder_name.strip('. ')
@@ -33,3 +40,59 @@ def get_new_file_paths(folder_name, guid):
     file_path = os.path.join(doc_folder_path, file_name)
     return file_path
 
+def generate_glossary_html(content, guid):
+    file_path = get_new_file_paths("docs", guid)
+    try:
+        import markdown
+        html_fragment = markdown.markdown(content)
+    except Exception as e:
+        with open(file_path + ".error", 'w') as f:
+            f.write(f'caught {str(e)}: e') 
+        raise
+    template = get_template_content("glossary.html")
+    html = template.replace("{{title}}", "Glossary").replace("{{body}}", html_fragment.replace("</h2>", "</h2><hr/>"))
+    with open(file_path, 'w') as f:
+        f.write(html)
+    open_file(file_path, platform)
+
+def generate_argumentation_html(content, guid):
+    file_path = get_new_file_paths("docs", guid)
+    try:
+        import markdown
+        html_fragment = markdown.markdown(content)
+    except Exception as e:
+        with open(file_path + ".error", 'w') as f:
+            f.write(f'caught {str(e)}: e') 
+        raise
+    template = get_template_content("argumentation.html")
+    html = template.replace("{{title}}", "Notes").replace("{{body}}", html_fragment.replace("</h2>", "</h2><hr/>"))
+    with open(file_path, 'w') as f:
+        f.write(html)
+    open_file(file_path, platform)
+
+def generate_markmap_html(content, max_topic_level, guid):
+    file_path = get_new_file_paths("docs", guid)
+    this_content = config.MARKMAP_TEMPLATE \
+                        .replace("{{colorFreezeLevel}}", str(max_topic_level)) \
+                        .replace("{{markmap}}", content)
+    template = get_template_content("markmap.html")
+    html = template.replace("{{body}}", this_content).replace("{{title}}", "Markmap")
+    with open(file_path, 'w') as f:
+        f.write(html)
+    open_file(file_path, platform)
+
+def generate_mermaid_html(content, max_topic_level, guid, do_open_file = True):
+    file_path = get_new_file_paths("docs", guid)
+    this_content = config.MERMAID_TEMPLATE.replace("{{mermaid}}", content)
+    template = get_template_content("mermaid.html")
+    html = template.replace("{{body}}", this_content).replace("{{title}}", "Mermaid")
+    with open(file_path, 'w') as f:
+        f.write(html)
+    if do_open_file:
+        open_file(file_path, platform)
+
+def get_template_content(template_name):
+    templates_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "templates")
+    with open(os.path.join(templates_folder_path, template_name), 'r') as f:
+        template = f.read()
+    return template

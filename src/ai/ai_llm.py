@@ -25,7 +25,7 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts = "", check_valid_merma
             new_mermaid = call_llm(this_prompt, data, mimeType)
 
             if check_valid_mermaid:
-                not_valid = m.validate_mermaid(new_mermaid, config.LINE_SEPARATOR, config.INDENT_SIZE)
+                not_valid = m.validate_mermaid(new_mermaid)
                 if not_valid:
                     retries = retries + 1
             else:

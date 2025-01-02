@@ -67,8 +67,7 @@ class MindmapTopic:
                  topic_notes: 'MindmapNotes' = None, # ok
                  topic_tags: list['MindmapTag'] = [], 
                  topic_references: list['MindmapReference'] = [], # ok
-                 topic_attributes: list['MindmapAttribute'] = [MindmapAttribute(attribute_name='id')]
-       ):
+                 topic_attributes: list['MindmapAttribute'] = [MindmapAttribute(attribute_name='id')]):
         self.topic_guid = topic_guid
         self.topic_originalguid = topic_originalguid
         self.topic_text = topic_text
@@ -86,28 +85,18 @@ class MindmapTopic:
 
 class MindmapDocument:
 
-    def __init__(self, 
-                 charttype: str = 'auto',
-                 mindmap: 'MindmapTopic' = None,
-                 map_icons: list['MindmapIcon'] = [],
-                 guid_map: dict[str, str] = {},
-                 selection: list['MindmapTopic'] = [],
-                 relationships: list['MindmapReference'] = [],
-                 central_topic_selected: bool = False,
-                 selected_topic_texts: list[str] = [],
-                 selected_topic_levels: list[int] = [],
-                 max_topic_level: int = 0
-         ):
-        self.charttype = charttype
-        self.mindmap = mindmap
-        self.map_icons = map_icons
-        self.guid_map = guid_map
-        self.selection = selection
-        self.relationships = relationships
-        self.central_topic_selected = central_topic_selected
-        self.selected_topic_texts = selected_topic_texts
-        self.selected_topic_levels = selected_topic_levels
-        self.max_topic_level = max_topic_level
+    def __init__(self, charttype: str = 'auto'):
+        self.charttype: str = charttype
+
+        self.mindmap: 'MindmapTopic' = None
+        self.map_icons: list['MindmapIcon'] = []
+        self.guid_map: dict[str, str] = {}
+        self.selection: list['MindmapTopic'] = []
+        self.relationships: list['MindmapReference'] = []
+        self.central_topic_selected: bool = False
+        self.selected_topic_texts: list[str] = []
+        self.selected_topic_levels: list[int] = []
+        self.max_topic_level: int = 0
 
         sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
         if sys.platform.startswith('win'):
@@ -131,16 +120,16 @@ class MindmapDocument:
 
         #relationships = []
         #self.get_relationships_from_mindmap(mindmap, relationships)
+        #self.relationships = relationships
 
         #guid_map = {}
         #self.get_guid_map(mindmap, guid_map)
+        #self.guid_map = guid_map
 
         selection = self.get_selection()
         selected_topic_texts, selected_topic_levels, central_topic_selected = self.get_topic_texts_from_selection(selection)
-
-        #self.guid_map = guid_map
-        #self.relationships = relationships
         self.selection = selection
+
         self.central_topic_selected = central_topic_selected
         self.selected_topic_texts = selected_topic_texts
         self.selected_topic_levels = selected_topic_levels
