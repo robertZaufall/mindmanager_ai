@@ -1,6 +1,5 @@
 import config
 import ai.prompts as prompts
-import mermaid.mermaid_helper as m
 import input_helper
 
 import requests
@@ -8,30 +7,23 @@ import json
 import os
 import sys
 
-def call_llm_sequence(prompts_list, mermaid, topic_texts = "", check_valid_mermaid = True, data = "", mimeType = ""):
-    new_mermaid = mermaid
+def call_llm_sequence(prompts_list, input, topic_texts="", data="", mimeType=""):
+    result = input
 
     log_input = ""
     log_output = ""
     log_prompt = ""
+
     for prompt in prompts_list:
-        log_input += new_mermaid + "\n\n"
+        log_input += result + "\n\n"
 
-        this_prompt = prompts.prompt(prompt, new_mermaid, topic_texts=topic_texts)
+        this_prompt = prompts.prompt(prompt, result, topic_texts=topic_texts)
+        if this_prompt == "":
+            return ""
 
-        not_valid = True
-        retries = 0
-        while (not_valid and retries < config.MAX_RETRIES):
-            new_mermaid = call_llm(this_prompt, data, mimeType)
-
-            if check_valid_mermaid:
-                not_valid = m.validate_mermaid(new_mermaid)
-                if not_valid:
-                    retries = retries + 1
-            else:
-                not_valid = False
+        result = call_llm(this_prompt, data, mimeType)
                 
-        log_output += new_mermaid + "\n\n"
+        log_output += result + "\n\n"
         log_prompt += "Prompt = " + prompt + "\n-------\n" + this_prompt + "\n\n"
 
     if config.LOG == True:
@@ -47,7 +39,7 @@ def call_llm_sequence(prompts_list, mermaid, topic_texts = "", check_valid_merma
         except:
             print("Error writing log files.")
     
-    return new_mermaid
+    return result
 
 def call_llm(str_user, data="", mimeType=""):
     if data != "" and (config.MULTIMODAL == False or mimeType not in config.MULTIMODAL_MIME_TYPES):

@@ -128,19 +128,19 @@ def main(param, charttype):
                 mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["md2mindmap"], value, topic_texts=text_helper.cleanse_title(key)))
                 create_mindmap_from_mermaid(document, mermaid)
     else:
+
+        # load DOM
         if not document.get_mindmap():
             return
-        
-        mermaid = MermaidMindmap(get_mermaid_from_mindmap(document.mindmap))
-        
+                
         if param == "finalize":
-        
             if platform == "win":
                 document.finalize()
             else:
-                create_mindmap_from_mermaid(mermaid)
+                document.create_mindmap([])
 
         else:
+            mermaid = MermaidMindmap(get_mermaid_from_mindmap(document.mindmap))
             prompts_list = prompts.prompts_list_from_param(param)
 
             topic_texts = []
@@ -148,6 +148,7 @@ def main(param, charttype):
                 topic_texts = document.selected_topic_texts
                 topic_levels = document.selected_topic_levels
                 central_topic_selected = document.central_topic_selected
+            topic_texts_join = ",".join(topic_texts) if len(topic_texts) > 0 else ""
 
             guid = uuid.uuid4()
             if "image" in param:
@@ -159,7 +160,7 @@ def main(param, charttype):
                 generate_image(document, topic_texts, central_topic_selected, guid, topic_levels, count)
 
             elif param == "glossary":
-                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
+                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=topic_texts_join, check_valid_mermaid=False)
                 if "-mini" in config.CLOUD_TYPE or \
                     "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
                     ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
@@ -168,7 +169,7 @@ def main(param, charttype):
                 file_helper.generate_glossary_html(markdown, guid)
 
             elif param == "argumentation":
-                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=",".join(topic_texts), check_valid_mermaid=False)
+                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=topic_texts_join, check_valid_mermaid=False)
                 file_helper.generate_argumentation_html(markdown, guid)
 
             elif param == "export_markmap":
@@ -185,7 +186,7 @@ def main(param, charttype):
                 create_mindmap_from_mermaid(document, mermaid)
 
             else:
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=",".join(topic_texts)))
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=topic_texts_join))
                 create_mindmap_from_mermaid(document, mermaid)
 
     print("Done.")
