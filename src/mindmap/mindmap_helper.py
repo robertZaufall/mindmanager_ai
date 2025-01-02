@@ -275,12 +275,14 @@ class MindmapDocument:
             if object1_guid and object2_guid:
                 self.mindm.add_relationship(object1_guid, object2_guid, reference.reference_label)
 
-    def create_mindmap_and_finalize(self, map_icons, max_topic_level):
+    def create_mindmap_and_finalize(self, map_icons):
         self.create_mindmap(map_icons)
-        self.mindm.finalize(max_topic_level)
+        self.finalize()
 
-    def finalize(self, max_topic_level):
-        self.mindm.finalize(max_topic_level)
+    def finalize(self):
+        if self.max_topic_level == 0:
+            self.max_topic_level = self.get_max_topic_level(self.mindmap)
+        self.mindm.finalize(self.max_topic_level)
     
     def set_background_image(self, image_path):
         self.mindm.set_document_background_image(image_path)

@@ -1,5 +1,10 @@
 import re
 import config
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from mindmap.mindmap_helper import MindmapTopic
 
 line_separator = config.LINE_SEPARATOR
 indent_size = config.INDENT_SIZE
@@ -76,6 +81,30 @@ class MermaidMindmap:
                     lines[i] = " " * indent_size * int(level) + "(" + lines[i].lstrip() + ")"
         return line_separator.join(lines), max_topic_level - 1
 
+    def create_sub_topics(self, mermaid_topics, index, parent_topic): # MindmapTopic
+        i = index
+        parent_topic_level = parent_topic.topic_level
+        last_topic = None
+        while i < len(mermaid_topics):
+            topic_level = mermaid_topics[i].topic_level
+            topic_text = mermaid_topics[i].topic_text
+            if topic_level <= parent_topic_level: 
+                return i
+            if topic_level == parent_topic_level + 1:
+                new_topic = MindmapTopic(topic_text=topic_text, topic_level=topic_level, topic_subtopics=[])
+                parent_topic.topic_subtopics.append(new_topic)
+                last_topic = new_topic
+            if topic_level > parent_topic_level + 1:
+                i = self.create_sub_topics(mermaid_topics, i, last_topic) - 1
+            i += 1
+        return i
+
+    def create_mindmap_from_mermaid(self):
+        mermaid_topics = self.mermaid_topics
+        parent_topic = MindmapTopic(topic_text=mermaid_topics[0].topic_text, topic_level=0)
+        self.create_sub_topics(mermaid_topics, 1, parent_topic)
+        return parent_topic
+
 def get_root(): return "root" if use_root and use_round else ""
 def get_left_round(): return "(" if use_round else ""
 def get_right_round(): return ")" if use_round else ""
@@ -99,6 +128,9 @@ def get_mermaid_line(level, topic):
         )
     if level > 1:
         return f"{get_space_string(level)}{get_left_round()}{topic}{get_right_round()}{line_separator}"
+
+def get_mermaid_from_mindmap(mindmap):
+    return recurse_topics("", mindmap, 0)
 
 def recurse_topics(mermaid_mindmap, this_topic, level):
     this_topic_text = this_topic.topic_text

@@ -54,6 +54,9 @@ def cleanse_markdown(markdown_text):
     # Join the cleaned lines back together
     return '\n'.join(cleaned_lines)
 
+def cleanse_title(text):
+    return text.replace(".pdf", "").replace(".md", "").replace("_", " ").replace("-", " ")
+
 def ultra_minimize_tokens(text):
     abbrevs = {
         'information': 'info', 'example': 'eg', 'without': 'wo', 'with': 'w/',

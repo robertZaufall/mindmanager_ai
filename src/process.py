@@ -9,6 +9,7 @@ import mermaid.mermaid_helper as mermaid_helper
 
 import file_helper
 import input_helper
+import text_helper
 
 import sys
 import os
@@ -23,35 +24,11 @@ if sys.platform.startswith('win'):
 elif sys.platform.startswith('darwin'):
     platform = "darwin"
 
-def create_sub_topics(mermaid_topics, index, parent_topic): # MindmapTopic
-    i = index
-    parent_topic_level = parent_topic.topic_level
-    last_topic = None
-    while i < len(mermaid_topics):
-        topic_level = mermaid_topics[i].topic_level
-        topic_text = mermaid_topics[i].topic_text
-        if topic_level <= parent_topic_level: 
-            return i
-        if topic_level == parent_topic_level + 1:
-            new_topic = MindmapTopic(topic_text=topic_text, topic_level=topic_level, topic_subtopics=[])
-            parent_topic.topic_subtopics.append(new_topic)
-            last_topic = new_topic
-        if topic_level > parent_topic_level + 1:
-            i = create_sub_topics(mermaid_topics, i, last_topic) - 1
-        i += 1
-    return i
-
-def create_new_map_from_mermaid(document, mermaid):
-    mermaid_topics = mermaid.mermaid_topics
-    parent_topic = MindmapTopic(topic_text=mermaid_topics[0].topic_text, topic_level=0)
-    create_sub_topics(mermaid_topics, 1, parent_topic)
-    document.mindmap = parent_topic
-
-def create_map_and_finalize(document, mermaid):
+def create_mindmap_from_mermaid(document, mermaid):
     if mermaid.mermaid_mindmap != "":
-        create_new_map_from_mermaid(document, mermaid)
-        max_topic_level = document.get_max_topic_level(document.mindmap)
-        document.create_mindmap_and_finalize([], max_topic_level)
+        document.mindmap = mermaid.create_mindmap_from_mermaid()
+        document.max_topic_level = document.get_max_topic_level(document.mindmap)
+        document.create_mindmap_and_finalize([])
 
 def generate_image(document, topic_texts, central_topic_selected, guid, topic_levels, count=1):
     central_topic_text = document.mindmap.topic_text
@@ -108,25 +85,23 @@ def generate_image(document, topic_texts, central_topic_selected, guid, topic_le
 
 
 def main(param, charttype):
-    line_separator = config.LINE_SEPARATOR
-    indent_size = config.INDENT_SIZE
-
     document = MindmapDocument(charttype=charttype)
 
     if param.startswith("pdf_"):
         actions = param.split("_")[-1].split("+")
         docs = input_helper.load_pdf_files(optimization_level=config.MARKDOWN_OPTIMIZATION_LEVEL)
         for key, value in docs.items():
+            key_plain = text_helper.cleanse_title(key)
             if "mindmap" in actions:
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["text2mindmap"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " ")))
-                create_map_and_finalize(document, mermaid)
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["text2mindmap"], value, topic_texts=key_plain))
+                create_mindmap_from_mermaid(document, mermaid)
             if "knowledgegraph" in actions:
                 guid = uuid.uuid4()
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["text2knowledgegraph"], value, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " ")))
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["text2knowledgegraph"], value, topic_texts=key_plain))
                 content, max_topic_level = mermaid.export_to_mermaid(False)
                 file_helper.generate_mermaid_html(content, max_topic_level, guid, False)
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " ")))
-                create_map_and_finalize(document, mermaid)
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, topic_texts=key_plain))
+                create_mindmap_from_mermaid(document, mermaid)
     
     elif param.startswith("pdfsimple"):
         actions = param.split("_")[-1].split("+")
@@ -134,14 +109,14 @@ def main(param, charttype):
             docs = input_helper.load_pdfsimple_files()
             for key, value in docs.items():
                 if "mindmap" in actions:
-                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="application/pdf"))
-                    create_map_and_finalize(document, mermaid)
+                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="application/pdf"))
+                    create_mindmap_from_mermaid(document, mermaid)
         elif "image/png" in config.MULTIMODAL_MIME_TYPES:
             docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, as_images_dpi=config.MULTIMODAL_PDF_TO_IMAGE_DPI, mime_type="image/png", as_base64=True)
             for key, value in docs.items():
                 if "mindmap" in actions:
-                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=key.replace(".pdf", "").replace("_", " ").replace("-", " "), data=value, mimeType="image/png"))
-                    create_map_and_finalize(document, mermaid)
+                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="image/png"))
+                    create_mindmap_from_mermaid(document, mermaid)
         else:
             raise Exception("PDF Simple is not supported for this multimodal AI model.")
 
@@ -150,22 +125,20 @@ def main(param, charttype):
         if actions == "md":
             docs = input_helper.load_text_files("md")
             for key, value in docs.items():
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["md2mindmap"], value, topic_texts=key.replace(".md", "").replace("_", " ").replace("-", " ")))
-                create_map_and_finalize(document, mermaid)
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["md2mindmap"], value, topic_texts=text_helper.cleanse_title(key)))
+                create_mindmap_from_mermaid(document, mermaid)
     else:
         if not document.get_mindmap():
             return
         
-        mermaid = MermaidMindmap(recurse_topics("", document.mindmap, 0))
+        mermaid = get_mermaid_from_mindmap(document.mindmap)
         
         if param == "finalize":
         
             if platform == "win":
-                max_topic_level = mermaid.mermaid_topics[1]
+                document.finalize()
             else:
-                create_new_map_from_mermaid(mermaid)
-                max_topic_level = mermaid.max_topic_level
-            document.finalize(max_topic_level)
+                create_mindmap_from_mermaid(mermaid)
 
         else:
             prompts_list = prompts.prompts_list_from_param(param)
@@ -209,11 +182,11 @@ def main(param, charttype):
             elif "translate_deepl" in param:
                 language = param.split("+")[-1]
                 mermaid = MermaidMindmap(ai_translation.call_translation_ai(mermaid.mermaid_mindmap, language))
-                create_map_and_finalize(document, mermaid)
+                create_mindmap_from_mermaid(document, mermaid)
 
             else:
                 mermaid = MermaidMindmap(ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=",".join(topic_texts)))
-                create_map_and_finalize(document, mermaid)
+                create_mindmap_from_mermaid(document, mermaid)
 
     print("Done.")
 
