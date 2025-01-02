@@ -1,5 +1,6 @@
 requests
 httpx
+regex
 markdown
 markdown-it-py
 Pillow
