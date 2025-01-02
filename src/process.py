@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import gc
 import config
-import prompts
+import ai.prompts as prompts
 
-import mermaid_helper
+import mermaid.mermaid_helper as mermaid_helper
 from mindmap.mindmap_helper import *
 
 import file_helper

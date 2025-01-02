@@ -1,6 +1,6 @@
 import config
-import prompts
-import mermaid_helper as m
+import ai.prompts as prompts
+import mermaid.mermaid_helper as m
 import input_helper
 
 import requests

@@ -164,7 +164,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
 # CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit'      # good
 
-USE_AZURE_ENTRA = False
+USE_AZURE_ENTRA = True
 
 LLM_TEMPERATURE = float('0.5')
 

@@ -7,9 +7,13 @@ import requests
 from openai import AzureOpenAI  
 from azure.identity import InteractiveBrowserCredential  
 from datetime import datetime, timedelta  
-  
+
 TOKEN_CACHE_FILE = "token_cache.json"
 TOKEN_PROVIDER_NS = "https://cognitiveservices.azure.com/.default"
+
+# Azure Entra Roles needed:
+# - Cognitive Services OpenAI User
+# - Cognitive Services OpenAI Contributor
 
 def load_token_cache():  
     if os.path.exists(TOKEN_CACHE_FILE):  
