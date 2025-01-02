@@ -131,7 +131,7 @@ def main(param, charttype):
         if not document.get_mindmap():
             return
         
-        mermaid = get_mermaid_from_mindmap(document.mindmap)
+        mermaid = MermaidMindmap(get_mermaid_from_mindmap(document.mindmap))
         
         if param == "finalize":
         
