@@ -151,6 +151,24 @@
       "args": ["news"],
       "console": "integratedTerminal",
       "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> Radial Map",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["finalize", "radial"],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Python: process.py -> Orgchart",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/process.py",
+      "args": ["finalize", "orgchart"],
+      "console": "integratedTerminal",
+      "justMyCode": true
     }
   ]
 }
