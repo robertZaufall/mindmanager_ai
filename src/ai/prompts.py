@@ -1,14 +1,21 @@
-import config
+import config as cfg
+
+config = cfg.get_config()
+
+indent_size = config.INDENT_SIZE
+max_return_words = config.MAX_RETURN_WORDS
+top_most_results = config.TOP_MOST_RESULTS
+image_explicit_style = ""
 
 prompt_prefix = "Given is the following Mermaid mindmap. "
 prompt_prefix_text = "Given is the following text to be summarized as a mindmap with Mermaid syntax. "
 
 prompt_postfix = (
-    f"Return the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {config.INDENT_SIZE} space characters as topic level delimiters. "
-    f"Put also {config.INDENT_SIZE} space characters in front of the first topic, i.e. central topic following the 'mermaid' keyword. Don't change or delete CentralTopic topic. "
+    f"Return the complete mindmap data as a functional Mermaid mindmap using correct Mermaid syntax and using {indent_size} space characters as topic level delimiters. "
+    f"Put also {indent_size} space characters in front of the first topic, i.e. central topic following the 'mermaid' keyword. Don't change or delete CentralTopic topic. "
     f"Don't include the phrase 'central topic' or similar to the central topic. "
-    f"Each topic or subtopic must not have more than {config.MAX_RETURN_WORDS} words at maximum. If an existing topic has more than {config.MAX_RETURN_WORDS} words, "
-    f"reduce it to {config.MAX_RETURN_WORDS} words. "
+    f"Each topic or subtopic must not have more than {max_return_words} words at maximum. If an existing topic has more than {max_return_words} words, "
+    f"reduce it to {max_return_words} words. "
     f"Use the 'mermaid' keyword only once at the beginning or suppress it. The keyword 'mindmap' must be present without any whitespace characters in front of this keyword. "
     f"There must be no whitespace in front of the 'mermaid' keyword. "
     f"Don't use only numbers as topics but replace them with something meaningful. "
@@ -22,7 +29,7 @@ prompt_postfix = (
 )
 
 def prompt_image(top_most_topic, subtopics):
-    IMAGE_EXPLICIT_STYLE = f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
+    IMAGE_EXPLICIT_STYLE = image_explicit_style # f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
     topics = f" and the subtopics {subtopics}" if subtopics != "" else ""
     str_user = (
         f"A clean, minimalistic, professional marketing logo{IMAGE_EXPLICIT_STYLE} on a white background with focus on {top_most_topic}{topics}. "
@@ -31,7 +38,7 @@ def prompt_image(top_most_topic, subtopics):
     return str_user
 
 def prompt_image_sd(top_most_topic, subtopics):
-    IMAGE_EXPLICIT_STYLE = f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
+    IMAGE_EXPLICIT_STYLE = image_explicit_style # f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
     topics = f" and also influenced by thought of {subtopics}" if subtopics != "" else ""
     str_user = (
         f"One professional graphic, minimalistic, professional{IMAGE_EXPLICIT_STYLE} on a white background about {top_most_topic}{topics}. "
@@ -40,7 +47,7 @@ def prompt_image_sd(top_most_topic, subtopics):
     return str_user
 
 def prompt_image_flux(top_most_topic, subtopics):
-    IMAGE_EXPLICIT_STYLE = f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
+    IMAGE_EXPLICIT_STYLE = image_explicit_style # f" using {config.IMAGE_EXPLICIT_STYLE} style" if config.IMAGE_EXPLICIT_STYLE != "" else ""
     prefix = f"Business graphic, minimalistic, professional{IMAGE_EXPLICIT_STYLE}"
     postfix = "on a gray gradient background, visually appealing, expensive look, no text."
     topics = f" and also influenced by thought on {subtopics}" if subtopics != "" else ""
@@ -144,7 +151,7 @@ def prompt_refine(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding at least one more additional child level with up to {config.TOP_MOST_RESULTS} top most important subtopics, "
+        f"Please refine {topics} by adding at least one more additional child level with up to {top_most_results} top most important subtopics, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Do not change the central topic which is the top most topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
@@ -158,7 +165,7 @@ def prompt_refine_dev(text, topic_texts=""):
 
     str_user = (
         prompt_prefix +
-        f"Please refine {topics} by adding at least one more additional level with up to {config.TOP_MOST_RESULTS} top most important subtopics from a software development perspective, "
+        f"Please refine {topics} by adding at least one more additional level with up to {top_most_results} top most important subtopics from a software development perspective, "
         f"but if you decide from your knowledge there have to be more or fewer most important subtopics, you can increase or decrease this number. "
         f"Do not change the central topic which is the top most topic. "
         f"If there are existing 'examples' topics, include them but do not refine them. If there are no 'examples' topics, don't create any. " +
@@ -266,8 +273,8 @@ def prompt_examples(text, topic_texts=""):
     str_user = (
         prompt_prefix +
         f"Please add for {topics} a new subtopic 'examples' if not existent yet, "
-        f"and add a new level with up to {config.TOP_MOST_RESULTS} top most important examples or extend the existing ones, "
-        f"with each example {config.MAX_RETURN_WORDS} words at maximum. "
+        f"and add a new level with up to {top_most_results} top most important examples or extend the existing ones, "
+        f"with each example {max_return_words} words at maximum. "
         f"Do not change the central topic which is the top most topic. " +
         prompt_postfix +
         f"```\n{text}```"
@@ -289,7 +296,7 @@ def prompt_text_to_mindmap(text, topic_texts=""):
     str_user = (
         prompt_prefix_text +
         f"Please create a mindmap from the summary using '{topic_texts}' as central topic, "
-        f"add at least 2 levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
+        f"add at least 2 levels with up to {top_most_results} top most important topics each. "
         f"For each topic generate a useful and sensible text without unnecessary abbreviations. " +
         prompt_postfix +
         f"```\n{text}```"
@@ -300,7 +307,7 @@ def prompt_pdfsimple_to_mindmap(text, topic_texts=""):
     str_user = (
         prompt_prefix_text.replace("Given is the following text to be summarized as a mindmap with Mermaid syntax. ", "") +
         f"Extract the content from the file or files, thoroughly summarize it and create a mindmap from the summary using '{topic_texts}' as central topic, "
-        f"with at least 5 first level topics and add at least 3 more levels with up to {config.TOP_MOST_RESULTS} top most important topics each. "
+        f"with at least 5 first level topics and add at least 3 more levels with up to {top_most_results} top most important topics each. "
         f"For each topic generate a useful and sensible text without unnecessary abbreviations. " +
         prompt_postfix.replace("Here is the data: \n", "")
     )

@@ -160,3 +160,6 @@ class Mindmanager:
         self.mindmanager.activate()
         if self.MACOS_MERGE_ALL_WINDOWS:
             self.merge_windows()
+
+        self.mindmanager = None
+        del self.mindmanager

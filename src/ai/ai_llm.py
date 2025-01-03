@@ -1,4 +1,4 @@
-import config
+import config as cfg
 import ai.prompts as prompts
 import input_helper
 
@@ -7,7 +7,10 @@ import json
 import os
 import sys
 
-def call_llm_sequence(prompts_list, input, topic_texts="", data="", mimeType=""):
+def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeType=""):
+
+    config = cfg.get_config(model)
+
     result = input
 
     log_input = ""
@@ -21,7 +24,7 @@ def call_llm_sequence(prompts_list, input, topic_texts="", data="", mimeType="")
         if this_prompt == "":
             return ""
 
-        result = call_llm(this_prompt, data, mimeType)
+        result = call_llm(model, this_prompt, data, mimeType)
                 
         log_output += result + "\n\n"
         log_prompt += "Prompt = " + prompt + "\n-------\n" + this_prompt + "\n\n"
@@ -41,7 +44,11 @@ def call_llm_sequence(prompts_list, input, topic_texts="", data="", mimeType="")
     
     return result
 
-def call_llm(str_user, data="", mimeType=""):
+def call_llm(model, str_user, data="", mimeType=""):
+
+    config = cfg.get_config(model)
+    print("Using model: " + config.CLOUD_TYPE)
+
     if data != "" and (config.MULTIMODAL == False or mimeType not in config.MULTIMODAL_MIME_TYPES):
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 

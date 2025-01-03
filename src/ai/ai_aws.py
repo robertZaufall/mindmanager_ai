@@ -1,8 +1,11 @@
-import config
+import config as cfg
 import json
 import boto3
 
-def call_llm(str_user, data, mimeType):
+def call_llm(model, str_user, data, mimeType):
+
+    config = cfg.get_config(model)
+
     if data != "" and config.MULTIMODAL == False:
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 

@@ -2,7 +2,9 @@ import re
 import os
 import sys
 
-import config
+import config as cfg
+
+config = cfg.get_config()
 
 if sys.platform.startswith('win'):
     platform = "win"

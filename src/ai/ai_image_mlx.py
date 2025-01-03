@@ -1,10 +1,11 @@
 import random
-import config
+import config as cfg
 from PIL import Image
 
-def generate_image(prompt, negative_prompt, n_images, output, seed):
-
+def generate_image(model, prompt, negative_prompt, n_images, output, seed):
     from mflux import Flux1, Config
+
+    config = cfg.get_image_config(model)
 
     original_output = output
 

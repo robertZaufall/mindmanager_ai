@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import gc
-import config
+import config as cfg
 import ai.prompts as prompts
 
 from mindmap.mindmap_helper import *
@@ -29,8 +29,19 @@ def create_mindmap_from_mermaid(document, mermaid):
         document.mindmap = mermaid.create_mindmap_from_mermaid()
         document.max_topic_level = document.get_max_topic_level(document.mindmap)
         document.create_mindmap_and_finalize([])
+        document.mindmap = None
+        document.mindm = None
+        document.selection = None
+        del document.mindmap
+        del document.mindm
+        del document.selection
+        del document
+        del mermaid
 
-def generate_image(document, topic_texts, central_topic_selected, guid, topic_levels, count=1):
+def generate_image(model, document, topic_texts, central_topic_selected, guid, topic_levels, count=1):
+
+    config = cfg.get_image_config(model)
+
     central_topic_text = document.mindmap.topic_text
     subtopics = ""
     if len(topic_texts) == 0: 
@@ -84,7 +95,10 @@ def generate_image(document, topic_texts, central_topic_selected, guid, topic_le
         image.show()
 
 
-def main(param, charttype):
+def main(param, charttype, model, freetext):
+
+    config = cfg.get_config(model)
+
     document = MindmapDocument(charttype=charttype)
 
     if param.startswith("pdf_"):
@@ -93,14 +107,14 @@ def main(param, charttype):
         for key, value in docs.items():
             key_plain = text_helper.cleanse_title(key)
             if "mindmap" in actions:
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["text2mindmap"], value, topic_texts=key_plain))
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model, ["text2mindmap"], value, topic_texts=key_plain))
                 create_mindmap_from_mermaid(document, mermaid)
             if "knowledgegraph" in actions:
                 guid = uuid.uuid4()
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["text2knowledgegraph"], value, topic_texts=key_plain))
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model, ["text2knowledgegraph"], value, topic_texts=key_plain))
                 content, max_topic_level = mermaid.export_to_mermaid(False)
                 file_helper.generate_mermaid_html(content, max_topic_level, guid, False)
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["knowledgegraph2mindmap"], content, topic_texts=key_plain))
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model, ["knowledgegraph2mindmap"], content, topic_texts=key_plain))
                 create_mindmap_from_mermaid(document, mermaid)
     
     elif param.startswith("pdfsimple"):
@@ -109,13 +123,13 @@ def main(param, charttype):
             docs = input_helper.load_pdfsimple_files()
             for key, value in docs.items():
                 if "mindmap" in actions:
-                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="application/pdf"))
+                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model, ["pdfsimple2mindmap"], "", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="application/pdf"))
                     create_mindmap_from_mermaid(document, mermaid)
         elif "image/png" in config.MULTIMODAL_MIME_TYPES:
             docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, as_images_dpi=config.MULTIMODAL_PDF_TO_IMAGE_DPI, mime_type="image/png", as_base64=True)
             for key, value in docs.items():
                 if "mindmap" in actions:
-                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["pdfsimple2mindmap"], "", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="image/png"))
+                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model, ["pdfsimple2mindmap"], "", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="image/png"))
                     create_mindmap_from_mermaid(document, mermaid)
         else:
             raise Exception("PDF Simple is not supported for this multimodal AI model.")
@@ -125,7 +139,7 @@ def main(param, charttype):
         if actions == "md":
             docs = input_helper.load_text_files("md")
             for key, value in docs.items():
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(["md2mindmap"], value, topic_texts=text_helper.cleanse_title(key)))
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model, ["md2mindmap"], value, topic_texts=text_helper.cleanse_title(key)))
                 create_mindmap_from_mermaid(document, mermaid)
     else:
 
@@ -165,11 +179,11 @@ def main(param, charttype):
                     "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
                     ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
                     # take an optimization round
-                    markdown = ai_llm.call_llm(prompts.prompt_glossary_optimize(markdown))
+                    markdown = ai_llm.call_llm(model, prompts.prompt_glossary_optimize(markdown))
                 file_helper.generate_glossary_html(markdown, guid)
 
             elif param == "argumentation":
-                markdown = ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=topic_texts_join, check_valid_mermaid=False)
+                markdown = ai_llm.call_llm_sequence(model, prompts_list, mermaid.mermaid_mindmap, topic_texts=topic_texts_join, check_valid_mermaid=False)
                 file_helper.generate_argumentation_html(markdown, guid)
 
             elif param == "export_markmap":
@@ -186,7 +200,7 @@ def main(param, charttype):
                 create_mindmap_from_mermaid(document, mermaid)
 
             else:
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(prompts_list, mermaid.mermaid_mindmap, topic_texts=topic_texts_join))
+                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model, prompts_list, mermaid.mermaid_mindmap, topic_texts=topic_texts_join))
                 create_mindmap_from_mermaid(document, mermaid)
 
     print("Done.")
@@ -196,40 +210,59 @@ if __name__ == "__main__":
     allocs, g1, g2 = gc.get_threshold()
     gc.set_threshold(allocs*100, g1*5, g2*10)
 
-    # refine, refine_dev
-    # complexity_1, complexity_2, complexity_3
-    # examples, cluster, exp, capex_opex
-    # prc_org, prj_prc_org, exp_prj_prc_org, prj_org
-    # finalize (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
-    # image (experimental)
-    # image_nn (experimental)
-    # translate_deepl+EN-US, translate_deepl+DE, ...
-    # glossary
-    # export_markmap, export_mermaid
-    # pdf_mindmap
-    # pdf_knowledgegraph
-    # pdfsimple_mindmap
-    # import_md
-    # news
-    # argumentation
-    param = "refine" 
+    valid_actions = [
+        "refine", "refine_dev", 
+        "complexity_1", "complexity_2", "complexity_3", 
+        "examples", "cluster", "exp", "capex_opex", 
+        "prc_org", "prj_prc_org", "exp_prj_prc_org", "prj_org", 
+        "finalize", # (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
+        "image", "image_5", 
+        "translate_deepl+EN-US", "translate_deepl+DE", 
+        "glossary", "argumentation"
+        "export_markmap", "export_mermaid", 
+        "pdf_mindmap", "pdf_knowledgegraph", "pdfsimple_mindmap", 
+        "import_md", 
+        "news",
+        "freetext"
+    ]
 
-    # radial, orgchart, auto (-> on macos factory template duplicates are used from the ./macos folder)
+    valid_charttypes = ["orgchart", "radial", "auto"] # (-> on macos factory template duplicates are used from the ./macos folder)
+    
+    param = "refine" 
     charttype = "auto"
+    model = ""
+    freetext = ""
 
     if len(sys.argv) > 1:
         param = sys.argv[1]
+        if param not in valid_actions:
+            print("Invalid action. Use one of the following: " + ", ".join(valid_actions))
+            sys.exit(1)
 
     if len(sys.argv) > 2:
         charttype = sys.argv[2]
-        if charttype != "orgchart" and charttype != "radial" and charttype != "auto":
-            print("Invalid chart type. Use 'orgchart' or 'radial'.")
+        if charttype not in valid_charttypes:
+            print("Invalid charttype. Use one of the following: " + ", ".join(valid_charttypes))
             sys.exit(1)
     
+    if len(sys.argv) > 3:
+        model = sys.argv[3] # overwrite model from config
+    else:
+        if "image" in param:
+            model = config.CLOUD_TYPE_IMAGE
+        else:
+            model = config.CLOUD_TYPE
+    
+    if len(sys.argv) > 4:
+        freetext = sys.argv[4]
+        if param != "freetext":
+            print("Invalid action. Use 'freetext' only with the 'freetext' action.")
+            sys.exit(1)
+
     if param.startswith("pdf_") and charttype == "auto":
         charttype = "radial"
 
     try:
-        main(param, charttype)
+        main(param, charttype, model, freetext)
     except Exception as e:
         print(f"An error occurred: {str(e)}")

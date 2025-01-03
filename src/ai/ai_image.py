@@ -1,12 +1,12 @@
 import time
-import config
+import config as cfg
 
 import requests
 import json
 
 import random
 
-def call_image_ai(image_path, str_user, n_count = 1):
+def call_image_ai(model, image_path, str_user, n_count = 1):
 
     import httpx
     from PIL import Image
@@ -14,6 +14,8 @@ def call_image_ai(image_path, str_user, n_count = 1):
     import base64
     import uuid
     from urllib.parse import urlparse
+
+    config = cfg.get_image_config(model)
 
     if config.CLOUD_TYPE_IMAGE != "":
 

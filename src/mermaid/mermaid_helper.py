@@ -1,10 +1,12 @@
 import re
-import config
+import config as cfg
 import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import MindmapTopic
+
+config = cfg.get_config()
 
 line_separator = config.LINE_SEPARATOR
 indent_size = config.INDENT_SIZE

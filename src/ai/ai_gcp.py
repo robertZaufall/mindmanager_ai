@@ -1,4 +1,4 @@
-import config
+import config as cfg
 import requests
 import json
 import google.auth
@@ -15,7 +15,8 @@ GCP_SCOPES = [
     "openid"
    ]  
 
-credentials_info = {  
+def credentials_info(config):
+    return {  
     "installed": {  
         "client_id": config.GCP_CLIENT_ID,  
         "client_secret": config.GCP_CLIENT_SECRET,  
@@ -24,8 +25,8 @@ credentials_info = {
     }  
 }  
  
-def get_oauth2_credentials():  
-    flow = InstalledAppFlow.from_client_config(credentials_info, GCP_SCOPES)  
+def get_oauth2_credentials(config):  
+    flow = InstalledAppFlow.from_client_config(credentials_info(config), GCP_SCOPES)  
     credentials = flow.run_local_server(port=0)  
     return credentials  
 
@@ -39,7 +40,10 @@ def get_credentials():
 
     return credentials  
   
-def call_llm_gcp(str_user, data, mimeType):
+def call_llm_gcp(model, str_user, data, mimeType):
+
+    config = cfg.get_config(model)
+
     if data != "" and config.MULTIMODAL == False:
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 
@@ -101,11 +105,13 @@ def call_llm_gcp(str_user, data, mimeType):
 
     return result
 
-def call_image_ai(str_user, image_path, n_count = 1):
+def call_image_ai(model, str_user, image_path, n_count = 1):
     from PIL import Image
     from io import BytesIO
     import base64
     from urllib.parse import urlparse
+
+    config = cfg.get_image_config(model)
 
     credentials = get_credentials()  
     access_token = credentials.token   

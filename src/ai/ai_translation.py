@@ -1,9 +1,11 @@
-import config
+import config as cfg
 
 import requests
 import json
 
 def call_translation_ai(text, language):
+
+    config = cfg.get_translation_config()
 
     if config.CLOUD_TYPE_TRANSLATION != "":
 

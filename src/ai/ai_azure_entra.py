@@ -1,6 +1,5 @@
-import config
 import input_helper
-
+import config as cfg
 import json  
 import os
 import requests
@@ -50,7 +49,10 @@ class CachedTokenProvider:
   
         return token.token  
   
-def call_llm_azure_entra(str_user, data, mimeType):
+def call_llm_azure_entra(model, str_user, data, mimeType):
+
+    config = cfg.get_config(model)
+
     if data != "" and config.MULTIMODAL == False:
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 
@@ -100,13 +102,16 @@ def call_llm_azure_entra(str_user, data, mimeType):
     result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
     return result
 
-def call_image_ai(str_user, image_path, n_count = 1):
+def call_image_ai(model, str_user, image_path, n_count = 1):
     from PIL import Image
+
+    config = cfg.get_image_config(model)
+
     interactive_browser_credential = InteractiveBrowserCredential()  
     token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)  
   
     client = AzureOpenAI(  
-        azure_endpoint=config.OPENAI_API_URL,  
+        azure_endpoint=config.OPENAI_IMAGE_API_URL,  
         azure_ad_token_provider=token_provider.get_token, 
         api_version=config.OPENAI_API_VERSION_IMAGE
     )  

@@ -1,33 +1,9 @@
 import os
+from dataclasses import dataclass, field
+from typing import List, Optional
 
 LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
-MARKMAP_TEMPLATE = """
-<div class="markmap">
-<script type="text/template">
----
-markmap:
-  colorFreezeLevel: {{colorFreezeLevel}}
-  initialExpandLevel: -1
----
-{{markmap}}
-</script>
-</div>
-"""
-
-MERMAID_TEMPLATE= """
-<div class="mermaid">
-%%{init: {"theme": "dark"}}%% 
-{{mermaid}}
-</div>
-"""
-
-SYSTEM_PROMPT = """
-You are a highly experienced business consultant with expertise in 
-strategic planning, financial analysis, marketing, and organizational development.
-Provide detailed, insightful, and professional advice tailored to the needs of business clients.
-Your responses should reflect the latest industry trends and best practices.
-"""
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
@@ -164,302 +140,449 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
 # CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit'      # good
 
-USE_AZURE_ENTRA = False
+@dataclass
+class Config:
+    CLOUD_TYPE: str = ""
+    LOG: bool = True
 
-LLM_TEMPERATURE = float('0.5')
+    # Top-level / global config
+    SYSTEM_PROMPT: str = ""
+    MARKMAP_TEMPLATE: str = ""
+    MERMAID_TEMPLATE: str = ""
+    
+    USE_AZURE_ENTRA: bool = False
 
-MAX_TOKENS = int('4000')
-MAX_RETRIES = int('3')
-TOP_MOST_RESULTS = int('5')
-MAX_RETURN_WORDS = int('5')
-LEVELS_DEEP = int('5')
+    LLM_TEMPERATURE: float = 0.5
+    MAX_TOKENS: int = 4000
+    MAX_RETRIES: int = 3
+    TOP_MOST_RESULTS: int = 5
+    MAX_RETURN_WORDS: int = 5
+    LEVELS_DEEP: int = 5
+    
+    INDENT_SIZE: int = 2
+    LINE_SEPARATOR: str = "\n"
+    
+    OPENAI_COMPATIBILITY: bool = False
+    
+    MULTIMODAL: bool = False
+    MULTIMODAL_MIME_TYPES: List[str] = field(default_factory=list)
+    MULTIMODAL_PDF_TO_IMAGE_DPI: int = 200
+    
+    MARKDOWN_OPTIMIZATION_LEVEL: int = 2
+    
+    # Common fields that may be set by branches
+    OPENAI_API_KEY: Optional[str] = None
+    OPENAI_API_URL: Optional[str] = None
+    OPENAI_DEPLOYMENT: Optional[str] = None
+    OPENAI_API_VERSION: Optional[str] = None
+    OPENAI_MODEL: Optional[str] = None
+    
+    API_URL: Optional[str] = None
+    KEY_HEADER_TEXT: Optional[str] = None
+    KEY_HEADER_VALUE: Optional[str] = None
+    
+    # Azure Meta
+    META_MODEL: Optional[str] = None
+    
+    # Azure Microsoft
+    MICROSOFT_MODEL: Optional[str] = None
+    
+    # Google
+    GOOGLE_API_KEY: Optional[str] = None
+    GOOGLE_ACCESS_TOKEN: Optional[str] = None
+    PROJECT_ID: Optional[str] = None
+    API_ENDPOINT: Optional[str] = None
+    LOCATION_ID: Optional[str] = None
+    GCP_CLIENT_ID: Optional[str] = None
+    GCP_CLIENT_SECRET: Optional[str] = None
+    GCP_PROJECT_ID: Optional[str] = None
+    GCP_ENDPOINT: Optional[str] = None
+    GCP_LOCATION: Optional[str] = None
+    
+    # Bedrock
+    AWS_MODEL_ID: Optional[str] = None
+    AWS_ACCESS_KEY: Optional[str] = None
+    AWS_SECRET_KEY: Optional[str] = None
+    AWS_SERVICE_NAME: Optional[str] = None
+    AWS_MODEL_VERSION_KEY: Optional[str] = None
+    AWS_MODEL_VERSION_TEXT: Optional[str] = None
+    AWS_REGION: Optional[str] = None
+    
+    # Misc model ID fields
+    MODEL_ID: Optional[str] = None
+    MODEL_PATH: Optional[str] = None
+    ALLOW_DOWNLOAD: Optional[bool] = None
+    DEVICE: Optional[str] = None
+    
+    # Anthropic
+    BETA_HEADER_KEY: Optional[str] = None
+    BETA_HEADER_TEXT: Optional[str] = None
+    ANTHROPIC_API_KEY: Optional[str] = None
+    ANTHROPIC_VERSION: Optional[str] = None
+    
+    # XAI
+    XAI_API_KEY: Optional[str] = None
+    
+    # GITHUB
+    GITHUB_TOKEN: Optional[str] = None
+    
+    # GROQ
+    GROQ_API_KEY: Optional[str] = None
+    
+    # PERPLEXITY
+    PERPLEXITY_API_KEY: Optional[str] = None
+    
+    # DEEPSEEK
+    DEEPSEEK_API_KEY: Optional[str] = None
+    
+    # ALIBABACLOUD
+    ALIBABACLOUD_API_KEY: Optional[str] = None
+    
+    # MISTRAL
+    MISTRAL_API_KEY: Optional[str] = None
+    
+    # HF
+    HF_API_KEY: Optional[str] = None
+    
+    # FIREWORKS
+    FIREWORKS_API_KEY: Optional[str] = None
 
-INDENT_SIZE = int('2')
-LINE_SEPARATOR = "\n"
-OPENAI_COMPATIBILITY = False
 
-MULTIMODAL = False
-MULTIMODAL_MIME_TYPES = []
-MULTIMODAL_PDF_TO_IMAGE_DPI = int('200')
+def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> Config:
+    config = Config()
 
-MARKDOWN_OPTIMIZATION_LEVEL = int('2')
+    config.CLOUD_TYPE = CLOUD_TYPE
+    config.LOG = LOG
 
-if "OPENAI+" in CLOUD_TYPE:
-    if "gpt-4o" in CLOUD_TYPE:
-        MULTIMODAL = True
-        MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-    OPENAI_COMPATIBILITY = True
-    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
-    OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
-    OPENAI_DEPLOYMENT = ""
-    OPENAI_API_VERSION = ""
+    # defaults
+    config.MARKMAP_TEMPLATE = """
+    <div class="markmap">
+    <script type="text/template">
+    ---
+    markmap:
+    colorFreezeLevel: {{colorFreezeLevel}}
+    initialExpandLevel: -1
+    ---
+    {{markmap}}
+    </script>
+    </div>
+    """
 
-    OPENAI_MODEL = CLOUD_TYPE.split("+")[-1]
-    API_URL = OPENAI_API_URL
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
+    config.MERMAID_TEMPLATE= """
+    <div class="mermaid">
+    %%{init: {"theme": "dark"}}%% 
+    {{mermaid}}
+    </div>
+    """
 
-    if "gpt-4o" in OPENAI_MODEL:
-        MAX_TOKENS = 16383
-    elif "o1-mini" in OPENAI_MODEL:
-        MAX_TOKENS = 65535
-    elif "o1-preview" in OPENAI_MODEL:
-        MAX_TOKENS = 32767
+    config.SYSTEM_PROMPT = """
+    You are a highly experienced business consultant with expertise in 
+    strategic planning, financial analysis, marketing, and organizational development.
+    Provide detailed, insightful, and professional advice tailored to the needs of business clients.
+    Your responses should reflect the latest industry trends and best practices.
+    """
+    config.USE_AZURE_ENTRA = False
+    config.LLM_TEMPERATURE = 0.5
+    config.MAX_TOKENS = 4000
+    config.MAX_RETRIES = 3
+    config.TOP_MOST_RESULTS = 5
+    config.MAX_RETURN_WORDS = 5
+    config.LEVELS_DEEP = 5
+    config.INDENT_SIZE = 2
+    config.LINE_SEPARATOR = "\n"
+    config.OPENAI_COMPATIBILITY = False
+    config.MULTIMODAL = False
+    config.MULTIMODAL_MIME_TYPES = []
+    config.MULTIMODAL_PDF_TO_IMAGE_DPI = 200
+    config.MARKDOWN_OPTIMIZATION_LEVEL = 2
 
-    MARKDOWN_OPTIMIZATION_LEVEL = 3
+    # based on CLOUD_TYPE
+    if "OPENAI+" in CLOUD_TYPE:
+        if "gpt-4o" in CLOUD_TYPE:
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        config.OPENAI_COMPATIBILITY = True
+        config.OPENAI_API_KEY = os.getenv('OPENAI_API_KEY_NATIVE')
+        config.OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
+        config.OPENAI_DEPLOYMENT = ""
+        config.OPENAI_API_VERSION = ""
+        config.OPENAI_MODEL = CLOUD_TYPE.split("+")[-1]
+        config.API_URL = config.OPENAI_API_URL
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.OPENAI_API_KEY or "")
 
-elif "AZURE+" in CLOUD_TYPE:
-    if "gpt-4o" in CLOUD_TYPE:
-        MULTIMODAL = True
-        MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-    OPENAI_COMPATIBILITY = True
-    OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
-    OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
-    OPENAI_API_URL = os.getenv('OPENAI2_API_BASE')
-    OPENAI_API_VERSION = os.getenv('OPENAI2_API_VERSION')
+        model = config.OPENAI_MODEL
+        if "gpt-4o" in model:
+            config.MAX_TOKENS = 16383
+        elif "o1-mini" in model:
+            config.MAX_TOKENS = 65535
+        elif "o1-preview" in model:
+            config.MAX_TOKENS = 32767
 
-    OPENAI_MODEL = ""
-    API_URL = f"{OPENAI_API_URL}openai/deployments/{OPENAI_DEPLOYMENT}/chat/completions?api-version={OPENAI_API_VERSION}"
-    KEY_HEADER_TEXT = "api-key"
-    KEY_HEADER_VALUE = OPENAI_API_KEY
+        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
-    if "gpt-4o" in CLOUD_TYPE:
-        MAX_TOKENS = 16383
+    elif "AZURE+" in CLOUD_TYPE:
+        if "gpt-4o" in CLOUD_TYPE:
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        config.OPENAI_COMPATIBILITY = True
+        config.OPENAI_DEPLOYMENT = CLOUD_TYPE.split("+")[-1]
+        config.OPENAI_API_KEY = os.getenv('OPENAI2_API_KEY')
+        config.OPENAI_API_URL = os.getenv('OPENAI2_API_BASE')
+        config.OPENAI_API_VERSION = os.getenv('OPENAI2_API_VERSION')
+        config.OPENAI_MODEL = ""
+        if config.OPENAI_API_URL and config.OPENAI_DEPLOYMENT and config.OPENAI_API_VERSION:
+            config.API_URL = (
+                f"{config.OPENAI_API_URL}openai/deployments/"
+                f"{config.OPENAI_DEPLOYMENT}/chat/completions"
+                f"?api-version={config.OPENAI_API_VERSION}"
+            )
+        config.KEY_HEADER_TEXT = "api-key"
+        config.KEY_HEADER_VALUE = config.OPENAI_API_KEY or ""
+        if "gpt-4o" in CLOUD_TYPE:
+            config.MAX_TOKENS = 16383
+        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
-    MARKDOWN_OPTIMIZATION_LEVEL = 3
+    elif "OPENROUTER+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
+        config.OPENAI_MODEL = CLOUD_TYPE.split("+")[-1]
+        config.API_URL = "https://openrouter.ai/api/v1/chat/completions"
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.OPENROUTER_API_KEY or "")
+        if any(s in config.OPENAI_MODEL for s in ["gpt-4o", "o1-mini", "o1-preview"]):
+            config.MAX_TOKENS = 16383
+        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
-elif "OPENROUTER+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
-    OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
-
-    OPENAI_MODEL = CLOUD_TYPE.split("+")[-1]
-    API_URL = OPENROUTER_API_URL
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + OPENROUTER_API_KEY
-
-    if "gpt-4o" in OPENAI_MODEL or "o1-mini" in OPENAI_MODEL or "o1-preview" in OPENAI_MODEL:
-        MAX_TOKENS = 16383
-
-    MARKDOWN_OPTIMIZATION_LEVEL = 3
-
-elif "GITHUB+" in CLOUD_TYPE:
-    model = CLOUD_TYPE.split("+")[-1]
-    OPENAI_COMPATIBILITY = True
-    GITHUB_TOKEN = os.getenv('GITHUB_MODELS_TOKEN')
-    GITHUB_API_URL = "https://models.inference.ai.azure.com/chat/completions"
-    OPENAI_MODEL = model
-
-    API_URL = GITHUB_API_URL
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + GITHUB_TOKEN
-
-    if "gpt-4o" in OPENAI_MODEL:
-        MAX_TOKENS = 16383
-
-    MARKDOWN_OPTIMIZATION_LEVEL = 3
-
-elif "AZURE_META+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    META_MODEL = CLOUD_TYPE.split("+")[-1]
-    OPENAI_API_KEY = os.getenv(f"AZURE_{META_MODEL}_KEY")
-    OPENAI_API_URL = os.getenv(f"AZURE_{META_MODEL}_ENDPOINT") + "/v1/chat/completions"
-    OPENAI_DEPLOYMENT = ""
-    OPENAI_API_VERSION = ""
-
-    OPENAI_MODEL = ""
-    API_URL = OPENAI_API_URL
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
-
-elif "AZURE_Microsoft+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MICROSOFT_MODEL = CLOUD_TYPE.split("+")[-1]
-    OPENAI_API_KEY = os.getenv(f"AZURE_{MICROSOFT_MODEL}_KEY")
-    OPENAI_API_URL = os.getenv(f"AZURE_{MICROSOFT_MODEL}_ENDPOINT") + "/v1/chat/completions"
-    OPENAI_DEPLOYMENT = ""
-    OPENAI_API_VERSION = ""
-
-    OPENAI_MODEL = ""
-    API_URL = OPENAI_API_URL
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY
-
-elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
-    MULTIMODAL = True
-    MULTIMODAL_MIME_TYPES = ["application/pdf"]
-
-    system = CLOUD_TYPE.split("+")[0]
-    if system == "GEMINI":
+    elif "GITHUB+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
         model = CLOUD_TYPE.split("+")[-1]
-        MAX_TOKENS = 8191
-        GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
-        API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GOOGLE_API_KEY}"
-        KEY_HEADER_TEXT = ""
-        KEY_HEADER_VALUE = ""
+        config.GITHUB_TOKEN = os.getenv('GITHUB_MODELS_TOKEN')
+        config.OPENAI_MODEL = model
+        config.API_URL = "https://models.inference.ai.azure.com/chat/completions"
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.GITHUB_TOKEN or "")
+        if "gpt-4o" in model:
+            config.MAX_TOKENS = 16383
+        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
-    elif system == "VERTEXAI":
+    elif "AZURE_META+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        meta_model = CLOUD_TYPE.split("+")[-1]
+        config.META_MODEL = meta_model
+        config.OPENAI_API_KEY = os.getenv(f"AZURE_{meta_model}_KEY")
+        endpoint = os.getenv(f"AZURE_{meta_model}_ENDPOINT")
+        config.OPENAI_API_URL = endpoint + "/v1/chat/completions" if endpoint else None
+        config.OPENAI_DEPLOYMENT = ""
+        config.OPENAI_API_VERSION = ""
+        config.OPENAI_MODEL = ""
+        config.API_URL = config.OPENAI_API_URL
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.OPENAI_API_KEY or "")
+
+    elif "AZURE_Microsoft+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        microsoft_model = CLOUD_TYPE.split("+")[-1]
+        config.MICROSOFT_MODEL = microsoft_model
+        config.OPENAI_API_KEY = os.getenv(f"AZURE_{microsoft_model}_KEY")
+        endpoint = os.getenv(f"AZURE_{microsoft_model}_ENDPOINT")
+        config.OPENAI_API_URL = endpoint + "/v1/chat/completions" if endpoint else None
+        config.OPENAI_DEPLOYMENT = ""
+        config.OPENAI_API_VERSION = ""
+        config.OPENAI_MODEL = ""
+        config.API_URL = config.OPENAI_API_URL
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.OPENAI_API_KEY or "")
+
+    elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
+        config.MULTIMODAL = True
+        config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
+        system = CLOUD_TYPE.split("+")[0]
         model = CLOUD_TYPE.split("+")[-1]
-        MAX_TOKENS = 8191
-        PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
-        API_ENDPOINT = "us-central1-aiplatform.googleapis.com"
-        LOCATION_ID = "us-central1"
-        GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI') # limited time use
-        API_URL = f"https://{API_ENDPOINT}/v1beta1/projects/{PROJECT_ID}/locations/{LOCATION_ID}/publishers/google/models/{model}:generateContent"
-        KEY_HEADER_TEXT = "Authorization"
-        KEY_HEADER_VALUE = "Bearer " + GOOGLE_ACCESS_TOKEN
+        config.MAX_TOKENS = 8191
 
-        # GCP
-        # gcloud auth application-default login
-        GCP_CLIENT_ID = os.getenv('GCP_CLIENT_ID')
-        GCP_CLIENT_SECRET = os.getenv('GCP_CLIENT_SECRET')
-        GCP_PROJECT_ID = PROJECT_ID
-        GCP_ENDPOINT = API_ENDPOINT
-        GCP_LOCATION = LOCATION_ID
+        if system == "GEMINI":
+            config.GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY_AI')
+            config.API_URL = (
+                f"https://generativelanguage.googleapis.com/v1beta/models/"
+                f"{model}:generateContent?key={config.GOOGLE_API_KEY}"
+            )
+            config.KEY_HEADER_TEXT = ""
+            config.KEY_HEADER_VALUE = ""
+        elif system == "VERTEXAI":
+            config.PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
+            config.API_ENDPOINT = "us-central1-aiplatform.googleapis.com"
+            config.LOCATION_ID = "us-central1"
+            config.GOOGLE_ACCESS_TOKEN = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
+            config.API_URL = (
+                f"https://{config.API_ENDPOINT}/v1beta1/projects/{config.PROJECT_ID}/"
+                f"locations/{config.LOCATION_ID}/publishers/google/models/{model}:generateContent"
+            )
+            config.KEY_HEADER_TEXT = "Authorization"
+            config.KEY_HEADER_VALUE = "Bearer " + (config.GOOGLE_ACCESS_TOKEN or "")
+            
+            # Example GCP environment fields
+            config.GCP_CLIENT_ID = os.getenv('GCP_CLIENT_ID')
+            config.GCP_CLIENT_SECRET = os.getenv('GCP_CLIENT_SECRET')
+            config.GCP_PROJECT_ID = config.PROJECT_ID
+            config.GCP_ENDPOINT = config.API_ENDPOINT
+            config.GCP_LOCATION = config.LOCATION_ID
 
-elif "BEDROCK" in CLOUD_TYPE:
-    AWS_MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
-    AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
-    AWS_SERVICE_NAME = "bedrock-runtime"
-    AWS_MODEL_VERSION_KEY = ""
-    AWS_MODEL_VERSION_TEXT = ""
-    AWS_REGION = "us-east-1"
-    if AWS_MODEL_ID.startswith("anthropic."):
-        AWS_REGION = "eu-central-1"
-        AWS_MODEL_VERSION_KEY = "anthropic_version"
-        AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
-    elif AWS_MODEL_ID.startswith("mistral."):
-        pass
-    elif AWS_MODEL_ID.startswith("amazon.titan-"):
-        MAX_TOKENS = 3000
-    elif AWS_MODEL_ID.startswith("amazon.nova-"):
-        MAX_TOKENS = 5120
+    elif "BEDROCK" in CLOUD_TYPE:
+        config.AWS_MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.AWS_ACCESS_KEY = os.getenv("AWS_ACCESS_KEY")
+        config.AWS_SECRET_KEY = os.getenv("AWS_SECRET_KEY")
+        config.AWS_SERVICE_NAME = "bedrock-runtime"
+        config.AWS_MODEL_VERSION_KEY = ""
+        config.AWS_MODEL_VERSION_TEXT = ""
+        config.AWS_REGION = "us-east-1"
+        if config.AWS_MODEL_ID.startswith("anthropic."):
+            config.AWS_REGION = "eu-central-1"
+            config.AWS_MODEL_VERSION_KEY = "anthropic_version"
+            config.AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
+        elif config.AWS_MODEL_ID.startswith("mistral."):
+            pass
+        elif config.AWS_MODEL_ID.startswith("amazon.titan-"):
+            config.MAX_TOKENS = 3000
+        elif config.AWS_MODEL_ID.startswith("amazon.nova-"):
+            config.MAX_TOKENS = 5120
+        else:
+            raise Exception("Error: Unsupported AWS Bedrock model.")
+
+    elif "OLLAMA+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        if config.OPENAI_COMPATIBILITY:
+            config.API_URL="http://localhost:11434/v1/chat/completions"
+        else: 
+            config.API_URL="http://localhost:11434/api/generate"
+
+
+    elif "LMSTUDIO+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.API_URL = "http://localhost:1234/v1"
+
+    elif "GPT4ALL+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.MODEL_PATH = os.path.join(
+            os.path.expanduser("~"),
+            "Library",
+            "Application Support",
+            "nomic.ai",
+            "GPT4ALL"
+        )
+        config.MAX_TOKENS = 2000
+        config.ALLOW_DOWNLOAD = False
+        config.DEVICE = "gpu"
+        config.API_URL = ""
+
+    elif "ANTHROPIC" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.BETA_HEADER_KEY = ""
+        config.BETA_HEADER_TEXT = ""
+        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
+
+        if "claude-3-5" in config.MODEL_ID:
+            config.MAX_TOKENS = 8192
+            if "sonnet" in config.MODEL_ID:
+                config.MULTIMODAL = True
+                config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
+        
+        config.ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
+        config.ANTHROPIC_VERSION = "2023-06-01"
+        config.KEY_HEADER_TEXT = "x-api-key"
+        config.KEY_HEADER_VALUE = config.ANTHROPIC_API_KEY or ""
+        config.API_URL = "https://api.anthropic.com/v1/messages"
+
+    elif "XAI+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.XAI_API_KEY = os.getenv('XAI_API_KEY')
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.XAI_API_KEY or "")
+        config.API_URL = "https://api.x.ai/v1/chat/completions"
+        if "-vision-" in config.MODEL_ID:
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+
+    elif "GROQ+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 8000
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.GROQ_API_KEY or "")
+        config.API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+    elif "PERPLEXITY+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.PERPLEXITY_API_KEY or "")
+        config.API_URL = "https://api.perplexity.ai/chat/completions"
+
+    elif "DEEPSEEK+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 8000
+        config.OPENAI_COMPATIBILITY = False
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.DEEPSEEK_API_KEY or "")
+        config.API_URL = "https://api.deepseek.com/beta/chat/completions"
+
+    elif "ALIBABACLOUD+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 2000 if "qwen-max" in CLOUD_TYPE else 1500
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.ALIBABACLOUD_API_KEY = os.getenv('ALIBABACLOUD_API_KEY')
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.ALIBABACLOUD_API_KEY or "")
+        config.API_URL = (
+            "https://dashscope-intl.aliyuncs.com/api/v1/"
+            "services/aigc/text-generation/generation"
+        )
+
+    elif "MISTRAL+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
+        config.API_URL = "https://api.mistral.ai/v1/chat/completions"
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.MISTRAL_API_KEY or "")
+
+    elif "HF+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]
+        config.HF_API_KEY = os.getenv('HF_API_KEY')
+        config.API_URL = (
+            f"https://api-inference.huggingface.co/models/"
+            f"{config.MODEL_ID}/v1/chat/completions"
+        )
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.HF_API_KEY or "")
+
+    elif "FIREWORKS+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        model_prefix = "accounts/fireworks/models/"
+        config.MODEL_ID = model_prefix + CLOUD_TYPE.split("+")[-1]
+        config.FIREWORKS_API_KEY = os.getenv('FIREWORKS_API_KEY')
+        config.API_URL = "https://api.fireworks.ai/inference/v1/chat/completions"
+        config.KEY_HEADER_TEXT = "Authorization"
+        config.KEY_HEADER_VALUE = "Bearer " + (config.FIREWORKS_API_KEY or "")
+
+    elif "MLX+" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = True
+        config.MODEL_ID = CLOUD_TYPE.split("+")[-1]  # not used
+        config.API_URL = "http://localhost:8080/v1/chat/completions"
+
     else:
-        raise Exception("Error: Unsupported AWS Bedrock model.")
+        raise Exception("Error: Unknown CLOUD_TYPE")
 
-elif "OLLAMA+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    if OPENAI_COMPATIBILITY:
-        API_URL="http://localhost:11434/v1/chat/completions"
-    else: 
-        API_URL="http://localhost:11434/api/generate"
-
-elif "LMSTUDIO+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    API_URL="http://localhost:1234/v1"
-
-elif "GPT4ALL+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    MODEL_PATH = os.path.join(os.path.expanduser("~"), "Library", "Application Support", "nomic.ai", "GPT4ALL") # <- App default, SDK default -> "~/.cache/gpt4all/"
-    MAX_TOKENS = 2000
-    ALLOW_DOWNLOAD = False
-    DEVICE = "gpu"
-    API_URL = ""
-
-elif "ANTHROPIC" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    BETA_HEADER_KEY = ""
-    BETA_HEADER_TEXT = ""
-    MARKDOWN_OPTIMIZATION_LEVEL = 3
-
-    if "claude-3-5" in MODEL_ID:
-        MAX_TOKENS = 8192
-        if "sonnet" in MODEL_ID:
-            MULTIMODAL = True
-            MULTIMODAL_MIME_TYPES = ["application/pdf"]
-            #BETA_HEADER_KEY = "anthropic-beta"
-            #beta = "pdfs-2024-09-25"
-            #BETA_HEADER_TEXT = beta if BETA_HEADER_TEXT == "" else BETA_HEADER_TEXT + "," + beta
-    
-    ANTHROPIC_API_KEY = os.getenv('ANTHROPIC_API_KEY')
-    ANTHROPIC_VERSION="2023-06-01"
-    KEY_HEADER_TEXT = "x-api-key"
-    KEY_HEADER_VALUE = ANTHROPIC_API_KEY
-    API_URL="https://api.anthropic.com/v1/messages"
-
-elif "XAI+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    XAI_API_KEY = os.getenv('XAI_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + XAI_API_KEY
-    API_URL="https://api.x.ai/v1/chat/completions"
-    if "-vision-" in MODEL_ID:
-        MULTIMODAL = True
-        MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-
-elif "GROQ+" in CLOUD_TYPE:
-    MAX_TOKENS = 8000
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    GROQ_API_KEY = os.getenv('GROQ_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + GROQ_API_KEY
-    API_URL="https://api.groq.com/openai/v1/chat/completions"
-
-elif "PERPLEXITY+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    PERPLEXITY_API_KEY = os.getenv('PERPLEXITY_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + PERPLEXITY_API_KEY
-    API_URL="https://api.perplexity.ai/chat/completions"
-
-elif "DEEPSEEK+" in CLOUD_TYPE:
-    MAX_TOKENS = 8000
-    OPENAI_COMPATIBILITY = False
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + DEEPSEEK_API_KEY
-    API_URL="https://api.deepseek.com/beta/chat/completions"
-
-elif "ALIBABACLOUD+" in CLOUD_TYPE:
-    MAX_TOKENS = 2000 if "qwen-max" in CLOUD_TYPE else 1500
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    ALIBABACLOUD_API_KEY = os.getenv('ALIBABACLOUD_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + ALIBABACLOUD_API_KEY
-    API_URL="https://dashscope-intl.aliyuncs.com/api/v1/services/aigc/text-generation/generation"
-
-elif "MISTRAL+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + MISTRAL_API_KEY
-    API_URL="https://api.mistral.ai/v1/chat/completions"
-
-elif "HF+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1]
-    HF_API_KEY = os.getenv('HF_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + HF_API_KEY
-    API_URL=f"https://api-inference.huggingface.co/models/{MODEL_ID}/v1/chat/completions"
-
-elif "FIREWORKS+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    model_prefix = "accounts/fireworks/models/"
-    MODEL_ID = model_prefix + CLOUD_TYPE.split("+")[-1]
-    FIREWORKS_API_KEY = os.getenv('FIREWORKS_API_KEY')
-    KEY_HEADER_TEXT = "Authorization"
-    KEY_HEADER_VALUE = "Bearer " + FIREWORKS_API_KEY
-    API_URL=f"https://api.fireworks.ai/inference/v1/chat/completions"
-
-elif "MLX+" in CLOUD_TYPE:
-    OPENAI_COMPATIBILITY = True
-    MODEL_ID = CLOUD_TYPE.split("+")[-1] # not used
-    API_URL="http://localhost:8080/v1/chat/completions"
-    
-else:
-    raise Exception("Error: Unknown CLOUD_TYPE")
+    return config
 
 
 # only used for action = image, image_n
@@ -506,213 +629,290 @@ CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best
 # CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                   # best
 # CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'                  # best
 
-RESIZE_IMAGE = False
-RESIZE_IMAGE_WIDTH = 1024  # source size is 1024
-RESIZE_IMAGE_HEIGHT = 1024 # source size is 1024
-INSERT_IMAGE_AS_BACKGROUND = True
-OPTIMIZE_PROMPT_IMAGE = False # use a LLM call to optimize the prompt
 
-if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
-    IMAGE_EXPLICIT_STYLE = "digital art"
-    IMAGE_QUALITY = "hd"  # hd, standard
-    IMAGE_STYLE = "vivid" # natural, vivid
+@dataclass
+class ImageConfig:
+    CLOUD_TYPE_IMAGE: str = ""
+    LOG: bool = True
 
-    if "AZURE+" in CLOUD_TYPE_IMAGE:
-        OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
-        OPENAI_API_VERSION_IMAGE = '2024-02-01'
-        OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-        OPENAI_MODEL_IMAGE = ""
-        OPENAI_IMAGE_API_URL = os.getenv('OPENAI2_API_BASE')
+    # Common / top-level fields
+    RESIZE_IMAGE: bool = False
+    RESIZE_IMAGE_WIDTH: int = 1024
+    RESIZE_IMAGE_HEIGHT: int = 1024
+    INSERT_IMAGE_AS_BACKGROUND: bool = True
+    OPTIMIZE_PROMPT_IMAGE: bool = False
 
-        IMAGE_API_URL = f"{OPENAI_IMAGE_API_URL}openai/deployments/{OPENAI_DEPLOYMENT_IMAGE}/images/generations?api-version={OPENAI_API_VERSION_IMAGE}"
-        IMAGE_KEY_HEADER_TEXT = "api-key"
-        IMAGE_KEY_HEADER_VALUE = OPENAI_API_KEY_IMAGE
+    # Azure/OpenAI fields
+    IMAGE_EXPLICIT_STYLE: Optional[str] = None
+    IMAGE_QUALITY: Optional[str] = None
+    IMAGE_STYLE: Optional[str] = None
 
-    elif "OPENAI+" in CLOUD_TYPE_IMAGE:
-        OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
-        OPENAI_API_VERSION_IMAGE = ""
-        OPENAI_DEPLOYMENT_IMAGE = ""
-        OPENAI_MODEL_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
-        OPENAI_IMAGE_API_URL = "https://api.openai.com/v1/images/generations"
+    OPENAI_API_KEY_IMAGE: Optional[str] = None
+    OPENAI_API_VERSION_IMAGE: Optional[str] = None
+    OPENAI_DEPLOYMENT_IMAGE: Optional[str] = None
+    OPENAI_MODEL_IMAGE: Optional[str] = None
+    OPENAI_IMAGE_API_URL: Optional[str] = None
 
-        IMAGE_API_URL = OPENAI_IMAGE_API_URL
-        IMAGE_KEY_HEADER_TEXT = "Authorization"
-        IMAGE_KEY_HEADER_VALUE = "Bearer " + OPENAI_API_KEY_IMAGE
+    IMAGE_API_URL: Optional[str] = None
+    IMAGE_KEY_HEADER_TEXT: Optional[str] = None
+    IMAGE_KEY_HEADER_VALUE: Optional[str] = None
 
-elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
-    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+    # STABILITYAI+
+    IMAGE_MODEL_ID: Optional[str] = None
+    MODEL_ENDPOINT: Optional[str] = None
+    IMAGE_STYLE_PRESET: Optional[str] = None
+    IMAGE_OUTPUT_FORMAT: Optional[str] = None
+    IMAGE_ASPECT_RATIO: Optional[str] = None
+    IMAGE_SEED: int = 0
+    IMAGE_NEGATIV_PROMPT: Optional[str] = None
+    STABILITYAI_API_KEY: Optional[str] = None
 
-    MODEL_ENDPOINT = IMAGE_MODEL_ID.split("-")[0]
-    MODEL_ENDPOINT = "sd3" if MODEL_ENDPOINT == "sd3.5" else MODEL_ENDPOINT
+    # Vertex AI
+    IMAGE_ADD_WATERMARK: Optional[bool] = None
+    IMAGE_PROJECT_ID: Optional[str] = None
+    IMAGE_API_ENDPOINT: Optional[str] = None
+    IMAGE_LOCATION_ID: Optional[str] = None
+    GCP_CLIENT_ID_IMAGE: Optional[str] = None
+    GCP_CLIENT_SECRET_IMAGE: Optional[str] = None
+    GOOGLE_ACCESS_TOKEN_IMAGE: Optional[str] = None
 
-    # 3d-model analog-film anime cinematic comic-book digital-art 
-    # enhance fantasy-art isometric line-art low-poly modeling-compound 
-    # neon-punk origami photographic pixel-art tile-texture
-    IMAGE_STYLE_PRESET = "digital-art"
-    IMAGE_EXPLICIT_STYLE = IMAGE_STYLE_PRESET if MODEL_ENDPOINT != "core" else ""
+    # MLX+
+    IMAGE_HEIGHT: Optional[int] = None
+    IMAGE_WIDTH: Optional[int] = None
+    IMAGE_MODEL_VERSION: Optional[str] = None
+    IMAGE_NUM_STEPS: Optional[int] = None
+    IMAGE_MODEL_QUANTIZATION: Optional[int] = None
 
-    IMAGE_OUTPUT_FORMAT = "png"         # png, jpeg, webp
-    IMAGE_ASPECT_RATIO = "1:1"   # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
-    IMAGE_SEED = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
+    # IDEOGRAMAI+
+    IMAGE_RESOLUTION: Optional[str] = None
 
-    IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
+    # BFL+
+    IMAGE_SAFETY_TOLERANCE: Optional[int] = None
+    IMAGE_RAW: Optional[bool] = None
+    IMAGE_PROMPT_UPSAMPLING: Optional[bool] = None
+    IMAGE_STEPS: Optional[int] = None
+    IMAGE_INTERVAL: Optional[int] = None
+    IMAGE_GUIDANCE: Optional[int] = None
 
-    STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
-    IMAGE_API_URL = f"https://api.stability.ai/v2beta/stable-image/generate/{MODEL_ENDPOINT}"
+    # RECRAFTAI+
+    IMAGE_SIZE: Optional[str] = None
+    IMAGE_RESPONSE_FORMAT: Optional[str] = None
+    IMAGE_SUBSTYLE: Optional[str] = None
 
-elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
-    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
-    IMAGE_ASPECT_RATIO = "1:1" # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
 
-    IMAGE_EXPLICIT_STYLE = "digital art"
-    IMAGE_ADD_WATERMARK = False
+def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> ImageConfig:
+    config = ImageConfig()
 
-    IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
+    config.CLOUD_TYPE_IMAGE = CLOUD_TYPE_IMAGE
+    config.LOG = LOG
 
-    IMAGE_PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
-    IMAGE_API_ENDPOINT = "us-central1-aiplatform.googleapis.com"
-    IMAGE_LOCATION_ID = "us-central1"
+    # Default values
+    config.RESIZE_IMAGE = False
+    config.RESIZE_IMAGE_WIDTH = 1024
+    config.RESIZE_IMAGE_HEIGHT = 1024
+    config.INSERT_IMAGE_AS_BACKGROUND = True
+    config.OPTIMIZE_PROMPT_IMAGE = False
 
-    IMAGE_KEY_HEADER_TEXT = "Authorization"
+    # Branch logic
+    if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
+        config.IMAGE_EXPLICIT_STYLE = "digital art"
+        config.IMAGE_QUALITY = "hd"    # hd, standard
+        config.IMAGE_STYLE = "vivid"  # natural, vivid
 
-    GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
-    GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
+        if "AZURE+" in CLOUD_TYPE_IMAGE:
+            config.OPENAI_API_KEY_IMAGE = os.getenv('OPENAI2_API_KEY')
+            config.OPENAI_API_VERSION_IMAGE = '2024-02-01'
+            config.OPENAI_DEPLOYMENT_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+            config.OPENAI_MODEL_IMAGE = ""
+            config.OPENAI_IMAGE_API_URL = os.getenv('OPENAI2_API_BASE')
+            config.IMAGE_API_URL = (
+                f"{config.OPENAI_IMAGE_API_URL}openai/deployments/"
+                f"{config.OPENAI_DEPLOYMENT_IMAGE}/images/generations"
+                f"?api-version={config.OPENAI_API_VERSION_IMAGE}"
+            )
+            config.IMAGE_KEY_HEADER_TEXT = "api-key"
+            config.IMAGE_KEY_HEADER_VALUE = config.OPENAI_API_KEY_IMAGE
 
-    IMAGE_API_URL = f"https://{IMAGE_API_ENDPOINT}/v1/projects/{IMAGE_PROJECT_ID}/locations/{IMAGE_LOCATION_ID}/publishers/google/models/{IMAGE_MODEL_ID}:predict"
+        elif "OPENAI+" in CLOUD_TYPE_IMAGE:
+            config.OPENAI_API_KEY_IMAGE = os.getenv('OPENAI_API_KEY_NATIVE')
+            config.OPENAI_API_VERSION_IMAGE = ""
+            config.OPENAI_DEPLOYMENT_IMAGE = ""
+            config.OPENAI_MODEL_IMAGE = CLOUD_TYPE_IMAGE.split("+")[-1]
+            config.OPENAI_IMAGE_API_URL = "https://api.openai.com/v1/images/generations"
+            config.IMAGE_API_URL = config.OPENAI_IMAGE_API_URL
+            config.IMAGE_KEY_HEADER_TEXT = "Authorization"
+            config.IMAGE_KEY_HEADER_VALUE = "Bearer " + (
+                config.OPENAI_API_KEY_IMAGE or ""
+            )
 
-elif "MLX+" in CLOUD_TYPE_IMAGE:
-    IMAGE_SEED = 0
-    #https://enragedantelope.github.io/Styles-FluxDev/
-    IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
-    #IMAGE_EXPLICIT_STYLE = "papercraft-kirigami art"
-    #IMAGE_EXPLICIT_STYLE = "computer collage art"
-    IMAGE_NEGATIV_PROMPT = ""
+    elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
+        config.IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+        config.MODEL_ENDPOINT = config.IMAGE_MODEL_ID.split("-")[0]
+        # Map special case for sd3.5
+        config.MODEL_ENDPOINT = "sd3" if config.MODEL_ENDPOINT == "sd3.5" else config.MODEL_ENDPOINT
 
-    IMAGE_HEIGHT = 1024 # 1024 # 512 # 768
-    IMAGE_WIDTH = 1024 # 1024 # 512 # 768
+        # 3d-model analog-film anime cinematic comic-book digital-art 
+        # enhance fantasy-art isometric line-art low-poly modeling-compound 
+        # neon-punk origami photographic pixel-art tile-texture
+        config.IMAGE_STYLE_PRESET = "digital-art"
+        config.IMAGE_EXPLICIT_STYLE = (
+            config.IMAGE_STYLE_PRESET if config.MODEL_ENDPOINT != "core" else ""
+        )
+        config.IMAGE_OUTPUT_FORMAT = "png" # png, jpeg, webp
+        config.IMAGE_ASPECT_RATIO = "1:1" # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
+        config.IMAGE_SEED = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
+        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
+        config.STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
+        config.IMAGE_API_URL = f"https://api.stability.ai/v2beta/stable-image/generate/{config.MODEL_ENDPOINT}"
 
-    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if "-flux1" in IMAGE_MODEL_ID:
+    elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
+        config.IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+        config.IMAGE_ASPECT_RATIO = "1:1"  # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
+        config.IMAGE_EXPLICIT_STYLE = "digital art"
+        config.IMAGE_ADD_WATERMARK = False
+        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
 
-        if "-schnell" in IMAGE_MODEL_ID:
-            IMAGE_MODEL_VERSION = "schnell"
-            IMAGE_NUM_STEPS = 2 # 2-4
-        elif "-dev" in IMAGE_MODEL_ID:
-            IMAGE_MODEL_VERSION = "dev"
-            IMAGE_NUM_STEPS = 20 # 20-25
+        config.IMAGE_PROJECT_ID = os.getenv('GOOGLE_PROJECT_ID_AI')
+        config.IMAGE_API_ENDPOINT = "us-central1-aiplatform.googleapis.com"
+        config.IMAGE_LOCATION_ID = "us-central1"
+        config.IMAGE_KEY_HEADER_TEXT = "Authorization"
+        config.GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
+        config.GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
+        config.GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
+
+        config.IMAGE_API_URL = (
+            f"https://{config.IMAGE_API_ENDPOINT}/v1/projects/{config.IMAGE_PROJECT_ID}"
+            f"/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/"
+            f"{config.IMAGE_MODEL_ID}:predict"
+        )
+
+    elif "MLX+" in CLOUD_TYPE_IMAGE:
+        config.IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+        config.IMAGE_SEED = 0
+        #https://enragedantelope.github.io/Styles-FluxDev/
+        config.IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
+        #config.IMAGE_EXPLICIT_STYLE = "papercraft-kirigami art"
+        #config.IMAGE_EXPLICIT_STYLE = "computer collage art"
+        config.IMAGE_NEGATIV_PROMPT = ""
+        config.IMAGE_HEIGHT = 1024 # 1024 # 512 # 768
+        config.IMAGE_WIDTH = 1024 # 1024 # 512 # 768
+
+        if "-flux1" in config.IMAGE_MODEL_ID:
+            if "-schnell" in config.IMAGE_MODEL_ID:
+                config.IMAGE_MODEL_VERSION = "schnell"
+                config.IMAGE_NUM_STEPS = 2 # 2-4
+            elif "-dev" in config.IMAGE_MODEL_ID:
+                config.IMAGE_MODEL_VERSION = "dev"
+                config.IMAGE_NUM_STEPS = 20 # 20-25
+            else:
+                raise Exception("Error: image model version not supported using MLX")
+            
+            if "-4bit" in config.IMAGE_MODEL_ID:
+                config.IMAGE_MODEL_QUANTIZATION = 4
+            elif "-8bit" in config.IMAGE_MODEL_ID:
+                config.IMAGE_MODEL_QUANTIZATION = 8
+            else:
+                raise Exception("Error: image model quantization not supported using MLX")
         else:
-            raise Exception("Error: image model version not supported using MLX")
-        
-        if "-4bit" in IMAGE_MODEL_ID:
-            IMAGE_MODEL_QUANTIZATION = 4
-        elif "-8bit" in IMAGE_MODEL_ID:
-            IMAGE_MODEL_QUANTIZATION = 8
+            raise Exception("Error: image model not supported using MLX")
+
+    elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
+        config.IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+        if config.IMAGE_MODEL_ID in ("V_2", "V_2_TURBO"):
+            config.IMAGE_STYLE_PRESET = "GENERAL"  # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
+            config.IMAGE_EXPLICIT_STYLE = config.IMAGE_STYLE_PRESET
         else:
-            raise Exception("Error: image model quantization not supported using MLX")
-        
-    else:
-        raise Exception("Error: image model not supported using MLX")
-    
-elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
-    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
-    if IMAGE_MODEL_ID == "V_2" or IMAGE_MODEL_ID == "V_2_TURBO":
-        IMAGE_STYLE_PRESET = "GENERAL" # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
-        IMAGE_EXPLICIT_STYLE = IMAGE_STYLE_PRESET
-    else:
-        IMAGE_EXPLICIT_STYLE = "computer collage art"
+            config.IMAGE_EXPLICIT_STYLE = "computer collage art"
 
-    IMAGE_OUTPUT_FORMAT = "png"
-    IMAGE_SEED = 0
+        config.IMAGE_OUTPUT_FORMAT = "png"
+        config.IMAGE_SEED = 0
+        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
+        config.IMAGE_HEIGHT = 1024
+        config.IMAGE_WIDTH = 1024
+        config.IMAGE_RESOLUTION = f"RESOLUTION_{config.IMAGE_WIDTH}_{config.IMAGE_HEIGHT}"
 
-    IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
+        config.IMAGE_KEY_HEADER_TEXT = "Api-Key"
+        config.IMAGE_KEY_HEADER_VALUE = os.getenv('IDEOGRAMAI_API_KEY')
+        config.IMAGE_API_URL = "https://api.ideogram.ai/generate"
 
-    IMAGE_HEIGHT = 1024
-    IMAGE_WIDTH = 1024
-    IMAGE_RESOLUTION = f"RESOLUTION_{IMAGE_WIDTH}_{IMAGE_HEIGHT}"
+    elif "BFL+" in CLOUD_TYPE_IMAGE:
+        config.IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+        config.IMAGE_EXPLICIT_STYLE = "computer collage art"
+        config.IMAGE_OUTPUT_FORMAT = "png"
+        config.IMAGE_SEED = 0
+        config.IMAGE_SAFETY_TOLERANCE = 6  # 0-6, 6 = least strict
 
-    IMAGE_KEY_HEADER_TEXT = "Api-Key"
-    IMAGE_KEY_HEADER_VALUE = os.getenv('IDEOGRAMAI_API_KEY')
-    IMAGE_API_URL = f"https://api.ideogram.ai/generate"
+        # Example branching by model
+        if config.IMAGE_MODEL_ID == "flux-pro-1.1-ultra":
+            config.IMAGE_RAW = False
+            config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
+        elif config.IMAGE_MODEL_ID == "flux-pro-1.1":
+            config.IMAGE_HEIGHT = 1024
+            config.IMAGE_WIDTH = 1024
+            config.IMAGE_PROMPT_UPSAMPLING = False
+        elif config.IMAGE_MODEL_ID == "flux-pro":
+            config.IMAGE_HEIGHT = 1024
+            config.IMAGE_WIDTH = 1024
+            config.IMAGE_STEPS = 28
+            config.IMAGE_INTERVAL = 2
+            config.IMAGE_PROMPT_UPSAMPLING = False
+            config.IMAGE_GUIDANCE = 3
+        elif config.IMAGE_MODEL_ID == "flux-dev":
+            config.IMAGE_HEIGHT = 1024
+            config.IMAGE_WIDTH = 1024
+            config.IMAGE_STEPS = 28
+            config.IMAGE_PROMPT_UPSAMPLING = False
+            config.IMAGE_GUIDANCE = 3
+        else:
+            raise Exception("Error: Unknown Flux image model")
 
-elif "BFL+" in CLOUD_TYPE_IMAGE:
-    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
-    IMAGE_EXPLICIT_STYLE = "computer collage art"
+        config.IMAGE_KEY_HEADER_TEXT = "x-key"
+        config.IMAGE_KEY_HEADER_VALUE = os.getenv('BFL_API_KEY')
+        config.IMAGE_API_URL = "https://api.bfl.ml/v1/"
 
-    IMAGE_OUTPUT_FORMAT = "png" # png, jpeg
-    IMAGE_SEED = 0
-    IMAGE_SAFETY_TOLERANCE = 6 # 0-6, 6 least strict
+    elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
+        config.IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
+        config.IMAGE_API_URL = "https://external.api.recraft.ai/v1/images/generations"
+        config.IMAGE_KEY_HEADER_TEXT = "Authorization"
+        config.IMAGE_KEY_HEADER_VALUE = "Bearer " + (os.getenv('RECRAFT_API_TOKEN') or "")
+        config.IMAGE_SIZE = "1024x1024"  # 1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024"
+        config.IMAGE_RESPONSE_FORMAT = "url" # url, b64_json
+        config.IMAGE_EXPLICIT_STYLE = ""
+        config.IMAGE_SUBSTYLE = ""
 
-    if IMAGE_MODEL_ID == "flux-pro-1.1-ultra":
-        IMAGE_RAW = False
-        IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
+        if config.IMAGE_MODEL_ID == "recraftv3":
 
-    elif IMAGE_MODEL_ID == "flux-pro-1.1":
-        IMAGE_HEIGHT = 1024
-        IMAGE_WIDTH = 1024
-        IMAGE_PROMPT_UPSAMPLING = False
+            # IMAGE_STYLE = "digital_illustration"
+            # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
+            
+            config.IMAGE_STYLE = "realistic_image"
+            config.IMAGE_SUBSTYLE = "enterprise"
+            
+            # IMAGE_STYLE = "vector_illustration"
+            # IMAGE_SUBSTYLE = "engraving" # engraving, line_art, line_circuit, linocut
 
-    elif IMAGE_MODEL_ID == "flux-pro":
-        IMAGE_HEIGHT = 1024
-        IMAGE_WIDTH = 1024
-        IMAGE_STEPS = 28
-        IMAGE_INTERVAL = 2
-        IMAGE_PROMPT_UPSAMPLING = False
-        IMAGE_GUIDANCE = 3
+        elif config.IMAGE_MODEL_ID == "recraft20b":
+            
+            # IMAGE_STYLE = "digital_illustration"
+            # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
+            
+            config.IMAGE_STYLE = "realistic_image"
+            config.IMAGE_SUBSTYLE = "enterprise"
+            
+            # IMAGE_STYLE = "vector_illustration"
+            # IMAGE_SUBSTYLE = "70s" # 70s, cartoon, doodle_line_art, engraving, flat_2, halloween_stickers, kawaii, line_art, line_circuit, linocut, seamless
+            
+            # IMAGE_STYLE = "icon"
+            # IMAGE_SUBSTYLE = "broken_line" # broken_line, colored_outline, colored_shapes, colored_shapes_gradient, doodle_fill, doodle_offset_fill, offset_fill, outline, outline_gradient, uneven_fill
 
-    elif IMAGE_MODEL_ID == "flux-dev":
-        IMAGE_HEIGHT = 1024
-        IMAGE_WIDTH = 1024
-        IMAGE_STEPS = 28
-        IMAGE_PROMPT_UPSAMPLING = False
-        IMAGE_GUIDANCE = 3
-
-    else:
-        raise Exception("Error: Unknown Flux image model")
- 
-    IMAGE_KEY_HEADER_TEXT = "x-key"
-    IMAGE_KEY_HEADER_VALUE = os.getenv('BFL_API_KEY')
-    IMAGE_API_URL = f"https://api.bfl.ml/v1/"
-
-elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
-    IMAGE_MODEL_ID = CLOUD_TYPE_IMAGE.split("+")[-1]
-
-    IMAGE_API_URL = "https://external.api.recraft.ai/v1/images/generations"
-    IMAGE_KEY_HEADER_TEXT = "Authorization"
-    IMAGE_KEY_HEADER_VALUE = "Bearer " + os.getenv('RECRAFT_API_TOKEN')
-
-    IMAGE_SIZE = "1024x1024" # 1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024"
-    IMAGE_RESPONSE_FORMAT = "url" # url, b64_json
-
-    IMAGE_EXPLICIT_STYLE = ""
-    IMAGE_SUBSTYLE = ""
-
-    if IMAGE_MODEL_ID == "recraftv3":
-        
-        # IMAGE_STYLE = "digital_illustration"
-        # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
-        
-        IMAGE_STYLE = "realistic_image"
-        IMAGE_SUBSTYLE = "enterprise" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
-        
-        # IMAGE_STYLE = "vector_illustration"
-        # IMAGE_SUBSTYLE = "engraving" # engraving, line_art, line_circuit, linocut
-
-    elif IMAGE_MODEL_ID == "recraft20b":
-        
-        # IMAGE_STYLE = "digital_illustration"
-        # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
-        
-        IMAGE_STYLE = "realistic_image"
-        IMAGE_SUBSTYLE = "enterprise" # b_and_w, enterprise, hard_flash, hdr, motion_blur, natural_light, studio_portrait
-        
-        # IMAGE_STYLE = "vector_illustration"
-        # IMAGE_SUBSTYLE = "70s" # 70s, cartoon, doodle_line_art, engraving, flat_2, halloween_stickers, kawaii, line_art, line_circuit, linocut, seamless
-        
-        # IMAGE_STYLE = "icon"
-        # IMAGE_SUBSTYLE = "broken_line" # broken_line, colored_outline, colored_shapes, colored_shapes_gradient, doodle_fill, doodle_offset_fill, offset_fill, outline, outline_gradient, uneven_fill
+        else:
+            raise Exception("Error: Unknown Recraft image model")
 
     else:
-        raise Exception("Error: Unknown Recraft image model")
+        # If none of the above matched, it's unknown.
+        raise Exception("Error: Unknown CLOUD_TYPE_IMAGE")
+
+    return config
 
 
 
@@ -721,10 +921,27 @@ elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
 
 CLOUD_TYPE_TRANSLATION = 'DEEPL'
 
-if "DEEPL" in CLOUD_TYPE_TRANSLATION:
-    DEEPL_API_KEY = os.getenv('DEEPL_API_KEY')
-    #DEEPL_BASE_URL = "https://api.deepl.com/v2/translate"
-    DEEPL_BASE_URL = "https://api-free.deepl.com/v2/translate"
-    KEY_HEADER_TEXT_TRANSLATION = "Authorization"
-    KEY_HEADER_VALUE_TRANSLATION = "DeepL-Auth-Key " + DEEPL_API_KEY
+@dataclass
+class TranslationConfig:
+    CLOUD_TYPE_TRANSLATION: Optional[str] = None
+    DEEPL_API_KEY: Optional[str] = None
+    DEEPL_BASE_URL: Optional[str] = None
+    KEY_HEADER_TEXT_TRANSLATION: Optional[str] = None
+    KEY_HEADER_VALUE_TRANSLATION: Optional[str] = None
+
+
+def get_translation_config(CLOUD_TYPE_TRANSLATION: str) -> TranslationConfig:
+    config = TranslationConfig(CLOUD_TYPE_TRANSLATION=CLOUD_TYPE_TRANSLATION)
+
+    if "DEEPL" in CLOUD_TYPE_TRANSLATION:
+        config.DEEPL_API_KEY = os.getenv('DEEPL_API_KEY')
+        # config.DEEPL_BASE_URL = "https://api.deepl.com/v2/translate"  # paid version
+        config.DEEPL_BASE_URL = "https://api-free.deepl.com/v2/translate"  # free version
+        config.KEY_HEADER_TEXT_TRANSLATION = "Authorization"
+        config.KEY_HEADER_VALUE_TRANSLATION = f"DeepL-Auth-Key {config.DEEPL_API_KEY or ''}"
+
+    else:
+        raise Exception("Error: Unknown CLOUD_TYPE_TRANSLATION")
+
+    return config
 
