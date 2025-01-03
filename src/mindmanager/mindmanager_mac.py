@@ -56,8 +56,11 @@ class Mindmanager:
     def get_level_from_topic(self, topic):
         return topic.level.get()
     
-    def get_title_from_topic(self, topic):
+    def get_text_from_topic(self, topic):
         return topic.name.get()
+    
+    def get_title_from_topic(self, topic):
+        return topic.title.get()
 
     def get_subtopics_from_topic(self, topic):
         return topic.subtopics.get()
@@ -113,10 +116,11 @@ class Mindmanager:
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         id = topic.id.get()
-
-        topic.title.set(mindmap_topic.topic_text)
-
+        self.set_text_to_topic(topic, mindmap_topic.topic_text)
         refreshed_topic = self.get_topic_by_id(id)
+        if mindmap_topic.topic_rtf != '':
+            self.set_title_to_topic(refreshed_topic, mindmap_topic.topic_rtf)
+            refreshed_topic = self.get_topic_by_id(id)
 
         if mindmap_topic.topic_guid:
             mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
@@ -132,9 +136,11 @@ class Mindmanager:
         topic2 = self.get_topic_by_id(guid2)
         topic1.make(new=k.relationship, with_properties={k.starting_location: topic1, k.ending_location: topic2})
 
-    def set_title_to_topic(self, topic, topic_text):
-        topic_instance = topic.get()
-        topic_instance.title.set(topic_text)
+    def set_text_to_topic(self, topic, topic_text):
+        topic.name.set(topic_text)
+
+    def set_title_to_topic(self, topic, topic_rtf):
+        topic.title.set(topic_rtf)
 
     def add_document(self, max_topic_level):
         cnt_subtopics = len(self.mindmanager.documents[1].central_topic.subtopics.get())
