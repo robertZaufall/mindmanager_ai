@@ -111,7 +111,7 @@ def get_right_round(): return ")" if use_round else ""
 def get_space_string(level): return ' ' * level * indent_size
 
 def validate_mermaid(mermaid_mindmap):
-    pattern_text = "^(?:\s{" + str(indent_size) + "})*\S.*"
+    pattern_text = r"^(?:\s{" + str(indent_size) + r"})*\S.*"
     pattern = re.compile(pattern_text, re.MULTILINE)
     matches = pattern.findall(mermaid_mindmap)
     non_empty_lines = [line for line in mermaid_mindmap.split(line_separator) if line.strip() and not line.strip().startswith('//')]
