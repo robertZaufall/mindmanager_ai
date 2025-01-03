@@ -141,10 +141,10 @@ class MindmapDocument:
         return True
 
     def get_max_topic_level(self, mindmap_topic, max_topic_level = 0):
-        for mindmap_topic in mindmap_topic.topic_subtopics:
-            if mindmap_topic.topic_level > max_topic_level:
-                max_topic_level = mindmap_topic.topic_level
-            max_topic_level = self.get_max_topic_level(mindmap_topic, max_topic_level)
+        for mindmap_subtopic in mindmap_topic.topic_subtopics:
+            if mindmap_subtopic.topic_level > max_topic_level:
+                max_topic_level = mindmap_subtopic.topic_level
+            max_topic_level = self.get_max_topic_level(mindmap_subtopic, max_topic_level)
         return max_topic_level
 
     def get_selection(self):
