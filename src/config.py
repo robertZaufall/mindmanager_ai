@@ -636,6 +636,7 @@ CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best
 class ImageConfig:
     CLOUD_TYPE_IMAGE: str = ""
     LOG: bool = True
+    TURBO_MODE: bool = False
 
     # Common / top-level fields
     RESIZE_IMAGE: bool = False
@@ -708,6 +709,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> ImageConfig:
 
     config.CLOUD_TYPE_IMAGE = CLOUD_TYPE_IMAGE
     config.LOG = LOG
+    config.TURBO_MODE = False
     config.USE_AZURE_ENTRA = False
 
     # Default values

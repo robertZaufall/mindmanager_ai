@@ -7,7 +7,7 @@ import json
 import os
 import sys
 
-def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeType=""):
+def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeType="", freetext=""):
 
     config = cfg.get_config(model)
 
@@ -20,11 +20,11 @@ def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeT
     for prompt in prompts_list:
         log_input += result + "\n\n"
 
-        this_prompt = prompts.prompt(prompt, result, topic_texts=topic_texts)
+        this_prompt = prompts.prompt(param=prompt, text=result, topic_texts=topic_texts, freetext=freetext)
         if this_prompt == "":
             return ""
 
-        result = call_llm(model, this_prompt, data, mimeType)
+        result = call_llm(model=model, str_user=this_prompt, data=data, mimeType=mimeType)
                 
         log_output += result + "\n\n"
         log_prompt += "Prompt = " + prompt + "\n-------\n" + this_prompt + "\n\n"

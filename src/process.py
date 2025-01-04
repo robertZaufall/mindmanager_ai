@@ -258,7 +258,7 @@ def main(param, charttype, model, freetext):
 
             else:
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
+                    ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, freetext=freetext)
                 )
                 create_mindmap_from_mermaid(document, mermaid)
 
