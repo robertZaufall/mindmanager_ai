@@ -589,7 +589,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> Config:
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                        # best
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                        # best
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                       # best
@@ -609,7 +609,7 @@ CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                        # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # better
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
+CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-dev-4bit'              # good 
         
 # IdeogramAI        

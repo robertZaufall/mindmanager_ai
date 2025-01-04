@@ -22,7 +22,7 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
         if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA:
             n_count = 1 # override n_count to 1
             import ai.ai_azure_entra as ai_azure_entra
-            return ai_azure_entra.call_image_ai(str_user, image_path, n_count)
+            return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_path=image_path, n_count=n_count)
 
         # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:

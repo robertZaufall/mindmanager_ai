@@ -58,12 +58,12 @@ def call_llm(model, str_user, data="", mimeType=""):
     # Azure / OpenAI / GITHUB
     if "AZURE" in config.CLOUD_TYPE and config.USE_AZURE_ENTRA:
         import ai.ai_azure_entra as ai_azure_entra
-        return ai_azure_entra.call_llm_azure_entra(str_user, data, mimeType)
+        return ai_azure_entra.call_llm_azure_entra(model=model, str_user=str_user, data=data, mimeType=mimeType)
     
     # AWS Bedrock
     if "BEDROCK" in config.CLOUD_TYPE:
         import ai.ai_aws as ai_aws
-        return ai_aws.call_llm(str_user, data, mimeType)
+        return ai_aws.call_llm(model=model, str_user=str_user, data=data, mimeType=mimeType)
     
     if "AZURE+" in config.CLOUD_TYPE or \
        "OPENAI+" in config.CLOUD_TYPE or \
@@ -256,7 +256,7 @@ def call_llm(model, str_user, data="", mimeType=""):
     # Vertex AI
     elif "VERTEXAI" in config.CLOUD_TYPE:
         import ai.ai_gcp as ai_gcp
-        return ai_gcp.call_llm_gcp(str_user, data, mimeType)
+        return ai_gcp.call_llm_gcp(model=model, str_user=str_user, data=data, mimeType=mimeType)
 
     # GEMINI
     elif "GEMINI" in config.CLOUD_TYPE:
