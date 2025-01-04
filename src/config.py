@@ -589,7 +589,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> Config:
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                        # best
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                        # best
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                       # best
@@ -609,7 +609,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # better
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-dev-4bit'              # good 
         
 # IdeogramAI        
@@ -642,6 +642,7 @@ class ImageConfig:
     OPTIMIZE_PROMPT_IMAGE: bool = False
 
     # Azure/OpenAI fields
+    USE_AZURE_ENTRA: bool = False
     IMAGE_EXPLICIT_STYLE: Optional[str] = None
     IMAGE_QUALITY: Optional[str] = None
     IMAGE_STYLE: Optional[str] = None
@@ -704,6 +705,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> ImageConfig:
 
     config.CLOUD_TYPE_IMAGE = CLOUD_TYPE_IMAGE
     config.LOG = LOG
+    config.USE_AZURE_ENTRA = False
 
     # Default values
     config.RESIZE_IMAGE = False
