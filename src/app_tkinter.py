@@ -1,12 +1,12 @@
 import tkinter as tk
 from tkinter import ttk
-import importlib
 import process
 import re
 import os
 import sys
-import time
-import process
+import json
+
+SETTINGS_FILE = "settings.json"
 
 ACTION_MAP = {
     "Refine": "refine",
@@ -26,7 +26,27 @@ ACTION_MAP = {
     "Import MD": "import_md"
 }
 
+
+def load_settings():
+    if os.path.exists(SETTINGS_FILE):
+        with open(SETTINGS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def save_settings(data):
+    with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
 def parse_cloud_definitions(filename):
+    """
+    Reads config.py lines to find
+       CLOUD_TYPE = '...' 
+       CLOUD_TYPE_IMAGE = '...'
+    and returns all + currently active.
+    """
+    import re
     cloud_type_pattern = re.compile(r"CLOUD_TYPE\s*=\s*'([^']*)'")
     cloud_type_img_pattern = re.compile(r"CLOUD_TYPE_IMAGE\s*=\s*'([^']*)'")
 
@@ -60,19 +80,12 @@ def parse_cloud_definitions(filename):
         'active_cloud_image': uncommented_cloud_image
     }
 
-def call_process(*args):
-
-    charttype = "auto"
-    model = args[0]
-    action = args[1]
-    text = args[2]
-    print(f"Process called with: {args}. Please wait...")
-    root.update()
-    root.update_idletasks()
-    process.main(action, charttype, model, text)
-    importlib.reload(process)
 
 class TextRedirector:
+    """
+    Redirects stdout to a text widget so that
+    print() statements go into the GUI instead of console.
+    """
     def __init__(self, text_widget):
         self.text_widget = text_widget
 
@@ -85,7 +98,20 @@ class TextRedirector:
     def flush(self):
         pass
 
+
+def call_process_json(payload_dict):
+    print(f"Process called. Please wait...")
+    root.update()
+    root.update_idletasks()
+    process.ui_main(payload_dict)
+
+
 def main_ui():
+    global root, settings_data
+
+    # Load or init settings (chartType, modifyLiveMap, agentic defaults, etc.)
+    settings_data = load_settings()
+
     filename = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config.py'))
     data = parse_cloud_definitions(filename)
 
@@ -94,15 +120,23 @@ def main_ui():
     all_cloud_images = data['all_cloud_images']
     active_cloud_image = data['active_cloud_image'] or (all_cloud_images[0] if all_cloud_images else "")
 
-    root.title("Three-Tab UI")
+    # Read or initialize stored values:
+    agentic_model_strong = settings_data.get("agentic_model_strong", active_cloud_type)
+    agentic_model_cheap = settings_data.get("agentic_model_cheap", active_cloud_type)
+    chartType = settings_data.get("chartType", "auto")
+    modifyLiveMap = settings_data.get("modifyLiveMap", False)
+
+    root.title("Mindmanager AI")
     root.wm_attributes("-topmost", 1)  # optional
 
     notebook = ttk.Notebook(root)
     notebook.pack(expand=True, fill="both")
 
-    # ---------------- Tab 1: "Actions" ----------------
+    # ----------------------------------------------------------------------------------
+    # Tab 1: "Actions"
+    # ----------------------------------------------------------------------------------
     tab1 = ttk.Frame(notebook)
-    notebook.add(tab1, text=" Actions ")
+    notebook.add(tab1, text="Actions")
 
     frame_models1 = tk.Frame(tab1)
     frame_models1.pack(padx=10, pady=5)
@@ -113,9 +147,9 @@ def main_ui():
         frame_models1, 
         textvariable=var_cloud_type_tab1, 
         values=all_cloud_types,
-        state="readonly",
+        state="readonly", 
         justify="left",
-        width=30
+        width=34
     )
     dropdown_cloud_type_tab1.pack(padx=10, pady=5)
 
@@ -128,28 +162,38 @@ def main_ui():
         frame_actions, 
         textvariable=var_action_tab1, 
         values=list(ACTION_MAP.keys()),
-        state="readonly",
+        state="readonly", 
         justify="left",
-        width=30
+        width=34
     )
     dropdown_action_tab1.pack(padx=10, pady=5)
 
     def submit_tab1():
         selected_cloud_type = var_cloud_type_tab1.get()
         selected_action_key = var_action_tab1.get()
-        call_process(selected_cloud_type, ACTION_MAP[selected_action_key], '')
+        payload = {
+            "model": selected_cloud_type,
+            "action": ACTION_MAP[selected_action_key],
+            "data": {},
+            "settings": {
+                "chartType": var_chartType.get(),
+                "modifyLiveMap": modifyLiveMap
+            }
+        }
+        call_process_json(payload)
 
     btn_tab1 = tk.Button(tab1, text="Execute", command=submit_tab1, default="normal")
     btn_tab1.pack(padx=10, pady=10)
 
-    # Label + read-only output box
     tk.Label(tab1, text="Output:").pack(anchor="w", padx=10)
-    tab1_output = tk.Text(tab1, font=("TkDefaultFont", 9), height=6, width=60, state='disabled')
+    tab1_output = tk.Text(tab1, font=("TkDefaultFont", 9), height=6, width=63, state='disabled')
     tab1_output.pack(padx=10, pady=5)
 
-    # ---------------- Tab 2: "Images" ----------------
+    # ----------------------------------------------------------------------------------
+    # Tab 2: "Image Generation"
+    # ----------------------------------------------------------------------------------
     tab2 = ttk.Frame(notebook)
-    notebook.add(tab2, text=" Image Generation ")
+    notebook.add(tab2, text="Image")
 
     frame_models2 = tk.Frame(tab2)
     frame_models2.pack(padx=10, pady=5)
@@ -157,36 +201,46 @@ def main_ui():
 
     var_cloud_img_tab2 = tk.StringVar(value=active_cloud_image)
     dropdown_cloud_img_tab2 = ttk.Combobox(
-        frame_models2, 
-        textvariable=var_cloud_img_tab2, 
+        frame_models2,
+        textvariable=var_cloud_img_tab2,
         values=all_cloud_images,
         state="readonly",
         justify="left",
-        width=30
+        width=34
     )
     dropdown_cloud_img_tab2.pack(padx=10, pady=5)
 
-    def submit_tab2():
+    def submit_tab2(action):
         selected_image_model = var_cloud_img_tab2.get()
-        call_process(selected_image_model, "image", '')
+        payload = {
+            "model": selected_image_model,
+            "action": action,
+            "data": {},
+            "settings": {
+                "chartType": var_chartType.get(),
+                "modifyLiveMap": modifyLiveMap
+            }
+        }
+        call_process_json(payload)
 
-    btn_tab2 = tk.Button(tab2, text="1 Image", command=submit_tab2, default='normal')
-    btn_tab2.pack(padx=10, pady=5)
+    btn_tab2_1 = tk.Button(tab2, text="1 Image", command=lambda: submit_tab2("image"), default='normal')
+    btn_tab2_1.pack(padx=10, pady=5)
 
-    def submit_tab2_5():
-        selected_image_model = var_cloud_img_tab2.get()
-        call_process(selected_image_model, "image_5", '')
-
-    btn_tab2_5 = tk.Button(tab2, text="5 Images", command=submit_tab2_5, default='normal')
+    btn_tab2_5 = tk.Button(tab2, text="5 Images", command=lambda: submit_tab2("image_5"), default='normal')
     btn_tab2_5.pack(padx=10, pady=5)
 
+    btn_tab2_10 = tk.Button(tab2, text="10 Images", command=lambda: submit_tab2("image_10"), default='normal')
+    btn_tab2_10.pack(padx=10, pady=5)
+
     tk.Label(tab2, text="Output:").pack(anchor="w", padx=10)
-    tab2_output = tk.Text(tab2, font=("TkDefaultFont", 9), height=6, width=60, state='disabled')
+    tab2_output = tk.Text(tab2, font=("TkDefaultFont", 9), height=6, width=63, state='disabled')
     tab2_output.pack(padx=10, pady=5)
 
-    # ---------------- Tab 3: "LLM Freetext" ----------------
+    # ----------------------------------------------------------------------------------
+    # Tab 3: "LLM Freetext"
+    # ----------------------------------------------------------------------------------
     tab3 = ttk.Frame(notebook)
-    notebook.add(tab3, text=" LLM Freetext ")
+    notebook.add(tab3, text="Freetext")
 
     frame_models3 = tk.Frame(tab3)
     frame_models3.pack(padx=10, pady=5)
@@ -194,54 +248,275 @@ def main_ui():
 
     var_cloud_type_tab3 = tk.StringVar(value=active_cloud_type)
     dropdown_cloud_type_tab3 = ttk.Combobox(
-        frame_models3, 
-        textvariable=var_cloud_type_tab3, 
+        frame_models3,
+        textvariable=var_cloud_type_tab3,
         values=all_cloud_types,
         state="readonly",
         justify="left",
-        width=30
+        width=34
     )
     dropdown_cloud_type_tab3.pack(padx=10, pady=5)
 
     tk.Label(tab3, text="Input:").pack(anchor="w", padx=10)
-    txt_llm_tab3 = tk.Text(tab3, height=4, width=51)
+    txt_llm_tab3 = tk.Text(tab3, height=4, width=54)
     txt_llm_tab3.pack(padx=10, pady=5)
 
     def submit_tab3():
         selected_cloud_type = var_cloud_type_tab3.get()
         user_text = txt_llm_tab3.get("1.0", tk.END).strip()
-        if user_text == "":
+        if not user_text:
             return
-        call_process(selected_cloud_type, 'freetext', user_text)
+        payload = {
+            "model": selected_cloud_type,
+            "action": "freetext",
+            "data": {
+                "freetext": user_text
+            },
+            "settings": {
+                "chartType": var_chartType.get(),
+                "modifyLiveMap": modifyLiveMap
+            }
+        }
+        call_process_json(payload)
 
     btn_tab3 = tk.Button(tab3, text="Execute", command=submit_tab3)
     btn_tab3.pack(padx=10, pady=10)
 
     tk.Label(tab3, text="Output:").pack(anchor="w", padx=10)
-    tab3_output = tk.Text(tab3, font=("TkDefaultFont", 9), height=6, width=60, state='disabled')
+    tab3_output = tk.Text(tab3, font=("TkDefaultFont", 9), height=6, width=63, state='disabled')
     tab3_output.pack(padx=10, pady=5)
 
-    # Mapping tab labels to text widgets
+    # ----------------------------------------------------------------------------------
+    # Tab 4: "Translation"
+    # ----------------------------------------------------------------------------------
+    tab4 = ttk.Frame(notebook)
+    notebook.add(tab4, text="Transl.")
+
+    frame_models4 = tk.Frame(tab4)
+    frame_models4.pack(padx=10, pady=5)
+    tk.Label(frame_models4, text="Model:").pack(side="left")
+
+    var_translation_model = tk.StringVar(value="deepl")
+    dropdown_translation_model = ttk.Combobox(
+        frame_models4,
+        textvariable=var_translation_model,
+        values=["deepl", "LLM"],
+        state="readonly",
+        justify="left",
+        width=20
+    )
+    dropdown_translation_model.pack(side="left", padx=5)
+
+    frame_lang_source = tk.Frame(tab4)
+    frame_lang_source.pack(padx=10, pady=5)
+    tk.Label(frame_lang_source, text="Source:").pack(side="left")
+    var_translation_source = tk.StringVar(value="auto")
+    dropdown_translation_source = ttk.Combobox(
+        frame_lang_source,
+        textvariable=var_translation_source,
+        values=["auto", "DE", "EN"],
+        state="readonly",
+        justify="left",
+        width=20
+    )
+    dropdown_translation_source.pack(side="left", padx=5)
+
+    frame_lang_target = tk.Frame(tab4)
+    frame_lang_target.pack(padx=10, pady=5)
+    tk.Label(frame_lang_target, text="Target:").pack(side="left")
+    var_translation_target = tk.StringVar(value="EN")
+    dropdown_translation_target = ttk.Combobox(
+        frame_lang_target,
+        textvariable=var_translation_target,
+        values=["EN", "DE"],
+        state="readonly",
+        justify="left",
+        width=20
+    )
+    dropdown_translation_target.pack(side="left", padx=5)
+
+    def submit_tab4():
+        mdl = var_translation_model.get()
+        src = var_translation_source.get()
+        tgt = var_translation_target.get()
+        payload = {
+            "model": mdl,
+            "action": "translate",
+            "data": {
+                "source": src,
+                "target": tgt
+            },
+            "settings": {
+                "chartType": var_chartType.get(),
+                "modifyLiveMap": modifyLiveMap
+            }
+        }
+        call_process_json(payload)
+
+    btn_tab4 = tk.Button(tab4, text="Execute (disabled)", default="disabled") #, command=submit_tab4)
+    btn_tab4.pack(padx=10, pady=10)
+
+    # ----------------------------------------------------------------------------------
+    # Tab 5: "Agentic"
+    # ----------------------------------------------------------------------------------
+    tab5 = ttk.Frame(notebook)
+    notebook.add(tab5, text="Agentic")
+
+    frame_action5 = tk.Frame(tab5)
+    frame_action5.pack(padx=10, pady=5)
+    tk.Label(frame_action5, text="Action:").pack(side="left")
+    var_agentic_action = tk.StringVar(value="Action 1")
+    dropdown_agentic_action = ttk.Combobox(
+        frame_action5,
+        textvariable=var_agentic_action,
+        values=["Action 1", "Action 2"],
+        state="readonly",
+        justify="left",
+        width=34
+    )
+    dropdown_agentic_action.pack(side="left", padx=5)
+
+    frame_models5 = tk.Frame(tab5)
+    frame_models5.pack(padx=10, pady=5)
+
+    tk.Label(frame_models5, text="Strong:").pack(side="left")
+    var_agentic_strong = tk.StringVar(value=agentic_model_strong)
+    dropdown_agentic_strong = ttk.Combobox(
+        frame_models5,
+        textvariable=var_agentic_strong,
+        values=all_cloud_types,
+        state="readonly",
+        justify="left",
+        width=34
+    )
+    dropdown_agentic_strong.pack(side="left", padx=5)
+
+    frame_models6 = tk.Frame(tab5)
+    frame_models6.pack(padx=10, pady=5)
+
+    tk.Label(frame_models6, text="Cheap:").pack(side="left")
+    var_agentic_cheap = tk.StringVar(value=agentic_model_cheap)
+    dropdown_agentic_cheap = ttk.Combobox(
+        frame_models6,
+        textvariable=var_agentic_cheap,
+        values=all_cloud_types,
+        state="readonly",
+        justify="left",
+        width=34
+    )
+    dropdown_agentic_cheap.pack(side="left", padx=5)
+
+    def submit_tab5():
+        model_strong = var_agentic_strong.get()
+        model_cheap = var_agentic_cheap.get()
+        action_val = var_agentic_action.get()
+        # Persist these so they initialize on next start
+        settings_data["agentic_model_strong"] = model_strong
+        settings_data["agentic_model_cheap"] = model_cheap
+        save_settings(settings_data)
+
+        payload = {
+            "model": model_strong,
+            "action": "agentic",
+            "data": {
+                "agentic_action": action_val,
+                "model_strong": model_strong,
+                "model_cheap": model_cheap
+            },
+            "settings": {
+                "chartType": var_chartType.get(),
+                "modifyLiveMap": modifyLiveMap
+            }
+        }
+        call_process_json(payload)
+
+    btn_tab5 = tk.Button(tab5, text="Execute (disabled)", default="disabled") #, command=submit_tab5)
+    btn_tab5.pack(padx=10, pady=10)
+
+    # ----------------------------------------------------------------------------------
+    # Tab 6: "Settings"
+    # ----------------------------------------------------------------------------------
+    tab6 = ttk.Frame(notebook)
+    notebook.add(tab6, text="Config")
+
+    frame_chart = tk.Frame(tab6)
+    frame_chart.pack(padx=10, pady=5)
+    tk.Label(frame_chart, text="ChartType:").pack(side="left")
+
+    var_chartType = tk.StringVar(value=chartType)
+    dropdown_chartType = ttk.Combobox(
+        frame_chart,
+        textvariable=var_chartType,
+        values=["auto","radial","orgchart"],
+        state="readonly",
+        justify="left",
+        width=13
+    )
+    dropdown_chartType.pack(side="left", padx=5)
+
+    frame_liveMap = tk.Frame(tab6)
+    frame_liveMap.pack(padx=10, pady=5)
+    var_liveMap = tk.BooleanVar(value=modifyLiveMap)
+    chk_liveMap = tk.Checkbutton(frame_liveMap, text="Modify live map, dont create new", variable=var_liveMap)
+    chk_liveMap.pack(side="left")
+
+    def save_settings_tab6():
+        settings_data["chartType"] = var_chartType.get()
+        settings_data["modifyLiveMap"] = var_liveMap.get()
+        save_settings(settings_data)
+
+    btn_save_settings = tk.Button(tab6, text="Save", command=save_settings_tab6)
+    btn_save_settings.pack(padx=10, pady=10)
+
+    # ----------------------------------------------------------------------------------
+    # Hook up outputs to a text box in first three tabs only
+    # ----------------------------------------------------------------------------------
     tab_to_textbox = {
-        " Actions ": tab1_output,
-        " Image Generation ": tab2_output,
-        " LLM Freetext ": tab3_output
+        "Actions": tab1_output,
+        "Image": tab2_output,
+        "Freetext": tab3_output,
+        # these next three have no designated output text widget:
+        "Transl.": None,
+        "Agentic": None,
+        "Config": None
     }
 
     def on_tab_changed(event):
         current_tab = event.widget.tab('current')['text']
-        sys.stdout = TextRedirector(tab_to_textbox[current_tab])
-        if current_tab == " Actions ":
+        if tab_to_textbox.get(current_tab):
+            sys.stdout = TextRedirector(tab_to_textbox[current_tab])
+        else:
+            # revert to console or do something else
+            sys.stdout = sys.__stdout__
+        # Optional focusing
+        if current_tab == "Actions":
             btn_tab1.focus_set()
-        elif current_tab == " Image Generation ":
-            btn_tab2.focus_set()
-        elif current_tab == " LLM Freetext ":
+        elif current_tab == "Image":
+            btn_tab2_1.focus_set()
+        elif current_tab == "Freetext":
             btn_tab3.focus_set()
+        elif current_tab == "Transl.":
+            btn_tab4.focus_set()
+        elif current_tab == "Agentic":
+            btn_tab5.focus_set()
 
     notebook.bind("<<NotebookTabChanged>>", on_tab_changed)
+
+    # Redirect stdout to first tab initially.
     sys.stdout = TextRedirector(tab1_output)
 
+    root.update_idletasks()  # Let Tk finish calculating window geometry
+    actual_width = root.winfo_width()
+    actual_height = root.winfo_height()
+
+    screen_width = root.winfo_screenwidth()
+    x = screen_width - actual_width  # place at right edge
+    y = 0                            # place at top
+
+    root.geometry(f"+{x}+{y}")
+
     root.mainloop()
+
 
 if __name__ == "__main__":
     root = tk.Tk()

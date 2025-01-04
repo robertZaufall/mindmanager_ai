@@ -30,7 +30,7 @@ valid_actions = [
     "examples", "cluster", "exp", "capex_opex", 
     "prc_org", "prj_prc_org", "exp_prj_prc_org", "prj_org", 
     "finalize", # (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
-    "image", "image_5", 
+    "image", "image_5", "image_10", 
     "translate_deepl+EN-US", "translate_deepl+DE", 
     "glossary", "argumentation",
     "export_markmap", "export_mermaid", 
@@ -114,18 +114,6 @@ def main(param, charttype, model, freetext):
 
     document = None
     mermaid = None
-
-    if param not in valid_actions:
-        print("Invalid action. Use one of the following: " + ", ".join(valid_actions))
-        sys.exit(1)
-
-    if charttype not in valid_charttypes:
-        print("Invalid charttype. Use one of the following: " + ", ".join(valid_charttypes))
-        sys.exit(1)
-
-    if freetext != "" and param != "freetext":
-        print("Invalid action. Use 'freetext' only with the 'freetext' action.")
-        sys.exit(1)
 
     if "image" in param:
         if model == "":
@@ -245,18 +233,44 @@ def main(param, charttype, model, freetext):
                 mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join))
                 create_mindmap_from_mermaid(document, mermaid)
 
-    del document.mindmap
-    del document.mindm
-    del document.selection
     del document
     del mermaid
     gc.collect()
 
     print("Done.")
-    return
+
+def validate_input(param, charttype, model, freetext):
+    if param not in valid_actions:
+        print("Invalid action. Use one of the following: " + ", ".join(valid_actions))
+        sys.exit(1)
+
+    if charttype not in valid_charttypes:
+        print("Invalid charttype. Use one of the following: " + ", ".join(valid_charttypes))
+        sys.exit(1)
+
+    if freetext != "" and param != "freetext":
+        print("Invalid action. Use 'freetext' only with the 'freetext' action.")
+        sys.exit(1)
+
+    return param, charttype, model, config
+
+def ui_main(payload):
+    param = payload["action"]
+    model = payload["model"]
+    data = payload["data"]
+    settings = payload["settings"]
+    freetext = data.get("freetext", "")
+    charttype = settings["chartType"]
+    modify_map = settings["modifyLiveMap"]
+
+    validate_input(param, charttype, model, freetext)
+
+    try:
+        main(param, charttype, model, freetext)
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
 
 if __name__ == "__main__":
-    
     allocs, g1, g2 = gc.get_threshold()
     gc.set_threshold(allocs*100, g1*5, g2*10)
     
@@ -276,6 +290,8 @@ if __name__ == "__main__":
     
     if len(sys.argv) > 4:
         freetext = sys.argv[4]
+
+    validate_input(param, charttype, model, freetext)
 
     try:
         main(param, charttype, model, freetext)
