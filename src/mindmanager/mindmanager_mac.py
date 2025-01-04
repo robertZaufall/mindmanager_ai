@@ -67,13 +67,11 @@ class Mindmanager:
 
     def get_link_from_topic(self, topic) -> MindmapLink:
         return None
-        
         # this results in a severe runtime error of MindManager
         link = topic.hyperlink_URL.get()
-        if link == k.missing_value:
-            link = None
-        label = topic.label.get() if link else None
-        return MindmapLink(link=link, label=label) if link else None
+        # this has no effect
+        label = topic.label.get()
+        return MindmapLink(link=link, label=label) if label != '' else None
 
     def get_image_from_topic(self, topic) -> MindmapImage:
         return None
@@ -116,14 +114,21 @@ class Mindmanager:
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         id = topic.id.get()
+
         self.set_text_to_topic(topic, mindmap_topic.topic_text)
         refreshed_topic = self.get_topic_by_id(id)
+
         if mindmap_topic.topic_rtf != '':
             self.set_title_to_topic(refreshed_topic, mindmap_topic.topic_rtf)
             refreshed_topic = self.get_topic_by_id(id)
 
+        if mindmap_topic.topic_notes:
+            refreshed_topic.notes.set(mindmap_topic.topic_notes)
+            refreshed_topic = self.get_topic_by_id(id)
+
         if mindmap_topic.topic_guid:
             mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
+
         mindmap_topic.topic_guid = id
 
         return refreshed_topic
