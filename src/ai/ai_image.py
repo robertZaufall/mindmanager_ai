@@ -287,7 +287,7 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
         elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
             n_count = 1 # override n_count to 1
             import ai.ai_gcp as ai_gcp
-            return ai_gcp.call_image_ai(str_user, image_path, n_count)
+            return ai_gcp.call_image_ai(model=model, str_user=str_user, image_path=image_path, n_count=n_count)
 
         # MLX
         elif "MLX" in config.CLOUD_TYPE_IMAGE:
@@ -295,11 +295,12 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
             if "flux" in config.IMAGE_MODEL_ID or "sd3" in config.IMAGE_MODEL_ID:
                 import ai.ai_image_mlx as ai_image_mlx
                 image_path = ai_image_mlx.generate_image(
-                    str_user, 
-                    config.IMAGE_NEGATIV_PROMPT, 
-                    n_count, 
-                    image_path, 
-                    seed)
+                    model=model,
+                    prompt=str_user, 
+                    negative_prompt=config.IMAGE_NEGATIV_PROMPT, 
+                    n_images=n_count, 
+                    output=image_path, 
+                    seed=seed)
             else:
                 raise Exception(f"Error: IMAGE_MODEL_ID for MLX not supported: {config.IMAGE_MODEL_ID}")
         else:
