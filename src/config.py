@@ -149,6 +149,7 @@ class Config:
     MARKMAP_TEMPLATE: str = ""
     MERMAID_TEMPLATE: str = ""
     
+    TURBO_MODE: bool = False
     USE_AZURE_ENTRA: bool = False
 
     LLM_TEMPERATURE: float = 0.5
@@ -280,6 +281,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> Config:
     Provide detailed, insightful, and professional advice tailored to the needs of business clients.
     Your responses should reflect the latest industry trends and best practices.
     """
+
+    config.TURBO_MODE = True # just generate text topics
     config.USE_AZURE_ENTRA = False
     config.LLM_TEMPERATURE = 0.5
     config.MAX_TOKENS = 4000

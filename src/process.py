@@ -127,7 +127,7 @@ def main(param, charttype, model, freetext):
     if param.startswith("pdf_") and charttype == "auto":
         charttype = "radial"
 
-    document = MindmapDocument(charttype=charttype)
+    document = MindmapDocument(charttype=charttype, turbo_mode=config.TURBO_MODE)
     mermaid = MermaidMindmap("")
 
     if param.startswith("pdf_"):

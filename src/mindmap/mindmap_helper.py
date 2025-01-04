@@ -87,8 +87,9 @@ class MindmapTopic:
 
 class MindmapDocument:
 
-    def __init__(self, charttype: str = 'auto'):
+    def __init__(self, charttype: str = 'auto', turbo_mode: bool = False):
         self.charttype: str = charttype
+        self.turbo_mode: bool = turbo_mode
 
         self.mindmap: 'MindmapTopic' = None
         self.map_icons: list['MindmapIcon'] = []
@@ -260,53 +261,60 @@ class MindmapDocument:
                 self.mindm.add_relationship(link_from, link_to)
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done = {}, level=0):
-        topic = self.mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
-
-        if level <= 1:
-            done = {}
-        elif level >= 2: 
-            topic_id = self.get_attribute_from_mindmap_topic(mindmap_topic.topic_attributes, 'id')
-            if topic_id:
-                done[topic_id] = topic.guid
-
-        if mindmap_topic.topic_subtopics and len(mindmap_topic.topic_subtopics) > 0:
-            mindmap_topic.topic_subtopics.sort(key=lambda subtopic: subtopic.topic_text)
-    
-        for mindmap_subtopic in mindmap_topic.topic_subtopics:
-            subtopic_id = self.get_attribute_from_mindmap_topic(mindmap_subtopic.topic_attributes, 'id')
-            if subtopic_id in done:
-                #create_link_to_parent(mindm, mindmap_subtopic, done)
-                cloned_subtopic = self.clone_mindmap_topic(mindmap_subtopic)
-                subtopic = self.mindm.add_subtopic_to_topic(topic, cloned_subtopic.topic_text)
-                self.set_topic_from_mindmap_topic(subtopic, cloned_subtopic, map_icons, done, level+1)
-            else:
+        if self.turbo_mode:
+            for mindmap_subtopic in mindmap_topic.topic_subtopics:
                 subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
                 self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, level+1)
+        else:
+            topic = self.mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
+
+            if level <= 1:
+                done = {}
+            elif level >= 2: 
+                topic_id = self.get_attribute_from_mindmap_topic(mindmap_topic.topic_attributes, 'id')
+                if topic_id:
+                    done[topic_id] = topic.guid
+
+            if mindmap_topic.topic_subtopics and len(mindmap_topic.topic_subtopics) > 0:
+                mindmap_topic.topic_subtopics.sort(key=lambda subtopic: subtopic.topic_text)
+    
+            for mindmap_subtopic in mindmap_topic.topic_subtopics:
+                subtopic_id = self.get_attribute_from_mindmap_topic(mindmap_subtopic.topic_attributes, 'id')
+                if subtopic_id in done:
+                    #create_link_to_parent(mindm, mindmap_subtopic, done)
+                    cloned_subtopic = self.clone_mindmap_topic(mindmap_subtopic)
+                    subtopic = self.mindm.add_subtopic_to_topic(topic, cloned_subtopic.topic_text)
+                    self.set_topic_from_mindmap_topic(subtopic, cloned_subtopic, map_icons, done, level+1)
+                else:
+                    subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
+                    self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, level+1)
         return mindmap_topic
 
     def create_mindmap(self, map_icons):
         self.mindm.add_document(0)
-        self.mindm.create_map_icons(map_icons)
+        if not self.turbo_mode:
+            self.mindm.create_map_icons(map_icons)
         topic = self.mindm.get_central_topic()
-        self.set_topic_from_mindmap_topic(topic, self.mindmap, map_icons)
+        self.set_topic_from_mindmap_topic(topic=topic, mindmap_topic=self.mindmap, map_icons=map_icons)
 
-        relationships = []
-        self.get_relationships_from_mindmap(self.mindmap, relationships)
+        if not self.turbo_mode:
+            relationships = []
+            self.get_relationships_from_mindmap(self.mindmap, relationships)
 
-        guid_map = {}
-        self.get_guid_map(self.mindmap, guid_map)
+            guid_map = {}
+            self.get_guid_map(self.mindmap, guid_map)
 
-        self.guid_map = guid_map
-        self.relationships = relationships
+            self.guid_map = guid_map
+            self.relationships = relationships
 
-        for reference in relationships:
-            object1_guid = guid_map[reference.reference_object1]
-            object2_guid = guid_map[reference.reference_object2]
-            if object1_guid and object2_guid:
-                self.mindm.add_relationship(object1_guid, object2_guid, reference.reference_label)
+            for reference in relationships:
+                object1_guid = guid_map[reference.reference_object1]
+                object2_guid = guid_map[reference.reference_object2]
+                if object1_guid and object2_guid:
+                    self.mindm.add_relationship(object1_guid, object2_guid, reference.reference_label)
 
     def create_mindmap_and_finalize(self, map_icons):
-        self.create_mindmap(map_icons)
+        self.create_mindmap(map_icons=map_icons)
         self.finalize()
 
     def finalize(self):
