@@ -53,22 +53,22 @@ class MindmapReference:
         self.reference_label = reference_label
 
 class MindmapTopic:
-    def __init__(self, 
+    def __init__(self,
                  topic_guid: str = '',
                  topic_originalguid: str = '',
-                 topic_text: str = '', # name (M), text (W)
-                 topic_rtf: str = '', # title
+                 topic_text: str = '',
+                 topic_rtf: str = '',
                  topic_level: int = 0,
                  topic_selected: bool = False,
                  topic_parent: 'MindmapTopic' = None,
-                 topic_subtopics: list['MindmapTopic'] = [],
+                 topic_subtopics: list['MindmapTopic'] = None,
                  topic_link: 'MindmapLink' = None,
                  topic_image: 'MindmapImage' = None,
-                 topic_icons: list['MindmapIcon'] = [],
+                 topic_icons: list['MindmapIcon'] = None,
                  topic_notes: 'MindmapNotes' = None,
-                 topic_tags: list['MindmapTag'] = [], 
-                 topic_references: list['MindmapReference'] = [],
-                 topic_attributes: list['MindmapAttribute'] = [MindmapAttribute(attribute_name='id')]):
+                 topic_tags: list['MindmapTag'] = None,
+                 topic_references: list['MindmapReference'] = None,
+                 topic_attributes: list['MindmapAttribute'] = None):
         self.topic_guid = topic_guid
         self.topic_originalguid = topic_originalguid
         self.topic_text = topic_text
@@ -76,14 +76,14 @@ class MindmapTopic:
         self.topic_level = topic_level
         self.topic_selected = topic_selected
         self.topic_parent = topic_parent
+        self.topic_subtopics = topic_subtopics if topic_subtopics is not None else []
         self.topic_link = topic_link
         self.topic_image = topic_image
-        self.topic_icons = topic_icons
+        self.topic_icons = topic_icons if topic_icons is not None else []
         self.topic_notes = topic_notes
-        self.topic_tags = topic_tags
-        self.topic_references = topic_references
-        self.topic_subtopics = topic_subtopics
-        self.topic_attributes = topic_attributes
+        self.topic_tags = topic_tags if topic_tags is not None else []
+        self.topic_references = topic_references if topic_references is not None else []
+        self.topic_attributes = topic_attributes if topic_attributes is not None else [MindmapAttribute(attribute_name='id')]
 
 class MindmapDocument:
 

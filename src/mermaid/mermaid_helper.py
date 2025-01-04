@@ -83,29 +83,30 @@ class MermaidMindmap:
                     lines[i] = " " * indent_size * int(level) + "(" + lines[i].lstrip() + ")"
         return line_separator.join(lines), max_topic_level - 1
 
-    def create_sub_topics(self, mermaid_topics, index, parent_topic): # MindmapTopic
-        i = index
-        parent_topic_level = parent_topic.topic_level
-        last_topic = None
-        while i < len(mermaid_topics):
-            topic_level = mermaid_topics[i].topic_level
-            topic_text = mermaid_topics[i].topic_text
-            if topic_level <= parent_topic_level: 
-                return i
-            if topic_level == parent_topic_level + 1:
-                new_topic = MindmapTopic(topic_text=topic_text, topic_level=topic_level, topic_subtopics=[])
-                parent_topic.topic_subtopics.append(new_topic)
-                last_topic = new_topic
-            if topic_level > parent_topic_level + 1:
-                i = self.create_sub_topics(mermaid_topics, i, last_topic) - 1
-            i += 1
-        return i
-
-    def create_mindmap_from_mermaid(self):
-        mermaid_topics = self.mermaid_topics
-        parent_topic = MindmapTopic(topic_text=mermaid_topics[0].topic_text, topic_level=0)
-        self.create_sub_topics(mermaid_topics, 1, parent_topic)
-        return parent_topic
+    def create_mindmap_from_mermaid(self) -> MindmapTopic:
+        mindmap_nodes = [MindmapTopic(topic_text=mt.topic_text, topic_level=mt.topic_level) for mt in self.mermaid_topics]
+        root = mindmap_nodes[0]
+        for i in range(1, len(mindmap_nodes)):
+            curr_node = mindmap_nodes[i]
+            prev_node = mindmap_nodes[i - 1]
+            if curr_node.topic_level > prev_node.topic_level:
+                curr_node.topic_parent = prev_node
+                prev_node.topic_subtopics.append(curr_node)
+            elif curr_node.topic_level == prev_node.topic_level:
+                parent = prev_node.topic_parent
+                curr_node.topic_parent = parent
+                if parent:
+                    parent.topic_subtopics.append(curr_node)
+            else:
+                target_level = curr_node.topic_level - 1
+                j = i - 1
+                while j >= 0 and mindmap_nodes[j].topic_level != target_level:
+                    j -= 1
+                if j >= 0:
+                    parent = mindmap_nodes[j]
+                    curr_node.topic_parent = parent
+                    parent.topic_subtopics.append(curr_node)
+        return root
 
 def get_root(): return "root" if use_root and use_round else ""
 def get_left_round(): return "(" if use_round else ""
