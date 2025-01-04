@@ -136,14 +136,20 @@ def main(param, charttype, model, freetext):
         for key, value in docs.items():
             key_plain = text_helper.cleanse_title(key)
             if "mindmap" in actions:
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=["text2mindmap"], input=value, topic_texts=key_plain))
+                mermaid = MermaidMindmap(
+                    ai_llm.call_llm_sequence(model=model, prompts_list=["text2mindmap"], input=value, topic_texts=key_plain)
+                )
                 create_mindmap_from_mermaid(document, mermaid)
             if "knowledgegraph" in actions:
                 guid = uuid.uuid4()
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=["text2knowledgegraph"], input=value, topic_texts=key_plain))
+                mermaid = MermaidMindmap(
+                    ai_llm.call_llm_sequence(model=model, prompts_list=["text2knowledgegraph"], input=value, topic_texts=key_plain)
+                )
                 content, max_topic_level = mermaid.export_to_mermaid(False)
                 file_helper.generate_mermaid_html(content, max_topic_level, guid, False)
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=["knowledgegraph2mindmap"], input=content, topic_texts=key_plain))
+                mermaid = MermaidMindmap(
+                    ai_llm.call_llm_sequence(model=model, prompts_list=["knowledgegraph2mindmap"], input=content, topic_texts=key_plain)
+                )
                 create_mindmap_from_mermaid(document, mermaid)
     
     elif param.startswith("pdfsimple"):
@@ -152,13 +158,30 @@ def main(param, charttype, model, freetext):
             docs = input_helper.load_pdfsimple_files()
             for key, value in docs.items():
                 if "mindmap" in actions:
-                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=["pdfsimple2mindmap"], input="", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="application/pdf"))
+                    mermaid = MermaidMindmap(
+                        ai_llm.call_llm_sequence(
+                            model=model, 
+                            prompts_list=["pdfsimple2mindmap"], 
+                            input="", 
+                            topic_texts=text_helper.cleanse_title(key), 
+                            data=value, 
+                            mimeType="application/pdf")
+                    )
                     create_mindmap_from_mermaid(document, mermaid)
         elif "image/png" in config.MULTIMODAL_MIME_TYPES:
             docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, as_images_dpi=config.MULTIMODAL_PDF_TO_IMAGE_DPI, mime_type="image/png", as_base64=True)
             for key, value in docs.items():
                 if "mindmap" in actions:
-                    mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=["pdfsimple2mindmap"], input="", topic_texts=text_helper.cleanse_title(key), data=value, mimeType="image/png"))
+                    mermaid = MermaidMindmap(
+                        ai_llm.call_llm_sequence(
+                            model=model, 
+                            prompts_list=["pdfsimple2mindmap"], 
+                            input="", 
+                            topic_texts=text_helper.cleanse_title(key), 
+                            data=value, 
+                            mimeType="image/png"
+                        )
+                    )
                     create_mindmap_from_mermaid(document, mermaid)
         else:
             raise Exception("PDF Simple is not supported for this multimodal AI model.")
@@ -168,7 +191,9 @@ def main(param, charttype, model, freetext):
         if actions == "md":
             docs = input_helper.load_text_files("md")
             for key, value in docs.items():
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=["md2mindmap"], input=value, topic_texts=text_helper.cleanse_title(key)))
+                mermaid = MermaidMindmap(
+                    ai_llm.call_llm_sequence(model=model, prompts_list=["md2mindmap"], input=value, topic_texts=text_helper.cleanse_title(key))
+                )
                 create_mindmap_from_mermaid(document, mermaid)
     else:
 
@@ -226,11 +251,15 @@ def main(param, charttype, model, freetext):
 
             elif "translate_deepl" in param:
                 language = param.split("+")[-1]
-                mermaid = MermaidMindmap(ai_translation.call_translation_ai(text=mermaid.mermaid_mindmap, language=language))
+                mermaid = MermaidMindmap(
+                    ai_translation.call_translation_ai(text=mermaid.mermaid_mindmap, language=language)
+                )
                 create_mindmap_from_mermaid(document, mermaid)
 
             else:
-                mermaid = MermaidMindmap(ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join))
+                mermaid = MermaidMindmap(
+                    ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
+                )
                 create_mindmap_from_mermaid(document, mermaid)
 
     del document
