@@ -35,7 +35,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
-# CLOUD_TYPE = 'ANTHROPIC+claude-3-haiku-20240307'                      # ok
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
@@ -930,7 +929,7 @@ class TranslationConfig:
     KEY_HEADER_VALUE_TRANSLATION: Optional[str] = None
 
 
-def get_translation_config(CLOUD_TYPE_TRANSLATION: str) -> TranslationConfig:
+def get_translation_config(CLOUD_TYPE_TRANSLATION: str = CLOUD_TYPE_TRANSLATION) -> TranslationConfig:
     config = TranslationConfig(CLOUD_TYPE_TRANSLATION=CLOUD_TYPE_TRANSLATION)
 
     if "DEEPL" in CLOUD_TYPE_TRANSLATION:
