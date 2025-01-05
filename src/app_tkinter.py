@@ -140,9 +140,9 @@ def main_ui():
     tab1 = ttk.Frame(notebook)
     notebook.add(tab1, text="Actn")
 
-    frame_models1 = tk.Frame(tab1)
+    frame_models1 = ttk.Frame(tab1)
     frame_models1.pack(padx=10, pady=5)
-    tk.Label(frame_models1, text="Model:").pack(side="left")
+    ttk.Label(frame_models1, text="Model:").pack(side="left")
 
     var_cloud_type_tab1 = tk.StringVar(value=active_cloud_type)
     dropdown_cloud_type_tab1 = ttk.Combobox(
@@ -155,9 +155,9 @@ def main_ui():
     )
     dropdown_cloud_type_tab1.pack(padx=10, pady=5)
 
-    frame_actions = tk.Frame(tab1)
+    frame_actions = ttk.Frame(tab1)
     frame_actions.pack(padx=10, pady=5)
-    tk.Label(frame_actions, text="Action:").pack(side="left")
+    ttk.Label(frame_actions, text="Action:").pack(side="left")
 
     var_action_tab1 = tk.StringVar(value="Refine")
     dropdown_action_tab1 = ttk.Combobox(
@@ -184,10 +184,10 @@ def main_ui():
         }
         call_process_json(payload)
 
-    btn_tab1 = tk.Button(tab1, text="Execute", command=submit_tab1, default="normal", fg="black")
+    btn_tab1 = ttk.Button(tab1, text="Execute", command=submit_tab1, default="normal")
     btn_tab1.pack(padx=10, pady=10)
 
-    tk.Label(tab1, text="Output:").pack(anchor="w", padx=10)
+    ttk.Label(tab1, text="Output:").pack(anchor="w", padx=10)
     tab1_output = tk.Text(tab1, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
     tab1_output.pack(padx=10, pady=5, fill="both", expand=True)
 
@@ -197,9 +197,9 @@ def main_ui():
     tab2 = ttk.Frame(notebook)
     notebook.add(tab2, text="Img")
 
-    frame_models2 = tk.Frame(tab2)
+    frame_models2 = ttk.Frame(tab2)
     frame_models2.pack(padx=10, pady=5)
-    tk.Label(frame_models2, text="Model:").pack(side="left")
+    ttk.Label(frame_models2, text="Model:").pack(side="left")
 
     var_cloud_img_tab2 = tk.StringVar(value=active_cloud_image)
     dropdown_cloud_img_tab2 = ttk.Combobox(
@@ -225,21 +225,21 @@ def main_ui():
         }
         call_process_json(payload)
 
-    btn_tab2_1 = tk.Button(tab2, text="1 Image", command=lambda: submit_tab2("image"), default='normal')
+    btn_tab2_1 = ttk.Button(tab2, text="1 Image", command=lambda: submit_tab2("image"), default='normal')
     btn_tab2_1.pack(side="top", padx=10, pady=5)
 
-    button_frame_image = tk.Frame(tab2)
+    button_frame_image = ttk.Frame(tab2)
     button_frame_image.pack(side="top", padx=10, pady=5)
 
-    btn_tab2_5 = tk.Button(button_frame_image, text="5 Images", command=lambda: submit_tab2("image_5"), default='normal')
+    btn_tab2_5 = ttk.Button(button_frame_image, text="5 Images", command=lambda: submit_tab2("image_5"), default='normal')
     btn_tab2_5.pack(side="left", padx=10, pady=5)
 
-    btn_tab2_10 = tk.Button(button_frame_image, text="10 Images", command=lambda: submit_tab2("image_10"), default='normal')
+    btn_tab2_10 = ttk.Button(button_frame_image, text="10 Images", command=lambda: submit_tab2("image_10"), default='normal')
     btn_tab2_10.pack(side="left", padx=10, pady=5)
 
     button_frame_image.pack(anchor="center")
 
-    tk.Label(tab2, text="Output:").pack(anchor="w", padx=10)
+    ttk.Label(tab2, text="Output:").pack(anchor="w", padx=10)
     tab2_output = tk.Text(tab2, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
     tab2_output.pack(side="top", padx=10, pady=5, fill="both", expand=True)
 
@@ -249,9 +249,9 @@ def main_ui():
     tab3 = ttk.Frame(notebook)
     notebook.add(tab3, text="Txt")
 
-    frame_models3 = tk.Frame(tab3)
+    frame_models3 = ttk.Frame(tab3)
     frame_models3.pack(padx=10, pady=5)
-    tk.Label(frame_models3, text="Model:").pack(side="left")
+    ttk.Label(frame_models3, text="Model:").pack(side="left")
 
     var_cloud_type_tab3 = tk.StringVar(value=active_cloud_type)
     dropdown_cloud_type_tab3 = ttk.Combobox(
@@ -264,13 +264,13 @@ def main_ui():
     )
     dropdown_cloud_type_tab3.pack(padx=10, pady=5)
 
-    tk.Label(tab3, text="Input:").pack(anchor="w", padx=10)
+    ttk.Label(tab3, text="Input:").pack(anchor="w", padx=10)
     txt_llm_tab3 = tk.Text(tab3, height=4, width=54, highlightbackground="gray")
     txt_llm_tab3.pack(padx=10, pady=5, fill="x", expand=True)
 
     def submit_tab3():
         selected_cloud_type = var_cloud_type_tab3.get()
-        user_text = txt_llm_tab3.get("1.0", tk.END).strip()
+        user_text = txt_llm_tab3.get("1.0", ttk.END).strip()
         if not user_text:
             return
         payload = {
@@ -286,10 +286,10 @@ def main_ui():
         }
         call_process_json(payload)
 
-    btn_tab3 = tk.Button(tab3, text="Execute", command=submit_tab3)
+    btn_tab3 = ttk.Button(tab3, text="Execute", command=submit_tab3)
     btn_tab3.pack(padx=10, pady=10)
 
-    tk.Label(tab3, text="Output:").pack(anchor="w", padx=10)
+    ttk.Label(tab3, text="Output:").pack(anchor="w", padx=10)
     tab3_output = tk.Text(tab3, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
     tab3_output.pack(padx=10, pady=5, fill="x", expand=True)
 
@@ -299,9 +299,9 @@ def main_ui():
     tab4 = ttk.Frame(notebook)
     notebook.add(tab4, text="Trnsl")
 
-    frame_models4 = tk.Frame(tab4)
+    frame_models4 = ttk.Frame(tab4)
     frame_models4.pack(padx=10, pady=5)
-    tk.Label(frame_models4, text="Model:").pack(side="left")
+    ttk.Label(frame_models4, text="Model:").pack(side="left")
 
     var_translation_model = tk.StringVar(value="DEEPL")
     dropdown_translation_model = ttk.Combobox(
@@ -314,9 +314,9 @@ def main_ui():
     )
     dropdown_translation_model.pack(side="left", padx=5)
 
-    frame_lang_source = tk.Frame(tab4)
+    frame_lang_source = ttk.Frame(tab4)
     frame_lang_source.pack(padx=10, pady=5)
-    tk.Label(frame_lang_source, text="Source:").pack(side="left")
+    ttk.Label(frame_lang_source, text="Source:").pack(side="left")
     var_translation_source = tk.StringVar(value="auto")
     dropdown_translation_source = ttk.Combobox(
         frame_lang_source,
@@ -328,9 +328,9 @@ def main_ui():
     )
     dropdown_translation_source.pack(side="left", padx=5)
 
-    frame_lang_target = tk.Frame(tab4)
+    frame_lang_target = ttk.Frame(tab4)
     frame_lang_target.pack(padx=10, pady=5)
-    tk.Label(frame_lang_target, text="Target:").pack(side="left")
+    ttk.Label(frame_lang_target, text="Target:").pack(side="left")
     var_translation_target = tk.StringVar(value="DE")
     dropdown_translation_target = ttk.Combobox(
         frame_lang_target,
@@ -361,18 +361,22 @@ def main_ui():
         }
         call_process_json(payload)
 
-    btn_tab4 = tk.Button(tab4, text="Execute", command=submit_tab4)
+    btn_tab4 = ttk.Button(tab4, text="Execute", command=submit_tab4)
     btn_tab4.pack(padx=10, pady=10)
 
+    ttk.Label(tab4, text="Output:").pack(anchor="w", padx=10)
+    tab4_output = tk.Text(tab4, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
+    tab4_output.pack(padx=10, pady=5, fill="both", expand=True)
+    
     # ----------------------------------------------------------------------------------
     # Tab 5: "Agentic"
     # ----------------------------------------------------------------------------------
     tab5 = ttk.Frame(notebook)
     notebook.add(tab5, text="Agnt")
 
-    frame_action5 = tk.Frame(tab5)
+    frame_action5 = ttk.Frame(tab5)
     frame_action5.pack(padx=10, pady=5)
-    tk.Label(frame_action5, text="Action:").pack(side="left")
+    ttk.Label(frame_action5, text="Action:").pack(side="left")
     var_agentic_action = tk.StringVar(value="Action 1")
     dropdown_agentic_action = ttk.Combobox(
         frame_action5,
@@ -384,10 +388,10 @@ def main_ui():
     )
     dropdown_agentic_action.pack(side="left", padx=5)
 
-    frame_models5 = tk.Frame(tab5)
+    frame_models5 = ttk.Frame(tab5)
     frame_models5.pack(padx=10, pady=5)
 
-    tk.Label(frame_models5, text="Strong:").pack(side="left")
+    ttk.Label(frame_models5, text="Strong:").pack(side="left")
     var_agentic_strong = tk.StringVar(value=agentic_model_strong)
     dropdown_agentic_strong = ttk.Combobox(
         frame_models5,
@@ -399,10 +403,10 @@ def main_ui():
     )
     dropdown_agentic_strong.pack(side="left", padx=5)
 
-    frame_models6 = tk.Frame(tab5)
+    frame_models6 = ttk.Frame(tab5)
     frame_models6.pack(padx=10, pady=5)
 
-    tk.Label(frame_models6, text="Cheap:").pack(side="left")
+    ttk.Label(frame_models6, text="Cheap:").pack(side="left")
     var_agentic_cheap = tk.StringVar(value=agentic_model_cheap)
     dropdown_agentic_cheap = ttk.Combobox(
         frame_models6,
@@ -425,9 +429,9 @@ def main_ui():
 
         payload = {
             "model": model_strong,
-            "action": "agentic",
+            "action": "agent",
             "data": {
-                "agentic_action": action_val,
+                "agent_action": action_val,
                 "model_strong": model_strong,
                 "model_cheap": model_cheap
             },
@@ -438,8 +442,12 @@ def main_ui():
         }
         call_process_json(payload)
 
-    btn_tab5 = tk.Button(tab5, text="Execute (disabled)", default="disabled") #, command=submit_tab5)
+    btn_tab5 = ttk.Button(tab5, text="Execute", state="normal", command=submit_tab5)
     btn_tab5.pack(padx=10, pady=10)
+
+    ttk.Label(tab5, text="Output:").pack(anchor="w", padx=10)
+    tab5_output = tk.Text(tab5, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
+    tab5_output.pack(padx=10, pady=5, fill="both", expand=True)
 
     # ----------------------------------------------------------------------------------
     # Tab 6: "Settings"
@@ -447,9 +455,9 @@ def main_ui():
     tab6 = ttk.Frame(notebook)
     notebook.add(tab6, text="Conf")
 
-    frame_chart = tk.Frame(tab6)
+    frame_chart = ttk.Frame(tab6)
     frame_chart.pack(padx=10, pady=5)
-    tk.Label(frame_chart, text="ChartType:").pack(side="left")
+    ttk.Label(frame_chart, text="ChartType:").pack(side="left")
 
     var_chartType = tk.StringVar(value=chartType)
     dropdown_chartType = ttk.Combobox(
@@ -462,10 +470,10 @@ def main_ui():
     )
     dropdown_chartType.pack(side="left", padx=5)
 
-    frame_liveMap = tk.Frame(tab6)
+    frame_liveMap = ttk.Frame(tab6)
     frame_liveMap.pack(padx=10, pady=5)
     var_liveMap = tk.BooleanVar(value=modifyLiveMap)
-    chk_liveMap = tk.Checkbutton(frame_liveMap, text="Modify live map, dont create new", variable=var_liveMap)
+    chk_liveMap = ttk.Checkbutton(frame_liveMap, text="Modify live map, dont create new", variable=var_liveMap)
     chk_liveMap.pack(side="left")
 
     def save_settings_tab6():
@@ -473,7 +481,7 @@ def main_ui():
         settings_data["modifyLiveMap"] = var_liveMap.get()
         save_settings(settings_data)
 
-    btn_save_settings = tk.Button(tab6, text="Save", command=save_settings_tab6)
+    btn_save_settings = ttk.Button(tab6, text="Save", command=save_settings_tab6)
     btn_save_settings.pack(padx=10, pady=10)
 
     # ----------------------------------------------------------------------------------
@@ -483,9 +491,8 @@ def main_ui():
         "Actn": tab1_output,
         "Img": tab2_output,
         "Txt": tab3_output,
-        # these next three have no designated output text widget:
-        "Trnsl": None,
-        "Agnt": None,
+        "Trnsl": tab4_output,
+        "Agnt": tab5_output,
         "Conf": None
     }
 
