@@ -929,6 +929,7 @@ CLOUD_TYPE_TRANSLATION = 'DEEPL'
 
 @dataclass
 class TranslationConfig:
+    TURBO_MODE: bool = False
     CLOUD_TYPE_TRANSLATION: Optional[str] = None
     DEEPL_API_KEY: Optional[str] = None
     DEEPL_BASE_URL: Optional[str] = None
@@ -938,6 +939,7 @@ class TranslationConfig:
 
 def get_translation_config(CLOUD_TYPE_TRANSLATION: str = CLOUD_TYPE_TRANSLATION) -> TranslationConfig:
     config = TranslationConfig(CLOUD_TYPE_TRANSLATION=CLOUD_TYPE_TRANSLATION)
+    config.TURBO_MODE = True
 
     if "DEEPL" in CLOUD_TYPE_TRANSLATION:
         config.DEEPL_API_KEY = os.getenv('DEEPL_API_KEY')

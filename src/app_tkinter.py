@@ -15,8 +15,6 @@ ACTION_MAP = {
     "Cluster": "cluster",
     "Glossary": "glossary",
     "Argumentation": "argumentation",
-    "Translate to German": "translate_deepl+DE",
-    "Translate to English": "translate_deepl+EN",
     "Image": "image",
     "Export markmap": "export_markmap",
     "Export mermaid": "export_mermaid",
@@ -72,6 +70,8 @@ def parse_cloud_definitions(filename):
                     cloud_images.append(value)
                     if not line.lstrip().startswith('#'):
                         uncommented_cloud_image = value
+
+    #cloud_types = [ct for ct in cloud_types if "DEEPL" not in ct]
 
     return {
         'all_cloud_types': cloud_types,
@@ -296,11 +296,11 @@ def main_ui():
     frame_models4.pack(padx=10, pady=5)
     tk.Label(frame_models4, text="Model:").pack(side="left")
 
-    var_translation_model = tk.StringVar(value="deepl")
+    var_translation_model = tk.StringVar(value="DEEPL")
     dropdown_translation_model = ttk.Combobox(
         frame_models4,
         textvariable=var_translation_model,
-        values=["deepl", "LLM"],
+        values=["DEEPL"],
         state="readonly",
         justify="left",
         width=20
@@ -314,7 +314,7 @@ def main_ui():
     dropdown_translation_source = ttk.Combobox(
         frame_lang_source,
         textvariable=var_translation_source,
-        values=["auto", "DE", "EN"],
+        values=["auto"],
         state="readonly",
         justify="left",
         width=20
@@ -324,11 +324,14 @@ def main_ui():
     frame_lang_target = tk.Frame(tab4)
     frame_lang_target.pack(padx=10, pady=5)
     tk.Label(frame_lang_target, text="Target:").pack(side="left")
-    var_translation_target = tk.StringVar(value="EN")
+    var_translation_target = tk.StringVar(value="DE")
     dropdown_translation_target = ttk.Combobox(
         frame_lang_target,
         textvariable=var_translation_target,
-        values=["EN", "DE"],
+        values=[
+            "EN-US", "EN-GB", "DE", "BG", "CS", "DA", "EL", "ES", "ET", "FI", "FR", "HU", "ID", 
+            "IT", "JA", "KO", "LT", "LV", "NB", "NL", "PL", "PT-BR", "PT-PT", "RO", "RU", "SK", "SL", "SV", "TR", "UK", "ZH"
+        ],
         state="readonly",
         justify="left",
         width=20
@@ -336,16 +339,14 @@ def main_ui():
     dropdown_translation_target.pack(side="left", padx=5)
 
     def submit_tab4():
+        #translate_deepl+EN-US, translate_deepl+DE
         mdl = var_translation_model.get()
-        src = var_translation_source.get()
+        #src = var_translation_source.get() + "-" if var_translation_source.get() != "auto" else ""
         tgt = var_translation_target.get()
         payload = {
             "model": mdl,
-            "action": "translate",
-            "data": {
-                "source": src,
-                "target": tgt
-            },
+            "action": f"translate_{mdl.lower()}+{tgt}",
+            "data": {},
             "settings": {
                 "chartType": var_chartType.get(),
                 "modifyLiveMap": modifyLiveMap
@@ -353,7 +354,7 @@ def main_ui():
         }
         call_process_json(payload)
 
-    btn_tab4 = tk.Button(tab4, text="Execute (disabled)", default="disabled") #, command=submit_tab4)
+    btn_tab4 = tk.Button(tab4, text="Execute", command=submit_tab4)
     btn_tab4.pack(padx=10, pady=10)
 
     # ----------------------------------------------------------------------------------

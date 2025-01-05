@@ -58,7 +58,7 @@ class Mindmanager:
         return topic.Level
     
     def get_text_from_topic(self, topic):
-        return topic.Text
+        return topic.Text.replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
 
     def get_title_from_topic(self, topic):
         return topic.Title.TextRtf if topic.Title.TextRtf != '' else ''

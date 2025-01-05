@@ -57,7 +57,7 @@ class Mindmanager:
         return topic.level.get()
     
     def get_text_from_topic(self, topic):
-        return topic.name.get()
+        return topic.name.get().replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
     
     def get_title_from_topic(self, topic):
         return topic.title.get()

@@ -15,7 +15,7 @@ prompt_postfix = (
     f"Put also {indent_size} space characters in front of the first topic, i.e. central topic following the 'mermaid' keyword. Don't change or delete CentralTopic topic. "
     f"Don't include the phrase 'central topic' or similar to the central topic. "
     f"Each topic or subtopic must not have more than {max_return_words} words at maximum. If an existing topic has more than {max_return_words} words, "
-    f"reduce it to {max_return_words} words. "
+    f"reduce it to {max_return_words} words in a meaningful manner. "
     "Use the 'mermaid' keyword only once at the beginning or suppress it. The keyword 'mindmap' must be present without any whitespace characters in front of this keyword. "
     "There must be no whitespace in front of the 'mermaid' keyword. "
     "Don't use only numbers as topics but replace them with something meaningful. "
@@ -175,6 +175,7 @@ def prompt_refine_dev(text, topic_texts=""):
     return str_user
 
 def prompt_freetext(text, freetext, topic_texts=""):
+    freetext = freetext.replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
     topics = f"only the topic(s) \"{topic_texts}\" " if topic_texts else "to the whole mindmap"
     str_user = (
         prompt_prefix +

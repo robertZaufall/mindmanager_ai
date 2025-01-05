@@ -71,7 +71,7 @@ class MindmapTopic:
                  topic_attributes: list['MindmapAttribute'] = None):
         self.topic_guid = topic_guid
         self.topic_originalguid = topic_originalguid
-        self.topic_text = topic_text
+        self.topic_text = topic_text.replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
         self.topic_rtf = topic_rtf
         self.topic_level = topic_level
         self.topic_selected = topic_selected

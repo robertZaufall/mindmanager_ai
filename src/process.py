@@ -31,7 +31,7 @@ valid_actions = [
     "prc_org", "prj_prc_org", "exp_prj_prc_org", "prj_org", 
     "finalize", # (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
     "image", "image_5", "image_10", 
-    "translate_deepl+EN-US", "translate_deepl+DE", 
+    #"translate_deepl+EN-US", "translate_deepl+DE", 
     "glossary", "argumentation",
     "export_markmap", "export_mermaid", 
     "pdf_mindmap", "pdf_knowledgegraph", "pdfsimple_mindmap", 
@@ -42,13 +42,14 @@ valid_actions = [
 
 valid_charttypes = ["orgchart", "radial", "auto"] # (-> on macos factory template duplicates are used from the ./macos folder)
 
-def create_mindmap_from_mermaid(document, mermaid):
+def create_mindmap_from_mermaid(document, mermaid, inplace=False):
     charttype = document.charttype
-    document = MindmapDocument(charttype=charttype)
+    turbo_mode = document.turbo_mode
+    document = MindmapDocument(charttype=charttype, turbo_mode=turbo_mode)
     if mermaid.mermaid_mindmap != "":
         document.mindmap = mermaid.create_mindmap_from_mermaid()
-        document.max_topic_level = document.get_max_topic_level(document.mindmap)
-        document.create_mindmap_and_finalize([])
+        document.max_topic_level = document.get_max_topic_level(mindmap_topic=document.mindmap)
+        document.create_mindmap_and_finalize(map_icons=[])
         document.mindmap = None
         document.mindm = None
         document.selection = None
@@ -110,7 +111,7 @@ def generate_image(model, document, topic_texts, central_topic_selected, guid, t
         image.show()
 
 
-def main(param, charttype, model, freetext):
+def main(param, charttype, model, freetext, inplace=False):
 
     document = None
     mermaid = None
@@ -119,6 +120,14 @@ def main(param, charttype, model, freetext):
         if model == "":
             model = cfg.CLOUD_TYPE_IMAGE
         config = cfg.get_image_config(model)
+    elif param.startswith("translate_deepl"):
+        if model == "":
+            model = cfg.CLOUD_TYPE_TRANSLATION
+        config = cfg.get_translation_config(model)
+    elif param.startswith("translate_llm"):
+        if model == "":
+            model = cfg.CLOUD_TYPE
+        config = cfg.get_config(model)
     else:
         if model == "":
             model = cfg.CLOUD_TYPE
@@ -139,7 +148,7 @@ def main(param, charttype, model, freetext):
                 mermaid = MermaidMindmap(
                     ai_llm.call_llm_sequence(model=model, prompts_list=["text2mindmap"], input=value, topic_texts=key_plain)
                 )
-                create_mindmap_from_mermaid(document, mermaid)
+                create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
             if "knowledgegraph" in actions:
                 guid = uuid.uuid4()
                 mermaid = MermaidMindmap(
@@ -150,7 +159,7 @@ def main(param, charttype, model, freetext):
                 mermaid = MermaidMindmap(
                     ai_llm.call_llm_sequence(model=model, prompts_list=["knowledgegraph2mindmap"], input=content, topic_texts=key_plain)
                 )
-                create_mindmap_from_mermaid(document, mermaid)
+                create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
     
     elif param.startswith("pdfsimple"):
         actions = param.split("_")[-1].split("+")
@@ -167,7 +176,7 @@ def main(param, charttype, model, freetext):
                             data=value, 
                             mimeType="application/pdf")
                     )
-                    create_mindmap_from_mermaid(document, mermaid)
+                    create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
         elif "image/png" in config.MULTIMODAL_MIME_TYPES:
             docs = input_helper.load_pdf_files(optimization_level=0, as_images=True, as_images_dpi=config.MULTIMODAL_PDF_TO_IMAGE_DPI, mime_type="image/png", as_base64=True)
             for key, value in docs.items():
@@ -182,7 +191,7 @@ def main(param, charttype, model, freetext):
                             mimeType="image/png"
                         )
                     )
-                    create_mindmap_from_mermaid(document, mermaid)
+                    create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
         else:
             raise Exception("PDF Simple is not supported for this multimodal AI model.")
 
@@ -194,7 +203,7 @@ def main(param, charttype, model, freetext):
                 mermaid = MermaidMindmap(
                     ai_llm.call_llm_sequence(model=model, prompts_list=["md2mindmap"], input=value, topic_texts=text_helper.cleanse_title(key))
                 )
-                create_mindmap_from_mermaid(document, mermaid)
+                create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
     else:
 
         # load DOM
@@ -206,11 +215,11 @@ def main(param, charttype, model, freetext):
             if platform == "win":
                 document.finalize()
             else:
-                document.create_mindmap([])
+                document.create_mindmap(map_icons=[])
 
         else:
-            mermaid = MermaidMindmap(get_mermaid_from_mindmap(document.mindmap))
-            prompts_list = prompts.prompts_list_from_param(param)
+            mermaid = MermaidMindmap(get_mermaid_from_mindmap(mindmap=document.mindmap))
+            prompts_list = prompts.prompts_list_from_param(param=param)
 
             topic_texts = []
             if len(prompts_list) == 1:
@@ -254,13 +263,13 @@ def main(param, charttype, model, freetext):
                 mermaid = MermaidMindmap(
                     ai_translation.call_translation_ai(text=mermaid.mermaid_mindmap, language=language)
                 )
-                create_mindmap_from_mermaid(document, mermaid)
+                create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 
             else:
                 mermaid = MermaidMindmap(
                     ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, freetext=freetext)
                 )
-                create_mindmap_from_mermaid(document, mermaid)
+                create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 
     del document
     del mermaid
@@ -269,7 +278,7 @@ def main(param, charttype, model, freetext):
     print("Done.")
 
 def validate_input(param, charttype, model, freetext):
-    if param not in valid_actions:
+    if param not in valid_actions and not param.startswith("translate_deepl+"):
         print("Invalid action. Use one of the following: " + ", ".join(valid_actions))
         sys.exit(1)
 
@@ -290,12 +299,12 @@ def ui_main(payload):
     settings = payload["settings"]
     freetext = data.get("freetext", "")
     charttype = settings["chartType"]
-    modify_map = settings["modifyLiveMap"]
+    inplace = settings["modifyLiveMap"]
 
     validate_input(param, charttype, model, freetext)
 
     try:
-        main(param, charttype, model, freetext)
+        main(param=param, charttype=charttype, model=model, freetext=freetext, inplace=inplace)
     except Exception as e:
         print(f"An error occurred: {str(e)}")
 
@@ -303,7 +312,7 @@ if __name__ == "__main__":
     allocs, g1, g2 = gc.get_threshold()
     gc.set_threshold(allocs*100, g1*5, g2*10)
     
-    param = "refine" 
+    param = "" 
     charttype = "auto"
     model = ""
     freetext = ""
