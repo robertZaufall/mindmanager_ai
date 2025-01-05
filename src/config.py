@@ -5,10 +5,8 @@ from typing import List, Optional
 LOG = True # write source mindmaps, destination mindmaps and prompts to file
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best (rate limited)
 CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
-# CLOUD_TYPE = 'AZURE+gpt-4'                                            # best
-# CLOUD_TYPE = 'AZURE+gpt-4-32k'                                        # best
 
 # Azure serverless     
 # CLOUD_TYPE = 'AZURE_META+LLAMA3170B'                                  # best, slow
@@ -17,7 +15,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # ok
-# CLOUD_TYPE = 'OPENAI+gpt-4-turbo'                                     # best
 # CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
@@ -40,14 +37,10 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-exp-1121'                                 # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # good
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # better
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-exp'                            # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-1219'              # response not compatible
 
 # Google Gemini Vertex AI (OAuth2)     
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # good (frequent 'recitation' errors)
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # good
 # CLOUD_TYPE = 'VERTEXAI+gemini-pro-experimental'                       # best, does not come to an end every time
 # CLOUD_TYPE = 'VERTEXAI+gemini-flash-experimental'                     # good
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-exp'                          # best in class
@@ -60,8 +53,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
-# CLOUD_TYPE = 'XAI+grok-beta'                                          # good
-# CLOUD_TYPE = 'XAI+grok-vision-beta'                                   # best
 # CLOUD_TYPE = 'XAI+grok-2-1212'                                        # best
 # CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # best
 
@@ -85,9 +76,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # groq     
 # CLOUD_TYPE = 'GROQ+llama-3.3-70b-specdec'                             # best (6000 token per minute limit)
 # CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best (6000 token per minute limit)
-# CLOUD_TYPE = 'GROQ+llama-3.1-8b-instant'                              # good
-# CLOUD_TYPE = 'GROQ+gemma-7b-it'                                       # good
-# CLOUD_TYPE = 'GROQ+gemma2-9b-it'                                      # ok, generates maps only 3 levels deep
 # CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                                # good (token limit 5000 per minute)
 
 # Perplexity     
@@ -96,7 +84,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'PERPLEXITY+llama-3.1-sonar-huge-128k-online'            # best, slow
 
 # Firekworks.ai
-# CLOUD_TYPE = 'FIREWORKS+qwen-qwq-32b-preview'                         # does not work
 # CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
 # CLOUD_TYPE = 'FIREWORKS+llama-v3p3-70b-instruct'                      # good
 
