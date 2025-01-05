@@ -240,7 +240,21 @@ class MindmapDocument:
                     central_topic_selected = True
         return topic_texts, topic_levels, topic_ids, central_topic_selected
             
-    def clone_mindmap_topic(self, mindmap_topic, subtopics=[], attributes=[], parent=None):
+    def clone_mindmap_topic(self, mindmap_topic, subtopics: list['MindmapTopic'] = None, attributes: list['MindmapAttribute']=None, parent=None):
+        cloned_subtopics = []
+        if subtopics is not None:
+            for subtopic in subtopics:
+                cloned_subtopic = self.clone_mindmap_topic(subtopic)
+                cloned_subtopics.append(cloned_subtopic)
+        cloned_attributes = []
+        if attributes is not None:
+            for attribute in attributes:
+                cloned_attribute = MindmapAttribute(
+                    attribute_namespace=attribute.attribute_namespace,
+                    attribute_name=attribute.attribute_name,
+                    attribute_value=attribute.attribute_value
+                )
+                cloned_attributes.append(cloned_attribute)
         return MindmapTopic(
             topic_guid=mindmap_topic.topic_guid,
             topic_originalguid=mindmap_topic.topic_originalguid,
@@ -253,9 +267,8 @@ class MindmapDocument:
             topic_icons=mindmap_topic.topic_icons,
             topic_notes=mindmap_topic.topic_notes,
             topic_tags=mindmap_topic.topic_tags,
-            topic_references=mindmap_topic.topic_references,
-            topic_attributes=attributes,
-            topic_subtopics=subtopics
+            topic_attributes=cloned_attributes,
+            topic_subtopics=cloned_subtopics
         )
 
     def create_link_to_parent(self, mindmap_topic, done):
@@ -335,3 +348,32 @@ class MindmapDocument:
     
     def get_library_folder(self):
         return self.mindm.library_folder
+    
+    def get_grounding_information(self):
+        central_topic_text = self.mindmap.topic_text
+        subtopics = ""
+        if len(self.topic_texts) == 0: 
+            top_most_topic = central_topic_text
+        else:
+            if self.central_topic_selected:
+                top_most_topic = central_topic_text
+                subtopics =  ",".join(self.topic_texts)
+            else:
+                min_level = min(self.topic_levels)
+                max_level = max(self.topic_levels)
+                if (min_level == max_level):
+                    top_most_topic = central_topic_text
+                    subtopics =  ",".join(self.topic_texts)
+                else:
+                    top_most_topic = ""
+                    for i in range(len(self.topic_levels)):
+                        if self.topic_levels[i] != max_level:
+                            top_most_topic += self.topic_texts[i] + "/"
+                        else:
+                            subtopics += self.topic_texts[i] + ","
+
+                    if top_most_topic.endswith("/"):
+                        top_most_topic = top_most_topic[:-1]
+                    if subtopics.endswith(","):
+                        subtopics = subtopics[:-1]        
+        return top_most_topic, subtopics
