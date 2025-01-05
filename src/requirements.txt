@@ -7,3 +7,4 @@ Pillow
 tiktoken
 pymupdf4llm
 gpt4all
+sv_ttk
