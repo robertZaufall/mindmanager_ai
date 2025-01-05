@@ -352,25 +352,25 @@ class MindmapDocument:
     def get_grounding_information(self):
         central_topic_text = self.mindmap.topic_text
         subtopics = ""
-        if len(self.topic_texts) == 0: 
+        if len(self.selected_topic_texts) == 0: 
             top_most_topic = central_topic_text
         else:
             if self.central_topic_selected:
                 top_most_topic = central_topic_text
-                subtopics =  ",".join(self.topic_texts)
+                subtopics =  ",".join(self.selected_topic_texts)
             else:
-                min_level = min(self.topic_levels)
-                max_level = max(self.topic_levels)
+                min_level = min(self.selected_topic_levels)
+                max_level = max(self.selected_topic_levels)
                 if (min_level == max_level):
                     top_most_topic = central_topic_text
-                    subtopics =  ",".join(self.topic_texts)
+                    subtopics =  ",".join(self.selected_topic_texts)
                 else:
                     top_most_topic = ""
-                    for i in range(len(self.topic_levels)):
-                        if self.topic_levels[i] != max_level:
-                            top_most_topic += self.topic_texts[i] + "/"
+                    for i in range(len(self.selected_topic_levels)):
+                        if self.selected_topic_levels[i] != max_level:
+                            top_most_topic += self.selected_topic_texts[i] + "/"
                         else:
-                            subtopics += self.topic_texts[i] + ","
+                            subtopics += self.selected_topic_texts[i] + ","
 
                     if top_most_topic.endswith("/"):
                         top_most_topic = top_most_topic[:-1]
