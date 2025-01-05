@@ -485,7 +485,7 @@ def main_ui():
     btn_save_settings.pack(padx=10, pady=10)
 
     # ----------------------------------------------------------------------------------
-    # Hook up outputs to a text box in first three tabs only
+    # Hook up outputs to a text box
     # ----------------------------------------------------------------------------------
     tab_to_textbox = {
         "Actn": tab1_output,
