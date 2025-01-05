@@ -17,7 +17,6 @@ ACTION_MAP = {
     "Cluster": "cluster",
     "Glossary": "glossary",
     "Argumentation": "argumentation",
-    "Image": "image",
     "Export markmap": "export_markmap",
     "Export mermaid": "export_mermaid",
     "Pdf to mindmap": "pdf_mindmap",
@@ -25,7 +24,6 @@ ACTION_MAP = {
     "Pdf simple (by image)": "pdfsimple_mindmap",
     "Import MD": "import_md"
 }
-
 
 def load_settings():
     if os.path.exists(SETTINGS_FILE):
@@ -270,7 +268,7 @@ def main_ui():
 
     def submit_tab3():
         selected_cloud_type = var_cloud_type_tab3.get()
-        user_text = txt_llm_tab3.get("1.0", ttk.END).strip()
+        user_text = txt_llm_tab3.get("1.0", tk.END).strip()
         if not user_text:
             return
         payload = {
