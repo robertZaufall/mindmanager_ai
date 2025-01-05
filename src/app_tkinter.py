@@ -473,7 +473,7 @@ def main_ui():
     frame_liveMap = ttk.Frame(tab6)
     frame_liveMap.pack(padx=10, pady=5)
     var_liveMap = tk.BooleanVar(value=modifyLiveMap)
-    chk_liveMap = ttk.Checkbutton(frame_liveMap, text="Modify live map, dont create new", variable=var_liveMap)
+    chk_liveMap = ttk.Checkbutton(frame_liveMap, text="Modify live map, dont create new", variable=var_liveMap, state="disabled")
     chk_liveMap.pack(side="left")
 
     def save_settings_tab6():
