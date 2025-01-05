@@ -105,7 +105,7 @@ def call_llm_gcp(model, str_user, data, mimeType):
 
     return result
 
-def call_image_ai(model, str_user, image_path, n_count = 1):
+def call_image_ai(model, str_user, image_paths, n_count = 1):
     from PIL import Image
     from io import BytesIO
     import base64
@@ -152,10 +152,13 @@ def call_image_ai(model, str_user, image_path, n_count = 1):
     b64_image = parsed_json['predictions'][0]['bytesBase64Encoded']
     image_data = base64.b64decode(b64_image)
     image = Image.open(BytesIO(image_data))
-    image.save(image_path)
 
     if config.RESIZE_IMAGE:
         image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
-        image.save(image_path)
+        for image_path in image_paths:
+            image.save(image_path)
+    else:
+        for image_path in image_paths:
+            image.save(image_path)
             
-    return image_path
+    return image_paths

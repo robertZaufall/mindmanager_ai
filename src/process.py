@@ -64,10 +64,9 @@ def generate_image(model, document, guid, count=1):
     # collect some grounding information for LLM
     top_most_topic, subtopics = document.get_grounding_information()
 
-    folder_path_images = file_helper.create_folder_if_not_exists(root_path=os.path.join(document.get_library_folder(), "Images"), central_topic_text=top_most_topic)
-    file_name = f"{guid}.png"
-    file_path = os.path.join(folder_path_images, file_name)      
-
+    # store images in the library under images and background images
+    file_paths = file_helper.get_image_file_paths(library_folder=document.get_library_folder(), top_most_topic=top_most_topic, guid=guid)
+    
     if "MLX+" in config.CLOUD_TYPE_IMAGE:
         if "flux" in config.IMAGE_MODEL_ID:
             str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
@@ -80,13 +79,13 @@ def generate_image(model, document, guid, count=1):
     else:
         final_prompt = str_user
 
-    image_path = ai_image.call_image_ai(model=model, image_path=file_path, str_user=final_prompt, n_count=count)
+    image_paths = ai_image.call_image_ai(model=model, image_paths=file_paths, str_user=final_prompt, n_count=count)
 
     if config.INSERT_IMAGE_AS_BACKGROUND and document.central_topic_selected and platform == "win":
-        document.set_background_image(image_path)
+        document.set_background_image(image_paths[1])
     else:
         from PIL import Image
-        image = Image.open(image_path)  
+        image = Image.open(image_paths[0])  
         image.show()
 
 

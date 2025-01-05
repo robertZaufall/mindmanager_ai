@@ -6,7 +6,7 @@ import json
 
 import random
 
-def call_image_ai(model, image_path, str_user, n_count = 1):
+def call_image_ai(model, image_paths, str_user, n_count = 1):
 
     import httpx
     from PIL import Image
@@ -22,7 +22,7 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
         if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA:
             n_count = 1 # override n_count to 1
             import ai.ai_azure_entra as ai_azure_entra
-            return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_path=image_path, n_count=n_count)
+            return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count)
 
         # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
@@ -61,13 +61,15 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
             if format == "url":
                 url = parsed_json['data'][0]['url']
                 generated_image = httpx.get(url).content
-                with open(image_path, "wb") as file:
-                    file.write(generated_image)
+                for image_path in image_paths:
+                    with open(image_path, "wb") as file:
+                        file.write(generated_image)
             else:
                 b64_image = parsed_json['data'][0]['b64_json']
                 image_data = base64.b64decode(b64_image)
                 image = Image.open(BytesIO(image_data))
-                image.save(image_path)
+                for image_path in image_paths:
+                    image.save(image_path)
 
         # Stability AI / Stable Diffusion
         elif "STABILITYAI" in config.CLOUD_TYPE_IMAGE:
@@ -94,10 +96,11 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
                 },
             )
 
-            image_path = image_path.replace(".png", f"_{seed}.png")
             if response.status_code == 200:
-                with open(image_path, 'wb') as file:
-                    file.write(response.content)
+                for i in range(len(image_paths)):
+                    image_paths[i] = image_paths[i].replace(".png", f"_{seed}.png")
+                    with open(image_paths[i], 'wb') as file:
+                        file.write(response.content)
             else:
                 raise Exception(str(response.json()))
 
@@ -139,8 +142,11 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
 
             url = parsed_json['data'][0]['url']
             generated_image = httpx.get(url).content
-            with open(image_path, "wb") as file:
-                file.write(generated_image)
+
+            for i in range(len(image_paths)):
+                image_paths[i] = image_paths[i].replace(".png", f"_{seed}.png")
+                with open(image_paths[i], 'wb') as file:
+                    file.write(generated_image)
 
         # Black Forest Labs
         elif "BFL" in config.CLOUD_TYPE_IMAGE:
@@ -231,8 +237,9 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
 
             if url != "":
                 generated_image = httpx.get(url).content
-                with open(image_path, "wb") as file:
-                    file.write(generated_image)
+                for image_path in image_paths:
+                    with open(image_path, "wb") as file:
+                        file.write(generated_image)
             else:
                 raise Exception(f"Error generating image.")
             
@@ -275,31 +282,33 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
             if format == "url":
                 url = parsed_json['data'][0]['url']
                 generated_image = httpx.get(url).content
-                with open(image_path, "wb") as file:
-                    file.write(generated_image)
+                for image_path in image_paths:
+                    with open(image_path, "wb") as file:
+                        file.write(generated_image)
             else:
                 b64_image = parsed_json['data'][0]['b64_json']
                 image_data = base64.b64decode(b64_image)
                 image = Image.open(BytesIO(image_data))
-                image.save(image_path)
+                for image_path in image_paths:
+                    image.save(image_path)
 
         # Google VertexAI            
         elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
             n_count = 1 # override n_count to 1
             import ai.ai_gcp as ai_gcp
-            return ai_gcp.call_image_ai(model=model, str_user=str_user, image_path=image_path, n_count=n_count)
+            return ai_gcp.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count)
 
         # MLX
         elif "MLX" in config.CLOUD_TYPE_IMAGE:
             seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**32 - 1)
             if "flux" in config.IMAGE_MODEL_ID or "sd3" in config.IMAGE_MODEL_ID:
                 import ai.ai_image_mlx as ai_image_mlx
-                image_path = ai_image_mlx.generate_image(
+                image_paths = ai_image_mlx.generate_image(
                     model=model,
                     prompt=str_user, 
                     negative_prompt=config.IMAGE_NEGATIV_PROMPT, 
                     n_images=n_count, 
-                    output=image_path, 
+                    outputs=image_paths, 
                     seed=seed)
             else:
                 raise Exception(f"Error: IMAGE_MODEL_ID for MLX not supported: {config.IMAGE_MODEL_ID}")
@@ -307,8 +316,9 @@ def call_image_ai(model, image_path, str_user, n_count = 1):
             raise Exception(f"Error: CLOUD_TYPE_IMAGE not supported: {config.CLOUD_TYPE_IMAGE}")
 
         if config.RESIZE_IMAGE and n_count == 1:
-            image = Image.open(image_path)
-            image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
-            image.save(image_path)
+            for image_path in image_paths:
+                image = Image.open(image_path)
+                image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
+                image.save(image_path)
 
-        return image_path
+        return image_paths

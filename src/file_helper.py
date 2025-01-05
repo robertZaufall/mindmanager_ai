@@ -111,3 +111,10 @@ def log_input_output(input, output, prompt):
             file.write(prompt)
     except Exception as e:
         print(f"Error writing log files: {str(e)}")
+
+def get_image_file_paths(library_folder, top_most_topic, guid):
+    folder_path_images = create_folder_if_not_exists(root_path=os.path.join(library_folder, "Images"), central_topic_text=top_most_topic)
+    folder_path_background_images = create_folder_if_not_exists(root_path=os.path.join(library_folder, "Background Images"), central_topic_text=top_most_topic)
+    file_name = f"{guid}.png"
+    file_paths = [os.path.join(folder_path_images, file_name), os.path.join(folder_path_background_images, file_name)]
+    return file_paths

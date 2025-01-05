@@ -102,7 +102,7 @@ def call_llm_azure_entra(model, str_user, data, mimeType):
     result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
     return result
 
-def call_image_ai(model, str_user, image_path, n_count = 1):
+def call_image_ai(model, str_user, image_paths, n_count = 1):
     from PIL import Image
 
     config = cfg.get_image_config(model)
@@ -127,20 +127,19 @@ def call_image_ai(model, str_user, image_path, n_count = 1):
   
     json_response = json.loads(response.model_dump_json())
 
-    original_image_path = image_path
     n = 1
     for item in json_response["data"]:
-        image_path = original_image_path.replace(".png", f"_{n}.png") if n_count > 1 else original_image_path
-
         image_url = item["url"]
         generated_image = requests.get(image_url).content
-        with open(image_path, "wb") as image_file:
-            image_file.write(generated_image)
+        for image_path in image_paths:
+            image_path = image_path.replace(".png", f"_{n}.png") if n_count > 1 else image_path
+            with open(image_path, "wb") as image_file:
+                image_file.write(generated_image)
 
-        if config.RESIZE_IMAGE:
-            image = Image.open(image_path)  # Assuming PIL or Pillow for image handling
-            image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
-            image.save(image_path)
+            if config.RESIZE_IMAGE:
+                image = Image.open(image_path)  # Assuming PIL or Pillow for image handling
+                image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
+                image.save(image_path)
         n+=1
             
-    return image_path # path of last generated image
+    return image_paths # path of last generated image
