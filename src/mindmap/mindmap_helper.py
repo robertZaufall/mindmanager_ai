@@ -301,7 +301,9 @@ class MindmapDocument:
     def create_mindmap(self, map_icons):
         self.mindm.add_document(0)
         self.mindm.create_map_icons(map_icons)
+        self.mindm.set_text_to_topic(self.mindm.get_central_topic(), self.mindmap.topic_text)
         topic = self.mindm.get_central_topic()
+
         self.set_topic_from_mindmap_topic(topic=topic, mindmap_topic=self.mindmap, map_icons=map_icons)
 
         relationships = []
