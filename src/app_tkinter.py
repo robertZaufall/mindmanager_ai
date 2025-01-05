@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+import sv_ttk
+
 import process
 import re
 import os
@@ -136,7 +138,7 @@ def main_ui():
     # Tab 1: "Actions"
     # ----------------------------------------------------------------------------------
     tab1 = ttk.Frame(notebook)
-    notebook.add(tab1, text="Actions")
+    notebook.add(tab1, text="Actn")
 
     frame_models1 = tk.Frame(tab1)
     frame_models1.pack(padx=10, pady=5)
@@ -182,18 +184,18 @@ def main_ui():
         }
         call_process_json(payload)
 
-    btn_tab1 = tk.Button(tab1, text="Execute", command=submit_tab1, default="normal")
+    btn_tab1 = tk.Button(tab1, text="Execute", command=submit_tab1, default="normal", fg="black")
     btn_tab1.pack(padx=10, pady=10)
 
     tk.Label(tab1, text="Output:").pack(anchor="w", padx=10)
-    tab1_output = tk.Text(tab1, font=("TkDefaultFont", 9), height=6, width=63, state='disabled')
-    tab1_output.pack(padx=10, pady=5)
+    tab1_output = tk.Text(tab1, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
+    tab1_output.pack(padx=10, pady=5, fill="both", expand=True)
 
     # ----------------------------------------------------------------------------------
     # Tab 2: "Image Generation"
     # ----------------------------------------------------------------------------------
     tab2 = ttk.Frame(notebook)
-    notebook.add(tab2, text="Image")
+    notebook.add(tab2, text="Img")
 
     frame_models2 = tk.Frame(tab2)
     frame_models2.pack(padx=10, pady=5)
@@ -224,23 +226,28 @@ def main_ui():
         call_process_json(payload)
 
     btn_tab2_1 = tk.Button(tab2, text="1 Image", command=lambda: submit_tab2("image"), default='normal')
-    btn_tab2_1.pack(padx=10, pady=5)
+    btn_tab2_1.pack(side="top", padx=10, pady=5)
 
-    btn_tab2_5 = tk.Button(tab2, text="5 Images", command=lambda: submit_tab2("image_5"), default='normal')
-    btn_tab2_5.pack(padx=10, pady=5)
+    button_frame_image = tk.Frame(tab2)
+    button_frame_image.pack(side="top", padx=10, pady=5)
 
-    btn_tab2_10 = tk.Button(tab2, text="10 Images", command=lambda: submit_tab2("image_10"), default='normal')
-    btn_tab2_10.pack(padx=10, pady=5)
+    btn_tab2_5 = tk.Button(button_frame_image, text="5 Images", command=lambda: submit_tab2("image_5"), default='normal')
+    btn_tab2_5.pack(side="left", padx=10, pady=5)
+
+    btn_tab2_10 = tk.Button(button_frame_image, text="10 Images", command=lambda: submit_tab2("image_10"), default='normal')
+    btn_tab2_10.pack(side="left", padx=10, pady=5)
+
+    button_frame_image.pack(anchor="center")
 
     tk.Label(tab2, text="Output:").pack(anchor="w", padx=10)
-    tab2_output = tk.Text(tab2, font=("TkDefaultFont", 9), height=6, width=63, state='disabled')
-    tab2_output.pack(padx=10, pady=5)
+    tab2_output = tk.Text(tab2, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
+    tab2_output.pack(side="top", padx=10, pady=5, fill="both", expand=True)
 
     # ----------------------------------------------------------------------------------
     # Tab 3: "LLM Freetext"
     # ----------------------------------------------------------------------------------
     tab3 = ttk.Frame(notebook)
-    notebook.add(tab3, text="Freetext")
+    notebook.add(tab3, text="Txt")
 
     frame_models3 = tk.Frame(tab3)
     frame_models3.pack(padx=10, pady=5)
@@ -258,8 +265,8 @@ def main_ui():
     dropdown_cloud_type_tab3.pack(padx=10, pady=5)
 
     tk.Label(tab3, text="Input:").pack(anchor="w", padx=10)
-    txt_llm_tab3 = tk.Text(tab3, height=4, width=54)
-    txt_llm_tab3.pack(padx=10, pady=5)
+    txt_llm_tab3 = tk.Text(tab3, height=4, width=54, highlightbackground="gray")
+    txt_llm_tab3.pack(padx=10, pady=5, fill="x", expand=True)
 
     def submit_tab3():
         selected_cloud_type = var_cloud_type_tab3.get()
@@ -283,14 +290,14 @@ def main_ui():
     btn_tab3.pack(padx=10, pady=10)
 
     tk.Label(tab3, text="Output:").pack(anchor="w", padx=10)
-    tab3_output = tk.Text(tab3, font=("TkDefaultFont", 9), height=6, width=63, state='disabled')
-    tab3_output.pack(padx=10, pady=5)
+    tab3_output = tk.Text(tab3, font=("TkDefaultFont", 9), state='disabled', highlightbackground="gray")
+    tab3_output.pack(padx=10, pady=5, fill="x", expand=True)
 
     # ----------------------------------------------------------------------------------
     # Tab 4: "Translation"
     # ----------------------------------------------------------------------------------
     tab4 = ttk.Frame(notebook)
-    notebook.add(tab4, text="Transl.")
+    notebook.add(tab4, text="Trnsl")
 
     frame_models4 = tk.Frame(tab4)
     frame_models4.pack(padx=10, pady=5)
@@ -361,7 +368,7 @@ def main_ui():
     # Tab 5: "Agentic"
     # ----------------------------------------------------------------------------------
     tab5 = ttk.Frame(notebook)
-    notebook.add(tab5, text="Agentic")
+    notebook.add(tab5, text="Agnt")
 
     frame_action5 = tk.Frame(tab5)
     frame_action5.pack(padx=10, pady=5)
@@ -438,7 +445,7 @@ def main_ui():
     # Tab 6: "Settings"
     # ----------------------------------------------------------------------------------
     tab6 = ttk.Frame(notebook)
-    notebook.add(tab6, text="Config")
+    notebook.add(tab6, text="Conf")
 
     frame_chart = tk.Frame(tab6)
     frame_chart.pack(padx=10, pady=5)
@@ -473,13 +480,13 @@ def main_ui():
     # Hook up outputs to a text box in first three tabs only
     # ----------------------------------------------------------------------------------
     tab_to_textbox = {
-        "Actions": tab1_output,
-        "Image": tab2_output,
-        "Freetext": tab3_output,
+        "Actn": tab1_output,
+        "Img": tab2_output,
+        "Txt": tab3_output,
         # these next three have no designated output text widget:
-        "Transl.": None,
-        "Agentic": None,
-        "Config": None
+        "Trnsl": None,
+        "Agnt": None,
+        "Conf": None
     }
 
     def on_tab_changed(event):
@@ -490,21 +497,23 @@ def main_ui():
             # revert to console or do something else
             sys.stdout = sys.__stdout__
         # Optional focusing
-        if current_tab == "Actions":
+        if current_tab == "Actn":
             btn_tab1.focus_set()
-        elif current_tab == "Image":
+        elif current_tab == "Img":
             btn_tab2_1.focus_set()
-        elif current_tab == "Freetext":
+        elif current_tab == "Txt":
             btn_tab3.focus_set()
-        elif current_tab == "Transl.":
+        elif current_tab == "Trnsl":
             btn_tab4.focus_set()
-        elif current_tab == "Agentic":
+        elif current_tab == "Agnt":
             btn_tab5.focus_set()
 
     notebook.bind("<<NotebookTabChanged>>", on_tab_changed)
 
     # Redirect stdout to first tab initially.
     sys.stdout = TextRedirector(tab1_output)
+
+    root.geometry("375x330")
 
     root.update_idletasks()  # Let Tk finish calculating window geometry
     actual_width = root.winfo_width()
@@ -515,7 +524,8 @@ def main_ui():
     y = 0                            # place at top
 
     root.geometry(f"+{x}+{y}")
-
+    
+    sv_ttk.set_theme("dark")
     root.mainloop()
 
 
