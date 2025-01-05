@@ -180,7 +180,7 @@ def prompt_freetext(text, freetext, topic_texts=""):
     str_user = (
         prompt_prefix +
         f"Please do the following action or actions '{freetext}' to {topics}. "
-        "Do not change the central topic which is the top most topic. " +
+        "Do not change the central topic which is the top most topic until you are told todo so. " +
         prompt_postfix +
         f"```\n{text}```"
     )
