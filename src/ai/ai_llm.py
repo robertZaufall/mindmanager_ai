@@ -1,6 +1,7 @@
 import config as cfg
 import ai.prompts as prompts
 import input_helper
+import file_helper
 
 import requests
 import json
@@ -30,17 +31,7 @@ def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeT
         log_prompt += "Prompt = " + prompt + "\n-------\n" + this_prompt + "\n\n"
 
     if config.LOG == True:
-        try:
-            folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "log")
-            if not os.path.exists(folder_path): os.makedirs(folder_path)        
-            with open(folder_path + "/input.txt", "w", errors='ignore') as file:
-                file.write(log_input)
-            with open(folder_path + "/output.txt", "w") as file:
-                file.write(log_output)
-            with open(folder_path + "/prompt.txt", "w") as file:
-                file.write(log_prompt)
-        except:
-            print("Error writing log files.")
+        file_helper.log_input_output(log_input, log_output, log_prompt)
     
     return result
 

@@ -98,3 +98,16 @@ def get_template_content(template_name):
     with open(os.path.join(templates_folder_path, template_name), 'r') as f:
         template = f.read()
     return template
+
+def log_input_output(input, output, prompt):
+    try:
+        folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "log")
+        if not os.path.exists(folder_path): os.makedirs(folder_path)        
+        with open(folder_path + "/input.txt", "w", encoding='utf-8', errors='ignore') as file:
+            file.write(input)
+        with open(folder_path + "/output.txt", "w", encoding='utf-8') as file:
+            file.write(output)
+        with open(folder_path + "/prompt.txt", "w", encoding='utf-8') as file:
+            file.write(prompt)
+    except Exception as e:
+        print(f"Error writing log files: {str(e)}")
