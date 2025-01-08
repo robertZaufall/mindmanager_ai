@@ -15,3 +15,4 @@ test/~$Test_DOM.mmap.~$lock
 src/import/**
 **.cpython-312.pyc
 settings.json
+.env

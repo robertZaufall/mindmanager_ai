@@ -99,24 +99,22 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # ok
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-8B-Instruct'                    # needs pro-subscription
 
 # Ollama (local models), best results     
+# CLOUD_TYPE = 'OLLAMA+phi4:14b'                                        # best
+# CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
+# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
 # CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
-# CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
-# CLOUD_TYPE = 'OLLAMA+solar'                                           # ok
-# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
-# CLOUD_TYPE = 'OLLAMA+qwen2.5:14b'                                     # good
-# CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
 
 # LMStudio
+# CLOUD_TYPE = 'LMSTUDIO+mlx-community/phi-4'                           # best
 # CLOUD_TYPE = 'LMSTUDIO+nvidia_llama-3.1-nemotron-70b-instruct-hf'     # best, slow
-# CLOUD_TYPE = 'LMSTUDIO+lmstudio-community/meta-llama-3.1-8b-instruct' # ok
-# CLOUD_TYPE = 'LMSTUDIO+mlx-community/meta-llama-3.1-8b-instruct'      # ok
-# CLOUD_TYPE = 'LMSTUDIO+bartowski/llama-3.2-3b-instruct'               # ok
+# CLOUD_TYPE = 'LMSTUDIO+llama-3.3-70b-instruct'                        # best, slow
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-14b-instruct'                          # best
 # CLOUD_TYPE = 'LMSTUDIO+qwen2.5-32b-instruct'                          # ok
-# CLOUD_TYPE = 'LMSTUDIO+llama-3.3-70b-instruct'                        # best, slow
+# CLOUD_TYPE = 'LMSTUDIO+mlx-community/meta-llama-3.1-8b-instruct'      # ok
+# CLOUD_TYPE = 'LMSTUDIO+lmstudio-community/meta-llama-3.1-8b-instruct' # ok
 
 # GPT4All
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
