@@ -1,4 +1,5 @@
-import config as cfg
+import config_llm as cfg
+from types import SimpleNamespace
 
 config = cfg.get_config()
 

@@ -15,10 +15,10 @@ ACTION_MAP = {
     "Refine (Dev)": "refine_dev",
     "Examples": "examples",
     "Cluster": "cluster",
-    "Glossary": "glossary",
-    "Argumentation": "argumentation",
-    "Export markmap": "export_markmap",
-    "Export mermaid": "export_mermaid",
+    "Glossary (md/html)": "glossary",
+    "Argumentation (md/html)": "argumentation",
+    "Export markmap (md/html)": "export_markmap",
+    "Export mermaid (md/html)": "export_mermaid",
     "Pdf to mindmap": "pdf_mindmap",
     "Pdf to mindmap (via knowledge graph)": "pdf_knowledgegraph",
     "Pdf simple (by image)": "pdfsimple_mindmap",
@@ -37,8 +37,17 @@ def save_settings(data):
     with open(SETTINGS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
 
+def load_agents():
+    directory_path = os.path.join(os.path.dirname(__file__), 'ai', 'agents')
+    try:
+        file_names = os.listdir(directory_path)
+        file_dict = {file.replace(".py", "").replace("_", " ").title(): file for file in file_names if os.path.isfile(os.path.join(directory_path, file)) and file.endswith(".py") and not file.startswith("__")}
+        return file_dict
+    except FileNotFoundError:
+        return {}
 
-def parse_cloud_definitions(filename):
+
+def parse_cloud_definitions(filename_llm, filename_image):
     """
     Reads config.py lines to find
        CLOUD_TYPE = '...' 
@@ -53,7 +62,7 @@ def parse_cloud_definitions(filename):
     cloud_images = []
     uncommented_cloud_image = None
     
-    with open(filename, 'r', encoding='utf-8') as f:
+    with open(filename_llm, 'r', encoding='utf-8') as f:
         for line in f:
             match_type = cloud_type_pattern.search(line)
             if match_type:
@@ -63,6 +72,8 @@ def parse_cloud_definitions(filename):
                     if not line.lstrip().startswith('#'):
                         uncommented_cloud_type = value
             
+    with open(filename_image, 'r', encoding='utf-8') as f:
+        for line in f:
             match_img = cloud_type_img_pattern.search(line)
             if match_img:
                 value = match_img.group(1).strip()
@@ -101,14 +112,15 @@ class MindmanagerAIApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Mindmanager AI")
-        self.wm_attributes("-topmost", 1)  # optional “always on top”
+        self.wm_attributes("-topmost", 1)  # optional "always on top"
 
         # Prepare data & settings
         self.settings_data = load_settings()
-        config_file = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), 'config.py')
-        )
-        data = parse_cloud_definitions(config_file)
+        
+        config_file_llm = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_llm.py'))
+        config_file_image = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_image.py'))
+        data = parse_cloud_definitions(config_file_llm, config_file_image)
+        agents = load_agents()
 
         self.all_cloud_types = data['all_cloud_types']
         self.active_cloud_type = data['active_cloud_type'] or (
@@ -155,7 +167,7 @@ class MindmanagerAIApp(tk.Tk):
         actual_height = self.winfo_height()
         screen_width = self.winfo_screenwidth()
         x = screen_width - actual_width  # place at right edge
-        y = 0                            # place at top
+        y = 75                            # place at top
         self.geometry(f"+{x}+{y}")
 
         sv_ttk.set_theme("dark")
@@ -393,27 +405,31 @@ class MindmanagerAIApp(tk.Tk):
         frame_action5 = ttk.Frame(tab)
         frame_action5.pack(padx=10, pady=5)
         ttk.Label(frame_action5, text="Action:").pack(side="left")
-        self.var_agentic_action = tk.StringVar(value="Action 1")
+        agent_actions = sorted(load_agents().keys())
+        self.var_agentic_action = tk.StringVar(value=agent_actions[0] if agent_actions else "")
         dropdown_agentic_action = ttk.Combobox(
             frame_action5,
             textvariable=self.var_agentic_action,
-            values=["Action 1", "Action 2"],
+            values=sorted(load_agents().keys()),
             state="readonly",
             justify="left",
             width=34
         )
         dropdown_agentic_action.pack(side="left", padx=5)
 
+        ### Model comboboxes ###
+        filtered_cloud_types = [x for x in self.all_cloud_types if x.lower().startswith(('openai', 'azure', 'ollama'))]
+    
         # Strong model combobox
         self.var_agentic_strong = tk.StringVar(value=self.agentic_model_strong)
         self.create_labeled_combobox(
-            tab, "Strong:", self.var_agentic_strong, self.all_cloud_types
+            tab, "Strong:", self.var_agentic_strong, filtered_cloud_types
         )
 
         # Cheap model combobox
         self.var_agentic_cheap = tk.StringVar(value=self.agentic_model_cheap)
         self.create_labeled_combobox(
-            tab, "Cheap:", self.var_agentic_cheap, self.all_cloud_types
+            tab, "Cheap:", self.var_agentic_cheap, filtered_cloud_types
         )
 
         def submit_tab5():
@@ -425,8 +441,9 @@ class MindmanagerAIApp(tk.Tk):
             self.settings_data["agentic_model_cheap"] = model_cheap
             save_settings(self.settings_data)
 
+            agent_action = load_agents().get(action_val)
             data = {
-                "agent_action": action_val,
+                "agent_action": agent_action,
                 "model_strong": model_strong,
                 "model_cheap": model_cheap
             }

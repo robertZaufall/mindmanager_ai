@@ -1,5 +1,5 @@
 import re
-import config as cfg
+import config_llm as cfg
 import os
 import sys
 

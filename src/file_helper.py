@@ -2,9 +2,30 @@ import re
 import os
 import sys
 
-import config as cfg
+from dotenv import load_dotenv
+from importlib import import_module
+import importlib.util as import_util
 
-config = cfg.get_config()
+MARKMAP_TEMPLATE = """
+<div class="markmap">
+<script type="text/template">
+---
+markmap:
+colorFreezeLevel: {{colorFreezeLevel}}
+initialExpandLevel: -1
+---
+{{markmap}}
+</script>
+</div>
+"""
+
+MERMAID_TEMPLATE= """
+<div class="mermaid">
+%%{init: {"theme": "dark"}}%% 
+{{mermaid}}
+</div>
+"""
+
 
 if sys.platform.startswith('win'):
     platform = "win"
@@ -74,9 +95,7 @@ def generate_argumentation_html(content, guid):
 
 def generate_markmap_html(content, max_topic_level, guid):
     file_path = get_new_file_paths("docs", guid)
-    this_content = config.MARKMAP_TEMPLATE \
-                        .replace("{{colorFreezeLevel}}", str(max_topic_level)) \
-                        .replace("{{markmap}}", content)
+    this_content = MARKMAP_TEMPLATE.replace("{{colorFreezeLevel}}", str(max_topic_level)).replace("{{markmap}}", content)
     template = get_template_content("markmap.html")
     html = template.replace("{{body}}", this_content).replace("{{title}}", "Markmap")
     with open(file_path, 'w') as f:
@@ -85,7 +104,7 @@ def generate_markmap_html(content, max_topic_level, guid):
 
 def generate_mermaid_html(content, max_topic_level, guid, do_open_file = True):
     file_path = get_new_file_paths("docs", guid)
-    this_content = config.MERMAID_TEMPLATE.replace("{{mermaid}}", content)
+    this_content = MERMAID_TEMPLATE.replace("{{mermaid}}", content)
     template = get_template_content("mermaid.html")
     html = template.replace("{{body}}", this_content).replace("{{title}}", "Mermaid")
     with open(file_path, 'w') as f:
@@ -118,3 +137,20 @@ def get_image_file_paths(library_folder, top_most_topic, guid):
     file_name = f"{guid}.png"
     file_paths = [os.path.join(folder_path_images, file_name), os.path.join(folder_path_background_images, file_name)]
     return file_paths
+
+def load_env(env_name: str):
+    env_path = os.path.join(os.path.dirname(__file__), 'config', f"{env_name.lower()}.env")
+    if os.path.exists(env_path):
+        load_dotenv(dotenv_path=env_path, override=True)
+
+def load_class(module_name, class_name):
+    mod = import_module(module_name)
+    cls = getattr(mod, class_name)
+    return cls
+
+def load_module_from_path(path, name):
+    spec = import_util.spec_from_file_location(name, path)
+    module = import_util.module_from_spec(spec)
+    sys.modules[name] = module
+    spec.loader.exec_module(module)
+    return module

@@ -1,5 +1,5 @@
-import config as cfg
-
+import config_translate as cfg
+from types import SimpleNamespace
 import requests
 import json
 

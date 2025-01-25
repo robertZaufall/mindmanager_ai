@@ -1,11 +1,13 @@
 import input_helper
-import config as cfg
+import config_llm as cfg
+import config_image as cfg_image
 import json  
 import os
 import requests
 from openai import AzureOpenAI  
 from azure.identity import InteractiveBrowserCredential  
 from datetime import datetime, timedelta  
+from types import SimpleNamespace
 
 TOKEN_CACHE_FILE = "token_cache.json"
 TOKEN_PROVIDER_NS = "https://cognitiveservices.azure.com/.default"
@@ -60,9 +62,9 @@ def call_llm_azure_entra(model, str_user, data, mimeType):
     token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)  
 
     client = AzureOpenAI(  
-        azure_endpoint=config.OPENAI_API_URL,  
+        azure_endpoint=config.API_URL,  
         azure_ad_token_provider=token_provider.get_token, 
-        api_version=config.OPENAI_API_VERSION  
+        api_version=config.API_VERSION  
     ) 
 
     str_system = config.SYSTEM_PROMPT
@@ -105,15 +107,15 @@ def call_llm_azure_entra(model, str_user, data, mimeType):
 def call_image_ai(model, str_user, image_paths, n_count = 1):
     from PIL import Image
 
-    config = cfg.get_image_config(model)
+    config = cfg_image.get_image_config(model)
 
     interactive_browser_credential = InteractiveBrowserCredential()  
     token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)  
   
     client = AzureOpenAI(  
-        azure_endpoint=config.OPENAI_IMAGE_API_URL,  
+        azure_endpoint=config.IMAGE_API_URL,  
         azure_ad_token_provider=token_provider.get_token, 
-        api_version=config.OPENAI_API_VERSION_IMAGE
+        api_version=config.IMAGE_API_VERSION
     )  
 
     response = client.images.generate(  

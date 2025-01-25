@@ -1,5 +1,6 @@
 import random
-import config as cfg
+import config_image as cfg
+from types import SimpleNamespace
 from PIL import Image
 
 def generate_image(model, prompt, negative_prompt, n_images, outputs, seed):

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import gc
-import config as cfg
+import config_llm as cfg
+import config_image as cfg_image
+import config_translate as cfg_translate
 import ai.prompts as prompts
 
 from mindmap.mindmap_helper import *
@@ -18,6 +20,7 @@ import uuid
 import ai.ai_llm as ai_llm
 import ai.ai_image as ai_image
 import ai.ai_translation as ai_translation
+import ai.ai_agent as ai_agent
 
 if sys.platform.startswith('win'):
     platform = "win"
@@ -59,7 +62,7 @@ def create_mindmap_from_mermaid(document, mermaid, inplace=False):
 
 def generate_image(model, document, guid, count=1):
 
-    config = cfg.get_image_config(model)
+    config = cfg_image.get_image_config(model)
 
     # collect some grounding information for LLM
     top_most_topic, subtopics = document.get_grounding_information()
@@ -96,12 +99,12 @@ def main(param, charttype, model, freetext, inplace=False):
 
     if "image" in param:
         if model == "":
-            model = cfg.CLOUD_TYPE_IMAGE
-        config = cfg.get_image_config(model)
+            model = cfg_image.CLOUD_TYPE_IMAGE
+        config = cfg_image.get_image_config(model)
     elif param.startswith("translate_deepl"):
         if model == "":
-            model = cfg.CLOUD_TYPE_TRANSLATION
-        config = cfg.get_translation_config(model)
+            model = cfg_translate.CLOUD_TYPE_TRANSLATION
+        config = cfg_translate.get_translation_config(model)
     elif param.startswith("translate_llm"):
         if model == "":
             model = cfg.CLOUD_TYPE
@@ -109,6 +112,8 @@ def main(param, charttype, model, freetext, inplace=False):
     else:
         if model == "":
             model = cfg.CLOUD_TYPE
+        secondary_model = model.split("|")[1] if "|" in model else ""
+        model = model.split("|")[0]
         config = cfg.get_config(model)
 
     if param.startswith("pdf_") and charttype == "auto":
@@ -220,7 +225,7 @@ def main(param, charttype, model, freetext, inplace=False):
             guid = uuid.uuid4()
 
             # Image generation
-            if "image" in param:
+            if param.startswith("image"):
                 count = param.split("_")[-1]
                 if count.isdigit():
                     count = int(count)
@@ -228,11 +233,18 @@ def main(param, charttype, model, freetext, inplace=False):
                     count = 1
                 generate_image(model, document, guid, count)
 
+            elif param.startswith("agent+"):
+                agent_action = param.split("+")[-1]
+                argument = topic_texts_join if topic_texts_join != "" else document.mindmap.topic_text
+                result = ai_agent.call_agent(agent_action, argument=argument, model=model, secondary_model=secondary_model)
+                mermaid = MermaidMindmap(result)
+                create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
+
             # text generation: glossary in MD format
             elif param == "glossary":
                 markdown = ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
-                if "-mini" in config.CLOUD_TYPE or \
-                    "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
+                markdown = markdown[8:].strip() if markdown.startswith("markdown") else markdown
+                if "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
                     ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
                     # take an optimization round
                     markdown = ai_llm.call_llm(model=model, str_user=prompts.prompt_glossary_optimize(markdown))
@@ -241,6 +253,7 @@ def main(param, charttype, model, freetext, inplace=False):
             # text generation: argumentation in MD format
             elif param == "argumentation":
                 markdown = ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
+                markdown = markdown[8:].strip() if markdown.startswith("markdown") else markdown
                 file_helper.generate_argumentation_html(markdown, guid)
 
             # mindmap to markmap
@@ -295,13 +308,17 @@ def ui_main(payload):
     data = payload["data"]
     settings = payload["settings"]
     freetext = data.get("freetext", "")
-    agent_action = data.get("agent_ction", "")
+    agent_action = data.get("agent_action", "")
     model_strong = data.get("model_strong", "")
     model_cheap = data.get("model_cheap", "")
     charttype = settings["chartType"]
     inplace = settings["modifyLiveMap"]
 
     validate_input(param, charttype, model, freetext)
+
+    if param == "agent":
+        model = model_strong + "|" + model_cheap
+        param = param + "+" + agent_action
 
     try:
         main(param=param, charttype=charttype, model=model, freetext=freetext, inplace=inplace)

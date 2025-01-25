@@ -1,6 +1,7 @@
-import config as cfg
+import config_llm as cfg
 import json
 import boto3
+from types import SimpleNamespace
 
 def call_llm(model, str_user, data, mimeType):
 

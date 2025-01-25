@@ -16,3 +16,8 @@ src/import/**
 **.cpython-312.pyc
 settings.json
 .env
+src/config/*.env
+!src/config/gpt4all.env
+!src/config/lmstudio.env
+!src/config/mlx.env
+!src/config/ollama.env

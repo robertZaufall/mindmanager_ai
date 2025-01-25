@@ -1,6 +1,6 @@
 import time
-import config as cfg
-
+import config_image as cfg
+from types import SimpleNamespace
 import requests
 import json
 
@@ -19,7 +19,7 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
 
     if config.CLOUD_TYPE_IMAGE != "":
 
-        if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA:
+        if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA_IMAGE:
             n_count = 1 # override n_count to 1
             import ai.ai_azure_entra as ai_azure_entra
             return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count)

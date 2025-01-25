@@ -1,8 +1,8 @@
-import config as cfg
+import config_llm as cfg
 import ai.prompts as prompts
 import input_helper
 import file_helper
-
+from types import SimpleNamespace
 import requests
 import json
 import os
@@ -58,8 +58,7 @@ def call_llm(model, str_user, data="", mimeType=""):
     
     if "AZURE+" in config.CLOUD_TYPE or \
        "OPENAI+" in config.CLOUD_TYPE or \
-       "AZURE_META+" in config.CLOUD_TYPE or \
-       "AZURE_Microsoft+" in config.CLOUD_TYPE or \
+       "AZURE_FOUNDRY+" in config.CLOUD_TYPE or \
        "OPENROUTER+" in config.CLOUD_TYPE or \
        "GITHUB+" in config.CLOUD_TYPE:
 
@@ -131,27 +130,15 @@ def call_llm(model, str_user, data="", mimeType=""):
     
     # OLLAMA
     elif "OLLAMA+" in config.CLOUD_TYPE:
-        if config.OPENAI_COMPATIBILITY:
-            payload = {
-                "max_tokens": config.MAX_TOKENS,
-                "temperature": config.LLM_TEMPERATURE,
-                "messages": [
-                    {"role": "system", "content": str_system},
-                    {"role": "user", "content": str_user}
-                ],
-                "model": config.MODEL_ID
-            }
-        else:
-            payload = {
-                "system": str_system,
-                "prompt": str_user,
-                "model": config.MODEL_ID,
-                "stream": False,
-                "options": { "temperature": config.LLM_TEMPERATURE },
-            }
-
-            if config.model == "llama3-gradient":
-                payload["options"]["num_ctx"] = 256000
+        payload = {
+            "max_tokens": config.MAX_TOKENS,
+            "temperature": config.LLM_TEMPERATURE,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ],
+            "model": config.MODEL_ID
+        }
 
         response = requests.post(
             config.API_URL,
@@ -165,10 +152,7 @@ def call_llm(model, str_user, data="", mimeType=""):
             
         parsed_json = json.loads(response_text)
 
-        if config.OPENAI_COMPATIBILITY:
-            result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("Here is the refined mindmap data:", "").replace("```", "").lstrip("\n").lstrip()
-        else:
-            result = parsed_json["response"].replace("```mermaid", "").replace("```", "").replace("Here is the refined mindmap data:", "").lstrip("\n").lstrip()
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("Here is the refined mindmap data:", "").replace("```", "").lstrip("\n").lstrip()
         
         if config.MODEL_ID == "nemotron":
             result = result.replace("mermaid mindmap\n", "")
@@ -389,8 +373,6 @@ def call_llm(model, str_user, data="", mimeType=""):
             "anthropic-version": config.ANTHROPIC_VERSION,
             config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
         }
-        if config.BETA_HEADER_KEY and config.BETA_HEADER_KEY != "":
-            headers[config.BETA_HEADER_KEY] = config.BETA_HEADER_TEXT
 
         response = requests.post(
             config.API_URL,

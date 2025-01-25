@@ -9,6 +9,15 @@
       "justMyCode": true
     },
     {
+      "name": "Tkinter UI",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/app_tkinter.py",
+      "args": [],
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
       "name": "Python: process.py -> Refine",
       "type": "python",
       "request": "launch",

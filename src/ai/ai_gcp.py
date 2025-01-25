@@ -1,6 +1,8 @@
-import config as cfg
+import config_llm as cfg
+import config_image as cfg_image
 import requests
 import json
+from types import SimpleNamespace
 import google.auth
 
 from google.auth.transport.requests import Request  
@@ -111,7 +113,7 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
     import base64
     from urllib.parse import urlparse
 
-    config = cfg.get_image_config(model)
+    config = cfg_image.get_image_config(model)
 
     credentials = get_credentials()  
     access_token = credentials.token   
@@ -144,7 +146,7 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
     response_text = response.text
     response_status = response.status_code
 
-    if response_status != 200:
+    if response_status != 200 or response_text == "":
         raise Exception(f"Error: {response_status} - {response_text}")
 
     parsed_json = json.loads(response_text)
