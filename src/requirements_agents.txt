@@ -1,9 +1,6 @@
 openai
 duckduckgo-search
 yfinance
-crewai
-crewai[tools]
-python-dotenv 
 langchain 
 langchain-community
 phidata
