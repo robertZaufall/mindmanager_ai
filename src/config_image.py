@@ -66,7 +66,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
 
     # Branch logic
     if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
-        config.USE_AZURE_ENTRA_IMAGE = bool(os.getenv('AZURE_ENTRA_AUTH_IMAGE'))
+        config.USE_AZURE_ENTRA_IMAGE = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
         config.IMAGE_EXPLICIT_STYLE = "digital art"
         config.IMAGE_QUALITY = "hd"    # hd, standard
         config.IMAGE_STYLE = "vivid"  # natural, vivid

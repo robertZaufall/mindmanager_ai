@@ -181,7 +181,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
     elif "AZURE+" in CLOUD_TYPE:
-        config.USE_AZURE_ENTRA = bool(os.getenv('AZURE_ENTRA_AUTH'))
+        config.USE_AZURE_ENTRA = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
         if "gpt-4o" in CLOUD_TYPE:
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
