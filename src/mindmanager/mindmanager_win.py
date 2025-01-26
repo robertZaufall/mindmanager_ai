@@ -61,7 +61,8 @@ class Mindmanager:
         return topic.Text.replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
 
     def get_title_from_topic(self, topic):
-        return topic.Title.TextRtf if topic.Title.TextRtf != '' else ''
+        return topic.Title.Text if topic.Title.Text != '' else ''
+        #return topic.Title.TextRtf if topic.Title.TextRtf != '' else ''
 
     def get_subtopics_from_topic(self, topic):
         return topic.AllSubTopics
@@ -173,7 +174,8 @@ class Mindmanager:
 
     def set_title_to_topic(self, topic, topic_rtf):
         if topic_rtf != "":
-            topic.Title.TextRtf = topic_rtf
+            topic.Title.Text = topic_rtf
+            #topic.Title.TextRtf = topic_rtf
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         self.set_text_to_topic(topic, mindmap_topic.topic_text)
