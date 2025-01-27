@@ -94,44 +94,46 @@ More animated examples are in the `doc` folder.
 
 ## User Interface  
 There's a new user interface using TKInter to execute most of the operations and more. The app stays always on top and has several UI tabs:  
+  
+### Action tab  
+Choose the desired model and action and click on execute:
+  
+<img src="doc/tab_action.png" height="400" >  
+  
+### Image tab  
+Chose the desired model and the number of images to generate:
 
-1. Action tab  
-Choose the desired model and action and click on execute:  
-  <img src="doc/tab_action.png" height="400" >  
+<img src="doc/tab_image.png" height="400" >  
   
-2. Image tab  
-Chose the desired model and the number of images to generate:  
-  <img src="doc/tab_image.png" height="400" >  
-  
-3. Freetext tab  
+### Freetext tab  
 Choose the desired modell, fill in some text how to generate or modify the content and click on execute.  
 Examples:  
-   - "refine"
-   - "translate all topics to German"
-   - "add an emoji to every topic" (does only work on MacOS)  
+- "refine"
+- "translate all topics to German"
+- "add an emoji to every topic" (does only work on MacOS)
+
+<img src="doc/tab_freetext.png" height="400" >  
   
-    <img src="doc/tab_freetext.png" height="400" >  
+### Translation tab  
+Just choose the destination language and click on execute:
+
+<img src="doc/tab_translation.png" height="400" >  
   
-4. Translation tab  
-Just choose the destination language and click on execute:  
-  <img src="doc/tab_translation.png" height="400" >  
+### Agent tab  
+Choose an already implemented agent and the desired models.  
+The agents list is generated from scripts found in the `ai/agents` folder.  
+Before execution the needed libraries have to be installed:  
+`pip install -r requirements_agents.txt`.  
+CrewAI does not install well on Windows ARM64 by the time of writing.  
+Agents do a lot of AI roundtrip calls, so the costs have to be monitored.
   
-5. Agent tab  
-  Choose an already implemented agent and the desired models.  
-  The agents list is generated from scripts found in the `ai/agents` folder.  
-  Before execution the needed libraries have to be installed:  
-  `pip install -r requirements_agents.txt`.  
-  CrewAI does not install well on Windows ARM64 by the time of writing.  
-  Agents do a lot of AI roundtrip calls, so the costs have to be monitored.  
-    <img src="doc/tab_agent.png" height="400" >  
- 
-6. Configuration tab  
-  By now only the resulting chart format is selectable (orgchart, radial map or automatic selection):  
-    <img src="doc/tab_configuration.png" height="400" >  
-
-
-
-
+<img src="doc/tab_agent.png" height="400" >  
+  
+### Configuration tab  
+By now only the resulting chart format is selectable (orgchart, radial map or automatic selection):  
+  
+<img src="doc/tab_configuration.png" height="400" >  
+  
 ## Installation  
 ### Windows  
 First install the Windows package manager `Chocolatey` from an administration shell or choose any other way following https://chocolatey.org/install.  
