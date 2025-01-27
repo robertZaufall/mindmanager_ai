@@ -4,7 +4,7 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
@@ -119,7 +119,7 @@ from file_helper import load_env
 
 # GPT4All
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.2-1B-Instruct-Q4_0.gguf'                #
-CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
+# CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.3-70B-Instruct-Q4_K_M.gguf'             # best, slow
 
 # MLX server, macOS only (pip install -r requirements_mac_mlx.txt --upgrade)

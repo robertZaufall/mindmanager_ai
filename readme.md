@@ -1,18 +1,28 @@
-# MindManager Automation and AI Integration Windows + macOS
+# MindManager Automation and AI Integration <br/> Windows + macOS
 
 These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
 ## Windows  
+
+Using MindManager Macro:  
+
 ![Example](doc/anim_neu_1.gif)  
 
 ## macOS  
+
+Using Automator Workflow (Quick Action):  
+
 ![Example](doc/anim_neu_2.gif)  
+
+Using TKInter UI and "Freetext" option (run the `app_tkinter.py` file):  
+
+![Example](doc/ui_freetext.gif)  
 
 More animated examples are in the `doc` folder.
 
 ## Features
 
-### Supported AI platforms and LLMs
+### AI platforms and LLMs
   - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
   - **Anthropic** w/ `Claude 3.5` models (use your key)  
@@ -35,7 +45,7 @@ More animated examples are in the `doc` folder.
   - **LMStudio** (local w/ API) w/ any `llama.cpp` or `MLX` model
   - **MLX** (local w/ API, Apple Silicon) w/ any `MLX` model
 
-### Supported Image Generation Systems
+### Image Generation Systems
   - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
   - **OpenAI** w/ `DALL-E 3` (use your key) -> **best results**
   - **Stability AI** w/ `Stable Diffusion 3` `SD3.5` / `SD3` / `Ultra` / `Core` (use your key)  
@@ -45,7 +55,7 @@ More animated examples are in the `doc` folder.
   - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
   - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux.1` models
 
-### Supported Professional Translation Services
+### Translation Services
  - **DeepL** (use your key)
 
 ### Platform
@@ -81,6 +91,46 @@ More animated examples are in the `doc` folder.
 - Reorder topics by business value or importance
 - Misspelling or syntax correction
 - Create a map based on external text data
+
+## User Interface  
+There's a new user interface using TKInter to execute most of the operations and more. The app stays always on top and has several UI tabs:  
+
+1. Action tab  
+Choose the desired model and action and click on execute:  
+  <img src="doc/tab_action.png" height="400" >  
+  
+2. Image tab  
+Chose the desired model and the number of images to generate:  
+  <img src="doc/tab_image.png" height="400" >  
+  
+3. Freetext tab  
+Choose the desired modell, fill in some text how to generate or modify the content and click on execute.  
+Examples:  
+   - "refine"
+   - "translate all topics to German"
+   - "add an emoji to every topic" (does only work on MacOS)  
+  
+    <img src="doc/tab_freetext.png" height="400" >  
+  
+4. Translation tab  
+Just choose the destination language and click on execute:  
+  <img src="doc/tab_translation.png" height="400" >  
+  
+5. Agent tab  
+  Choose an already implemented agent and the desired models.  
+  The agents list is generated from scripts found in the `ai/agents` folder.  
+  Before execution the needed libraries have to be installed:  
+  `pip install -r requirements_agents.txt`.  
+  CrewAI does not install well on Windows ARM64 by the time of writing.  
+  Agents do a lot of AI roundtrip calls, so the costs have to be monitored.  
+    <img src="doc/tab_agent.png" height="400" >  
+ 
+6. Configuration tab  
+  By now only the resulting chart format is selectable (orgchart, radial map or automatic selection):  
+    <img src="doc/tab_configuration.png" height="400" >  
+
+
+
 
 ## Installation  
 ### Windows  
@@ -171,15 +221,15 @@ There are some actions already predefined for quick execution.
 
 ## How to use  
 ### Configuration  
-First of all you have to open the `config.py` in a text editor of your choice.  
-Don't be overwhelmed by the huge list of variables. Just pick the lines you need and set its values.  
+There are main configuration files, each for LLM, image generation and translation.
+Open each config file and uncomment the AI model you want to use. In the `config` folder are several environment files for every supported AI model. For example, if you want to use OpenAI models, copy the file `config/openai.env.example` to `config/openai.env` and fill in your api key.  
 Use the apropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
 If you want to run local models with `Ollama`, `GPT4All`, `LMStudio`, `MLX` you have to have either a newer Apple Mac model with M1-M4 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
 
 ### General
 You can have more than one open document in MindManager. The document which should be processed must be the active document. For every processing a new document with the new topics will be created.  
 
-To process the whole map, select the central topic (for right-clicking) or no topic at all (call macro manually (Windows), choose Automator Workflow from Mindmanager Menu -> Services or call the python script from VSCode or commandline `python3 process.py <action> <format>`.  
+To process the whole map, select the central topic (for right-clicking) or don't select any topic at all and call a macro manually (Windows), choose Automator Workflow from MindManager Menu -> Services or call the python script from VSCode or commandline `python3 process.py <action> <format>`. If it's not working try either `python3` or `python`.  
 
 ### Map actions
 Select the central topic or deselect all topics and call the automation.  
@@ -212,24 +262,24 @@ Generation of larger text outputs needs a model with an higher max-token value l
 ### Azure OpenAI / OpenAI
 The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `o1`, `GPT-4o` models. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
-`Gemini Pro` results are good. `Gemini Flash` does (most of the time) only generate up to 3 levels at max, so a refinement does currently not work.  
-Vertex AI needs an access token which has a default expiration time of just 1 hour (authentication flow is partly implemented).  
+`Gemini Pro 2.0` and `Gemini Exp 1206` results are best. `Gemini Flash 2.0` is also very good.  
+Vertex AI needs an security token which you can generate using the cloud console.  
 ### Anthropic Claude 3.5
-The newest Anthropic `Claude 3.5 Sonnet` model seems to be best in class. Anthropic `Claude 3.5 Haiku` is good and cheap.
+The Anthropic `Claude 3.5 Sonnet` model ist very good. Anthropic `Claude 3.5 Haiku` is good and also very cheap.
 ### xAI grok
-Grok is very good and is able to refine mindmaps for several levels. The beta models `grok-beta` and `grok-vision-beta` are available. The vision model can be used for pdf ocr.  
+Grok is very good and is able to refine mindmaps for several levels. The models `grok-2-1212` and `grok-2-vision-1212` are very good. The vision model can be used for pdf ocr.  
 ### Amazon Bedrock
 Amazon Bedrock has some native models as `Nova` (best), `Titan` (good) and host also 3rd party models of `Anthropic Claude 3.5` and `Mistral`.
 ### DeepSeek
-DeepSeek created an extraordinary open source model DeepSeek V2.5 which seems to be as good as GPT-4o.  
+DeepSeek created an extraordinary open source model DeepSeek V3 which seems to be as good as GPT-4o. The reasoning model `r1` does not work by now.  
 ### Alibaba Cloud
 Alibaba Cloud models cannot generate large amounts of tokens (`Qwen-Max`: 2000, `Qwen-Plus` + `Qwen-Turbo`: 1500) but the results are good. `Qwen-Turbo` is very fast. `Qwen 2.5` model is still not available outside China by now (2024-11-22).  
 ### Mistral AI
 Mistral AI is hosting their commercial flagship models `Mixtral-Large` and `Pixtral-Large`. `Mixtral-Large` is a 'best in class' model. The maximum numer of possible output tokens is a little bit unclear (max_tokens may meant to be the sum of input and output tokens).  
 ### Groq (platform)
-Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models.    
+Groq is sure the fastest LLM platform by now. `LLaMA3`, `Mixtral` and `Gemma2` are proven models. From time to time the supported models on the platform are changing.  
 ### Perplexity (platform)
-Perplexity works perfect as an universal LLM platform.  
+Perplexity works perfect as an universal LLM platform. From time to time the supported models on the platform are changing.  
 ### Hugging Face (platform)
 To access better models a pro-subscription is needed. `LLaMA-3-8B` still can be used.  
 ### Open Router (platform)  
