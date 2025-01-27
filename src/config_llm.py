@@ -4,7 +4,7 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
@@ -118,7 +118,8 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'LMSTUDIO+lmstudio-community/meta-llama-3.1-8b-instruct' # ok
 
 # GPT4All
-# CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
+# CLOUD_TYPE = 'GPT4ALL+Llama-3.2-1B-Instruct-Q4_0.gguf'                #
+CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.3-70B-Instruct-Q4_K_M.gguf'             # best, slow
 
 # MLX server, macOS only (pip install -r requirements_mac_mlx.txt --upgrade)
@@ -281,13 +282,17 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     elif "GPT4ALL+" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = True
         config.MODEL_ID = model
-        config.MODEL_PATH = os.path.join(
-            os.path.expanduser("~"),
-            "Library",
-            "Application Support",
-            "nomic.ai",
-            "GPT4ALL"
-        )
+        model_path = os.getenv('GPT4ALL_MODEL_PATH')
+        if model_path != "":
+            config.MODEL_PATH = model_path.upper().replace("%LOCALAPPDATA%", os.getenv('LOCALAPPDATA'))
+        else:
+            config.MODEL_PATH = os.path.join(
+                os.path.expanduser("~"),
+                "Library",
+                "Application Support",
+                "nomic.ai",
+                "GPT4ALL"
+            )
         config.MAX_TOKENS = 2000
         config.ALLOW_DOWNLOAD = False
         config.DEVICE = "gpu"
