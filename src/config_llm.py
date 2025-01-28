@@ -59,10 +59,10 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
 
 # Alibaba Cloud
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-max-0125'                             # best
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus'                                 # best
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo'                                # good
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen2.5-72b-instruct'                      # good
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-max'                                  # best, max token output only 2000
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo'                                # good, max token output only 1500
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus'                                 # good, max token output only 1500
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-vl-max'                               # only vision (image / video)
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-vl-plus'                              # only vision (image / video)
 
@@ -347,12 +347,13 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.API_URL = os.getenv('DEEPSEEK_API_URL')
 
     elif "ALIBABACLOUD+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 2000 if "qwen-max" in CLOUD_TYPE else 1500
         config.OPENAI_COMPATIBILITY = True
+        config.ALIBABACLOUD_USE_DASHSCOPE = os.getenv('ALIBABACLOUD_USE_DASHSCOPE', '').lower() in ('true', '1', 'yes')
+        config.MAX_TOKENS = 8000
         config.MODEL_ID = model
         config.KEY_HEADER_TEXT = "Authorization"
         config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")
-        config.API_URL = os.getenv('ALIBABACLOUD_API_URL')
+        config.API_URL = os.getenv('ALIBABACLOUD_API_URL_DASHSCOPE') if config.ALIBABACLOUD_USE_DASHSCOPE else os.getenv('ALIBABACLOUD_API_URL_COMPATIBLE')
 
     elif "MISTRAL+" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = True
