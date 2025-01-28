@@ -153,14 +153,29 @@ class MindmapDocument:
             max_topic_level = self.get_max_topic_level(mindmap_subtopic, max_topic_level)
         return max_topic_level
 
+    def get_parent_topic(self, topic):
+        topic_level = self.mindm.get_level_from_topic(topic)
+        if topic_level == 0:
+            return None
+        parent_topic = self.mindm.get_parent_from_topic(topic)
+        parent_mindmap_topic = MindmapTopic(
+            topic_guid=self.mindm.get_guid_from_topic(parent_topic),
+            topic_text=self.mindm.get_text_from_topic(parent_topic), 
+            topic_level=self.mindm.get_level_from_topic(parent_topic),
+            topic_parent=self.get_parent_topic(parent_topic),
+        )
+        return parent_mindmap_topic
+
     def get_selection(self):
         selection = self.mindm.get_selection()
         mindmap_topics = []
         for topic in selection:
+            topic_level = self.mindm.get_level_from_topic(topic)
             mindmap_topic = MindmapTopic(
                 topic_guid=self.mindm.get_guid_from_topic(topic),
                 topic_text=self.mindm.get_text_from_topic(topic), 
-                topic_level=self.mindm.get_level_from_topic(topic),
+                topic_level=topic_level,
+                topic_parent=self.get_parent_topic(topic),
                 topic_selected=True,
             )
             mindmap_topics.append(mindmap_topic)

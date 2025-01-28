@@ -169,6 +169,9 @@ class Mindmanager:
     def add_subtopic_to_topic(self, topic, topic_text):
         return topic.AddSubtopic(topic_text)
 
+    def get_parent_from_topic(self, topic):
+        return topic.ParentTopic
+
     def set_text_to_topic(self, topic, topic_text):
         topic.Text = topic_text
 

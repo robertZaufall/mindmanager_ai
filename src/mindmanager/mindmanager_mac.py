@@ -65,6 +65,9 @@ class Mindmanager:
     def get_subtopics_from_topic(self, topic):
         return topic.subtopics.get()
 
+    def get_parent_from_topic(self, topic):
+        return topic.parent.get()
+
     def get_link_from_topic(self, topic) -> MindmapLink:
         return None
         # this results in a severe runtime error of MindManager
