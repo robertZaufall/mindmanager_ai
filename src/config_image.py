@@ -60,6 +60,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     config.OPTIMIZE_PROMPT_IMAGE = False
 
     model = CLOUD_TYPE_IMAGE.split("+")[-1]
+    config.IMAGE_MODEL_ID = model
     system = CLOUD_TYPE_IMAGE.split("+")[0]
 
     load_env(system)
@@ -72,7 +73,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_STYLE = "vivid"  # natural, vivid
 
         if "AZURE+" in CLOUD_TYPE_IMAGE:
-            config.IMAGE_MODEL_ID = ""
             config.AZURE_DEPLOYMENT_IMAGE = model
             config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
             config.IMAGE_API_URL = (
@@ -84,14 +84,12 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             config.IMAGE_KEY_HEADER_VALUE = os.getenv('AZURE_API_KEY_IMAGE')
 
         elif "OPENAI+" in CLOUD_TYPE_IMAGE:
-            config.IMAGE_MODEL_ID = model
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
             config.IMAGE_KEY_HEADER_TEXT = "Authorization"
             config.IMAGE_KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")
 
     elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
-        config.IMAGE_MODEL_ID = model
-        config.MODEL_ENDPOINT = config.IMAGE_MODEL_ID.split("-")[0]
+        config.MODEL_ENDPOINT = model.split("-")[0]
         # Map special case for sd3.5
         config.MODEL_ENDPOINT = "sd3" if config.MODEL_ENDPOINT == "sd3.5" else config.MODEL_ENDPOINT
 
@@ -110,7 +108,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_API_URL = f"{os.getenv('STABILITYAI_API_URL')}{config.MODEL_ENDPOINT}"
 
     elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
-        config.IMAGE_MODEL_ID = model
         config.IMAGE_ASPECT_RATIO = "1:1"  # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
         config.IMAGE_EXPLICIT_STYLE = "digital art"
         config.IMAGE_ADD_WATERMARK = False
@@ -124,11 +121,10 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_API_URL = (
             f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{os.getenv('VERTEXAI_PROJECT_ID_IMAGE')}"
             f"/locations/{os.getenv('VERTEXAI_LOCATION_ID_IMAGE')}/publishers/google/models/"
-            f"{config.IMAGE_MODEL_ID}:predict"
+            f"{model}:predict"
         )
 
     elif "MLX+" in CLOUD_TYPE_IMAGE:
-        config.IMAGE_MODEL_ID = model
         config.IMAGE_SEED = 0
         #https://enragedantelope.github.io/Styles-FluxDev/
         config.IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
@@ -138,19 +134,19 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_HEIGHT = 1024 # 1024 # 512 # 768
         config.IMAGE_WIDTH = 1024 # 1024 # 512 # 768
 
-        if "-flux1" in config.IMAGE_MODEL_ID:
-            if "-schnell" in config.IMAGE_MODEL_ID:
+        if "-flux1" in model:
+            if "-schnell" in model:
                 config.IMAGE_MODEL_VERSION = "schnell"
                 config.IMAGE_NUM_STEPS = 2 # 2-4
-            elif "-dev" in config.IMAGE_MODEL_ID:
+            elif "-dev" in model:
                 config.IMAGE_MODEL_VERSION = "dev"
                 config.IMAGE_NUM_STEPS = 20 # 20-25
             else:
                 raise Exception("Error: image model version not supported using MLX")
             
-            if "-4bit" in config.IMAGE_MODEL_ID:
+            if "-4bit" in model:
                 config.IMAGE_MODEL_QUANTIZATION = 4
-            elif "-8bit" in config.IMAGE_MODEL_ID:
+            elif "-8bit" in model:
                 config.IMAGE_MODEL_QUANTIZATION = 8
             else:
                 raise Exception("Error: image model quantization not supported using MLX")
@@ -158,8 +154,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             raise Exception("Error: image model not supported using MLX")
 
     elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
-        config.IMAGE_MODEL_ID = model
-        if config.IMAGE_MODEL_ID in ("V_2", "V_2_TURBO"):
+        if model in ("V_2", "V_2_TURBO"):
             config.IMAGE_STYLE_PRESET = "GENERAL"  # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
             config.IMAGE_EXPLICIT_STYLE = config.IMAGE_STYLE_PRESET
         else:
@@ -177,28 +172,27 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_URL')
 
     elif "BFL+" in CLOUD_TYPE_IMAGE:
-        config.IMAGE_MODEL_ID = model
         config.IMAGE_EXPLICIT_STYLE = "computer collage art"
         config.IMAGE_OUTPUT_FORMAT = "png"
         config.IMAGE_SEED = 0
         config.IMAGE_SAFETY_TOLERANCE = 6  # 0-6, 6 = least strict
 
         # Example branching by model
-        if config.IMAGE_MODEL_ID == "flux-pro-1.1-ultra":
+        if model == "flux-pro-1.1-ultra":
             config.IMAGE_RAW = False
             config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
-        elif config.IMAGE_MODEL_ID == "flux-pro-1.1":
+        elif model == "flux-pro-1.1":
             config.IMAGE_HEIGHT = 1024
             config.IMAGE_WIDTH = 1024
             config.IMAGE_PROMPT_UPSAMPLING = False
-        elif config.IMAGE_MODEL_ID == "flux-pro":
+        elif model == "flux-pro":
             config.IMAGE_HEIGHT = 1024
             config.IMAGE_WIDTH = 1024
             config.IMAGE_STEPS = 28
             config.IMAGE_INTERVAL = 2
             config.IMAGE_PROMPT_UPSAMPLING = False
             config.IMAGE_GUIDANCE = 3
-        elif config.IMAGE_MODEL_ID == "flux-dev":
+        elif model == "flux-dev":
             config.IMAGE_HEIGHT = 1024
             config.IMAGE_WIDTH = 1024
             config.IMAGE_STEPS = 28
@@ -212,7 +206,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_API_URL = os.getenv('BFL_API_URL')
 
     elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
-        config.IMAGE_MODEL_ID = model
         config.IMAGE_API_URL = os.getenv('RECRAFT_API_URL')
         config.IMAGE_KEY_HEADER_TEXT = "Authorization"
         config.IMAGE_KEY_HEADER_VALUE = "Bearer " + (os.getenv('RECRAFT_API_TOKEN') or "")
@@ -221,7 +214,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_EXPLICIT_STYLE = ""
         config.IMAGE_SUBSTYLE = ""
 
-        if config.IMAGE_MODEL_ID == "recraftv3":
+        if model == "recraftv3":
 
             # IMAGE_STYLE = "digital_illustration"
             # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
@@ -232,7 +225,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             # IMAGE_STYLE = "vector_illustration"
             # IMAGE_SUBSTYLE = "engraving" # engraving, line_art, line_circuit, linocut
 
-        elif config.IMAGE_MODEL_ID == "recraft20b":
+        elif model == "recraft20b":
             
             # IMAGE_STYLE = "digital_illustration"
             # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor

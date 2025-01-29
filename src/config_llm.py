@@ -165,26 +165,25 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.KEY_HEADER_TEXT = "Authorization"
 
     if "OPENAI+" in CLOUD_TYPE:
-        if "gpt-4o" in CLOUD_TYPE:
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        config.API_URL = os.getenv('OPENAI_API_URL')
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENAI_API_KEY') or "")
-
         if "gpt-4o" in model:
             config.MAX_TOKENS = 16383
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
         elif "o1-mini" in model:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
             config.MAX_TOKENS = 32767
-
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
+        config.API_URL = os.getenv('OPENAI_API_URL')
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENAI_API_KEY') or "")
 
     elif "AZURE+" in CLOUD_TYPE:
         config.USE_AZURE_ENTRA = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
         if "gpt-4o" in CLOUD_TYPE:
+            config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
         config.AZURE_DEPLOYMENT = model
         config.API_VERSION = os.getenv('AZURE_API_VERSION')
         config.API_URL = (
@@ -194,29 +193,26 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         )
         config.KEY_HEADER_TEXT = "api-key"
         config.KEY_HEADER_VALUE = os.getenv('AZURE_API_KEY') or ""
-        if "gpt-4o" in CLOUD_TYPE:
-            config.MAX_TOKENS = 16383
-        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
     elif "OPENROUTER+" in CLOUD_TYPE:
-        config.API_URL = os.getenv('OPENROUTER_API_URL')
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENROUTER_API_KEY') or "")
         if any(s in model for s in ["gpt-4o", "o1-mini", "o1-preview"]):
             config.MAX_TOKENS = 16383
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
+        config.API_URL = os.getenv('OPENROUTER_API_URL')
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENROUTER_API_KEY') or "")
 
     elif "GITHUB+" in CLOUD_TYPE:
-        config.API_URL = os.getenv('GITHUB_MODELS_API_URL')
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('GITHUB_MODELS_TOKEN') or "")
         if "gpt-4o" in model:
             config.MAX_TOKENS = 16383
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
+        config.API_URL = os.getenv('GITHUB_MODELS_API_URL')
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('GITHUB_MODELS_TOKEN') or "")
 
     elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
+        config.MAX_TOKENS = 8191
         config.MULTIMODAL = True
         config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        config.MAX_TOKENS = 8191
 
         if system == "GEMINI":
             config.API_URL = f"{os.getenv('GEMINI_API_URL')}{model}:generateContent?key={os.getenv('GEMINI_API_KEY')}"
@@ -295,8 +291,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "ALIBABACLOUD+" in CLOUD_TYPE:
         config.MAX_TOKENS = 8000
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")
         config.API_URL = os.getenv('ALIBABACLOUD_API_URL')
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")
 
     elif "MISTRAL+" in CLOUD_TYPE:
         config.API_URL = os.getenv('MISTRAL_API_URL')
@@ -325,18 +321,11 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.DEVICE = "gpu"
         config.ALLOW_DOWNLOAD = False
         if platform == "darwin":
-            config.MODEL_PATH = os.path.join(
-                os.path.expanduser("~"),
-                "Library",
-                "Application Support",
-                "nomic.ai",
-                "GPT4ALL"
-            )
+            config.MODEL_PATH = os.path.join(os.path.expanduser("~"),"Library","Application Support","nomic.ai","GPT4ALL")
         else: 
             model_path = os.getenv('GPT4ALL_MODEL_PATH_WINDOWS')
             if model_path != "":
                 config.MODEL_PATH = model_path.upper().replace("%LOCALAPPDATA%", os.getenv('LOCALAPPDATA'))
-
         config.API_URL = ""
 
     elif "MLX+" in CLOUD_TYPE:
