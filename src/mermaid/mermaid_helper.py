@@ -1,15 +1,15 @@
 import re
-import config_llm as cfg
 import os
 import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import MindmapTopic
 
-config = cfg.get_config()
+INDENT_SIZE = 2
+LINE_SEPARATOR = "\n"
 
-line_separator = config.LINE_SEPARATOR
-indent_size = config.INDENT_SIZE
+line_separator = LINE_SEPARATOR
+indent_size = INDENT_SIZE
 use_round = False
 use_root = True
 

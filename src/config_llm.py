@@ -137,11 +137,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.LLM_TEMPERATURE = 0.5
     config.MAX_TOKENS = 4000
     config.MAX_RETRIES = 3
-    config.TOP_MOST_RESULTS = 5
-    config.MAX_RETURN_WORDS = 5
-    config.LEVELS_DEEP = 5
-    config.INDENT_SIZE = 2
-    config.LINE_SEPARATOR = "\n"
+
 
     config.SYSTEM_PROMPT = """
     You are a highly experienced business consultant with expertise in 

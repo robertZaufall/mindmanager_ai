@@ -1,11 +1,13 @@
-import config_llm as cfg
-from types import SimpleNamespace
+INDENT_SIZE = 2
+MAX_RETURN_WORDS = 5
+TOP_MOST_RESULTS = 5
 
-config = cfg.get_config()
+LEVELS_DEEP = 5
+LINE_SEPARATOR = "\n"
 
-indent_size = config.INDENT_SIZE
-max_return_words = config.MAX_RETURN_WORDS
-top_most_results = config.TOP_MOST_RESULTS
+indent_size = INDENT_SIZE
+max_return_words = MAX_RETURN_WORDS
+top_most_results = TOP_MOST_RESULTS
 image_explicit_style = ""
 
 prompt_prefix = "Given is the following Mermaid mindmap. "

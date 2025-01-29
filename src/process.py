@@ -300,7 +300,7 @@ def validate_input(param, charttype, model, freetext):
         print("Invalid action. Use 'freetext' only with the 'freetext' action.")
         sys.exit(1)
 
-    return param, charttype, model, config
+    return param, charttype, model
 
 def ui_main(payload):
     param = payload["action"]
