@@ -11,7 +11,7 @@ def call_llm(model, str_user, data, mimeType):
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 
     result = ""
-    model_id = config.AWS_MODEL_ID
+    model_id = config.MODEL_ID
     str_system = config.SYSTEM_PROMPT
 
     bedrock_client = boto3.client(

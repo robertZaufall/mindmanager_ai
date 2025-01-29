@@ -72,19 +72,19 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_STYLE = "vivid"  # natural, vivid
 
         if "AZURE+" in CLOUD_TYPE_IMAGE:
-            config.OPENAI_MODEL_IMAGE = ""
-            config.OPENAI_DEPLOYMENT_IMAGE = model
+            config.IMAGE_MODEL_ID = ""
+            config.AZURE_DEPLOYMENT_IMAGE = model
             config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
             config.IMAGE_API_URL = (
                 f"{os.getenv('AZURE_API_URL_IMAGE')}openai/deployments/"
-                f"{config.OPENAI_DEPLOYMENT_IMAGE}/images/generations"
+                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
                 f"?api-version={config.IMAGE_API_VERSION}"
             )
             config.IMAGE_KEY_HEADER_TEXT = "api-key"
             config.IMAGE_KEY_HEADER_VALUE = os.getenv('AZURE_API_KEY_IMAGE')
 
         elif "OPENAI+" in CLOUD_TYPE_IMAGE:
-            config.OPENAI_MODEL_IMAGE = model
+            config.IMAGE_MODEL_ID = model
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
             config.IMAGE_KEY_HEADER_TEXT = "Authorization"
             config.IMAGE_KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")

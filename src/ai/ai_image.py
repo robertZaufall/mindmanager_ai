@@ -40,7 +40,7 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             }
 
             if "OPENAI" in config.CLOUD_TYPE_IMAGE:
-                payload["model"] = config.OPENAI_MODEL_IMAGE
+                payload["model"] = config.IMAGE_MODEL_ID
                 
             response = requests.post(
                 config.IMAGE_API_URL,

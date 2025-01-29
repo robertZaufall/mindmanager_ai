@@ -101,7 +101,7 @@ def call_llm(model, str_user, data="", mimeType=""):
             payload["temperature"] = config.LLM_TEMPERATURE
 
         if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE or "OPENROUTER+" in config.CLOUD_TYPE:
-            payload["model"] = config.OPENAI_MODEL
+            payload["model"] = config.MODEL_ID
 
         response = requests.post(
             config.API_URL,
@@ -571,86 +571,41 @@ def call_llm(model, str_user, data="", mimeType=""):
 
     # Alibaba Cloud
     elif "ALIBABACLOUD+" in config.CLOUD_TYPE:
-        if config.ALIBABACLOUD_USE_DASHSCOPE:
-            payload = {
-                "model": config.MODEL_ID,
-                "input": {
-                    "messages": [
-                        {"role": "system", "content": str_system},
-                        {"role": "user", "content": str_user}
-                    ]
-                },
-                "parameters": {
-                    "result_format": "message",
-                    "max_tokens": config.MAX_TOKENS,
-                    "temperature": config.LLM_TEMPERATURE,
-                    "enable_search": False,
-                    "incremental_output": False
-                }
-            }        
+        payload = {
+            "model": config.MODEL_ID,
+            "max_tokens": config.MAX_TOKENS,
+            "temperature": config.LLM_TEMPERATURE,
+            "stream": False,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ]
+        }        
 
-            response = requests.post(
-                config.API_URL,
-                headers = {
-                    "Content-Type": "application/json",
-                    config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
-                    "X-DashScope-SSE": "disable"
-                },
-                data=json.dumps(payload)
-            )
-            response_text = response.text
-            response_status = response.status_code
+        response = requests.post(
+            config.API_URL,
+            headers = {
+                "Content-Type": "application/json",
+                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
+            },
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code
 
-            if response_status != 200:
-                raise Exception(f"Error: {response_status} - {response_text}")
+        if response_status != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
 
-            parsed_json = json.loads(response_text)
+        parsed_json = json.loads(response_text)
 
-            usage = parsed_json["usage"]
-            print("usage: " + json.dumps(usage))
+        usage = parsed_json["usage"]
+        print("usage: " + json.dumps(usage))
 
-            finish_reason = parsed_json["output"]["choices"][0]["finish_reason"]
-            if finish_reason == "length":
-                print("Warning: Result truncated!")
+        finish_reason = parsed_json["choices"][0]["finish_reason"]
+        if finish_reason == "length":
+            print("Warning: Result truncated!")
 
-            result = parsed_json["output"]["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
-        else:
-            # OpenAI compatible implementation
-            payload = {
-                "model": config.MODEL_ID,
-                "max_tokens": config.MAX_TOKENS,
-                "temperature": config.LLM_TEMPERATURE,
-                "stream": False,
-                "messages": [
-                    {"role": "system", "content": str_system},
-                    {"role": "user", "content": str_user}
-                ]
-            }        
-
-            response = requests.post(
-                config.API_URL,
-                headers = {
-                    "Content-Type": "application/json",
-                    config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-                },
-                data=json.dumps(payload)
-            )
-            response_text = response.text
-            response_status = response.status_code
-
-            if response_status != 200:
-                raise Exception(f"Error: {response_status} - {response_text}")
-
-            parsed_json = json.loads(response_text)
-
-            usage = parsed_json["usage"]
-            print("usage: " + json.dumps(usage))
-
-            finish_reason = parsed_json["choices"][0]["finish_reason"]
-            if finish_reason == "length":
-                print("Warning: Result truncated!")
-
-            result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
 
     # Mistral AI
     elif "MISTRAL+" in config.CLOUD_TYPE:

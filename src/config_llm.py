@@ -1,4 +1,5 @@
 import os
+import sys
 from types import SimpleNamespace
 from file_helper import load_env
 
@@ -126,6 +127,10 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
 # CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit'      # good
 
+if sys.platform.startswith('win'):
+    platform = "win"
+elif sys.platform.startswith('darwin'):
+    platform = "darwin"
 
 def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config = SimpleNamespace(
@@ -135,7 +140,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.LOG = True
     config.TURBO_MODE = True # just generate text topics
     config.LLM_TEMPERATURE = 0.5
-    config.MAX_TOKENS = 4000
     config.MAX_RETRIES = 3
 
 
@@ -147,27 +151,26 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     """
 
     model = CLOUD_TYPE.split("+")[-1]
+    config.MODEL_ID = model
     system = CLOUD_TYPE.split("+")[0]
 
     load_env(system)
 
-    config.OPENAI_COMPATIBILITY = False
     config.MULTIMODAL = False
     config.MULTIMODAL_MIME_TYPES = []
     config.MULTIMODAL_PDF_TO_IMAGE_DPI = 200
     config.MARKDOWN_OPTIMIZATION_LEVEL = 2
+    config.OPENAI_COMPATIBILITY = True
+    config.MAX_TOKENS = 4000
+    config.KEY_HEADER_TEXT = "Authorization"
 
     if "OPENAI+" in CLOUD_TYPE:
         if "gpt-4o" in CLOUD_TYPE:
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        config.OPENAI_COMPATIBILITY = True
-        config.OPENAI_MODEL = model
         config.API_URL = os.getenv('OPENAI_API_URL')
-        config.KEY_HEADER_TEXT = "Authorization"
         config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENAI_API_KEY') or "")
 
-        model = config.OPENAI_MODEL
         if "gpt-4o" in model:
             config.MAX_TOKENS = 16383
         elif "o1-mini" in model:
@@ -182,13 +185,11 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         if "gpt-4o" in CLOUD_TYPE:
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        config.OPENAI_COMPATIBILITY = True
-        config.OPENAI_MODEL = ""
-        config.OPENAI_DEPLOYMENT = model
+        config.AZURE_DEPLOYMENT = model
         config.API_VERSION = os.getenv('AZURE_API_VERSION')
         config.API_URL = (
             f"{os.getenv('AZURE_API_URL')}openai/deployments/"
-            f"{config.OPENAI_DEPLOYMENT}/chat/completions"
+            f"{config.AZURE_DEPLOYMENT}/chat/completions"
             f"?api-version={config.API_VERSION}"
         )
         config.KEY_HEADER_TEXT = "api-key"
@@ -198,26 +199,21 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
     elif "OPENROUTER+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.OPENAI_MODEL = model
         config.API_URL = os.getenv('OPENROUTER_API_URL')
-        config.KEY_HEADER_TEXT = "Authorization"
         config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENROUTER_API_KEY') or "")
-        if any(s in config.OPENAI_MODEL for s in ["gpt-4o", "o1-mini", "o1-preview"]):
+        if any(s in model for s in ["gpt-4o", "o1-mini", "o1-preview"]):
             config.MAX_TOKENS = 16383
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
     elif "GITHUB+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.OPENAI_MODEL = model
         config.API_URL = os.getenv('GITHUB_MODELS_API_URL')
-        config.KEY_HEADER_TEXT = "Authorization"
         config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('GITHUB_MODELS_TOKEN') or "")
         if "gpt-4o" in model:
             config.MAX_TOKENS = 16383
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
 
     elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
+        config.OPENAI_COMPATIBILITY = False
         config.MULTIMODAL = True
         config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
         config.MAX_TOKENS = 8191
@@ -234,7 +230,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
                 f"https://{config.API_ENDPOINT}/v1beta1/projects/{config.PROJECT_ID}/"
                 f"locations/{config.LOCATION_ID}/publishers/google/models/{model}:generateContent"
             )
-            config.KEY_HEADER_TEXT = "Authorization"
             config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('VERTEXAI_ACCESS_TOKEN') or "")
             
             # Example GCP environment fields
@@ -245,43 +240,91 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.GCP_LOCATION = config.LOCATION_ID
 
     elif "BEDROCK" in CLOUD_TYPE:
-        config.AWS_MODEL_ID = model
+        config.OPENAI_COMPATIBILITY = False
+        if model.startswith("amazon.titan-"):
+            config.MAX_TOKENS = 3000
+        elif model.startswith("amazon.nova-"):
+            config.MAX_TOKENS = 5120
         config.AWS_ACCESS_KEY = os.getenv("BEDROCK_ACCESS_KEY")
         config.AWS_SECRET_KEY = os.getenv("BEDROCK_SECRET_KEY")
         config.AWS_SERVICE_NAME = "bedrock-runtime"
         config.AWS_MODEL_VERSION_KEY = ""
         config.AWS_MODEL_VERSION_TEXT = ""
         config.AWS_REGION = "us-east-1"
-        if config.AWS_MODEL_ID.startswith("anthropic."):
+        if model.startswith("mistral.") or model.startswith("amazon.titan-") or model.startswith("amazon.nova-"):
+            pass
+        elif model.startswith("anthropic."):
             config.AWS_REGION = "eu-central-1"
             config.AWS_MODEL_VERSION_KEY = "anthropic_version"
             config.AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
-        elif config.AWS_MODEL_ID.startswith("mistral."):
-            pass
-        elif config.AWS_MODEL_ID.startswith("amazon.titan-"):
-            config.MAX_TOKENS = 3000
-        elif config.AWS_MODEL_ID.startswith("amazon.nova-"):
-            config.MAX_TOKENS = 5120
         else:
             raise Exception("Error: Unsupported AWS Bedrock model.")
 
+    elif "ANTHROPIC" in CLOUD_TYPE:
+        if "claude-3-5" in model:
+            config.MAX_TOKENS = 8192
+            if "sonnet" in model:
+                config.MULTIMODAL = True
+                config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
+        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
+        config.KEY_HEADER_TEXT = "x-api-key"
+        config.KEY_HEADER_VALUE = os.getenv('ANTHROPIC_API_KEY') or ""
+        config.API_URL = os.getenv('ANTHROPIC_API_URL')
+        config.ANTHROPIC_VERSION = os.getenv('ANTHROPIC_VERSION')
+
+    elif "XAI+" in CLOUD_TYPE:
+        if "-vision-" in model:
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('XAI_API_KEY') or "")
+        config.API_URL = os.getenv('XAI_API_URL')
+
+    elif "GROQ+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 8000
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('GROQ_API_KEY') or "")
+        config.API_URL = os.getenv('GROQ_API_URL')
+
+    elif "PERPLEXITY+" in CLOUD_TYPE:
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('PERPLEXITY_API_KEY') or "")
+        config.API_URL = os.getenv('PERPLEXITY_API_URL')
+
+    elif "DEEPSEEK+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 8000
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('DEEPSEEK_API_KEY') or "")
+        config.API_URL = os.getenv('DEEPSEEK_API_URL')
+
+    elif "ALIBABACLOUD+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 8000
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")
+        config.API_URL = os.getenv('ALIBABACLOUD_API_URL')
+
+    elif "MISTRAL+" in CLOUD_TYPE:
+        config.API_URL = os.getenv('MISTRAL_API_URL')
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('MISTRAL_API_KEY') or "")
+
+    elif "HF+" in CLOUD_TYPE:
+        config.API_URL = f"{os.getenv('HF_API_URL')}{model}/v1/chat/completions"
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('HF_API_KEY') or "")
+
+    elif "FIREWORKS+" in CLOUD_TYPE:
+        model_prefix = "accounts/fireworks/models/"
+        config.MODEL_ID = model_prefix + model
+        config.API_URL = os.getenv('FIREWORKS_API_URL')
+        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('FIREWORKS_API_KEY') or "")
+
+    # local systems
+
     elif "OLLAMA+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
         config.API_URL = os.getenv('OLLAMA_API_URL')
 
     elif "LMSTUDIO+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
         config.API_URL = os.getenv('LMSTUDIO_API_URL')
 
     elif "GPT4ALL+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
-        model_path = os.getenv('GPT4ALL_MODEL_PATH')
-        if model_path != "":
-            config.MODEL_PATH = model_path.upper().replace("%LOCALAPPDATA%", os.getenv('LOCALAPPDATA'))
-        else:
+        config.MAX_TOKENS = 2000
+        config.DEVICE = "gpu"
+        config.ALLOW_DOWNLOAD = False
+        if platform == "darwin":
             config.MODEL_PATH = os.path.join(
                 os.path.expanduser("~"),
                 "Library",
@@ -289,93 +332,14 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
                 "nomic.ai",
                 "GPT4ALL"
             )
-        config.MAX_TOKENS = 2000
-        config.ALLOW_DOWNLOAD = False
-        config.DEVICE = "gpu"
+        else: 
+            model_path = os.getenv('GPT4ALL_MODEL_PATH_WINDOWS')
+            if model_path != "":
+                config.MODEL_PATH = model_path.upper().replace("%LOCALAPPDATA%", os.getenv('LOCALAPPDATA'))
+
         config.API_URL = ""
 
-    elif "ANTHROPIC" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
-        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
-
-        if "claude-3-5" in config.MODEL_ID:
-            config.MAX_TOKENS = 8192
-            if "sonnet" in config.MODEL_ID:
-                config.MULTIMODAL = True
-                config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        config.KEY_HEADER_TEXT = "x-api-key"
-        config.KEY_HEADER_VALUE = os.getenv('ANTHROPIC_API_KEY') or ""
-        config.API_URL = os.getenv('ANTHROPIC_API_URL')
-        config.ANTHROPIC_VERSION = os.getenv('ANTHROPIC_VERSION')
-
-    elif "XAI+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('XAI_API_KEY') or "")
-        config.API_URL = os.getenv('XAI_API_URL')
-        if "-vision-" in config.MODEL_ID:
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-
-    elif "GROQ+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 8000
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('GROQ_API_KEY') or "")
-        config.API_URL = os.getenv('GROQ_API_URL')
-
-    elif "PERPLEXITY+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('PERPLEXITY_API_KEY') or "")
-        config.API_URL = os.getenv('PERPLEXITY_API_URL')
-
-    elif "DEEPSEEK+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 8000
-        config.OPENAI_COMPATIBILITY = False
-        config.MODEL_ID = model
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('DEEPSEEK_API_KEY') or "")
-        config.API_URL = os.getenv('DEEPSEEK_API_URL')
-
-    elif "ALIBABACLOUD+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.ALIBABACLOUD_USE_DASHSCOPE = os.getenv('ALIBABACLOUD_USE_DASHSCOPE', '').lower() in ('true', '1', 'yes')
-        config.MAX_TOKENS = 8000
-        config.MODEL_ID = model
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")
-        config.API_URL = os.getenv('ALIBABACLOUD_API_URL_DASHSCOPE') if config.ALIBABACLOUD_USE_DASHSCOPE else os.getenv('ALIBABACLOUD_API_URL_COMPATIBLE')
-
-    elif "MISTRAL+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
-        config.API_URL = os.getenv('MISTRAL_API_URL')
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('MISTRAL_API_KEY') or "")
-
-    elif "HF+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model
-        config.API_URL = f"{os.getenv('HF_API_URL')}{config.MODEL_ID}/v1/chat/completions"
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('HF_API_KEY') or "")
-
-    elif "FIREWORKS+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        model_prefix = "accounts/fireworks/models/"
-        config.MODEL_ID = model_prefix + model
-        config.API_URL = os.getenv('FIREWORKS_API_URL')
-        config.KEY_HEADER_TEXT = "Authorization"
-        config.KEY_HEADER_VALUE = "Bearer " + (os.getenv('FIREWORKS_API_KEY') or "")
-
     elif "MLX+" in CLOUD_TYPE:
-        config.OPENAI_COMPATIBILITY = True
-        config.MODEL_ID = model  # not used
         config.API_URL = os.getenv('MLX_API_URL')
 
     else:

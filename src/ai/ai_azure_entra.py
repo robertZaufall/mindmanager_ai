@@ -96,7 +96,7 @@ def call_llm_azure_entra(model, str_user, data, mimeType):
         raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")
 
     response = client.chat.completions.create(  
-        model=config.OPENAI_DEPLOYMENT,  
+        model=config.AZURE_DEPLOYMENT,  
         temperature=config.LLM_TEMPERATURE,  
         max_tokens=config.MAX_TOKENS,  
         messages=messages 
@@ -119,7 +119,7 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
     )  
 
     response = client.images.generate(  
-        model = config.OPENAI_DEPLOYMENT_IMAGE,  
+        model = config.AZURE_DEPLOYMENT_IMAGE,  
         prompt = str_user,
         n = n_count,
         quality = config.IMAGE_QUALITY,
