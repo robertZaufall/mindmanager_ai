@@ -65,6 +65,8 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
 
     load_env(system)
 
+    config.IMAGE_HEADERS = {"Content-Type": "application/json"}
+
     # Branch logic
     if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
         config.USE_AZURE_ENTRA_IMAGE = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
@@ -80,13 +82,11 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                 f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
                 f"?api-version={config.IMAGE_API_VERSION}"
             )
-            config.IMAGE_KEY_HEADER_TEXT = "api-key"
-            config.IMAGE_KEY_HEADER_VALUE = os.getenv('AZURE_API_KEY_IMAGE')
+            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
 
         elif "OPENAI+" in CLOUD_TYPE_IMAGE:
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
-            config.IMAGE_KEY_HEADER_TEXT = "Authorization"
-            config.IMAGE_KEY_HEADER_VALUE = "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")
+            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")}
 
     elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
         config.MODEL_ENDPOINT = model.split("-")[0]
@@ -104,20 +104,17 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_ASPECT_RATIO = "1:1" # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
         config.IMAGE_SEED = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-        config.STABILITYAI_API_KEY = os.getenv('STABILITYAI_API_KEY')
         config.IMAGE_API_URL = f"{os.getenv('STABILITYAI_API_URL')}{config.MODEL_ENDPOINT}"
+        config.IMAGE_HEADERS = {"authorization": "Bearer " + (os.getenv('STABILITYAI_API_KEY') or ""),"accept": "image/*"}
 
     elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
         config.IMAGE_ASPECT_RATIO = "1:1"  # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
         config.IMAGE_EXPLICIT_STYLE = "digital art"
         config.IMAGE_ADD_WATERMARK = False
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-
-        config.IMAGE_KEY_HEADER_TEXT = "Authorization"
         config.GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
         config.GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
         config.GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
-
         config.IMAGE_API_URL = (
             f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{os.getenv('VERTEXAI_PROJECT_ID_IMAGE')}"
             f"/locations/{os.getenv('VERTEXAI_LOCATION_ID_IMAGE')}/publishers/google/models/"
@@ -167,8 +164,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_WIDTH = 1024
         config.IMAGE_RESOLUTION = f"RESOLUTION_{config.IMAGE_WIDTH}_{config.IMAGE_HEIGHT}"
         
-        config.IMAGE_KEY_HEADER_TEXT = "Api-Key"
-        config.IMAGE_KEY_HEADER_VALUE = os.getenv('IDEOGRAMAI_API_KEY')
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Api-Key": os.getenv('IDEOGRAMAI_API_KEY') or ""}
         config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_URL')
 
     elif "BFL+" in CLOUD_TYPE_IMAGE:
@@ -201,14 +197,12 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         else:
             raise Exception("Error: Unknown Flux image model")
 
-        config.IMAGE_KEY_HEADER_TEXT = "x-key"
-        config.IMAGE_KEY_HEADER_VALUE = os.getenv('BFL_API_KEY')
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "x-key": os.getenv('BFL_API_KEY') or ""}
         config.IMAGE_API_URL = os.getenv('BFL_API_URL')
 
     elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
         config.IMAGE_API_URL = os.getenv('RECRAFT_API_URL')
-        config.IMAGE_KEY_HEADER_TEXT = "Authorization"
-        config.IMAGE_KEY_HEADER_VALUE = "Bearer " + (os.getenv('RECRAFT_API_TOKEN') or "")
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('RECRAFT_API_TOKEN') or "")}
         config.IMAGE_SIZE = "1024x1024"  # 1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024"
         config.IMAGE_RESPONSE_FORMAT = "url" # url, b64_json
         config.IMAGE_EXPLICIT_STYLE = ""

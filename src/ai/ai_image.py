@@ -33,7 +33,6 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                 "prompt": str_user,
                 "quality": config.IMAGE_QUALITY,
                 "style": config.IMAGE_STYLE,
-
                 "size": "1024x1024",        # 1024x1024, 1792x1024, 1024x1792
                 "n": n_count,               # number of files
                 "response_format": format   # b64_json, url
@@ -43,11 +42,8 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                 payload["model"] = config.IMAGE_MODEL_ID
                 
             response = requests.post(
-                config.IMAGE_API_URL,
-                headers={
-                    "Content-Type": "application/json",
-                    config.IMAGE_KEY_HEADER_TEXT: config.IMAGE_KEY_HEADER_VALUE
-                },
+                url=config.IMAGE_API_URL,
+                headers=config.IMAGE_HEADERS,
                 data=json.dumps(payload)
             )
             response_text = response.text
@@ -79,13 +75,10 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             style = config.IMAGE_STYLE_PRESET if config.MODEL_ENDPOINT == "core" else ""
 
             response = requests.post(
-                config.IMAGE_API_URL,
-                headers = {
-                    "authorization": f"Bearer {config.STABILITYAI_API_KEY}",
-                    "accept": "image/*"
-                },
-                files = {"none": ''},
-                data = {
+                url=config.IMAGE_API_URL,
+                headers=config.IMAGE_HEADERS,
+                files={"none": ''},
+                data={
                     "prompt": str_user,
                     "model": config.IMAGE_MODEL_ID,
                     "output_format": config.IMAGE_OUTPUT_FORMAT,
@@ -121,16 +114,10 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                 payload["image_request"]["style_type"] = config.IMAGE_EXPLICIT_STYLE
                 payload["image_request"]["resolution"] = config.IMAGE_RESOLUTION
 
-            headers = {
-                "accept": "application/json",
-                "content-type": "application/json",
-                config.IMAGE_KEY_HEADER_TEXT: config.IMAGE_KEY_HEADER_VALUE
-            }
-
             response = requests.post(
-                config.IMAGE_API_URL,
+                url=config.IMAGE_API_URL,
                 json=payload,
-                headers=headers
+                headers=config.IMAGE_HEADERS
             )
             response_text = response.text
             response_status = response.status_code
@@ -196,16 +183,10 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             else:
                 raise Exception("Error: Unknown Flux image model")
 
-            headers = {
-                "accept": "application/json",
-                "content-type": "application/json",
-                config.IMAGE_KEY_HEADER_TEXT: config.IMAGE_KEY_HEADER_VALUE
-            }
-
             response = requests.post(
-                config.IMAGE_API_URL + config.IMAGE_MODEL_ID,
+                url=config.IMAGE_API_URL + config.IMAGE_MODEL_ID,
                 json=payload,
-                headers=headers
+                headers=config.IMAGE_HEADERS
             )
             response_text = response.text
             response_status = response.status_code
@@ -219,9 +200,9 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             url = ""
             while True:
                 result = requests.get(
-                    config.IMAGE_API_URL + 'get_result',
-                    headers = headers,
-                    params = {'id': id}
+                    url=config.IMAGE_API_URL + 'get_result',
+                    headers=config.IMAGE_HEADERS,
+                    params={'id': id}
                 )
 
                 result_status = result.status_code
@@ -264,11 +245,8 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             }
 
             response = requests.post(
-                config.IMAGE_API_URL,
-                headers={
-                    "Content-Type": "application/json",
-                    config.IMAGE_KEY_HEADER_TEXT: config.IMAGE_KEY_HEADER_VALUE
-                },
+                url=config.IMAGE_API_URL,
+                headers=config.IMAGE_HEADERS,
                 data=json.dumps(payload)
             )
             response_text = response.text

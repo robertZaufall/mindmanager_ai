@@ -36,12 +36,80 @@ def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeT
     return result
 
 def call_llm(model, str_user, data="", mimeType=""):
-
     config = cfg.get_config(model)
     print("Using model: " + config.CLOUD_TYPE)
 
     if data != "" and (config.MULTIMODAL == False or mimeType not in config.MULTIMODAL_MIME_TYPES):
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
+
+    def get_payload():
+        payload = {
+            "model": config.MODEL_ID,
+            "max_tokens": config.MAX_TOKENS,
+            "temperature": config.LLM_TEMPERATURE,
+            "stream": False,
+            "messages": [
+                {"role": "system", "content": str_system},
+                {"role": "user", "content": str_user}
+            ]
+        }
+        return payload
+    
+    def clean_result(input):
+        result = input \
+                    .replace("```mermaid", "") \
+                    .replace("Here is the refined mindmap:\n\n", "") \
+                    .replace("Here is the refined mind map:\n\n", "") \
+                    .replace("Here is the refined mindmap data:", "") \
+                    .replace("Here is the refined mindmap in Mermaid syntax:", "") \
+                    .replace("Here is the refined mind map in Mermaid syntax:", "") \
+                    .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
+                    .replace("```", "") \
+                    .replace("mermaid mindmap\n", "") \
+                    .replace("2 space", "")
+
+        lines = result.split("\n")
+        if lines[0].startswith("  "):
+            result = "\n".join(line[2:] for line in lines)
+        return result.lstrip("\n").lstrip()
+    
+    def get_response(payload):
+        # ollama, lmstudio
+        response = requests.post(
+            url=config.API_URL,
+            headers=config.HEADERS,
+            data=json.dumps(payload)
+        )
+        response_text = response.text
+        response_status = response.status_code            
+        if response.status_code != 200:
+            raise Exception(f"Error: {response_status} - {response_text}")
+        parsed_json = json.loads(response_text)
+
+        if "GEMINI" in config.CLOUD_TYPE:
+            result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
+            finish_reason = parsed_json["candidates"][0].get("finishReason", "")
+            if finish_reason != "STOP" and finish_reason != "":
+                print("finish reason is " + finish_reason)
+            usage = parsed_json.get("usageMetadata", "")
+
+        elif "ANTHROPIC" in config.CLOUD_TYPE:
+            result = parsed_json["content"][0]["text"] 
+            stop_reason = parsed_json["stop_reason"]
+            stop_sequence = parsed_json["stop_sequence"]
+            usage = parsed_json.get("usage", "")
+
+        else:
+            # OpenAI compatible
+            result = parsed_json["choices"][0]["message"]["content"]
+            finish_reason = parsed_json["choices"][0].get("finish_reason", "")
+            if finish_reason == "length":
+                print("warning: result truncated!")
+            usage = parsed_json.get("usage", "")
+        
+        if usage != "":
+            print("usage: " + json.dumps(usage))
+        return clean_result(result)
 
     result = ""
     str_system = config.SYSTEM_PROMPT
@@ -65,9 +133,7 @@ def call_llm(model, str_user, data="", mimeType=""):
         payload = {}
 
         if "OPENAI+" in config.CLOUD_TYPE and "+o1" in config.CLOUD_TYPE:
-            payload["messages"] = [
-                {"role": "user", "content": str_user}
-            ]
+            payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
         else:
@@ -78,6 +144,7 @@ def call_llm(model, str_user, data="", mimeType=""):
                 ]
             elif mimeType == "image/png":
                 payload["messages"] = [{"role": "system", "content": str_system}]
+
                 number_tokens = 0
                 for image in data:
                     number_tokens = number_tokens + input_helper.calculate_image_tokens(image)
@@ -93,6 +160,7 @@ def call_llm(model, str_user, data="", mimeType=""):
                             } 
                         }] 
                     })
+                
                 payload["messages"].append({ "role": "user", "content": str_user })
             else:
                 raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")
@@ -103,107 +171,24 @@ def call_llm(model, str_user, data="", mimeType=""):
         if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE or "OPENROUTER+" in config.CLOUD_TYPE:
             payload["model"] = config.MODEL_ID
 
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
+        result = get_response(payload)
     
     # OLLAMA
     elif "OLLAMA+" in config.CLOUD_TYPE:
-        payload = {
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ],
-            "model": config.MODEL_ID
-        }
-
-        response = requests.post(
-            config.API_URL,
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code            
-
-        if response.status_code != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-            
-        parsed_json = json.loads(response_text)
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("Here is the refined mindmap data:", "").replace("```", "").lstrip("\n").lstrip()
-        
-        if config.MODEL_ID == "nemotron":
-            result = result.replace("mermaid mindmap\n", "")
-
-        lines = result.split("\n")
-        if lines[0].startswith("  "):
-            result = "\n".join(line[2:] for line in lines)
+        payload = get_payload()
+        result = get_response(payload)
     
     # LMStudio
     elif "LMSTUDIO+" in config.CLOUD_TYPE:
-        models_response = requests.get(config.API_URL + "/models")
+        models_response = requests.get(config.API_URL.replace("/chat/completions", "/models"))
         if models_response.status_code != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
+            raise Exception(f"Error: {models_response.status_code} - {models_response.text}")
         models_data = json.loads(models_response.text)["data"]
         models_ids = [model["id"] for model in models_data]
         if config.MODEL_ID not in models_ids:
-            raise Exception(f"Error: Model ID {config.MODEL_ID} not found in LMStudio models")
-
-        payload = {
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ],
-            "model": config.MODEL_ID,
-            "stream": False,
-            "seed": 0
-        }
-        response = requests.post(
-            config.API_URL + "/chat/completions",
-            headers = {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer lm-studio"
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response.status_code != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-            
-        parsed_json = json.loads(response_text)
-
-        result_first = parsed_json["choices"][0]["message"]["content"]
-        result = result_first.replace("```mermaid", "").replace("Here is the refined mindmap data:", "").replace("```", "").lstrip("\n").lstrip()
-        
-        lines = result.split("\n")
-        if lines[0].startswith("  "):
-            result = "\n".join(line[2:] for line in lines)
+            raise Exception(f"Error: Model ID {config.MODEL_ID} not found in LMStudio models ({models_ids})")
+        payload = get_payload()
+        result = get_response(payload)
 
     # GPT4ALL
     elif "GPT4ALL+" in config.CLOUD_TYPE:
@@ -215,18 +200,11 @@ def call_llm(model, str_user, data="", mimeType=""):
                         break
             if not os.path.exists(os.path.join(config.MODEL_PATH, config.MODEL_ID)):
                 raise Exception(f"Error: Model ID {config.MODEL_ID} not found in {config.MODEL_PATH}")
-
         from gpt4all import GPT4All
         model = GPT4All(config.MODEL_ID, model_path=config.MODEL_PATH, device=config.DEVICE, allow_download=config.ALLOW_DOWNLOAD)
-
         with model.chat_session(str_system):
             response = model.generate(str_user, temp=config.LLM_TEMPERATURE, max_tokens=config.MAX_TOKENS)
-
-        result = response.replace("```mermaid", "").replace("```", "").lstrip("\n")
-
-        lines = result.split("\n")
-        if lines[0].startswith("  "):
-            result = "\n".join(line[2:] for line in lines)
+        result = clean_result(response)
 
     # Vertex AI
     elif "VERTEXAI" in config.CLOUD_TYPE:
@@ -244,10 +222,8 @@ def call_llm(model, str_user, data="", mimeType=""):
                 ]
             },
             "generation_config": {
-                "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
-                #"topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
-                "topP": 0.95, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
-                "maxOutputTokens": config.MAX_TOKENS, # 2k / 4k
+                "temperature": config.LLM_TEMPERATURE,
+                "maxOutputTokens": config.MAX_TOKENS,
                 "candidateCount": 1,
             }
         }
@@ -265,51 +241,10 @@ def call_llm(model, str_user, data="", mimeType=""):
             { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
             { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
             { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
-            { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
-
-            # not supported by now
-            #{ "category": "HARM_CATEGORY_DEROGATORY", "threshold": "BLOCK_NONE" },
-            #{ "category": "HARM_CATEGORY_TOXICITY", "threshold": "BLOCK_NONE" },
-            #{ "category": "HARM_CATEGORY_VIOLENCE", "threshold": "BLOCK_NONE" },
-            #{ "category": "HARM_CATEGORY_SEXUAL", "threshold": "BLOCK_NONE" },
-            #{ "category": "HARM_CATEGORY_MEDICAL", "threshold": "BLOCK_NONE" },
-            #{ "category": "HARM_CATEGORY_DANGEROUS", "threshold": "BLOCK_NONE" },
-            #{ "category": "HARM_CATEGORY_UNSPECIFIED", "threshold": "BLOCK_NONE" },
+            { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" }
         ]
 
-        if config.KEY_HEADER_TEXT != "":
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT : config.KEY_HEADER_VALUE
-            }
-        else:
-            headers = { "Content-Type": "application/json" }
-
-        response = requests.post(
-            config.API_URL,
-            headers=headers,
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usageMetadata"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["candidates"][0]["finishReason"]
-        if finish_reason != "STOP":
-            print("finishReason is " + finish_reason)
-
-        result = parsed_json["candidates"][0]["content"]["parts"][0]["text"]
-        if "FLASH" in config.CLOUD_TYPE:
-            result = result.replace("2 space", "")
-        
-        result = result.replace("```mermaid", "").replace("```", "").replace("mermaid\n", "").lstrip("\n").lstrip()
+        result = get_response(payload)
 
     # Anthropic
     elif "ANTHROPIC" in config.CLOUD_TYPE:
@@ -368,38 +303,7 @@ def call_llm(model, str_user, data="", mimeType=""):
             else:
                 raise
 
-        headers = {
-            "content-type": "application/json",
-            "anthropic-version": config.ANTHROPIC_VERSION,
-            config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE,
-        }
-
-        response = requests.post(
-            config.API_URL,
-            headers=headers,
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        stop_reason = parsed_json["stop_reason"]
-        stop_sequence = parsed_json["stop_sequence"]
-
-        result = parsed_json["content"][0]["text"] \
-                .replace("Here is the refined mind map in Mermaid syntax:", "") \
-                .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
-                .replace("```mermaid", "") \
-                .replace("```", "") \
-                .replace("mermaid\n", "") \
-                .lstrip("\n")
+        result = get_response(payload)
 
     # xAI
     elif "XAI+" in config.CLOUD_TYPE:
@@ -436,321 +340,52 @@ def call_llm(model, str_user, data="", mimeType=""):
         else:
             raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")
             
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        result = get_response(payload)
 
     # GROQ
     elif "GROQ+" in config.CLOUD_TYPE:
-        payload = {
-            "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
+        payload = get_payload()
+        result = get_response(payload)
        
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
-        payload = {
-            "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }        
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
+        payload = get_payload()        
+        result = get_response(payload)
 
     # DeepSeek
     elif "DEEPSEEK+" in config.CLOUD_TYPE:
-        payload = {
-            "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "stream": False,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }        
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
+        payload = get_payload()       
+        result = get_response(payload)
 
     # Alibaba Cloud
     elif "ALIBABACLOUD+" in config.CLOUD_TYPE:
-        payload = {
-            "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "stream": False,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }        
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        payload = get_payload()        
+        result = get_response(payload)
 
     # Mistral AI
     elif "MISTRAL+" in config.CLOUD_TYPE:
-        payload = {
-            "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "stream": False,
-            "response_format": { "type": "text" },
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }        
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
+        payload = get_payload()
+        payload["response_format"] = { "type": "text" }
+        result = get_response(payload)
 
     # Hugging Face
     elif "HF+" in config.CLOUD_TYPE:
-        payload = {
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        payload = get_payload()
+        del payload["model"]
+        result = get_response(payload)
 
     # Fireworks.ai
     elif "FIREWORKS+" in config.CLOUD_TYPE:
-        payload = {
-            "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json",
-                config.KEY_HEADER_TEXT: config.KEY_HEADER_VALUE
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-
-        usage = parsed_json["usage"]
-        print("usage: " + json.dumps(usage))
-
-        finish_reason = parsed_json["choices"][0]["finish_reason"]
-        if finish_reason == "length":
-            print("Warning: Result truncated!")
-
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        payload = get_payload()
+        result = get_response(payload)
 
     # MLX
     elif "MLX+" in config.CLOUD_TYPE:
-        payload = {
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "messages": [
-                {"role": "system", "content": str_system},
-                {"role": "user", "content": str_user}
-            ]
-        }
-
-        response = requests.post(
-            config.API_URL,
-            headers = {
-                "Content-Type": "application/json"
-            },
-            data=json.dumps(payload)
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status != 200:
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        parsed_json = json.loads(response_text)
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n")
+        payload = get_payload()
+        del payload["model"]
+        result = get_response(payload)
     else:
         raise Exception("Error: Unknown CLOUD_TYPE")
-
-    # needed for LLama3 large models
-    result = result.replace("Here is the refined mind map:\n\n", "")
-    result = result.replace("Here is the refined mindmap:\n\n", "")
 
     return result
 

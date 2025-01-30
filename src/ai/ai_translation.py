@@ -23,10 +23,7 @@ def call_translation_ai(text, language):
 
             response = requests.post(
                 config.DEEPL_BASE_URL,
-                headers={
-                    "Content-Type": "application/json",
-                    config.KEY_HEADER_TEXT_TRANSLATION: config.KEY_HEADER_VALUE_TRANSLATION
-                },
+                headers=config.TRANSLATION_HEADERS,
                 data=json.dumps(payload)
             )
             response_text = response.text

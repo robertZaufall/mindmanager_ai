@@ -74,16 +74,13 @@ def call_llm_gcp(model, str_user, data, mimeType):
     if data != "":
             payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
 
-    if config.KEY_HEADER_TEXT != "":
-        headers = {
-            "Content-Type": "application/json",
-            config.KEY_HEADER_TEXT : "Bearer " + access_token
-        }
-    else:
-        headers = { "Content-Type": "application/json" }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization" : "Bearer " + access_token
+    }
 
     response = requests.post(
-        config.API_URL,
+        url=config.API_URL,
         headers=headers,
         data=json.dumps(payload)
     )
@@ -130,16 +127,13 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
         }
     }
 
-    if config.IMAGE_KEY_HEADER_TEXT != "":
-        headers = {
-            "Content-Type": "application/json",
-            config.IMAGE_KEY_HEADER_TEXT : "Bearer " + access_token
-        }
-    else:
-        headers = { "Content-Type": "application/json" }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization" : "Bearer " + access_token
+    }
 
     response = requests.post(
-        config.IMAGE_API_URL,
+        url=config.IMAGE_API_URL,
         headers=headers,
         data=json.dumps(payload)
     )
