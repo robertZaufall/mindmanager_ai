@@ -5,7 +5,8 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
@@ -180,16 +181,20 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "AZURE+" in CLOUD_TYPE:
         config.USE_AZURE_ENTRA = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
-        if "gpt-4o" in CLOUD_TYPE:
+        if "gpt-4o" in model:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        elif "o1-mini" in model:
+            config.MAX_TOKENS = 65535
+        elif "o1-preview" in model:
+            config.MAX_TOKENS = 32767
         config.MARKDOWN_OPTIMIZATION_LEVEL = 3
         config.AZURE_DEPLOYMENT = model
         config.API_VERSION = os.getenv('AZURE_API_VERSION')
         config.API_URL = (
             f"{os.getenv('AZURE_API_URL')}openai/deployments/"
-            f"{config.AZURE_DEPLOYMENT}/chat/completions"
+            f"{model}/chat/completions"
             f"?api-version={config.API_VERSION}"
         )
         config.HEADERS = {**config.HEADERS, "api-key": os.getenv('AZURE_API_KEY') or ""}

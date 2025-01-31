@@ -74,7 +74,6 @@ def call_llm(model, str_user, data="", mimeType=""):
         return result.lstrip("\n").lstrip()
     
     def get_response(payload):
-        # ollama, lmstudio
         response = requests.post(
             url=config.API_URL,
             headers=config.HEADERS,
@@ -98,7 +97,6 @@ def call_llm(model, str_user, data="", mimeType=""):
             stop_reason = parsed_json["stop_reason"]
             stop_sequence = parsed_json["stop_sequence"]
             usage = parsed_json.get("usage", "")
-
         else:
             # OpenAI compatible
             result = parsed_json["choices"][0]["message"]["content"]
@@ -132,7 +130,7 @@ def call_llm(model, str_user, data="", mimeType=""):
 
         payload = {}
 
-        if "OPENAI+" in config.CLOUD_TYPE and "+o1" in config.CLOUD_TYPE:
+        if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE) and "+o1" in config.CLOUD_TYPE:
             payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
@@ -187,6 +185,7 @@ def call_llm(model, str_user, data="", mimeType=""):
         models_ids = [model["id"] for model in models_data]
         if config.MODEL_ID not in models_ids:
             raise Exception(f"Error: Model ID {config.MODEL_ID} not found in LMStudio models ({models_ids})")
+        
         payload = get_payload()
         result = get_response(payload)
 
