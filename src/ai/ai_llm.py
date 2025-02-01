@@ -2,6 +2,7 @@ import config_llm as cfg
 import ai.prompts as prompts
 import input_helper
 import file_helper
+import text_helper
 from types import SimpleNamespace
 import requests
 import json
@@ -54,25 +55,7 @@ def call_llm(model, str_user, data="", mimeType=""):
             ]
         }
         return payload
-    
-    def clean_result(input):
-        result = input \
-                    .replace("```mermaid", "") \
-                    .replace("Here is the refined mindmap:\n\n", "") \
-                    .replace("Here is the refined mind map:\n\n", "") \
-                    .replace("Here is the refined mindmap data:", "") \
-                    .replace("Here is the refined mindmap in Mermaid syntax:", "") \
-                    .replace("Here is the refined mind map in Mermaid syntax:", "") \
-                    .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
-                    .replace("```", "") \
-                    .replace("mermaid mindmap\n", "") \
-                    .replace("2 space", "")
-
-        lines = result.split("\n")
-        if lines[0].startswith("  "):
-            result = "\n".join(line[2:] for line in lines)
-        return result.lstrip("\n").lstrip()
-    
+        
     def get_response(payload):
         response = requests.post(
             url=config.API_URL,
@@ -107,7 +90,7 @@ def call_llm(model, str_user, data="", mimeType=""):
         
         if usage != "":
             print("usage: " + json.dumps(usage))
-        return clean_result(result)
+        return text_helper.clean_result(result)
 
     result = ""
     str_system = config.SYSTEM_PROMPT
@@ -130,7 +113,7 @@ def call_llm(model, str_user, data="", mimeType=""):
 
         payload = {}
 
-        if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE) and "+o1" in config.CLOUD_TYPE:
+        if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE) and ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE):
             payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
@@ -148,16 +131,9 @@ def call_llm(model, str_user, data="", mimeType=""):
                     number_tokens = number_tokens + input_helper.calculate_image_tokens(image)
                     if number_tokens > config.MAX_TOKENS:
                         break
-                    payload["messages"].append({ 
-                        "role": "user", 
-                        "content": [{ 
-                            "type": "image_url", 
-                            "image_url": { 
-                                "url": f"data:image/jpeg;base64,{image}", 
-                                "detail": "high" 
-                            } 
-                        }] 
-                    })
+                    payload["messages"].append({"role": "user", "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image}", "detail": "high"}}
+                    ]})
                 
                 payload["messages"].append({ "role": "user", "content": str_user })
             else:
@@ -203,7 +179,7 @@ def call_llm(model, str_user, data="", mimeType=""):
         model = GPT4All(config.MODEL_ID, model_path=config.MODEL_PATH, device=config.DEVICE, allow_download=config.ALLOW_DOWNLOAD)
         with model.chat_session(str_system):
             response = model.generate(str_user, temp=config.LLM_TEMPERATURE, max_tokens=config.MAX_TOKENS)
-        result = clean_result(response)
+        result = text_helper.clean_result(response)
 
     # Vertex AI
     elif "VERTEXAI" in config.CLOUD_TYPE:
@@ -261,44 +237,16 @@ def call_llm(model, str_user, data="", mimeType=""):
             payload["messages"].append({ "role": "user", "content": str_user })
         else:
             if mimeType == "application/pdf":
-                payload["messages"].append({ 
-                    "role": "user", 
-                    "content": [
-                        {
-                            "type": "document", 
-                            "source":
-                            { 
-                                "type": "base64", 
-                                "media_type": mimeType, 
-                                "data": data
-                            }
-                        }, 
-                        {
-                            "type": "text", 
-                            "text": str_user
-                        }
-                    ]
-                })
+                payload["messages"].append({"role": "user", "content": [
+                        {"type": "document", "source": {"type": "base64", "media_type": mimeType, "data": data}},
+                        {"type": "text", "text": str_user}
+                ]})
             elif mimeType == "image/png":
                 for image in data:
-                    payload["messages"].append({ 
-                        "role": "user", 
-                        "content": [
-                            {
-                                "type": "image", 
-                                "source":
-                                { 
-                                    "type": "base64", 
-                                    "media_type": mimeType, 
-                                    "data": image
-                                }
-                            }, 
-                            {
-                                "type": "text", 
-                                "text": str_user
-                            }
-                        ]
-                    })
+                    payload["messages"].append({"role": "user", "content": [
+                        {"type": "image", "source": {"type": "base64", "media_type": mimeType, "data": image}},
+                        {"type": "text", "text": str_user}
+                    ]})
             else:
                 raise
 
@@ -306,35 +254,25 @@ def call_llm(model, str_user, data="", mimeType=""):
 
     # xAI
     elif "XAI+" in config.CLOUD_TYPE:
-        payload = {
-            "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
-            "stream": False
-        }      
-
         if data == "":  
-            payload["messages"] = [
-                    {"role": "system", "content": str_system},
-                    {"role": "user", "content": str_user}
-            ]
+            payload = get_payload()
+        
         elif mimeType == "image/png":
+            payload = {
+                "model": config.MODEL_ID,
+                "max_tokens": config.MAX_TOKENS,
+                "temperature": config.LLM_TEMPERATURE,
+                "stream": False
+            }      
             payload["messages"] = [{"role": "system", "content": str_system}]
             number_tokens = 0
             for image in data:
                 number_tokens = number_tokens + input_helper.calculate_image_tokens(image)
                 if number_tokens > config.MAX_TOKENS:
                     break
-                payload["messages"].append({ 
-                    "role": "user", 
-                    "content": [{ 
-                        "type": "image_url", 
-                        "image_url": { 
-                            "url": f"data:image/jpeg;base64,{image}", 
-                            "detail": "high" 
-                        } 
-                    }] 
-                })
+                payload["messages"].append({"role": "user", "content": [
+                        {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{image}", "detail": "high"}}
+                ]})
             payload["messages"].append({ "role": "user", "content": str_user })
         else:
             raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")

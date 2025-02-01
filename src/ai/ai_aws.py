@@ -2,6 +2,7 @@ import config_llm as cfg
 import json
 import boto3
 from types import SimpleNamespace
+import text_helper
 
 def call_llm(model, str_user, data, mimeType):
 
@@ -22,12 +23,7 @@ def call_llm(model, str_user, data, mimeType):
     )
     
     if model_id.startswith("amazon."):
-        payload = [
-            {
-                "role": "user",
-                "content": [{"text": str_user}],
-            }
-        ]
+        payload = [{"role": "user", "content": [{"text": str_user}]}]
 
         response = bedrock_client.converse(
             modelId=model_id,
@@ -39,7 +35,8 @@ def call_llm(model, str_user, data, mimeType):
         parsed_json = response
         response_status = parsed_json["ResponseMetadata"]["HTTPStatusCode"]
         usage = parsed_json.get("usage", {})
-        result = response["output"]["message"]["content"][0]["text"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
+        result = response["output"]["message"]["content"][0]["text"]
+        result = text_helper.clean_result(result)
 
     elif model_id.startswith("anthropic."):
         payload = {
@@ -49,28 +46,20 @@ def call_llm(model, str_user, data, mimeType):
             "messages": [
             ]
         }
-
         payload["messages"].append({ "role": "user", "content": "Hello, Claude." })
         payload["messages"].append({ "role": "assistant", "content": str_system.replace("You are ", "Hi, I'm Claude, ") })
         payload["messages"].append({ "role": "user", "content": str_user })
 
         response = bedrock_client.invoke_model(modelId=model_id, body=json.dumps(payload))
-
         response_status = response["ResponseMetadata"]["HTTPStatusCode"]
         response_text = response["body"].read().decode("utf-8")
         if response_status != 200:
             raise Exception(f"Error: {response_status} - {response_text}")
-
+        
         parsed_json = json.loads(response_text)
-
         usage = parsed_json.get("usage", {})
-        result = parsed_json["content"][0]["text"] \
-                .replace("Here is the refined mind map in Mermaid syntax:", "") \
-                .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
-                .replace("```mermaid", "") \
-                .replace("```", "") \
-                .replace("mermaid\n", "") \
-                .lstrip("\n")
+        result = parsed_json["content"][0]["text"]
+        result = text_helper.clean_result(result)
 
     elif model_id.startswith("mistral."):
         payload = {
@@ -79,21 +68,19 @@ def call_llm(model, str_user, data, mimeType):
             "messages": [
             ]
         }
-
         payload["messages"].append({ "role": "system", "content": str_system })
         payload["messages"].append({ "role": "user", "content": str_user })                
 
         response = bedrock_client.invoke_model(modelId=model_id, body=json.dumps(payload))
-
         response_status = response["ResponseMetadata"]["HTTPStatusCode"]
         response_text = response["body"].read().decode("utf-8")
         if response_status != 200:
             raise Exception(f"Error: {response_status} - {response_text}")
-
+        
         parsed_json = json.loads(response_text)
-
         usage = parsed_json.get("usage", {})
-        result = parsed_json["choices"][0]["message"]["content"].replace("```mermaid", "").replace("```", "").lstrip("\n").lstrip()
+        result = parsed_json["choices"][0]["message"]["content"]
+        result = text_helper.clean_result(result)
 
     else:
         raise Exception(f"Error: {model_id} not supported.")

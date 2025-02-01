@@ -163,3 +163,24 @@ def ultra_minimize_tokens(text):
                 result += w + ' '
     
     return result.strip()
+
+def clean_result(input):
+    result = input \
+                .replace("```mermaid", "") \
+                .replace("Here is the refined mindmap:\n\n", "") \
+                .replace("Here is the refined mind map:\n\n", "") \
+                .replace("Here is the refined mindmap data:", "") \
+                .replace("Here is the refined mindmap in Mermaid syntax:", "") \
+                .replace("Here is the refined mind map in Mermaid syntax:", "") \
+                .replace("Here is the mindmap in Mermaid syntax based on the summary:", "") \
+                .replace("mermaid mindmap\n", "") \
+                .replace("mermaid\n", "") \
+                .replace("2 space", "") \
+                .replace("```", "") \
+                .lstrip("\n") \
+                .lstrip()
+    
+    lines = result.split("\n")
+    if lines[0].startswith("  "):
+        result = "\n".join(line[2:] for line in lines)
+    return result.lstrip("\n").lstrip()
