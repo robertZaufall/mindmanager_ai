@@ -5,8 +5,8 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
-CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+# CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
@@ -14,6 +14,7 @@ CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 # CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
+# CLOUD_TYPE = 'OPENAI+o3-mini'                                         # best
 
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
@@ -107,6 +108,7 @@ CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 # CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
 # CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
+# CLOUD_TYPE = 'OLLAMA+llama3.1:8b'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
 # CLOUD_TYPE = 'OLLAMA+mistral-small'                                   #
@@ -171,6 +173,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        elif "o3-mini" in model:
+            config.MAX_TOKENS = 100000
         elif "o1-mini" in model:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
@@ -185,6 +189,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        elif "o3-mini" in model:
+            config.MAX_TOKENS = 100000
         elif "o1-mini" in model:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:

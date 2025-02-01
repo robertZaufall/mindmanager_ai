@@ -418,7 +418,7 @@ class MindmanagerAIApp(tk.Tk):
         dropdown_agentic_action.pack(side="left", padx=5)
 
         ### Model comboboxes ###
-        filtered_cloud_types = [x for x in self.all_cloud_types if x.lower().startswith(('openai', 'azure', 'ollama'))]
+        filtered_cloud_types = [x for x in self.all_cloud_types if x.lower().startswith(('openai', 'azure', 'ollama', 'xai', 'deepseek'))]
     
         # Strong model combobox
         self.var_agentic_strong = tk.StringVar(value=self.agentic_model_strong)
