@@ -15,11 +15,11 @@ from agno.tools.yfinance import YFinanceTools
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import file_helper as fh
 
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'
 # CLOUD_TYPE = 'XAI+grok-2-1212'
-CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'
+# CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'
 
 class MAgent:
     def __init__(self, cloud_type: str = CLOUD_TYPE, secondary_cloud_type: str = CLOUD_TYPE):
