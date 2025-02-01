@@ -3,4 +3,4 @@ duckduckgo-search
 yfinance
 langchain 
 langchain-community
-phidata
+agno
