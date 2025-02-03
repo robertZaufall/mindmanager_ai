@@ -58,6 +58,11 @@ More animated examples are in the `doc` folder.
 ### Translation Services
  - **DeepL** (use your key)
 
+### Agentic Framework Examples  
+  - **Agno** (formerly "Phidata")  
+  - **Autogen** (Microsoft)  
+  - **CrewAI**  
+
 ### Platform
 - Windows compatible (run macro/context menu or call the **Python** script directly)  
 - macOS compatible (run **Automator** workflow (Quick Action) or call the **Python** script directly)  
@@ -324,6 +329,21 @@ Translation works for these languages:
 ```
 Source language will be detected automatically. `Formality` parameter is not supported for all languages, so it is disabled by now. `Context` parameter was not used as DeepL states it's deprecated.
 API requests point to the free tier. If you have a paid subscription change the URL in the `config.py`.
+
+## Agentic frameworks  
+There are only some example implementations using agentic frameworks. Results are requested as markdown code from the agents and are transformed to Mermaid mindmap by another LLM call. This should be addressed soon.  
+
+### Agno (formerly Phidata)  
+https://github.com/agno-agi/agno  
+Mighty but very performant and easy to use framework.  
+
+### Autogen (Microsoft)  
+https://github.com/microsoft/autogen  
+Framework is complex and not so easy to use. There is also a fork with a similar name `pyautogen`, renamed as AG2.  
+
+### CrewAI  
+https://github.com/crewAIInc/crewAI  
+Mighty and complex framework. Installation on Windows 11 on ARM requires VS2022 build tools. Installation on MacOS seems to be more easy but still has a lot of dependencies.  
 
 ## Prompt crafting  
 Prompt crafting is lightly implemented using the following strategy:  
