@@ -4,3 +4,6 @@ yfinance
 langchain 
 langchain-community
 agno
+autogen-core
+autogen-agentchat 
+autogen-ext[openai,azure]

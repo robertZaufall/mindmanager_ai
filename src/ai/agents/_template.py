@@ -1,15 +1,7 @@
 import os
 import sys
+from typing import Iterator
 from dotenv import dotenv_values
-
-from agno.agent import Agent
-from agno.models.azure import AzureOpenAI
-from agno.models.openai import OpenAIChat
-from agno.models.ollama import Ollama
-from agno.models.xai import xAI
-from agno.models.deepseek import DeepSeek
-from agno.tools.duckduckgo import DuckDuckGoTools
-from agno.tools.yfinance import YFinanceTools
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import file_helper as fh
@@ -32,7 +24,7 @@ class MAgent:
             model = cloud_type.split("+")[-1]
             llm = None
             if system.lower() == "azure":
-                llm = AzureOpenAI(
+                llm = LLM(
                     id = f"{system.lower()}/{model.lower()}",
                     api_version = os.getenv('AZURE_API_VERSION'),
                     api_key = os.getenv('AZURE_API_KEY'),
@@ -40,23 +32,23 @@ class MAgent:
                     azure_deployment = model,
                 )
             elif system.lower() == "openai":
-                llm = OpenAIChat(
+                llm = LLM(
                     id = model,
                     api_key = os.getenv('OPENAI_API_KEY')
                 )
             elif system.lower() == "ollama":
-                llm = Ollama(
+                llm = LLM(
                     id = model,
-                    host = os.getenv('OLLAMA_API_URL').replace("/v1/chat/completions", "")
+                    host=os.getenv('OLLAMA_API_URL').replace("/v1/chat/completions", "")
                 )
             elif system.lower() == "xai":
-                llm = xAI(
+                llm = LLM(
                     id = model,
                     api_key = os.getenv('XAI_API_KEY'),
                     base_url = os.getenv('XAI_API_URL').replace("/chat/completions", "")
                 )
             elif system.lower() == "deepseek":
-                llm = DeepSeek(
+                llm = LLM(
                     id = model,
                     api_key = os.getenv('DEEPSEEK_API_KEY'),
                     base_url = os.getenv('DEEPSEEK_API_URL').replace("/beta/chat/completions", "")
@@ -75,33 +67,9 @@ class MAgent:
             self.secondary_llm = self.llm
 
     def execute(self, argument: str = 'NVDA', simple_result: bool = True, show_tool_calls: bool = False) -> str:
-        web_agent = Agent(
-            name="Web Agent",
-            role="Search the web for information",
-            model=self.llm,
-            tools=[DuckDuckGoTools()],
-            #instructions=["Always include sources"],
-            show_tool_calls=show_tool_calls,
-            markdown=True,
-        )
-
-        finance_agent = Agent(
-            name="Finance Agent",
-            role="Get financial data",
-            model=self.llm,
-            tools=[YFinanceTools(stock_price=True, analyst_recommendations=True, company_info=True)],
-            #instructions=["Use tables to display data"],
-            show_tool_calls=show_tool_calls,
-            markdown=True,
-        )
-
-        agent_team = Agent(
-            team=[web_agent, finance_agent],
-            model=self.llm,
-            #instructions=["Always include sources", "Use tables to display data"],
-            show_tool_calls=show_tool_calls,
-            markdown=True,
-        )
+        web_agent = Agent()
+        finance_agent = Agent()
+        agent_team = Agent(team=[web_agent, finance_agent])
 
         strTopic = f"Summarize analyst recommendations and share the latest news for {argument}"
         if simple_result:

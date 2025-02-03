@@ -41,7 +41,11 @@ def load_agents():
     directory_path = os.path.join(os.path.dirname(__file__), 'ai', 'agents')
     try:
         file_names = os.listdir(directory_path)
-        file_dict = {file.replace(".py", "").replace("_", " ").title(): file for file in file_names if os.path.isfile(os.path.join(directory_path, file)) and file.endswith(".py") and not file.startswith("__")}
+        file_dict = {
+            file.replace(".py", "").replace("_", " ").title(): \
+                file for file in file_names \
+                    if os.path.isfile(os.path.join(directory_path, file)) and file.endswith(".py") and not file.startswith("_")
+        }
         return file_dict
     except FileNotFoundError:
         return {}
