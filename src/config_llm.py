@@ -175,6 +175,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
         elif "o3-mini" in model:
             config.MAX_TOKENS = 100000
+            config.REASONING_EFFORT = "low"
         elif "o1-mini" in model:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
@@ -191,6 +192,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
         elif "o3-mini" in model:
             config.MAX_TOKENS = 100000
+            config.REASONING_EFFORT = "low"
         elif "o1-mini" in model:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:

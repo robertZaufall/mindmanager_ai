@@ -117,6 +117,8 @@ def call_llm(model, str_user, data="", mimeType=""):
             payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
+            if "+o3" in config.CLOUD_TYPE:
+                payload["reasoning_effort"] = config.REASONING_EFFORT
         else:
             if data == "":  
                 payload["messages"] = [
