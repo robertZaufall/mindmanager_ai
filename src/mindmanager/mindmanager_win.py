@@ -185,8 +185,10 @@ class Mindmanager:
         self.set_title_to_topic(topic, mindmap_topic.topic_rtf)
 
         if len(mindmap_topic.topic_tags) > 0:
+            map_marker_group = self.mindmanager.ActiveDocument.MapMarkerGroups.GetMandatoryMarkerGroup(10)
             for topic_tag in mindmap_topic.topic_tags:
-                topic.TextLabels.AddTextLabel(topic_tag.tag_text, True) # toggleIfMapMarker
+                textMarker = map_marker_group.AddTextLabelMarker(topic_tag.tag_text)
+                topic.TextLabels.AddTextLabelFromGroup(topic_tag.tag_text, '', True)
         
         if mindmap_topic.topic_notes:
             if mindmap_topic.topic_notes.note_text:
