@@ -59,9 +59,29 @@ class MAgent:
                     },
                 )
             elif system.lower() == "xai":
-                pass
+                llm = OpenAIChatCompletionClient(
+                    model = model,
+                    base_url = os.getenv('XAI_API_URL').replace("/chat/completions", ""),
+                    api_key = os.getenv('XAI_API_KEY'),
+                    model_info = {
+                        "vision": False,
+                        "function_calling": True,
+                        "json_output": False,
+                        "family": "unknown",
+                    },
+                )
             elif system.lower() == "deepseek":
-                pass
+                llm = OpenAIChatCompletionClient(
+                    model = model,
+                    base_url = os.getenv('DEEPSEEK_API_URL').replace("/beta/chat/completions", ""),
+                    api_key = os.getenv('DEEPSEEK_API_KEY'),
+                    model_info = {
+                        "vision": False,
+                        "function_calling": True,
+                        "json_output": False,
+                        "family": "unknown",
+                    },
+                )
             else:
                 raise ValueError("Invalid system specified.")
             return llm
