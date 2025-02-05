@@ -67,13 +67,16 @@ class Mindmanager:
     def get_subtopics_from_topic(self, topic):
         return topic.AllSubTopics
     
-    def get_link_from_topic(self, topic) -> MindmapLink:
+    def get_links_from_topic(self, topic) -> list[MindmapLink]:
         if topic.HasHyperlink:
-            hyperlink = topic.Hyperlink
-            return MindmapLink(
-                link_text = hyperlink.Title,
-                link_url = hyperlink.Address
-            )
+            hyperlinks = []
+            for hyperlink in topic.Hyperlinks:
+                hyperlinks.append(MindmapLink(
+                    link_text = hyperlink.Title,
+                    link_url = hyperlink.Address,
+                    link_guid = hyperlink.TopicLabelGuid
+                ))
+            return hyperlinks
         return None
 
     def get_image_from_topic(self, topic) -> MindmapImage:
@@ -185,9 +188,7 @@ class Mindmanager:
         self.set_title_to_topic(topic, mindmap_topic.topic_rtf)
 
         if len(mindmap_topic.topic_tags) > 0:
-            map_marker_group = self.mindmanager.ActiveDocument.MapMarkerGroups.GetMandatoryMarkerGroup(10)
             for topic_tag in mindmap_topic.topic_tags:
-                textMarker = map_marker_group.AddTextLabelMarker(topic_tag.tag_text)
                 topic.TextLabels.AddTextLabelFromGroup(topic_tag.tag_text, '', True)
         
         if mindmap_topic.topic_notes:
@@ -214,11 +215,12 @@ class Mindmanager:
         if mindmap_topic.topic_image:
             topic.CreateImage(mindmap_topic.topic_image.image_text)
         
-        if mindmap_topic.topic_link:
-            topic.CreateHyperlink(mindmap_topic.topic_link.link_url)
-            for link in topic.Hyperlinks:
-                link.Title = mindmap_topic.topic_link.link_text
-                break
+        if mindmap_topic.topic_links:
+            hyperlinks = topic.Hyperlinks
+            for topic_link in mindmap_topic.topic_links:
+                if topic_link.link_guid == "" and topic_link.link_url != "":
+                    link = hyperlinks.AddHyperlink(topic_link.link_url)
+                    link.Title = topic_link.link_text
         
         if mindmap_topic.topic_guid:
             mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
@@ -256,6 +258,12 @@ class Mindmanager:
                         marker = group.AddCustomIconMarker(label, map_icon.icon_path)
                         map_icon.icon_signature = marker.Icon.CustomIconSignature
 
+    def create_tags(self, tags: list['str']):
+        if len(tags) > 0:
+            map_marker_group = self.mindmanager.ActiveDocument.MapMarkerGroups.GetMandatoryMarkerGroup(10)
+            for tag in tags:
+                map_marker_group.AddTextLabelMarker(tag)
+
     def add_relationship(self, guid1, guid2, label=''):
         object1 = self.get_topic_by_id(guid1)
         object2 = self.get_topic_by_id(guid2)
@@ -263,6 +271,14 @@ class Mindmanager:
             if object1.ParentTopic == object2 or object2.ParentTopic == object1:
                 return
             object1.AllRelationships.AddToTopic(object2, label)
+
+    def add_topic_link(self, guid1, guid2, label=''):
+        object1 = self.get_topic_by_id(guid1)
+        object2 = self.get_topic_by_id(guid2)
+        if object1 and object2:
+            hyperlinks = object1.Hyperlinks
+            link = hyperlinks.AddHyperlinkToTopicByGuid(guid2)
+            link.Title = label
 
     def add_document(self, max_topic_level):
         style = self.mindmanager.ActiveDocument.StyleXml
