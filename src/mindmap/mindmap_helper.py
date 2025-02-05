@@ -385,8 +385,8 @@ class MindmapDocument:
             if object1_guid and object2_guid:
                 self.mindm.add_topic_link(object1_guid, object2_guid, link.reference_label)
 
-    def create_mindmap_and_finalize(self, map_icons):
-        self.create_mindmap(map_icons=map_icons)
+    def create_mindmap_and_finalize(self):
+        self.create_mindmap()
         self.finalize()
 
     def finalize(self):

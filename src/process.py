@@ -54,7 +54,7 @@ def create_mindmap_from_mermaid(document, mermaid, inplace=False):
     if mermaid.mermaid_mindmap != "":
         document.mindmap = mermaid.create_mindmap_from_mermaid()
         document.max_topic_level = document.get_max_topic_level(mindmap_topic=document.mindmap)
-        document.create_mindmap_and_finalize(map_icons=[])
+        document.create_mindmap_and_finalize()
         document.mindmap = None
         document.mindm = None
         document.selection = None
@@ -215,7 +215,7 @@ def main(param, charttype, model, freetext, inplace=False):
             if platform == "win":
                 document.finalize()
             else:
-                document.create_mindmap(map_icons=[])
+                document.create_mindmap()
 
         else:
             mermaid = MermaidMindmap(get_mermaid_from_mindmap(mindmap=document.mindmap))
