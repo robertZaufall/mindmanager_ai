@@ -315,12 +315,12 @@ class MindmapDocument:
                 link_to = done[parent_id]
                 self.mindm.add_relationship(link_from, link_to)
 
-    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done = {}, level=0):
+    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done = {}, done_global = {}, level=0):
         if self.turbo_mode:
             mindmap_topic.topic_guid = self.mindm.get_guid_from_topic(topic)
             for mindmap_subtopic in mindmap_topic.topic_subtopics:
                 subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
-                self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, level+1)
+                self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, done_global, level+1)
         else:
             topic = self.mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
 
@@ -329,7 +329,16 @@ class MindmapDocument:
             elif level >= 2: 
                 topic_id = self.get_attribute_from_mindmap_topic(mindmap_topic.topic_attributes, 'id')
                 if topic_id:
-                    done[topic_id] = topic.guid
+                    done[topic_id] = [topic.guid] if topic_id not in done else done[topic_id] + [topic.guid]
+                    if topic_id in done_global:
+                        for i in range(len(done_global[topic_id])):
+                            link_from = topic.guid
+                            link_to = done_global[topic_id][i]
+                            self.mindm.add_topic_link(link_from, link_to)
+                            self.mindm.add_topic_link(link_to, link_from)
+                        done_global[topic_id] = done_global[topic_id] + [topic.guid]
+                    else:
+                        done_global[topic_id] = [topic.guid]
 
             if mindmap_topic.topic_subtopics and len(mindmap_topic.topic_subtopics) > 0:
                 mindmap_topic.topic_subtopics.sort(key=lambda subtopic: subtopic.topic_text)
@@ -340,10 +349,10 @@ class MindmapDocument:
                     #create_relationship_to_parent(mindm, mindmap_subtopic, done)
                     cloned_subtopic = self.clone_mindmap_topic(mindmap_subtopic)
                     subtopic = self.mindm.add_subtopic_to_topic(topic, cloned_subtopic.topic_text)
-                    self.set_topic_from_mindmap_topic(subtopic, cloned_subtopic, map_icons, done, level+1)
+                    self.set_topic_from_mindmap_topic(subtopic, cloned_subtopic, map_icons, done, done_global, level+1)
                 else:
                     subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
-                    self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, level+1)
+                    self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, done_global, level+1)
         return mindmap_topic
 
     def create_mindmap(self):
@@ -358,7 +367,8 @@ class MindmapDocument:
         self.mindm.set_text_to_topic(self.mindm.get_central_topic(), self.mindmap.topic_text)
         topic = self.mindm.get_central_topic()
 
-        self.set_topic_from_mindmap_topic(topic=topic, mindmap_topic=self.mindmap, map_icons=self.map_icons)
+        done_global = {}
+        self.set_topic_from_mindmap_topic(topic=topic, mindmap_topic=self.mindmap, map_icons=self.map_icons, done={}, done_global=done_global)
 
         relationships = []
         self.get_relationships_from_mindmap(self.mindmap, relationships)

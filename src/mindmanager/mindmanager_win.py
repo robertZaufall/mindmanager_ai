@@ -278,7 +278,7 @@ class Mindmanager:
         if object1 and object2:
             hyperlinks = object1.Hyperlinks
             link = hyperlinks.AddHyperlinkToTopicByGuid(guid2)
-            link.Title = label
+            link.Title = label if label != "" else object2.Title.Text
 
     def add_document(self, max_topic_level):
         style = self.mindmanager.ActiveDocument.StyleXml
