@@ -68,7 +68,7 @@ class Mindmanager:
     def get_parent_from_topic(self, topic):
         return topic.parent.get()
 
-    def get_link_from_topic(self, topic) -> MindmapLink:
+    def get_links_from_topic(self, topic) -> list['MindmapLink']:
         return None
         # this results in a severe runtime error of MindManager
         link = topic.hyperlink_URL.get()
@@ -139,6 +139,9 @@ class Mindmanager:
     def create_map_icons(self, map_icons):
         pass
 
+    def create_tags(self, tags: list['str']):
+        pass
+
     def add_relationship(self, guid1, guid2, label = ''):
         topic1 = self.get_topic_by_id(guid1)
         topic2 = self.get_topic_by_id(guid2)
@@ -149,6 +152,9 @@ class Mindmanager:
 
     def set_title_to_topic(self, topic, topic_rtf):
         topic.title.set(topic_rtf)
+
+    def add_topic_link(self, guid1, guid2, label=''):
+        pass
 
     def add_document(self, max_topic_level):
         cnt_subtopics = len(self.mindmanager.documents[1].central_topic.subtopics.get())
