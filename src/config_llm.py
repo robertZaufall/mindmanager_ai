@@ -36,13 +36,17 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # best
 
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-01-21'             # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-exp'                            # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-001'                            # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-preview-02-05'             # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-pro-exp-02-05'                        # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
 # CLOUD_TYPE = 'GEMINI+learnlm-1.5-pro-experimental'                    # best
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-thinking-exp-1219'            # not working
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-exp'                          # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-001'                          # best in class
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite-preview-02-05'           # best in class
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-pro-exp-02-05'                      # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-exp-1206'                               # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best in class
