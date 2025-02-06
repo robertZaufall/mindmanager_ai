@@ -348,7 +348,6 @@ class MindmapDocument:
     
             for mindmap_subtopic in mindmap_topic.topic_subtopics:
                 if mindmap_subtopic.topic_guid in done:
-                    #create_relationship_to_parent(mindm, mindmap_subtopic, done)
                     this_guid_as_parent_exists = self.check_parent_exists(topic_guid, mindmap_subtopic.topic_guid)
                     if not this_guid_as_parent_exists:
                         cloned_subtopic = self.clone_mindmap_topic(mindmap_subtopic)
@@ -372,12 +371,12 @@ class MindmapDocument:
         return check
 
     def create_mindmap(self):
-        self.parents = {}
         tags = []
         map_icons = []
         relationships = []
         links = []
 
+        self.parents = {}
         self.guid_counts = {}
         def count_parent_and_child_occurrences(topic):
             if topic.topic_guid:
@@ -392,8 +391,8 @@ class MindmapDocument:
                         self.guid_counts[subtopic.topic_guid]['child'] += 1
                     count_parent_and_child_occurrences(subtopic)
         count_parent_and_child_occurrences(self.mindmap)
-
         self.get_parents_from_mindmap(self.mindmap, self.parents)
+
         self.get_tags_from_mindmap(self.mindmap, tags)
         self.get_map_icons_and_fix_refs_from_mindmap(self.mindmap, map_icons)
         self.get_relationships_from_mindmap(self.mindmap, relationships)
