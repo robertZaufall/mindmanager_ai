@@ -33,16 +33,16 @@ class Mindmanager:
         return self.mindmanager.documents[1].exists()
 
     def get_central_topic(self):
-        object = self.mindmanager.documents[1].central_topic.get()
-        #callouts = object.callouts.get()
-        #relationships = object.relationships.get()
-        #subtopics = object.subtopics.get()
-        #shape = object.shape.get()
-        #attributes = object.attributes.get()
-        #props = object.properties.get()
-        #task = object.task.get()
+        topic = self.mindmanager.documents[1].central_topic.get()
+        #callouts = topic.callouts.get()
+        #relationships = topic.relationships.get()
+        #subtopics = topic.subtopics.get()
+        #shape = topic.shape.get()
+        #attributes = topic.attributes.get()
+        #props = topic.properties.get()
+        #task = topic.task.get()
         #task_properties = task.properties.get()
-        return object
+        return topic
     
     def get_topic_by_id(self, id):
         found_topics = self.mindmanager.documents[1].topics[its.id == id]
@@ -101,7 +101,6 @@ class Mindmanager:
                     reference_object1 = starting_location.id.get(),
                     reference_object2 = ending_location.id.get()
                 ))
-            
         return references
 
     def get_attributes_from_topic(self, topic, attributes_template: list[MindmapAttribute]=[]) -> list[MindmapAttribute]:
@@ -117,24 +116,18 @@ class Mindmanager:
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         id = topic.id.get()
-
         self.set_text_to_topic(topic, mindmap_topic.topic_text)
         refreshed_topic = self.get_topic_by_id(id)
-
         if mindmap_topic.topic_rtf != '':
             self.set_title_to_topic(refreshed_topic, mindmap_topic.topic_rtf)
             refreshed_topic = self.get_topic_by_id(id)
-
         if mindmap_topic.topic_notes:
             refreshed_topic.notes.set(mindmap_topic.topic_notes)
             refreshed_topic = self.get_topic_by_id(id)
-
         if mindmap_topic.topic_guid:
             mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
-
-        mindmap_topic.topic_guid = id
-
-        return refreshed_topic
+        #mindmap_topic.topic_guid = id
+        return refreshed_topic, id
 
     def create_map_icons(self, map_icons):
         pass
@@ -174,6 +167,5 @@ class Mindmanager:
         self.mindmanager.activate()
         if self.MACOS_MERGE_ALL_WINDOWS:
             self.merge_windows()
-
         self.mindmanager = None
         del self.mindmanager

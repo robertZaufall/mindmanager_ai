@@ -152,18 +152,6 @@ class Mindmanager:
     
     def get_attributes_from_topic(self, topic, attributes_template: list[MindmapAttribute]=[]) -> list[MindmapAttribute]:
         attributes = []
-        if len(attributes_template) > 0:
-            namespaces = set(attribute.attribute_namespace for attribute in attributes_template)
-            for namespace in namespaces:
-                if topic.ContainsAttributesNamespace(namespace):
-                    customAttributes = topic.GetAttributes(namespace)
-                    for attribute in attributes_template:
-                        if attribute.attribute_namespace == namespace:
-                            attributes.append(MindmapAttribute(
-                                attribute_namespace = attribute.attribute_namespace,
-                                attribute_name = attribute.attribute_name,
-                                attribute_value = customAttributes.GetAttributeValue(attribute.attribute_name)
-                            ))
         return attributes
 
     def get_guid_from_topic(self, topic) -> str:
@@ -221,33 +209,12 @@ class Mindmanager:
                 if topic_link.link_guid == "" and topic_link.link_url != "":
                     link = hyperlinks.AddHyperlink(topic_link.link_url)
                     link.Title = topic_link.link_text
-        
-        if mindmap_topic.topic_guid:
-            mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
 
-        if len(mindmap_topic.topic_attributes) > 0:
-            namespaces = set(attribute.attribute_namespace for attribute in mindmap_topic.topic_attributes)
-            for namespace in namespaces:
-                customAttributes = topic.GetAttributes(namespace)
-                for attribute in mindmap_topic.topic_attributes:
-                    if attribute.attribute_namespace == namespace:
-                        if namespace == 'mindmanager.ai' and attribute.attribute_name == 'id' and attribute.attribute_value == "":
-                            attribute.attribute_value = mindmap_topic.topic_guid
-                        customAttributes.SetAttributeValue(attribute.attribute_name, attribute.attribute_value)
-        else:
-            if mindmap_topic.topic_guid != "":
-                attribute = MindmapAttribute(attribute_name='id', attribute_value=mindmap_topic.topic_guid)
-                mindmap_topic.topic_attributes.append(attribute)
-                customAttributes = topic.GetAttributes(attribute.attribute_namespace)
-                customAttributes.SetAttributeValue(attribute.attribute_name, attribute.attribute_value)
-
-        mindmap_topic.topic_guid = topic.Guid
-        return topic
+        return topic, topic.Guid
     
     def create_map_icons(self, map_icons):
         if len(map_icons) > 0:
             document = self.mindmanager.ActiveDocument
-
             icon_groups = set(map_icon.icon_group for map_icon in map_icons if map_icon.icon_group)
             for icon_group in icon_groups:
                 group = document.MapMarkerGroups.AddIconMarkerGroup(icon_group)
