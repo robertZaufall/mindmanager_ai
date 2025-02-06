@@ -171,6 +171,12 @@ class Mindmanager:
             topic.Title.Text = topic_rtf
             #topic.Title.TextRtf = topic_rtf
 
+    def add_tag_to_topic(self, tag_text, topic = None, topic_guid = None):
+        if topic_guid:
+            topic = self.get_topic_by_id(topic_guid)
+        if topic:
+            topic.TextLabels.AddTextLabelFromGroup(tag_text, '', True)
+
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         self.set_text_to_topic(topic, mindmap_topic.topic_text)
         self.set_title_to_topic(topic, mindmap_topic.topic_rtf)
@@ -225,11 +231,14 @@ class Mindmanager:
                         marker = group.AddCustomIconMarker(label, map_icon.icon_path)
                         map_icon.icon_signature = marker.Icon.CustomIconSignature
 
-    def create_tags(self, tags: list['str']):
+    def create_tags(self, tags: list['str'], DUPLICATED_TAG: str):
         if len(tags) > 0:
             map_marker_group = self.mindmanager.ActiveDocument.MapMarkerGroups.GetMandatoryMarkerGroup(10)
             for tag in tags:
                 map_marker_group.AddTextLabelMarker(tag)
+            if DUPLICATED_TAG != '' and DUPLICATED_TAG not in tags:
+                map_marker_group.AddTextLabelMarker(DUPLICATED_TAG)
+
 
     def add_relationship(self, guid1, guid2, label=''):
         object1 = self.get_topic_by_id(guid1)

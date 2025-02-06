@@ -65,9 +65,6 @@ class Mindmanager:
     def get_subtopics_from_topic(self, topic):
         return topic.subtopics.get()
 
-    def get_parent_from_topic(self, topic):
-        return topic.parent.get()
-
     def get_links_from_topic(self, topic) -> list['MindmapLink']:
         return None
         # this results in a severe runtime error of MindManager
@@ -114,6 +111,18 @@ class Mindmanager:
         topic_instance = topic.get()
         return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
 
+    def get_parent_from_topic(self, topic):
+        return topic.parent.get()
+
+    def set_text_to_topic(self, topic, topic_text):
+        topic.name.set(topic_text)
+
+    def set_title_to_topic(self, topic, topic_rtf):
+        topic.title.set(topic_rtf)
+
+    def add_tag_to_topic(self, topic, tag_text):
+        pass
+
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         id = topic.id.get()
         self.set_text_to_topic(topic, mindmap_topic.topic_text)
@@ -132,19 +141,13 @@ class Mindmanager:
     def create_map_icons(self, map_icons):
         pass
 
-    def create_tags(self, tags: list['str']):
+    def create_tags(self, tags: list['str'], DUPLICATED_TAG: str):
         pass
 
     def add_relationship(self, guid1, guid2, label = ''):
         topic1 = self.get_topic_by_id(guid1)
         topic2 = self.get_topic_by_id(guid2)
         topic1.make(new=k.relationship, with_properties={k.starting_location: topic1, k.ending_location: topic2})
-
-    def set_text_to_topic(self, topic, topic_text):
-        topic.name.set(topic_text)
-
-    def set_title_to_topic(self, topic, topic_rtf):
-        topic.title.set(topic_rtf)
 
     def add_topic_link(self, guid1, guid2, label=''):
         pass

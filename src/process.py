@@ -57,7 +57,6 @@ def create_mindmap_from_mermaid(document, mermaid, inplace=False):
         document.create_mindmap_and_finalize()
         document.mindmap = None
         document.mindm = None
-        document.selection = None
 
 
 def generate_image(model, document, guid, count=1):
