@@ -2,6 +2,7 @@ import sys
 import os
 
 DUPLICATED_TAG = 'Duplicated'
+DUPLICATE_LABEL = 'DUPLICATE'
 
 class MindmapLink:
     def __init__(self, link_text: str = '', link_url: str = '', link_guid: str = ''):
@@ -318,15 +319,16 @@ class MindmapDocument:
         elif level >= 2: 
             done[mindmap_topic.topic_guid] = [topic_guid] if mindmap_topic.topic_guid not in done else done[mindmap_topic.topic_guid] + [topic_guid]
         if mindmap_topic.topic_guid in done_global:
-            for i in range(len(done_global[mindmap_topic.topic_guid])):
-                link_from = topic_guid
-                link_to = done_global[mindmap_topic.topic_guid][i]
-                self.mindm.add_topic_link(link_from, link_to)
-                self.mindm.add_topic_link(link_to, link_from)
-            if len(done_global[mindmap_topic.topic_guid]) == 1:
-                self.mindm.add_tag_to_topic(DUPLICATED_TAG, topic_guid = done_global[mindmap_topic.topic_guid][0])
-            done_global[mindmap_topic.topic_guid] = done_global[mindmap_topic.topic_guid] + [topic_guid]
+            if self.guid_counts[mindmap_topic.topic_guid]['child'] < 11 and self.guid_counts[mindmap_topic.topic_guid]['parent'] >= 0:
+                for i in range(len(done_global[mindmap_topic.topic_guid])):
+                    link_from = topic_guid
+                    link_to = done_global[mindmap_topic.topic_guid][i]
+                    self.mindm.add_topic_link(link_from, link_to, DUPLICATE_LABEL)
+                    self.mindm.add_topic_link(link_to, link_from, DUPLICATE_LABEL)
+                if len(done_global[mindmap_topic.topic_guid]) == 1:
+                    self.mindm.add_tag_to_topic(DUPLICATED_TAG, topic_guid = done_global[mindmap_topic.topic_guid][0])
             self.mindm.add_tag_to_topic(DUPLICATED_TAG, topic_guid = topic_guid)
+            done_global[mindmap_topic.topic_guid] = done_global[mindmap_topic.topic_guid] + [topic_guid]
         else:
             done_global[mindmap_topic.topic_guid] = [topic_guid]
 
@@ -375,6 +377,21 @@ class MindmapDocument:
         map_icons = []
         relationships = []
         links = []
+
+        self.guid_counts = {}
+        def count_parent_and_child_occurrences(topic):
+            if topic.topic_guid:
+                if topic.topic_guid not in self.guid_counts:
+                    self.guid_counts[topic.topic_guid] = {'parent': 0, 'child': 0}
+                for subtopic in topic.topic_subtopics:
+                    if topic.topic_guid:
+                        self.guid_counts[topic.topic_guid]['parent'] += 1
+                    if subtopic.topic_guid:
+                        if subtopic.topic_guid not in self.guid_counts:
+                            self.guid_counts[subtopic.topic_guid] = {'parent': 0, 'child': 0}
+                        self.guid_counts[subtopic.topic_guid]['child'] += 1
+                    count_parent_and_child_occurrences(subtopic)
+        count_parent_and_child_occurrences(self.mindmap)
 
         self.get_parents_from_mindmap(self.mindmap, self.parents)
         self.get_tags_from_mindmap(self.mindmap, tags)
