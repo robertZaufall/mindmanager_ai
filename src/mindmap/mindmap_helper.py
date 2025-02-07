@@ -1,5 +1,6 @@
 import sys
 import os
+import uuid
 
 DUPLICATED_TAG = 'Duplicated'
 DUPLICATE_LABEL = 'DUPLICATE'
@@ -136,11 +137,16 @@ class MindmapDocument:
         self.mindmap = mindmap
         return True
 
-    def get_max_topic_level(self, mindmap_topic, max_topic_level = 0):
+    def get_max_topic_level(self, mindmap_topic, max_topic_level=0, visited=None):
+        if visited is None:
+            visited = set()
+        if mindmap_topic.topic_guid in visited:
+            return max_topic_level
+        visited.add(mindmap_topic.topic_guid)
         for mindmap_subtopic in mindmap_topic.topic_subtopics:
             if mindmap_subtopic.topic_level > max_topic_level:
                 max_topic_level = mindmap_subtopic.topic_level
-            max_topic_level = self.get_max_topic_level(mindmap_subtopic, max_topic_level)
+            max_topic_level = self.get_max_topic_level(mindmap_subtopic, max_topic_level, visited)
         return max_topic_level
 
     def get_parent_topic(self, topic):
@@ -196,7 +202,12 @@ class MindmapDocument:
         mindmap_topic.topic_subtopics = mindmap_subtopics
         return mindmap_topic 
 
-    def get_relationships_from_mindmap(self, mindmap, references):
+    def get_relationships_from_mindmap(self, mindmap, references, visited=None):
+        if visited is None:
+            visited = set()
+        if mindmap.topic_guid in visited:
+            return
+        visited.add(mindmap.topic_guid)
         for reference in mindmap.topic_references:
             if reference.reference_direction == 'OUT':
                 references.append(MindmapReference(
@@ -206,9 +217,14 @@ class MindmapDocument:
                     reference_label=reference.reference_label
                 ))
         for mindmap_subtopic in mindmap.topic_subtopics:
-            self.get_relationships_from_mindmap(mindmap_subtopic, references)
+            self.get_relationships_from_mindmap(mindmap_subtopic, references, visited)
 
-    def get_topic_links_from_mindmap(self, mindmap, links):
+    def get_topic_links_from_mindmap(self, mindmap, links, visited=None):
+        if visited is None:
+            visited = set()
+        if mindmap.topic_guid in visited:
+            return
+        visited.add(mindmap.topic_guid)
         for link in mindmap.topic_links:
             if link.link_guid != '':
                 links.append(MindmapReference(
@@ -218,23 +234,39 @@ class MindmapDocument:
                     reference_label=link.link_text
                 ))
         for mindmap_subtopic in mindmap.topic_subtopics:
-            self.get_topic_links_from_mindmap(mindmap_subtopic, links)
+            self.get_topic_links_from_mindmap(mindmap_subtopic, links, visited)
 
-    def get_tags_from_mindmap(self, mindmap, tags):
+    def get_tags_from_mindmap(self, mindmap, tags, visited=None):
+        if visited is None:
+            visited = set()
+        if mindmap.topic_guid in visited:
+            return
+        visited.add(mindmap.topic_guid)
         for tag in mindmap.topic_tags:
             if tag.tag_text != '' and tag.tag_text not in tags:
                 tags.append(tag.tag_text)
         for mindmap_subtopic in mindmap.topic_subtopics:
-            self.get_tags_from_mindmap(mindmap_subtopic, tags)
+            self.get_tags_from_mindmap(mindmap_subtopic, tags, visited)
 
-    def get_parents_from_mindmap(self, mindmap, parents):
+    def get_parents_from_mindmap(self, mindmap, parents, visited=None):
+        if visited is None:
+            visited = set()
+        if mindmap.topic_guid in visited:
+            return
+        visited.add(mindmap.topic_guid)
         for subtopic in mindmap.topic_subtopics:
             if subtopic.topic_guid not in parents:
                 parents[subtopic.topic_guid] = mindmap.topic_guid
-                self.get_parents_from_mindmap(subtopic, parents)
-            return
+                self.get_parents_from_mindmap(subtopic, parents, visited)
+        return
 
-    def get_map_icons_and_fix_refs_from_mindmap(self, mindmap, map_icons: list['MindmapIcon']):
+    def get_map_icons_and_fix_refs_from_mindmap(self, mindmap, map_icons: list['MindmapIcon'], visited=None):
+        if visited is None:
+            visited = set()
+        if mindmap.topic_guid in visited:
+            return
+        visited.add(mindmap.topic_guid)
+        
         for i, topic_icon_ref in enumerate(mindmap.topic_icons):
             if not topic_icon_ref.icon_is_stock_icon and topic_icon_ref.icon_group == 'Types':
                 found = False
@@ -254,7 +286,7 @@ class MindmapDocument:
                     map_icons.append(new_icon)
                 mindmap.topic_icons[i] = new_icon
         for mindmap_subtopic in mindmap.topic_subtopics:
-            self.get_map_icons_and_fix_refs_from_mindmap(mindmap_subtopic, map_icons)
+            self.get_map_icons_and_fix_refs_from_mindmap(mindmap_subtopic, map_icons, visited)
 
     def get_topic_texts_from_selection(self, mindmap_topics):
         topic_texts = []
@@ -360,17 +392,23 @@ class MindmapDocument:
                     self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, done_global, level+1)
         return mindmap_topic
 
-    def check_parent_exists(self, topic_guid, this_guid):
+    def check_parent_exists(self, topic_guid, this_guid, visited=None):
+        if visited is None:
+            visited = set()
+        if topic_guid in visited:
+            return False
+        visited.add(topic_guid)
+        
         check = False
         if topic_guid in self.parents:
             parent_guid = self.parents[topic_guid]
             if parent_guid == this_guid:
                 check = True
             else:
-                check = self.check_parent_exists(parent_guid, this_guid)
+                check = self.check_parent_exists(parent_guid, this_guid, visited)
         return check
 
-    def create_mindmap(self):
+    def create_mindmap(self, verbose=False):
         tags = []
         map_icons = []
         relationships = []
@@ -378,8 +416,13 @@ class MindmapDocument:
 
         self.parents = {}
         self.guid_counts = {}
-        def count_parent_and_child_occurrences(topic):
-            if topic.topic_guid:
+        def count_parent_and_child_occurrences(topic, visited=None):
+            if visited is None:
+                visited = set()
+            if str(topic.topic_guid) + '' == '':
+                topic.topic_guid = str(uuid.uuid4())
+            if topic.topic_guid not in visited:
+                visited.add(topic.topic_guid)
                 if topic.topic_guid not in self.guid_counts:
                     self.guid_counts[topic.topic_guid] = {'parent': 0, 'child': 0}
                 for subtopic in topic.topic_subtopics:
@@ -389,21 +432,42 @@ class MindmapDocument:
                         if subtopic.topic_guid not in self.guid_counts:
                             self.guid_counts[subtopic.topic_guid] = {'parent': 0, 'child': 0}
                         self.guid_counts[subtopic.topic_guid]['child'] += 1
-                    count_parent_and_child_occurrences(subtopic)
+                    count_parent_and_child_occurrences(subtopic, visited)
+        if verbose:
+            print("executing count_parent_and_child_occurrences")
         count_parent_and_child_occurrences(self.mindmap)
+        if verbose:
+            print("executing get_parents_from_mindmap")
         self.get_parents_from_mindmap(self.mindmap, self.parents)
 
+        if verbose:
+            print("executing get_tags_from_mindmap")
         self.get_tags_from_mindmap(self.mindmap, tags)
+        if verbose:
+            print("executing get_map_icons_and_fix_refs_from_mindmap")
         self.get_map_icons_and_fix_refs_from_mindmap(self.mindmap, map_icons)
+        if verbose:
+            print("executing get_relationships_from_mindmap")
         self.get_relationships_from_mindmap(self.mindmap, relationships)
+        if verbose:
+            print("executing get_topic_links_from_mindmap")
         self.get_topic_links_from_mindmap(self.mindmap, links)
 
         self.mindm.add_document(0)
+        if verbose:
+            print("executing create_map_icons")
         self.mindm.create_map_icons(map_icons)
+        if verbose:
+            print("executing create_tags")
         self.mindm.create_tags(tags, DUPLICATED_TAG)
+        if verbose:
+            print("executing set_text_to_topic")
         self.mindm.set_text_to_topic(self.mindm.get_central_topic(), self.mindmap.topic_text)
+
         topic = self.mindm.get_central_topic()
 
+        if verbose:
+            print("start recursive map generation from central_topic...")
         done_global = {}
         self.set_topic_from_mindmap_topic(topic=topic, mindmap_topic=self.mindmap, map_icons=map_icons, done={}, done_global=done_global)
 
