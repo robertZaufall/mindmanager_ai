@@ -18,7 +18,7 @@ class Mindmanager:
         self.library_folder = self.MACOS_LIBRARY_FOLDER.replace("XX", self.mindmanager.version.get().split('.')[0])
         self.orgchart_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Org-Chart Map.mmat"))
         self.radial_template = mactypes.Alias(os.path.join(self.library_folder, "Templates", "Blank Templates", "Radial Map.mmat"))
-    
+
     def merge_windows(self):
         for window in self.mindmanager.windows():
             if window.id.get() == self.master_window:
@@ -30,40 +30,72 @@ class Mindmanager:
         pass
     
     def document_exists(self):
-        return self.mindmanager.documents[1].exists()
+        try:
+            return self.mindmanager.documents[1].exists()
+        except Exception as e:
+            print(f"Error checking document existence: {e}")
+            return False
 
     def get_central_topic(self):
-        topic = self.mindmanager.documents[1].central_topic.get()
-        #callouts = topic.callouts.get()
-        #relationships = topic.relationships.get()
-        #subtopics = topic.subtopics.get()
-        #shape = topic.shape.get()
-        #attributes = topic.attributes.get()
-        #props = topic.properties.get()
-        #task = topic.task.get()
-        #task_properties = task.properties.get()
-        return topic
+        try:
+            topic = self.mindmanager.documents[1].central_topic.get()
+            #callouts = topic.callouts.get()
+            #relationships = topic.relationships.get()
+            #subtopics = topic.subtopics.get()
+            #shape = topic.shape.get()
+            #attributes = topic.attributes.get()
+            #props = topic.properties.get()
+            #task = topic.task.get()
+            #task_properties = task.properties.get()
+            return topic
+        except Exception as e:
+            print(f"Error getting central topic: {e}")
+            return None
     
     def get_topic_by_id(self, id):
-        found_topics = self.mindmanager.documents[1].topics[its.id == id]
-        if found_topics.count() == 0:
+        try:
+            found_topics = self.mindmanager.documents[1].topics[its.id == id]
+            if found_topics.count() == 0:
+                return None
+            return found_topics[0].get()
+        except Exception as e:
+            print(f"Error getting topic by id: {e}")
             return None
-        return found_topics[0].get()
     
     def get_selection(self):
-        return self.mindmanager.documents[1].selection.get()
+        try:
+            return self.mindmanager.documents[1].selection.get()
+        except Exception as e:
+            print(f"Error getting selection: {e}")
+            return None
     
     def get_level_from_topic(self, topic):
-        return topic.level.get()
+        try:
+            return topic.level.get()
+        except Exception as e:
+            print(f"Error getting level from topic: {e}")
+            return None
     
     def get_text_from_topic(self, topic):
-        return topic.name.get().replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
+        try:
+            return topic.name.get().replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
+        except Exception as e:
+            print(f"Error getting text from topic: {e}")
+            return ""
     
     def get_title_from_topic(self, topic):
-        return topic.title.get()
-
+        try:
+            return topic.title.get()
+        except Exception as e:
+            print(f"Error getting title from topic: {e}")
+            return ""
+    
     def get_subtopics_from_topic(self, topic):
-        return topic.subtopics.get()
+        try:
+            return topic.subtopics.get()
+        except Exception as e:
+            print(f"Error getting subtopics from topic: {e}")
+            return []
 
     def get_links_from_topic(self, topic) -> list['MindmapLink']:
         return None
@@ -80,24 +112,31 @@ class Mindmanager:
         return []
 
     def get_notes_from_topic(self, topic) -> MindmapNotes:
-        return topic.notes.get()
+        try:
+            return topic.notes.get()
+        except Exception as e:
+            print(f"Error getting notes from topic: {e}")
+            return None
 
     def get_tags_from_topic(self, topic) -> list[MindmapTag]:
         return []
 
     def get_references_from_topic(self, topic) -> list[MindmapReference]:
         references = []
-        relationships = topic.relationships.get()
-        for relationship in relationships:
-            relationship_instance = relationship.get()
-            starting_location = relationship_instance.starting_location.get()
-            ending_location = relationship_instance.ending_location.get()
-            if starting_location == topic:
-                references.append(MindmapReference(
-                    reference_direction = 'OUT',
-                    reference_object1 = starting_location.id.get(),
-                    reference_object2 = ending_location.id.get()
-                ))
+        try:
+            relationships = topic.relationships.get()
+            for relationship in relationships:
+                relationship_instance = relationship.get()
+                starting_location = relationship_instance.starting_location.get()
+                ending_location = relationship_instance.ending_location.get()
+                if starting_location == topic:
+                    references.append(MindmapReference(
+                        reference_direction='OUT',
+                        reference_object1=starting_location.id.get(),
+                        reference_object2=ending_location.id.get()
+                    ))
+        except Exception as e:
+            print(f"Error in get_references_from_topic: {e}")
         return references
 
     def get_attributes_from_topic(self, topic, attributes_template: list[MindmapAttribute]=[]) -> list[MindmapAttribute]:
@@ -105,38 +144,60 @@ class Mindmanager:
         return attributes
 
     def get_guid_from_topic(self, topic) -> str:
-        return topic.id.get()
+        try:
+            return topic.id.get()
+        except Exception as e:
+            print(f"Error in get_guid_from_topic: {e}")
+            return ""
         
     def add_subtopic_to_topic(self, topic, topic_text):
-        topic_instance = topic.get()
-        return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
+        try:
+            topic_instance = topic.get()
+            return topic_instance.subtopics.end.make(new=k.topic, with_properties={k.name: topic_text})
+        except Exception as e:
+            print(f"Error in add_subtopic_to_topic: {e}")
+            return None
 
     def get_parent_from_topic(self, topic):
-        return topic.parent.get()
+        try:
+            return topic.parent.get()
+        except Exception as e:
+            print(f"Error in get_parent_from_topic: {e}")
+            return None
 
     def set_text_to_topic(self, topic, topic_text):
-        topic.name.set(topic_text)
+        try:
+            topic.name.set(topic_text)
+        except Exception as e:
+            print(f"Error in set_text_to_topic: {e}")
 
     def set_title_to_topic(self, topic, topic_rtf):
-        topic.title.set(topic_rtf)
+        try:
+            topic.title.set(topic_rtf)
+        except Exception as e:
+            print(f"Error in set_title_to_topic: {e}")
 
     def add_tag_to_topic(self, topic, tag_text):
         pass
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
-        id = topic.id.get()
-        self.set_text_to_topic(topic, mindmap_topic.topic_text)
-        refreshed_topic = self.get_topic_by_id(id)
-        if mindmap_topic.topic_rtf != '':
-            self.set_title_to_topic(refreshed_topic, mindmap_topic.topic_rtf)
-            refreshed_topic = self.get_topic_by_id(id)
-        if mindmap_topic.topic_notes:
-            refreshed_topic.notes.set(mindmap_topic.topic_notes)
-            refreshed_topic = self.get_topic_by_id(id)
-        if mindmap_topic.topic_guid:
-            mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
-        #mindmap_topic.topic_guid = id
-        return refreshed_topic, id
+        try:
+            topic_id = topic.id.get()
+            self.set_text_to_topic(topic, mindmap_topic.topic_text)
+            refreshed_topic = self.get_topic_by_id(topic_id)
+            if mindmap_topic.topic_rtf != '':
+                self.set_title_to_topic(refreshed_topic, mindmap_topic.topic_rtf)
+                refreshed_topic = self.get_topic_by_id(topic_id)
+            if mindmap_topic.topic_notes:
+                refreshed_topic.notes.set(mindmap_topic.topic_notes)
+                refreshed_topic = self.get_topic_by_id(topic_id)
+            if mindmap_topic.topic_guid:
+                mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
+            #mindmap_topic.topic_guid = topic_id
+            return refreshed_topic, topic_id
+        except Exception as e:
+            print(f"Error in set_topic_from_mindmap_topic: {e}")
+            return None, None
 
     def create_map_icons(self, map_icons):
         pass
@@ -145,9 +206,15 @@ class Mindmanager:
         pass
 
     def add_relationship(self, guid1, guid2, label = ''):
-        topic1 = self.get_topic_by_id(guid1)
-        topic2 = self.get_topic_by_id(guid2)
-        topic1.make(new=k.relationship, with_properties={k.starting_location: topic1, k.ending_location: topic2})
+        try:
+            topic1 = self.get_topic_by_id(guid1)
+            topic2 = self.get_topic_by_id(guid2)
+            if topic1 is None or topic2 is None:
+                print("Error in add_relationship: One or both topics not found.")
+                return
+            topic1.make(new=k.relationship, with_properties={k.starting_location: topic1, k.ending_location: topic2})
+        except Exception as e:
+            print(f"Error in add_relationship: {e}")
 
     def add_topic_link(self, guid1, guid2, label=''):
         pass
