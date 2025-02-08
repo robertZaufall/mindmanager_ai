@@ -288,6 +288,24 @@ class MindmapDocument:
         for mindmap_subtopic in mindmap.topic_subtopics:
             self.get_map_icons_and_fix_refs_from_mindmap(mindmap_subtopic, map_icons, visited)
 
+    def count_parent_and_child_occurrences(self, mindmap_topic, guid_counts, visited=None):
+        if visited is None:
+            visited = set()
+        if str(mindmap_topic.topic_guid) + '' == '':
+            mindmap_topic.topic_guid = str(uuid.uuid4())
+        if mindmap_topic.topic_guid not in visited:
+            visited.add(mindmap_topic.topic_guid)
+            if mindmap_topic.topic_guid not in guid_counts:
+                guid_counts[mindmap_topic.topic_guid] = {'parent': 0, 'child': 0}
+            for mindmap_subtopic in mindmap_topic.topic_subtopics:
+                if mindmap_topic.topic_guid:
+                    guid_counts[mindmap_topic.topic_guid]['parent'] += 1
+                if mindmap_subtopic.topic_guid:
+                    if mindmap_subtopic.topic_guid not in guid_counts:
+                        guid_counts[mindmap_subtopic.topic_guid] = {'parent': 0, 'child': 0}
+                    guid_counts[mindmap_subtopic.topic_guid]['child'] += 1
+                self.count_parent_and_child_occurrences(mindmap_subtopic, guid_counts, visited)
+
     def get_topic_texts_from_selection(self, mindmap_topics):
         topic_texts = []
         topic_levels = []
@@ -364,33 +382,40 @@ class MindmapDocument:
         else:
             done_global[mindmap_topic.topic_guid] = [topic_guid]
 
-    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done = {}, done_global = {}, level=0):
-        if self.turbo_mode:
-            topic_guid = self.mindm.get_guid_from_topic(topic)
-            self.update_done(topic_guid, mindmap_topic, level, done, done_global)
-            for mindmap_subtopic in mindmap_topic.topic_subtopics:
-                subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
-                self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, done_global, level+1)
-        else:
-            topic, topic_guid = self.mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
-            self.update_done(topic_guid, mindmap_topic, level, done, done_global)
+    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done={}, done_global={}, level=0):
+        try:
+            if self.turbo_mode:
+                topic_guid = self.mindm.get_guid_from_topic(topic)
+                self.update_done(topic_guid, mindmap_topic, level, done, done_global)
+                for mindmap_subtopic in mindmap_topic.topic_subtopics:
+                    try:
+                        subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
+                        self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, done_global, level + 1)
+                    except Exception as e:
+                        print(f"Error(1) processing topic/subtopic {mindmap_topic.topic_guid}/{mindmap_subtopic.topic_guid}: {e}")
+            else:
+                topic, topic_guid = self.mindm.set_topic_from_mindmap_topic(topic, mindmap_topic, map_icons)
+                self.update_done(topic_guid, mindmap_topic, level, done, done_global)
 
-            if mindmap_topic.topic_subtopics and len(mindmap_topic.topic_subtopics) > 0:
-                mindmap_topic.topic_subtopics.sort(key=lambda subtopic: subtopic.topic_text)
-    
-            for mindmap_subtopic in mindmap_topic.topic_subtopics:
-                if mindmap_subtopic.topic_guid in done:
-                    this_guid_as_parent_exists = self.check_parent_exists(topic_guid, mindmap_subtopic.topic_guid)
-                    if not this_guid_as_parent_exists:
-                        cloned_subtopic = self.clone_mindmap_topic(mindmap_subtopic)
-                        subtopic = self.mindm.add_subtopic_to_topic(topic, cloned_subtopic.topic_text)
-                        self.set_topic_from_mindmap_topic(subtopic, cloned_subtopic, map_icons, done, done_global, level+1)
-                    else:
-                        pass
-                else:
-                    subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
-                    self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, done_global, level+1)
-        return mindmap_topic
+                if mindmap_topic.topic_subtopics and len(mindmap_topic.topic_subtopics) > 0:
+                    mindmap_topic.topic_subtopics.sort(key=lambda subtopic: subtopic.topic_text)
+
+                for mindmap_subtopic in mindmap_topic.topic_subtopics:
+                    try:
+                        if mindmap_subtopic.topic_guid in done:
+                            this_guid_as_parent_exists = self.check_parent_exists(topic_guid, mindmap_subtopic.topic_guid)
+                            if not this_guid_as_parent_exists:
+                                cloned_subtopic = self.clone_mindmap_topic(mindmap_subtopic)
+                                subtopic = self.mindm.add_subtopic_to_topic(topic, cloned_subtopic.topic_text)
+                                self.set_topic_from_mindmap_topic(subtopic, cloned_subtopic, map_icons, done, done_global, level + 1)
+                        else:
+                            subtopic = self.mindm.add_subtopic_to_topic(topic, mindmap_subtopic.topic_text)
+                            self.set_topic_from_mindmap_topic(subtopic, mindmap_subtopic, map_icons, done, done_global, level + 1)
+                    except Exception as e:
+                        print(f"Error(2) processing topic/subtopic {mindmap_topic.topic_guid}/{mindmap_subtopic.topic_guid}: {e}")
+            return mindmap_topic
+        except Exception as e:
+            print(f"Error in set_topic_from_mindmap_topic at level {level} with topic {mindmap_topic.topic_guid}: {e}")
 
     def check_parent_exists(self, topic_guid, this_guid, visited=None):
         if visited is None:
@@ -416,26 +441,10 @@ class MindmapDocument:
 
         self.parents = {}
         self.guid_counts = {}
-        def count_parent_and_child_occurrences(topic, visited=None):
-            if visited is None:
-                visited = set()
-            if str(topic.topic_guid) + '' == '':
-                topic.topic_guid = str(uuid.uuid4())
-            if topic.topic_guid not in visited:
-                visited.add(topic.topic_guid)
-                if topic.topic_guid not in self.guid_counts:
-                    self.guid_counts[topic.topic_guid] = {'parent': 0, 'child': 0}
-                for subtopic in topic.topic_subtopics:
-                    if topic.topic_guid:
-                        self.guid_counts[topic.topic_guid]['parent'] += 1
-                    if subtopic.topic_guid:
-                        if subtopic.topic_guid not in self.guid_counts:
-                            self.guid_counts[subtopic.topic_guid] = {'parent': 0, 'child': 0}
-                        self.guid_counts[subtopic.topic_guid]['child'] += 1
-                    count_parent_and_child_occurrences(subtopic, visited)
+
         if verbose:
             print("executing count_parent_and_child_occurrences")
-        count_parent_and_child_occurrences(self.mindmap)
+        self.count_parent_and_child_occurrences(self.mindmap, self.guid_counts)
         if verbose:
             print("executing get_parents_from_mindmap")
         self.get_parents_from_mindmap(self.mindmap, self.parents)
