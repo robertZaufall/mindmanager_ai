@@ -9,6 +9,8 @@ from PIL import Image
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from mindmap.mindmap_helper import MindmapLink, MindmapImage, MindmapNotes, MindmapIcon, MindmapTag, MindmapReference
 
+RTF_WORKAROUND = False
+
 class Mindmanager:
 
     def get_mindmanager_version():
@@ -90,9 +92,10 @@ class Mindmanager:
     def get_title_from_topic(self, topic):
         try:
             title = topic.Title
-            text = str(title.Text) + ''
-            return text
-            #return title.TextRtf if title.TextRtf != '' else ''
+            if RTF_WORKAROUND:
+                return str(title.Text) + ''
+            else:
+                return title.TextRtf if title.TextRtf != '' else ''
         except Exception as e:
             print(f"Error in get_title_from_topic: {e}")
             return ""
@@ -234,8 +237,10 @@ class Mindmanager:
     def set_title_to_topic(self, topic, topic_rtf):
         try:
             if topic_rtf != "":
-                topic.Title.Text = topic_rtf
-                #topic.Title.TextRtf = topic_rtf
+                if RTF_WORKAROUND:
+                    topic.Title.Text = topic_rtf
+                else:
+                    topic.Title.TextRtf = topic_rtf
         except Exception as e:
             print(f"Error in set_title_to_topic: {e}")
 
