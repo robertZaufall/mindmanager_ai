@@ -36,31 +36,24 @@ class MindmapIcon:
         self.icon_path = icon_path
         self.icon_group = icon_group
 
-class MindmapAttribute:
-    def __init__(self, attribute_namespace: str = 'mindmanager.ai', attribute_name: str = '', attribute_value: str = ''):
-        self.attribute_namespace = attribute_namespace
-        self.attribute_name = attribute_name
-        self.attribute_value = attribute_value
-
 class MindmapTag:
     def __init__(self, tag_text: str = ''):
         self.tag_text = tag_text
 
 class MindmapReference:
     def __init__(self, 
-                 reference_object1: str = '', 
-                 reference_object2: str = '', 
+                 reference_topic_guid_1: str = '', 
+                 reference_topic_guid_2: str = '', 
                  reference_direction: str = '', 
                  reference_label: str = ''):
-        self.reference_object1 = reference_object1
-        self.reference_object2 = reference_object2
+        self.reference_topic_guid_1 = reference_topic_guid_1
+        self.reference_topic_guid_2 = reference_topic_guid_2
         self.reference_direction = reference_direction
         self.reference_label = reference_label
 
 class MindmapTopic:
     def __init__(self,
                  topic_guid: str = '',
-                 topic_originalguid: str = '',
                  topic_text: str = '',
                  topic_rtf: str = '',
                  topic_level: int = 0,
@@ -72,23 +65,20 @@ class MindmapTopic:
                  topic_icons: list['MindmapIcon'] = None,
                  topic_notes: 'MindmapNotes' = None,
                  topic_tags: list['MindmapTag'] = None,
-                 topic_references: list['MindmapReference'] = None,
-                 topic_attributes: list['MindmapAttribute'] = None):
+                 topic_references: list['MindmapReference'] = None):
         self.topic_guid = topic_guid
-        self.topic_originalguid = topic_originalguid
         self.topic_text = topic_text.replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
         self.topic_rtf = topic_rtf
         self.topic_level = topic_level
         self.topic_selected = topic_selected
         self.topic_parent = topic_parent
-        self.topic_subtopics = topic_subtopics if topic_subtopics is not None else []
         self.topic_links = topic_links if topic_links is not None else []
         self.topic_image = topic_image
         self.topic_icons = topic_icons if topic_icons is not None else []
         self.topic_notes = topic_notes
         self.topic_tags = topic_tags if topic_tags is not None else []
         self.topic_references = topic_references if topic_references is not None else []
-        self.topic_attributes = topic_attributes if topic_attributes is not None else [MindmapAttribute(attribute_name='id')]
+        self.topic_subtopics = topic_subtopics if topic_subtopics is not None else []
 
 class MindmapDocument:
 
@@ -114,18 +104,15 @@ class MindmapDocument:
 
         self.mindm = mindmanager.Mindmanager(charttype)
 
-    def get_mindmap(self, topic=None, attributes_template: list['MindmapAttribute'] = None):
+    def get_mindmap(self, topic=None):
         if not self.mindm.document_exists():
             print("No document found. Please open MindManager with a document.")    
             return False
 
-        if attributes_template is None:
-            attributes_template = [MindmapAttribute(attribute_name='id')]
-        
         if topic is None:
             topic = self.mindm.get_central_topic()
         
-        mindmap = self.get_mindmap_topic_from_topic(topic, attributes_template=attributes_template)
+        mindmap = self.get_mindmap_topic_from_topic(topic)
 
         selection = self.get_selection()
         selected_topic_texts, selected_topic_levels, selected_topic_ids, central_topic_selected = self.get_topic_texts_from_selection(selection)
@@ -177,9 +164,7 @@ class MindmapDocument:
             mindmap_topics.append(mindmap_topic)
         return mindmap_topics
 
-    def get_mindmap_topic_from_topic(self, topic, parent_topic=None, attributes_template: list['MindmapAttribute'] = None):
-        if attributes_template is None:
-            attributes_template = []
+    def get_mindmap_topic_from_topic(self, topic, parent_topic=None):
         mindmap_topic = MindmapTopic(
             topic_guid=self.mindm.get_guid_from_topic(topic),
             topic_text=self.mindm.get_text_from_topic(topic),
@@ -192,12 +177,11 @@ class MindmapDocument:
             topic_tags=self.mindm.get_tags_from_topic(topic),
             topic_references=self.mindm.get_references_from_topic(topic),
             topic_parent=parent_topic,
-            topic_attributes=self.mindm.get_attributes_from_topic(topic, attributes_template),
         )
         subtopics = self.mindm.get_subtopics_from_topic(topic)
         mindmap_subtopics = []
         for subtopic in subtopics:
-            mindmap_subtopic = self.get_mindmap_topic_from_topic(subtopic, mindmap_topic, attributes_template)
+            mindmap_subtopic = self.get_mindmap_topic_from_topic(subtopic, mindmap_topic)
             mindmap_subtopics.append(mindmap_subtopic)
         mindmap_topic.topic_subtopics = mindmap_subtopics
         return mindmap_topic 
@@ -211,8 +195,8 @@ class MindmapDocument:
         for reference in mindmap.topic_references:
             if reference.reference_direction == 'OUT':
                 references.append(MindmapReference(
-                    reference_object1=reference.reference_object1,
-                    reference_object2=reference.reference_object2,
+                    reference_topic_guid_1=reference.reference_topic_guid_1,
+                    reference_topic_guid_2=reference.reference_topic_guid_2,
                     reference_direction=reference.reference_direction,
                     reference_label=reference.reference_label
                 ))
@@ -228,8 +212,8 @@ class MindmapDocument:
         for link in mindmap.topic_links:
             if link.link_guid != '':
                 links.append(MindmapReference(
-                    reference_object1=mindmap.topic_guid, 
-                    reference_object2=link.link_guid, 
+                    reference_topic_guid_1=mindmap.topic_guid, 
+                    reference_topic_guid_2=link.link_guid, 
                     reference_direction='OUT', 
                     reference_label=link.link_text
                 ))
@@ -321,24 +305,14 @@ class MindmapDocument:
                     central_topic_selected = True
         return topic_texts, topic_levels, topic_ids, central_topic_selected
             
-    def clone_mindmap_topic(self, mindmap_topic, subtopics: list['MindmapTopic'] = None, attributes: list['MindmapAttribute']=None, parent=None):
+    def clone_mindmap_topic(self, mindmap_topic, subtopics: list['MindmapTopic'] = None, parent=None):
         cloned_subtopics = []
         if subtopics is not None:
             for subtopic in subtopics:
                 cloned_subtopic = self.clone_mindmap_topic(subtopic)
                 cloned_subtopics.append(cloned_subtopic)
-        cloned_attributes = []
-        if attributes is not None:
-            for attribute in attributes:
-                cloned_attribute = MindmapAttribute(
-                    attribute_namespace=attribute.attribute_namespace,
-                    attribute_name=attribute.attribute_name,
-                    attribute_value=attribute.attribute_value
-                )
-                cloned_attributes.append(cloned_attribute)
         return MindmapTopic(
             topic_guid=mindmap_topic.topic_guid,
-            topic_originalguid=mindmap_topic.topic_originalguid,
             topic_text=mindmap_topic.topic_text, 
             topic_rtf=mindmap_topic.topic_rtf,
             topic_level=mindmap_topic.topic_level,
@@ -348,18 +322,8 @@ class MindmapDocument:
             topic_icons=mindmap_topic.topic_icons,
             topic_notes=mindmap_topic.topic_notes,
             topic_tags=mindmap_topic.topic_tags,
-            topic_attributes=cloned_attributes,
             topic_subtopics=cloned_subtopics
         )
-
-    def create_relationship_to_parent(self, mindmap_topic, done):
-        parent = mindmap_topic.topic_parent
-        parent_id = self.get_attribute_from_mindmap_topic(parent.topic_attributes, 'id')
-        if parent_id:
-            link_from = mindmap_topic.topic_guid
-            if parent_id in done:
-                link_to = done[parent_id]
-                self.mindm.add_relationship(link_from, link_to)
 
     def update_done(self, topic_guid, mindmap_topic, level, done, done_global):
         if mindmap_topic.topic_guid == '':
@@ -481,15 +445,15 @@ class MindmapDocument:
         self.set_topic_from_mindmap_topic(topic=topic, mindmap_topic=self.mindmap, map_icons=map_icons, done={}, done_global=done_global)
 
         for reference in relationships:
-            object1_guids = done_global[reference.reference_object1]
-            object2_guids = done_global[reference.reference_object2]
+            object1_guids = done_global[reference.reference_topic_guid_1]
+            object2_guids = done_global[reference.reference_topic_guid_2]
             for object1_guid in object1_guids:
                 for object2_guid in object2_guids:
                     self.mindm.add_relationship(object1_guid, object2_guid, reference.reference_label)
 
         for link in links:
-            object1_guids = done_global[link.reference_object1]
-            object2_guids = done_global[link.reference_object2]
+            object1_guids = done_global[link.reference_topic_guid_1]
+            object2_guids = done_global[link.reference_topic_guid_2]
             for object1_guid in object1_guids:
                 for object2_guid in object2_guids:
                     self.mindm.add_topic_link(object1_guid, object2_guid, link.reference_label)

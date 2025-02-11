@@ -7,50 +7,42 @@ import src.mindmap.mindmap_helper as mindmap_helper
 import json
 from collections import deque
 
-def get_object_id(obj):
-    guid = getattr(obj, 'topic_guid', None)
-    if guid:
-        return guid
-    return f"ObjID_{id(obj)}"
+def serialize_object(obj, visited=None):
+    if visited is None:
+        visited = set()
 
-def flatten_object_graph(root):
-    nodes = {}
-    visited = set()
-    queue = deque([root])
-    while queue:
-        obj = queue.popleft()
-        obj_id = get_object_id(obj)
-        if obj_id in visited:
-            continue
-        visited.add(obj_id)
+    if id(obj) in visited:
+        return None  # Avoid recursion
+
+    visited.add(id(obj))
+
+    if isinstance(obj, (str, int, float, bool, type(None))):
+        return obj
+
+    if isinstance(obj, list):
+        return [serialize_object(item, visited) for item in obj]
+
+    if isinstance(obj, dict):
+        return {str(k): serialize_object(v, visited) for k, v in obj.items()}
+
+    if hasattr(obj, '__dict__'):
         serialized = {}
-        if hasattr(obj, '__dict__'):
-            for attr_name, attr_value in vars(obj).items():
-                serialized[attr_name] = _serialize_field(attr_value, queue)
-        nodes[obj_id] = serialized
-    return {
-        "root": get_object_id(root),
-        "nodes": nodes
-    }
+        for attr_name, attr_value in vars(obj).items():
+            if attr_name in ["topic_parent", "topic_level", "topic_selected", "topic_parent"]:
+                continue
+            if attr_name == "topic_rtf" and hasattr(obj, 'topic_text') and obj.topic_text == attr_value:
+                continue
+            if attr_value == None or attr_value == "" or attr_value == []:
+                continue
+            new_attr_name = attr_name.replace("topic_", "")
+            serialized[new_attr_name] = serialize_object(attr_value, visited)
+        return serialized
 
-def _serialize_field(value, queue):
-    if isinstance(value, (str, int, float, bool, type(None))):
-        return value
-    if isinstance(value, (list, tuple)):
-        return [_serialize_field(item, queue) for item in value]
-    if isinstance(value, dict):
-        result = {}
-        for k, v in value.items():
-            result[str(k)] = _serialize_field(v, queue)
-        return result
-    if hasattr(value, '__dict__'):
-        obj_id = get_object_id(value)
-        queue.append(value)
-        return obj_id
-    return str(value)
+    return str(obj)
+
 
 def serialize_graph_to_json(root):
-    data = flatten_object_graph(root)
+    data = serialize_object(root)
     return json.dumps(data, indent=2)
 
 

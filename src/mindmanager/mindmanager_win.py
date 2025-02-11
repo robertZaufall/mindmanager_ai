@@ -7,7 +7,7 @@ import tempfile
 from PIL import Image
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from mindmap.mindmap_helper import MindmapLink, MindmapImage, MindmapNotes, MindmapIcon, MindmapAttribute, MindmapTag, MindmapReference
+from mindmap.mindmap_helper import MindmapLink, MindmapImage, MindmapNotes, MindmapIcon, MindmapTag, MindmapReference
 
 class Mindmanager:
 
@@ -191,12 +191,12 @@ class Mindmanager:
             if relationships.Count > 0 and relationships.IsValid == True:
                 for relation in relationships:
                     if relation.IsValid == True:
-                        connected_object1 = relation.ConnectedObject1
-                        connected_object2 = relation.ConnectedObject2
-                        reference_direction = 'OUT' if connected_object1 == topic else 'IN'
+                        connected_topic_guid_1 = relation.ConnectedObject1
+                        connected_topic_guid_2 = relation.ConnectedObject2
+                        reference_direction = 'OUT' if connected_topic_guid_1 == topic else 'IN'
                         references.append(MindmapReference(
-                            reference_object1=str(connected_object1.Guid),
-                            reference_object2=str(connected_object2.Guid),
+                            reference_topic_guid_1=str(connected_topic_guid_1.Guid),
+                            reference_topic_guid_2=str(connected_topic_guid_2.Guid),
                             reference_direction=reference_direction,
                             reference_label=''
                         ))
@@ -204,10 +204,6 @@ class Mindmanager:
             print(f"Error in get_references_from_topic: {e}")
         return references
     
-    def get_attributes_from_topic(self, topic, attributes_template: list[MindmapAttribute]=[]) -> list[MindmapAttribute]:
-        attributes = []
-        return attributes
-
     def get_guid_from_topic(self, topic) -> str:
         try:
             return topic.Guid

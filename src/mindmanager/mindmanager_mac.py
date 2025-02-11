@@ -4,7 +4,7 @@ from appscript import *
 import time
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from mindmap.mindmap_helper import MindmapLink, MindmapImage, MindmapNotes, MindmapIcon, MindmapAttribute, MindmapTag, MindmapReference, MindmapTopic
+from mindmap.mindmap_helper import MindmapLink, MindmapImage, MindmapNotes, MindmapIcon, MindmapTag, MindmapReference, MindmapTopic
 
 class Mindmanager:
 
@@ -78,14 +78,16 @@ class Mindmanager:
     
     def get_text_from_topic(self, topic):
         try:
-            return topic.name.get().replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
+            text = topic.name.get()
+            return text.replace('"', '`').replace("'", "`").replace("\r", "").replace("\n", "")
         except Exception as e:
             print(f"Error getting text from topic: {e}")
             return ""
     
     def get_title_from_topic(self, topic):
         try:
-            return topic.title.get()
+            title = topic.title.get() 
+            return title
         except Exception as e:
             print(f"Error getting title from topic: {e}")
             return ""
@@ -132,16 +134,12 @@ class Mindmanager:
                 if starting_location == topic:
                     references.append(MindmapReference(
                         reference_direction='OUT',
-                        reference_object1=starting_location.id.get(),
-                        reference_object2=ending_location.id.get()
+                        reference_topic_guid_1=starting_location.id.get(),
+                        reference_topic_guid_2=ending_location.id.get()
                     ))
         except Exception as e:
             print(f"Error in get_references_from_topic: {e}")
         return references
-
-    def get_attributes_from_topic(self, topic, attributes_template: list[MindmapAttribute]=[]) -> list[MindmapAttribute]:
-        attributes = []
-        return attributes
 
     def get_guid_from_topic(self, topic) -> str:
         try:
@@ -191,9 +189,6 @@ class Mindmanager:
             if mindmap_topic.topic_notes:
                 refreshed_topic.notes.set(mindmap_topic.topic_notes)
                 refreshed_topic = self.get_topic_by_id(topic_id)
-            if mindmap_topic.topic_guid:
-                mindmap_topic.topic_originalguid = mindmap_topic.topic_guid
-            #mindmap_topic.topic_guid = topic_id
             return refreshed_topic, topic_id
         except Exception as e:
             print(f"Error in set_topic_from_mindmap_topic: {e}")
