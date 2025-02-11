@@ -21,7 +21,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                     # good
 
 # VertexAI
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-001'      # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'      # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # (does not work any more)
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
