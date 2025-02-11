@@ -1,17 +1,17 @@
 import os
 import sys
 from datetime import datetime, timedelta
-from typing import Iterator
-from dotenv import dotenv_values
-import yfinance as yf
-
 import asyncio
+
+import yfinance as yf
 from autogen_agentchat.agents import AssistantAgent, UserProxyAgent
 from autogen_agentchat.conditions import TextMentionTermination
 from autogen_agentchat.teams import RoundRobinGroupChat
 from autogen_agentchat.ui import Console
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
+
+import llms.autogen as ai
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import file_helper as fh
@@ -24,76 +24,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'
 
 class MAgent:
     def __init__(self, cloud_type: str = CLOUD_TYPE, secondary_cloud_type: str = CLOUD_TYPE):
-
-        def load_env(cloud_type: str):
-            system = cloud_type.split("+")[0]
-            fh.load_env(system)
-
-        def load_model(cloud_type: str):
-            system = cloud_type.split("+")[0]
-            model = cloud_type.split("+")[-1]
-            llm = None
-            if system.lower() == "azure":
-                llm = AzureOpenAIChatCompletionClient(
-                    azure_deployment = model,
-                    model = model,
-                    api_version = os.getenv('AZURE_API_VERSION'),
-                    azure_endpoint = os.getenv('AZURE_API_URL'),
-                    api_key = os.getenv('AZURE_API_KEY'),
-                )
-            elif system.lower() == "openai":
-                llm = OpenAIChatCompletionClient(
-                    model = model,
-                    api_key = os.getenv('OPENAI_API_KEY')
-                )
-            elif system.lower() == "ollama":
-                llm = OpenAIChatCompletionClient(
-                    model = model,
-                    base_url = os.getenv('OLLAMA_API_URL').replace("/chat/completions", ""),
-                    api_key = "placeholder",
-                    model_info = {
-                        "vision": False,
-                        "function_calling": True,
-                        "json_output": False,
-                        "family": "unknown",
-                    },
-                )
-            elif system.lower() == "xai":
-                llm = OpenAIChatCompletionClient(
-                    model = model,
-                    base_url = os.getenv('XAI_API_URL').replace("/chat/completions", ""),
-                    api_key = os.getenv('XAI_API_KEY'),
-                    model_info = {
-                        "vision": False,
-                        "function_calling": True,
-                        "json_output": False,
-                        "family": "unknown",
-                    },
-                )
-            elif system.lower() == "deepseek":
-                llm = OpenAIChatCompletionClient(
-                    model = model,
-                    base_url = os.getenv('DEEPSEEK_API_URL').replace("/beta/chat/completions", ""),
-                    api_key = os.getenv('DEEPSEEK_API_KEY'),
-                    model_info = {
-                        "vision": False,
-                        "function_calling": True,
-                        "json_output": False,
-                        "family": "unknown",
-                    },
-                )
-            else:
-                raise ValueError("Invalid system specified.")
-            return llm
-                
-        os.environ["OTEL_SDK_DISABLED"] = "true"
-        load_env(cloud_type)
-        load_env(secondary_cloud_type)
-        self.llm = load_model(cloud_type)
-        if cloud_type != secondary_cloud_type:
-            self.secondary_llm = load_model(secondary_cloud_type)
-        else:
-            self.secondary_llm = self.llm
+        self.llms = ai.load_models([cloud_type, secondary_cloud_type])
+        if len(self.llms) == 0:
+            raise ValueError("No models loaded")
 
     def analyze_stock(self, ticker: str) -> dict:
         # Create a yfinance Ticker object
@@ -124,7 +57,7 @@ class MAgent:
 
     # Define the asynchronous financial analyst function using AutoGen AgentChat.
     async def financial_analyst(self, ticker: str) -> str:
-        model_client = self.llm
+        model_client = self.llms[0]
         analyst_agent = AssistantAgent("FinancialAnalyst", model_client)
         
         # Use the tool function to fetch stock data and perform basic analysis.

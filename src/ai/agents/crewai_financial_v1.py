@@ -2,84 +2,32 @@ import os
 import sys
 from datetime import datetime, timedelta
 from dotenv import dotenv_values
+
 import yfinance as yf
 from crewai import Agent, Task, Crew, Process, LLM
 from langchain.tools import Tool
 from langchain_community.tools.ddg_search.tool import DuckDuckGoSearchResults
-from langchain.llms import Ollama
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+import llms.crewai as ai
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import file_helper as fh
 
 CLOUD_TYPE = 'AZURE+gpt-4o-mini'
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'
-# CLOUD_TYPE = 'OLLAMA+llama3.1:8b'
+# CLOUD_TYPE = 'OLLAMA+llama3.2:3b' # not working
 # CLOUD_TYPE = 'XAI+grok-2-1212'
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'
 
 class MAgent:
     def __init__(self, cloud_type: str = CLOUD_TYPE, secondary_cloud_type: str = CLOUD_TYPE):
-
-        def load_env(cloud_type: str):
-            system = cloud_type.split("+")[0]
-            fh.load_env(system)
-
-        def load_model(cloud_type: str):
-            system = cloud_type.split("+")[0]
-            model = cloud_type.split("+")[-1]
-            llm = None
-            if system.lower() == "azure":
-                llm = LLM(
-                    model = f"{system.lower()}/{model.lower()}",
-                    api_version = os.getenv('AZURE_API_VERSION'),
-                    api_key = os.getenv('AZURE_API_KEY'),
-                    base_url = os.getenv('AZURE_API_URL')
-                )
-            elif system.lower() == "openai":
-                llm = LLM(
-                    model = f"{system.lower()}/{model.lower()}",
-                    api_key = os.getenv('OPENAI_API_KEY')
-                )
-            elif system.lower() == "ollama":
-                llm = LLM(
-                    model = f"{system.lower()}/{model.lower()}",
-                    base_url = os.getenv('OLLAMA_API_URL').replace("/v1/chat/completions", "")
-                )
-            elif system.lower() == "xai":
-                llm = LLM(
-                    model = f"{system.lower()}/{model.lower()}",
-                    api_key = os.getenv('XAI_API_KEY')
-                )
-            elif system.lower() == "deepseek":
-                llm = LLM(
-                    model = f"{system.lower()}/{model.lower()}",
-                    api_key = os.getenv('DEEPSEEK_API_KEY')
-                )
-            else:
-                raise ValueError("Invalid system specified.")
-            return llm
-
-        os.environ["OTEL_SDK_DISABLED"] = "true"
-        load_env(cloud_type)
-        load_env(secondary_cloud_type)
-        self.llm = load_model(cloud_type)
-        if cloud_type != secondary_cloud_type:
-            self.secondary_llm = load_model(secondary_cloud_type)
-        else:
-            self.secondary_llm = self.llm
+        self.llms = ai.load_models([cloud_type, secondary_cloud_type])
+        if len(self.llms) == 0:
+            raise ValueError("No models loaded")
 
     def execute(self, argument: str = 'NVDA', simple_result: bool = True, full_output: bool = False, verbose: bool = False):
-        import yfinance as yf
-
-        from crewai import Agent, Task, Crew, Process, LLM
-
-        from langchain.tools import Tool
-        from langchain_community.tools.ddg_search.tool import DuckDuckGoSearchResults
-
-        import pandas as pd
-
         def fetch_stock_price(ticket):
             if not isinstance(ticket, str):
                 raise ValueError(f"Expected ticket to be a string, but got {type(ticket)}: {ticket}")
@@ -102,7 +50,7 @@ class MAgent:
             backstory="""You're highly experienced in analyzing the price of a specific stock
             and identifying its current trend based on recent price movements. You are meticulous about using tools correctly and understand that the 'Yahoo Finance Tool' requires a plain string as input for the stock ticker symbol. You will ensure to provide the ticker in the correct format.""",
             verbose=verbose,
-            llm=self.llm,
+            llm=self.llms[0],
             max_iter=5,
             memory=True,
             tools=[yahoo_finance_tool],
@@ -132,7 +80,7 @@ class MAgent:
             You have a deep understanding of market sentiment and human psychology, especially as it relates to financial markets.
             You analyze news articles critically, considering the source and potential biases. You understand that the 'DuckDuckGoNewsSearch' tool requires a text-based search query.""",
             verbose=verbose,
-            llm=self.llm,
+            llm=self.llms[0],
             max_iter=10,
             memory=True,
             tools=[search_tool],
@@ -161,7 +109,7 @@ class MAgent:
             You can present balanced perspectives even when analyzing volatile market situations.
         """,
             verbose=verbose,
-            llm=self.llm,
+            llm=self.llms[0],
             max_iter=5,
             memory=True,
             allow_delegation=True
@@ -191,7 +139,7 @@ class MAgent:
             process=Process.hierarchical,
             full_output=full_output,
             share_crew=False,
-            manager_llm=self.llm,
+            manager_llm=self.llms[0],
             max_iter=10
         )
 
