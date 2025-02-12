@@ -4,8 +4,8 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
@@ -83,9 +83,11 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'MISTRAL+open-mistral-nemo'                              # not working, free
 
 # groq     
-# CLOUD_TYPE = 'GROQ+llama-3.3-70b-specdec'                             # best (6000 token per minute limit)
-# CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best (6000 token per minute limit)
-# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                                # good (token limit 5000 per minute)
+# CLOUD_TYPE = 'GROQ+qwen-2.5-32b'                                      # best
+# CLOUD_TYPE = 'GROQ+deepseek-r1-distill-qwen-32b'                      # reasoning models do not work by now
+# CLOUD_TYPE = 'GROQ+llama-3.3-70b-specdec'                             # best
+# CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best
+# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                                # good
 
 # Perplexity     
 # CLOUD_TYPE = 'PERPLEXITY+sonar'                                       #
