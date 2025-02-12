@@ -31,8 +31,10 @@ def serialize_object(obj, guid_mapping, visited=None):
         for attr_name, attr_value in vars(obj).items():
             if attr_name in ["topic_parent", "topic_level", "topic_selected", "topic_parent"]:
                 continue
-            if attr_name == "topic_rtf" and hasattr(obj, 'topic_text') and obj.topic_text == attr_value:
+            if attr_name in ["topic_rtf"]:
                 continue
+            #if attr_name == "topic_rtf" and hasattr(obj, 'topic_text') and obj.topic_text == attr_value:
+            #    continue
             if attr_value == None or attr_value == "" or attr_value == []:
                 continue
             new_attr_name = attr_name.replace("topic_", "")
