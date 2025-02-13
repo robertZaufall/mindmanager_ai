@@ -133,9 +133,9 @@ class Mindmanager:
                 ending_location = relationship_instance.ending_location.get()
                 if starting_location == topic:
                     references.append(MindmapReference(
-                        reference_direction='OUT',
-                        reference_topic_guid_1=starting_location.id.get(),
-                        reference_topic_guid_2=ending_location.id.get()
+                        direction='OUT',
+                        guid_1=starting_location.id.get(),
+                        guid_2=ending_location.id.get()
                     ))
         except Exception as e:
             print(f"Error in get_references_from_topic: {e}")
@@ -181,13 +181,13 @@ class Mindmanager:
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
         try:
             topic_id = topic.id.get()
-            self.set_text_to_topic(topic, mindmap_topic.topic_text)
+            self.set_text_to_topic(topic, mindmap_topic.text)
             refreshed_topic = self.get_topic_by_id(topic_id)
-            if mindmap_topic.topic_rtf != '':
-                self.set_title_to_topic(refreshed_topic, mindmap_topic.topic_rtf)
+            if mindmap_topic.rtf != '':
+                self.set_title_to_topic(refreshed_topic, mindmap_topic.rtf)
                 refreshed_topic = self.get_topic_by_id(topic_id)
-            if mindmap_topic.topic_notes:
-                refreshed_topic.notes.set(mindmap_topic.topic_notes)
+            if mindmap_topic.notes:
+                refreshed_topic.notes.set(mindmap_topic.notes)
                 refreshed_topic = self.get_topic_by_id(topic_id)
             return refreshed_topic, topic_id
         except Exception as e:

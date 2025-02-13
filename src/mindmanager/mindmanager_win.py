@@ -113,9 +113,9 @@ class Mindmanager:
             if topic.HasHyperlink:
                 for hyperlink in topic.Hyperlinks:
                     hyperlinks.append(MindmapLink(
-                        link_text=hyperlink.Title,
-                        link_url=hyperlink.Address,
-                        link_guid=hyperlink.TopicLabelGuid
+                        text=hyperlink.Title,
+                        url=hyperlink.Address,
+                        guid=hyperlink.TopicLabelGuid
                     ))
         except Exception as e:
             print(f"Error in get_links_from_topic: {e}")
@@ -128,7 +128,7 @@ class Mindmanager:
                 with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
                     temp_filename = tmp.name
                 image.Save(temp_filename, 3)  # 3=PNG
-                return MindmapImage(image_text=temp_filename)
+                return MindmapImage(text=temp_filename)
         except Exception as e:
             print(f"Error in get_image_from_topic: {e}")
         return None
@@ -141,18 +141,18 @@ class Mindmanager:
                 for icon in user_icons:
                     if icon.Type == 1 and icon.IsValid == True:  # Stock Icon
                         icons.append(MindmapIcon(
-                            icon_text=icon.Name,
-                            icon_index=icon.StockIcon
+                            text=icon.Name,
+                            index=icon.StockIcon
                         ))
                     elif icon.Type == 2 and icon.IsValid == True:
                         with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
                             temp_filename = tmp.name
                         icon.Save(temp_filename, 3)  # 3=PNG
                         icons.append(MindmapIcon(
-                            icon_text=icon.Name,
-                            icon_is_stock_icon=False,
-                            icon_signature=icon.CustomIconSignature,
-                            icon_path=temp_filename
+                            text=icon.Name,
+                            is_stock_icon=False,
+                            signature=icon.CustomIconSignature,
+                            path=temp_filename
                         ))
         except Exception as e:
             print(f"Error in get_icons_from_topic: {e}")
@@ -165,11 +165,11 @@ class Mindmanager:
             if notes:
                 if notes.IsValid == True and not notes.IsEmpty: 
                     if notes.TextRTF != "":
-                        topic_notes = MindmapNotes(note_rtf=notes.TextRTF)
+                        topic_notes = MindmapNotes(rtf=notes.TextRTF)
                     if notes.TextXHTML != "":
-                        topic_notes = MindmapNotes(note_xhtml=notes.TextXHTML)
+                        topic_notes = MindmapNotes(xhtml=notes.TextXHTML)
                     if notes.Text != "":
-                        topic_notes = MindmapNotes(note_text=notes.Text)
+                        topic_notes = MindmapNotes(text=notes.Text)
             return topic_notes
         except Exception as e:
             print(f"Error in get_notes_from_topic: {e}")
@@ -182,7 +182,7 @@ class Mindmanager:
             if text_labels.Count > 0 and text_labels.IsValid == True:
                 for text_label in text_labels:
                     if text_label.IsValid == True and text_label.GroupId == "":
-                        tags.append(MindmapTag(tag_text=text_label.Name))
+                        tags.append(MindmapTag(text=text_label.Name))
         except Exception as e:
             print(f"Error in get_tags_from_topic: {e}")
         return tags
@@ -198,10 +198,10 @@ class Mindmanager:
                         connected_topic_guid_2 = relation.ConnectedObject2
                         reference_direction = 'OUT' if connected_topic_guid_1 == topic else 'IN'
                         references.append(MindmapReference(
-                            reference_topic_guid_1=str(connected_topic_guid_1.Guid),
-                            reference_topic_guid_2=str(connected_topic_guid_2.Guid),
-                            reference_direction=reference_direction,
-                            reference_label=''
+                            guid_1=str(connected_topic_guid_1.Guid),
+                            guid_2=str(connected_topic_guid_2.Guid),
+                            direction=reference_direction,
+                            label=''
                         ))
         except Exception as e:
             print(f"Error in get_references_from_topic: {e}")
@@ -267,16 +267,16 @@ class Mindmanager:
         try:
             if mindmap_topic_links:
                 for topic_link in mindmap_topic_links:
-                    if topic_link.link_guid == "" and topic_link.link_url != "":
-                        link = topic.Hyperlinks.AddHyperlink(topic_link.link_url)
-                        link.Title = topic_link.link_text
+                    if topic_link.guid == "" and topic_link.url != "":
+                        link = topic.Hyperlinks.AddHyperlink(topic_link.url)
+                        link.Title = topic_link.text
         except Exception as e:
             print(f"Error in add_links_to_topic: {e}")
 
     def add_image_to_topic(self, topic, mindmap_topic_image):
         try:
             if mindmap_topic_image:
-                topic.CreateImage(mindmap_topic_image.image_text)
+                topic.CreateImage(mindmap_topic_image.text)
         except Exception as e:
             print(f"Error in add_image_to_topic: {e}")
 
@@ -284,32 +284,32 @@ class Mindmanager:
         try:
             if len(mindmap_topic_icons) > 0:
                 for topic_icon in mindmap_topic_icons:
-                    if topic_icon.icon_is_stock_icon:
-                        topic.UserIcons.AddStockIcon(topic_icon.icon_index)
+                    if topic_icon.is_stock_icon:
+                        topic.UserIcons.AddStockIcon(topic_icon.index)
                     else:
-                        if len(map_icons) > 0 and topic_icon.icon_signature != "":
-                            topic.UserIcons.AddCustomIconFromMap(topic_icon.icon_signature)
+                        if len(map_icons) > 0 and topic_icon.signature != "":
+                            topic.UserIcons.AddCustomIconFromMap(topic_icon.signature)
                         else:
-                            if os.path.exists(topic_icon.icon_path):
-                                topic.UserIcons.AddCustomIcon(topic_icon.icon_path)
+                            if os.path.exists(topic_icon.path):
+                                topic.UserIcons.AddCustomIcon(topic_icon.path)
         except Exception as e:
             print(f"Error in add_icons_to_topic: {e}")
 
     def set_notes_to_topic(self, topic, mindmap_topic_notes):
         try:
             if mindmap_topic_notes:
-                if mindmap_topic_notes.note_text:
-                    topic.Notes.Text = mindmap_topic_notes.note_text
+                if mindmap_topic_notes.text:
+                    topic.Notes.Text = mindmap_topic_notes.text
                 else:
-                    if mindmap_topic_notes.note_xhtml:
+                    if mindmap_topic_notes.xhtml:
                         try:
-                            topic.Notes.TextXHTML = mindmap_topic_notes.note_xhtml
+                            topic.Notes.TextXHTML = mindmap_topic_notes.xhtml
                         except Exception as e:
                             print(f"Error setting TextXHTML: {e}")
                             print(f"Topic: `{topic.Text}`")
                     else:
-                        if mindmap_topic_notes.note_rtf:
-                            topic.Notes.TextRTF = mindmap_topic_notes.note_rtf
+                        if mindmap_topic_notes.rtf:
+                            topic.Notes.TextRTF = mindmap_topic_notes.rtf
         except Exception as e:
             print(f"Error in set_notes_to_topic: {e}")
 
@@ -318,21 +318,21 @@ class Mindmanager:
         try:
             if len(mindmap_topic_tags) > 0:
                 for topic_tag in mindmap_topic_tags:
-                    topic.TextLabels.AddTextLabelFromGroup(topic_tag.tag_text, '', True)
+                    topic.TextLabels.AddTextLabelFromGroup(topic_tag.text, '', True)
         except Exception as e:
             print(f"Error in add_tags_to_topic: {e}")
 
     def create_map_icons(self, map_icons):
         try:
             if len(map_icons) > 0:
-                icon_groups = set(map_icon.icon_group for map_icon in map_icons if map_icon.icon_group)
+                icon_groups = set(map_icon.group for map_icon in map_icons if map_icon.group)
                 for icon_group in icon_groups:
                     group = self.document.MapMarkerGroups.AddIconMarkerGroup(icon_group)
                     for map_icon in map_icons:
-                        if map_icon.icon_group == icon_group:
-                            label = map_icon.icon_text
-                            marker = group.AddCustomIconMarker(label, map_icon.icon_path)
-                            map_icon.icon_signature = marker.Icon.CustomIconSignature
+                        if map_icon.group == icon_group:
+                            label = map_icon.text
+                            marker = group.AddCustomIconMarker(label, map_icon.path)
+                            map_icon.signature = marker.Icon.CustomIconSignature
         except Exception as e:
             print(f"Error in create_map_icons: {e}")
 

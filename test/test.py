@@ -29,26 +29,22 @@ def serialize_object(obj, guid_mapping, visited=None):
     if hasattr(obj, '__dict__'):
         serialized = {}
         for attr_name, attr_value in vars(obj).items():
-            if attr_name in ["topic_parent", "topic_level", "topic_selected", "topic_parent"]:
+            if attr_name in ["parent", "level", "selected"]:
                 continue
-            if attr_name in ["topic_rtf"]:
+            if attr_name in ["rtf"]:
                 continue
-            #if attr_name == "topic_rtf" and hasattr(obj, 'topic_text') and obj.topic_text == attr_value:
-            #    continue
             if attr_value == None or attr_value == "" or attr_value == []:
                 continue
-            new_attr_name = attr_name.replace("topic_", "")
+            new_attr_name = attr_name
             
             # Handle GUID replacement
-            if new_attr_name in ["guid", "reference_guid_1", "reference_guid_2", "link_guid"]:
+            if new_attr_name in ["guid", "guid_1", "guid_2"]:
                 if new_attr_name == "guid":
                     new_attr_name = "id"
-                elif new_attr_name == "reference_guid_1":
-                    new_attr_name = "reference_id_1"
-                elif new_attr_name == "reference_guid_2":
-                    new_attr_name = "reference_id_2"
-                elif new_attr_name == "link_guid":
-                    new_attr_name = "link_id"
+                elif new_attr_name == "guid_1":
+                    new_attr_name = "id_1"
+                elif new_attr_name == "guid_2":
+                    new_attr_name = "id_2"
                 if attr_value not in guid_mapping:
                     guid_mapping[attr_value] = len(guid_mapping) + 1
                 serialized[new_attr_name] = guid_mapping[attr_value]
@@ -60,31 +56,46 @@ def serialize_object(obj, guid_mapping, visited=None):
 
 
 def escape_mermaid_text(text: str) -> str:
-    """
-    Escapes special characters for the Mermaid node text (which is output outside JSON)
-    and then replaces non-ASCII characters with HTML entities.
+    r"""
+    Escapes special characters for the Mermaid node text (output outside JSON)
+    and converts every non-ASCII character to its Unicode escape sequence.
+    
+    For example, if the input is:
+    
+        ThisÂ  is a Â test\n
+    
+    it becomes:
+    
+        This\u00c2\u00a0 is a \u00c2\u00a0test\n
     """
     if not isinstance(text, str):
         return text
-    # Escape backslashes, newlines, carriage returns, and double quotes.
+    # First, escape backslashes, newlines, carriage returns, and double quotes.
     escaped = text.replace("\\", "\\\\") \
                   .replace("\n", "\\n") \
                   .replace("\r", "") \
                   .replace("\"", "\\\"")
-    # Replace any non-ASCII characters with HTML entities.
-    return replace_unicode_for_markdown(escaped)
+    result = []
+    for ch in escaped:
+        if ord(ch) > 127:
+            # Convert non-ASCII character to its \uXXXX escape sequence.
+            result.append("\\u{:04x}".format(ord(ch)))
+        else:
+            result.append(ch)
+    return "".join(result)
 
 def replace_unicode_for_markdown(text: str) -> str:
     """
-    For a given text string, replaces every non-ASCII character with its HTML entity.
-    For example, 'é' becomes '&#233;'.
+    Previously this function converted non-ASCII characters to HTML entities.
+    Now it simply returns the text unchanged so that characters like umlauts
+    are preserved.
     """
-    return ''.join(ch if ord(ch) < 128 else f'&#{ord(ch)};' for ch in text)
+    return text
 
 def replace_unicode_in_obj(obj):
     """
-    Recursively traverse an object (dict, list, or string) and replace non-ASCII characters 
-    in any string with their HTML entity.
+    Recursively traverses an object (dict, list, or string) and processes any string 
+    using replace_unicode_for_markdown (which now is a no-op, preserving Unicode characters).
     """
     if isinstance(obj, str):
         return replace_unicode_for_markdown(obj)
@@ -95,119 +106,81 @@ def replace_unicode_in_obj(obj):
     else:
         return obj
 
-def serialize_attributes(topic, guid_mapping):
+def serialize_topic_attributes(topic, guid_mapping):
     """
-    Build a dictionary of all non-empty attributes for a MindmapTopic.
-    
-    - Replaces topic_guid with an "id" using guid_mapping.
-    - Removes the object-specific prefixes (for links, notes, icons, etc.).
-    - Applies the guid mapping to any GUIDs in links and references.
-    - Suppresses 'rtf' if it is identical to the topic's text.
-    - Omits the 'level' and 'parent' attributes.
-    
-    Before dumping to JSON the dictionary is processed to replace any non-ASCII 
-    characters with HTML entities.
+    Build a dictionary containing every attribute of the topic except 'parent' and 'level',
+    renaming 'guid' to 'id'. For sub-objects (links, image, icons, notes, tags, references),
+    their own guid attributes are also mapped/renamed.
     """
-    attrs = {}
-    # Use the mapped id for the main topic.
-    attrs["id"] = guid_mapping.get(topic.topic_guid, topic.topic_guid)
-    
-    # Add rtf only if it's non-empty and different from topic_text.
-    if topic.topic_rtf and topic.topic_rtf != topic.topic_text:
-        attrs["rtf"] = topic.topic_rtf
+    d = {}
+    # Rename topic.guid -> id.
+    d["id"] = guid_mapping.get(topic.guid, topic.guid)
+    # Include text, rtf, and selected.
+    d["text"] = topic.text
+    d["rtf"] = topic.rtf
+    d["selected"] = topic.selected
 
-    # Include 'selected' only if True.
-    if topic.topic_selected:
-        attrs["selected"] = topic.topic_selected
-        
-    # Process links – remove the "link_" prefix and apply guid mapping to link_guid.
-    if topic.topic_links:
-        links_list = []
-        for link in topic.topic_links:
-            link_dict = {}
-            if link.link_text:
-                link_dict["text"] = link.link_text
-            if link.link_url:
-                link_dict["url"] = link.link_url
-            if link.link_guid:
-                mapped = guid_mapping.get(link.link_guid, link.link_guid)
-                link_dict["guid"] = mapped
-            if link_dict:
-                links_list.append(link_dict)
-        if links_list:
-            attrs["links"] = links_list
+    # Process links.
+    if topic.links:
+        d["links"] = []
+        for link in topic.links:
+            l = {
+                "text": link.text,
+                "url": link.url
+            }
+            if link.guid:
+                l["id"] = guid_mapping.get(link.guid, link.guid)
+            d["links"].append(l)
 
-    # Process image – remove the "image_" prefix.
-    if topic.topic_image and topic.topic_image.image_text:
-        attrs["image"] = {"text": topic.topic_image.image_text}
-    
-    # Process icons – remove the "icon_" prefix.
-    if topic.topic_icons:
-        icons_list = []
-        for icon in topic.topic_icons:
-            icon_dict = {}
-            if icon.icon_text:
-                icon_dict["text"] = icon.icon_text
-            icon_dict["is_stock_icon"] = icon.icon_is_stock_icon
-            if icon.icon_index:
-                icon_dict["index"] = icon.icon_index
-            if icon.icon_signature:
-                icon_dict["signature"] = icon.icon_signature
-            if icon.icon_path:
-                icon_dict["path"] = icon.icon_path
-            if icon.icon_group:
-                icon_dict["group"] = icon.icon_group
-            if icon_dict:
-                icons_list.append(icon_dict)
-        if icons_list:
-            attrs["icons"] = icons_list
+    # Process image.
+    if topic.image:
+        d["image"] = {"text": topic.image.text}
 
-    # Process notes – remove the "note_" prefix.
-    if topic.topic_notes:
-        notes_dict = {}
-        if isinstance(topic.topic_notes, str):
-            if topic.topic_notes:
-                notes_dict["text"] = topic.topic_notes
+    # Process icons.
+    if topic.icons:
+        d["icons"] = []
+        for icon in topic.icons:
+            i = {
+                "text": icon.text,
+                "is_stock_icon": icon.is_stock_icon,
+                "index": icon.index,
+                "signature": icon.signature,
+                "path": icon.path,
+                "group": icon.group
+            }
+            d["icons"].append(i)
+
+    # Process notes.
+    if topic.notes:
+        if isinstance(topic.notes, str):
+            d["notes"] = {"text": topic.notes}
         else:
-            if hasattr(topic.topic_notes, 'note_text') and topic.topic_notes.note_text:
-                notes_dict["text"] = topic.topic_notes.note_text
-            if hasattr(topic.topic_notes, 'note_xhtml') and topic.topic_notes.note_xhtml:
-                notes_dict["xhtml"] = topic.topic_notes.note_xhtml
-            if hasattr(topic.topic_notes, 'note_rtf') and topic.topic_notes.note_rtf:
-                notes_dict["rtf"] = topic.topic_notes.note_rtf
-        if notes_dict:
-            attrs["notes"] = notes_dict
+            d["notes"] = {
+                "text": topic.notes.text,
+                "xhtml": topic.notes.xhtml,
+                "rtf": topic.notes.rtf
+            }
 
-    # Process tags – remove the "tag_" prefix.
-    if topic.topic_tags:
-        tags_list = [tag.tag_text for tag in topic.topic_tags if tag.tag_text]
-        if tags_list:
-            attrs["tags"] = tags_list
+    # Process tags.
+    if topic.tags:
+        d["tags"] = [tag.text for tag in topic.tags]
 
-    # Process references – remove the "reference_" prefix.
-    # Also apply guid mapping to both reference GUIDs.
-    if topic.topic_references:
-        references_list = []
-        for ref in topic.topic_references:
-            ref_dict = {}
-            if ref.reference_topic_guid_1:
-                mapped = guid_mapping.get(ref.reference_topic_guid_1, ref.reference_topic_guid_1)
-                ref_dict["guid1"] = mapped
-            if ref.reference_topic_guid_2:
-                mapped = guid_mapping.get(ref.reference_topic_guid_2, ref.reference_topic_guid_2)
-                ref_dict["guid2"] = mapped
-            if ref.reference_direction:
-                ref_dict["direction"] = ref.reference_direction
-            if ref.reference_label:
-                ref_dict["label"] = ref.reference_label
-            if ref_dict:
-                references_list.append(ref_dict)
-        if references_list:
-            attrs["references"] = references_list
+    # Process references.
+    if topic.references:
+        d["references"] = []
+        for ref in topic.references:
+            r = {}
+            if ref.guid_1:
+                r["id1"] = guid_mapping.get(ref.guid_1, ref.guid_1)
+            if ref.guid_2:
+                r["id2"] = guid_mapping.get(ref.guid_2, ref.guid_2)
+            r["direction"] = ref.direction
+            r["label"] = ref.label
+            d["references"].append(r)
 
-    # Replace any non-ASCII characters in all string fields.
-    attrs = replace_unicode_in_obj(attrs)
-    return json.dumps(attrs, ensure_ascii=False)
+    # Process all string fields for Unicode replacement (now a no-op).
+    d = replace_unicode_in_obj(d)
+    return d
 
 def serialize_mindmap(root_topic):
     """
@@ -215,43 +188,41 @@ def serialize_mindmap(root_topic):
     
     Each node is output on a separate indented line as:
     
-      <indent>(<escaped topic_text>) %% <JSON comment with attributes>
+      <indent>(<escaped topic.text>) %% <JSON comment with topic attributes>
     
-    The node text is enclosed in parentheses, and the JSON comment (after the %% marker)
-    contains all non-empty attributes (with object-specific prefixes removed and any GUID
-    replaced by its mapped integer).
+    The JSON comment (after the %% marker) contains every attribute (except 'parent'
+    and 'level') with 'guid' renamed to 'id'.
     """
-    # Build a mapping: topic_guid -> unique integer (starting at 1)
+    # Build a mapping: topic.guid -> unique integer (starting at 1)
     guid_mapping = {}
     next_id = 1
     def build_mapping(topic):
         nonlocal next_id
-        if topic.topic_guid not in guid_mapping:
-            guid_mapping[topic.topic_guid] = next_id
+        if topic.guid not in guid_mapping:
+            guid_mapping[topic.guid] = next_id
             next_id += 1
-        for sub in topic.topic_subtopics:
+        for sub in topic.subtopics:
             build_mapping(sub)
     build_mapping(root_topic)
     
     lines = ["mindmap"]
     def traverse(topic, indent):
         indent_str = "  " * indent  # two spaces per level
-        # Escape and convert Unicode in the topic text.
-        node_text = escape_mermaid_text(topic.topic_text)
-        # Enclose the node text in parentheses.
+        # Escape and process Unicode in the topic text.
+        node_text = escape_mermaid_text(topic.text)
+        # Enclose the topic text in parentheses.
         line = f"{indent_str}({node_text})"
-        # Build the JSON comment with all non-empty attributes.
-        attrs_comment = serialize_attributes(topic, guid_mapping)
-        if attrs_comment and attrs_comment != "{}":
-            line += f" %% {attrs_comment}"
+        # Serialize the topic's attributes as JSON for the comment.
+        topic_attrs = serialize_topic_attributes(topic, guid_mapping)
+        # Use ensure_ascii=True so that non-ASCII characters appear as \uXXXX escapes.
+        json_comment = json.dumps(topic_attrs, ensure_ascii=True)
+        line += f" %% {json_comment}"
         lines.append(line)
-        for sub in topic.topic_subtopics:
+        for sub in topic.subtopics:
             traverse(sub, indent + 1)
     traverse(root_topic, 1)
     
     return "\n".join(lines)
-
-
 
 def serialize_graph_to_json(root):
     guid_mapping = {}
