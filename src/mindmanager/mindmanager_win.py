@@ -254,13 +254,13 @@ class Mindmanager:
             print(f"Error in add_tag_to_topic: {e}")
 
     def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons):
-        self.set_text_to_topic(topic, mindmap_topic.topic_text)
-        self.set_title_to_topic(topic, mindmap_topic.topic_rtf)
-        self.add_tags_to_topic(topic, mindmap_topic.topic_tags)
-        self.set_notes_to_topic(topic, mindmap_topic.topic_notes)
-        self.add_icons_to_topic(topic, mindmap_topic.topic_icons, map_icons)
-        self.add_image_to_topic(topic, mindmap_topic.topic_image)
-        self.add_links_to_topic(topic, mindmap_topic.topic_links)
+        self.set_text_to_topic(topic, mindmap_topic.text)
+        self.set_title_to_topic(topic, mindmap_topic.rtf)
+        self.add_tags_to_topic(topic, mindmap_topic.tags)
+        self.set_notes_to_topic(topic, mindmap_topic.notes)
+        self.add_icons_to_topic(topic, mindmap_topic.icons, map_icons)
+        self.add_image_to_topic(topic, mindmap_topic.image)
+        self.add_links_to_topic(topic, mindmap_topic.links)
         return topic, topic.Guid
     
     def add_links_to_topic(self, topic, mindmap_topic_links):
