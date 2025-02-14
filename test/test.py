@@ -80,8 +80,8 @@ def serialize_topic_attributes(topic, guid_mapping):
     d = {}
     d["id"] = guid_mapping.get(topic.guid, topic.guid)
     d["text"] = topic.text
-    if topic.rtf != topic.text:
-        d["rtf"] = topic.rtf
+    #if topic.rtf != topic.text:
+    #    d["rtf"] = topic.rtf
     #d["selected"] = topic.selected
     if topic.links:
         d["links"] = []
