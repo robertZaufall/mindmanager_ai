@@ -196,7 +196,7 @@ class Mindmanager:
                     if relation.IsValid == True:
                         connected_topic_guid_1 = relation.ConnectedObject1
                         connected_topic_guid_2 = relation.ConnectedObject2
-                        reference_direction = 'OUT' if connected_topic_guid_1 == topic else 'IN'
+                        reference_direction = 1 if connected_topic_guid_1 == topic else 2
                         references.append(MindmapReference(
                             guid_1=str(connected_topic_guid_1.Guid),
                             guid_2=str(connected_topic_guid_2.Guid),

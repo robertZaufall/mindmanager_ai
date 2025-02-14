@@ -133,7 +133,7 @@ class Mindmanager:
                 ending_location = relationship_instance.ending_location.get()
                 if starting_location == topic:
                     references.append(MindmapReference(
-                        direction='OUT',
+                        direction=1,
                         guid_1=starting_location.id.get(),
                         guid_2=ending_location.id.get()
                     ))

@@ -44,7 +44,7 @@ class MindmapReference:
     def __init__(self, 
                  guid_1: str = '', 
                  guid_2: str = '', 
-                 direction: str = '', 
+                 direction: int = 1, 
                  label: str = ''):
         self.guid_1 = guid_1
         self.guid_2 = guid_2
@@ -194,7 +194,7 @@ class MindmapDocument:
             return
         visited.add(mindmap.guid)
         for reference in mindmap.references:
-            if reference.direction == 'OUT':
+            if reference.direction == 1:
                 references.append(MindmapReference(
                     guid_1=reference.guid_1,
                     guid_2=reference.guid_2,
@@ -215,7 +215,7 @@ class MindmapDocument:
                 links.append(MindmapReference(
                     guid_1=mindmap.guid, 
                     guid_2=link.guid, 
-                    direction='OUT', 
+                    direction=1, 
                     label=link.text
                 ))
         for subtopic in mindmap.subtopics:
