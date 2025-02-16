@@ -63,11 +63,16 @@ class Mindmanager:
             return None
     
     def get_selection(self):
+        selection = []
         try:
-            return self.mindmanager.documents[1].selection.get()
+            items = self.mindmanager.documents[1].selection.get()
+            for item in items:
+                type = item.class_.get()
+                if type.name == 'topic':
+                    selection.append(item)
         except Exception as e:
             print(f"Error getting selection: {e}")
-            return None
+        return selection
     
     def get_level_from_topic(self, topic):
         try:
@@ -115,7 +120,8 @@ class Mindmanager:
 
     def get_notes_from_topic(self, topic) -> MindmapNotes:
         try:
-            return topic.notes.get()
+            notes = topic.notes.get()
+            return MindmapNotes(text=notes)
         except Exception as e:
             print(f"Error getting notes from topic: {e}")
             return None
@@ -187,7 +193,7 @@ class Mindmanager:
                 self.set_title_to_topic(refreshed_topic, mindmap_topic.rtf)
                 refreshed_topic = self.get_topic_by_id(topic_id)
             if mindmap_topic.notes:
-                refreshed_topic.notes.set(mindmap_topic.notes)
+                refreshed_topic.notes.set(mindmap_topic.notes.text)
                 refreshed_topic = self.get_topic_by_id(topic_id)
             return refreshed_topic, topic_id
         except Exception as e:
