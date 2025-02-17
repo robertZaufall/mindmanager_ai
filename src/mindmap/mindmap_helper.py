@@ -347,7 +347,11 @@ class MindmapDocument:
         else:
             done_global[mindmap_topic.guid] = [topic_guid]
 
-    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done={}, done_global={}, level=0):
+    def set_topic_from_mindmap_topic(self, topic, mindmap_topic, map_icons, done=None, done_global=None, level=0):
+        if done is None:
+            done = {}
+        if done_global is None:
+            done_global = {}
         try:
             if self.turbo_mode:
                 topic_guid = self.mindm.get_guid_from_topic(topic)
@@ -406,42 +410,21 @@ class MindmapDocument:
 
         self.parents = {}
         self.guid_counts = {}
-
-        if verbose:
-            print("executing count_parent_and_child_occurrences")
         self.count_parent_and_child_occurrences(self.mindmap, self.guid_counts)
-        if verbose:
-            print("executing get_parents_from_mindmap")
         self.get_parents_from_mindmap(self.mindmap, self.parents)
 
-        if verbose:
-            print("executing get_tags_from_mindmap")
         self.get_tags_from_mindmap(self.mindmap, tags)
-        if verbose:
-            print("executing get_map_icons_and_fix_refs_from_mindmap")
         self.get_map_icons_and_fix_refs_from_mindmap(self.mindmap, map_icons)
-        if verbose:
-            print("executing get_relationships_from_mindmap")
         self.get_relationships_from_mindmap(self.mindmap, relationships)
-        if verbose:
-            print("executing get_topic_links_from_mindmap")
         self.get_topic_links_from_mindmap(self.mindmap, links)
 
         self.mindm.add_document(0)
-        if verbose:
-            print("executing create_map_icons")
         self.mindm.create_map_icons(map_icons)
-        if verbose:
-            print("executing create_tags")
         self.mindm.create_tags(tags, DUPLICATED_TAG)
-        if verbose:
-            print("executing set_text_to_topic")
         self.mindm.set_text_to_topic(self.mindm.get_central_topic(), self.mindmap.text)
 
         topic = self.mindm.get_central_topic()
 
-        if verbose:
-            print("start recursive map generation from central_topic...")
         done_global = {}
         self.set_topic_from_mindmap_topic(topic=topic, mindmap_topic=self.mindmap, map_icons=map_icons, done={}, done_global=done_global)
 
