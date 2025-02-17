@@ -69,11 +69,20 @@ class Mindmanager:
             return None
 
     def get_selection(self):
+        selection = []
         try:
-            return self.document.Selection
+            objs = self.document.Selection
+            for obj in objs:
+                try:
+                    class_name = obj._oleobj_.GetTypeInfo().GetDocumentation(-1)[0]
+                    if class_name == "ITopic":
+                        selection.append(obj)
+                except:
+                    print(f"Error in get_selection, getting class name: {e}")
+                    continue
         except Exception as e:
             print(f"Error in get_selection: {e}")
-            return None
+        return selection
 
     def get_level_from_topic(self, topic):
         try:
@@ -92,10 +101,12 @@ class Mindmanager:
     def get_title_from_topic(self, topic):
         try:
             title = topic.Title
+            text = ''
             if RTF_WORKAROUND:
-                return str(title.Text) + ''
+                text = str(title.Text) + ''
             else:
-                return title.TextRtf if title.TextRtf != '' else ''
+                text = title.TextRTF if title.TextRTF != '' else ''
+            return text
         except Exception as e:
             print(f"Error in get_title_from_topic: {e}")
             return ""
@@ -112,11 +123,12 @@ class Mindmanager:
         try:
             if topic.HasHyperlink:
                 for hyperlink in topic.Hyperlinks:
-                    hyperlinks.append(MindmapLink(
+                    link = MindmapLink(
                         text=hyperlink.Title,
                         url=hyperlink.Address,
                         guid=hyperlink.TopicLabelGuid
-                    ))
+                    )
+                    hyperlinks.append(link)
         except Exception as e:
             print(f"Error in get_links_from_topic: {e}")
         return hyperlinks
@@ -240,7 +252,7 @@ class Mindmanager:
                 if RTF_WORKAROUND:
                     topic.Title.Text = topic_rtf
                 else:
-                    topic.Title.TextRtf = topic_rtf
+                    topic.Title.TextRTF = topic_rtf
         except Exception as e:
             print(f"Error in set_title_to_topic: {e}")
 
