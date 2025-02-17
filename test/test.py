@@ -10,6 +10,8 @@ from src.mindmap.mindmap_helper import *
 import json
 from collections import deque
 
+IGNORE_RTF = False
+
 def serialize_object(obj, guid_mapping, name='', visited=None):
     if visited is None:
         visited = set()
@@ -31,8 +33,9 @@ def serialize_object(obj, guid_mapping, name='', visited=None):
             if attr_name in ["parent", "level", "selected"]:
                 continue
             if attr_name in ["rtf"]:
-                continue
-            if attr_value == None or attr_value == "" or attr_value == []:
+                if IGNORE_RTF == True:
+                    continue
+            if attr_value is None or attr_value == "" or attr_value == []:
                 continue
             new_attr_name = attr_name
             if new_attr_name in ["guid", "guid_1", "guid_2"]:
@@ -68,7 +71,8 @@ def serialize_object_simple(obj, name='', visited=None):
             if attr_name in ["parent", "level", "selected"]:
                 continue
             if attr_name in ["rtf"]:
-                continue
+                if IGNORE_RTF == True:
+                    continue
             if attr_value is None or attr_value == "" or attr_value == []:
                 continue
             serialized[attr_name] = serialize_object_simple(attr_value, attr_name, visited)
@@ -107,16 +111,17 @@ def serialize_topic_attributes(topic, guid_mapping):
     d = {}
     d["id"] = guid_mapping.get(topic.guid, topic.guid)
     d["text"] = topic.text
-    #if topic.rtf != topic.text:
-    #    d["rtf"] = topic.rtf
-    #d["selected"] = topic.selected
+    if topic.rtf != topic.text and not IGNORE_RTF == True:
+        d["rtf"] = topic.rtf
+    d["selected"] = topic.selected
     if topic.links:
         d["links"] = []
         for link in topic.links:
-            l = {
-                "text": link.text,
-                "url": link.url
-            }
+            l = {}
+            if link.text:
+                l["text"] = link.text
+            if link.url:
+                l["url"] = link.url
             if link.guid:
                 l["id"] = guid_mapping.get(link.guid, link.guid)
             d["links"].append(l)
@@ -125,14 +130,19 @@ def serialize_topic_attributes(topic, guid_mapping):
     if topic.icons:
         d["icons"] = []
         for icon in topic.icons:
-            i = {
-                "text": icon.text,
-                "is_stock_icon": icon.is_stock_icon,
-                "index": icon.index,
-                "signature": icon.signature,
-                "path": icon.path,
-                "group": icon.group
-            }
+            i = {}
+            if icon.text:
+                i["text"] = icon.text
+            if icon.is_stock_icon is not None:
+                i["is_stock_icon"] = icon.is_stock_icon
+            if icon.index is not None:
+                i["index"] = icon.index
+            if icon.signature:
+                i["signature"] = icon.signature
+            if icon.path:
+                i["path"] = icon.path
+            if icon.group:
+                i["group"] = icon.group
             d["icons"].append(i)
     if topic.notes and (topic.notes.text or topic.notes.xhtml or topic.notes.rtf):
         notes = {}
@@ -153,7 +163,8 @@ def serialize_topic_attributes(topic, guid_mapping):
                 r["id_1"] = guid_mapping.get(ref.guid_1, ref.guid_1)
             if ref.guid_2:
                 r["id_2"] = guid_mapping.get(ref.guid_2, ref.guid_2)
-            r["direction"] = ref.direction
+            if ref.direction:
+                r["direction"] = ref.direction
             if ref.label:
                 r["label"] = ref.label
             d["references"].append(r)
@@ -207,7 +218,7 @@ def deserialize_mermaid_to_mindmap(mermaid_text: str, guid_mapping: dict) -> Min
         else:
             guid = str(uuid.uuid4())
             id_to_guid[id_number] = guid
-        node = MindmapTopic(guid=guid, text=node_text, rtf=node_text, level=level)
+        node = MindmapTopic(guid=guid, text=node_text, level=level)
         if root is None:
             root = node
             stack.append((level, node))
@@ -265,7 +276,7 @@ def deserialize_mermaid_full(mermaid_text: str, guid_mapping: dict) -> MindmapTo
         else:
             node_guid = str(uuid.uuid4())
         node_text = attrs.get("text", fallback_text)
-        node_rtf = attrs.get("rtf", node_text)
+        node_rtf = attrs.get("rtf", "")
         selected = attrs.get("selected", False)
         links = []
         if "links" in attrs and isinstance(attrs["links"], list):
@@ -274,7 +285,7 @@ def deserialize_mermaid_full(mermaid_text: str, guid_mapping: dict) -> MindmapTo
                 ld = process_subobject(ld, "id")
                 link_text = ld.get("text", "")
                 link_url = ld.get("url", "")
-                link_guid = ld.get("id", str(uuid.uuid4()))
+                link_guid = ld.get("id", "")
                 links.append(MindmapLink(text=link_text, url=link_url, guid=link_guid))
         image_obj = None
         if "image" in attrs and isinstance(attrs["image"], dict):
@@ -376,7 +387,7 @@ def main():
     mermaid_id_only = serialize_mindmap(document.mindmap, guid_mapping, id_only=True)
     print(mermaid_id_only)
 
-    print("\n\n**************************************************\nMermaid serialization, full\n**************************************************\nv")
+    print("\n\n**************************************************\nMermaid serialization, full\n**************************************************\n")
     mermaid_data = serialize_mindmap(document.mindmap, guid_mapping, id_only=False)
     print(mermaid_data)
 
