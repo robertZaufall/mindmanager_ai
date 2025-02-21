@@ -4,8 +4,8 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
@@ -15,6 +15,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 # CLOUD_TYPE = 'OPENAI+o3-mini'                                         # best
+# CLOUD_TYPE = 'OPENAI+o3-mini-low'                                     # best
+# CLOUD_TYPE = 'OPENAI+o3-mini-medium'                                  # best
+# CLOUD_TYPE = 'OPENAI+o3-mini-high'                                    # best
 
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
@@ -173,6 +176,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.OPENAI_COMPATIBILITY = True
     config.MAX_TOKENS = 4000
     config.HEADERS = {"Content-Type": "application/json"}
+    config.REASONING_EFFORT = ""
 
     if "OPENAI+" in CLOUD_TYPE:
         if "gpt-4o" in model:
@@ -181,7 +185,12 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
         elif "o3-mini" in model:
             config.MAX_TOKENS = 100000
-            config.REASONING_EFFORT = "low"
+            reasoning_effort = model.split("-")[-1]
+            if reasoning_effort in ["low", "medium", "high"]:
+                config.REASONING_EFFORT = reasoning_effort
+                config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
+            else:
+                config.REASONING_EFFORT = "low"
         elif "o1-mini" in model:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
@@ -196,9 +205,17 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        elif "o3-mini" in model:
+        elif "o3-mini" == model:
             config.MAX_TOKENS = 100000
             config.REASONING_EFFORT = "low"
+        elif "o3-mini" in model:
+            config.MAX_TOKENS = 100000
+            reasoning_effort = model.split("-")[-1]
+            if reasoning_effort in ["low", "medium", "high"]:
+                config.REASONING_EFFORT = reasoning_effort
+                config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
+            else:
+                config.REASONING_EFFORT = "low"
         elif "o1-mini" in model:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
