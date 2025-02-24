@@ -5,7 +5,7 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
@@ -29,6 +29,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                             # best
 
 # Anthropic     
+CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
@@ -291,7 +292,11 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             raise Exception("Error: Unsupported AWS Bedrock model.")
 
     elif "ANTHROPIC" in CLOUD_TYPE:
-        if "claude-3-5" in model:
+        if "claude-3-7-sonnet" in model:
+            config.MAX_TOKENS = 64000
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
+        elif "claude-3-5" in model:
             config.MAX_TOKENS = 8192
             if "sonnet" in model:
                 config.MULTIMODAL = True
