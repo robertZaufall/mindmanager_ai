@@ -5,7 +5,7 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
@@ -29,27 +29,26 @@ from file_helper import load_env
 # CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                             # best
 
 # Anthropic     
-CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best
+# CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
 
 # Google Gemini
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite'                           # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash'                                # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-01-21'             # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-pro-exp-02-05'                        # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
+# CLOUD_TYPE = 'GEMINI+learnlm-1.5-pro-experimental'                    # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # best
 
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-01-21'             # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-001'                            # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-preview-02-05'             # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-pro-exp-02-05'                        # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
-# CLOUD_TYPE = 'GEMINI+learnlm-1.5-pro-experimental'                    # best
-
 # Google Gemini Vertex AI (OAuth2)     
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite'                         # best in class
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash'                              # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-thinking-exp-1219'            # not working
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-001'                          # best in class
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite-preview-02-05'           # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-pro-exp-02-05'                      # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-exp-1206'                               # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
@@ -70,7 +69,7 @@ CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
 
 # Alibaba Cloud
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-max-0125'                             # best
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-max'                                  # best
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus'                                 # best
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo'                                # good
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen2.5-72b-instruct'                      # good
