@@ -123,26 +123,26 @@ def validate_mermaid(mermaid_mindmap):
     else:
         return True  # Some lines do not match the pattern
 
-def get_mermaid_line(level, topic):
-    if level == 0:
-        return (
-            f"mindmap{line_separator}"
-            f"{get_space_string(1)}{get_root()}{get_left_round()}{topic}{get_right_round()}{line_separator}"
-        )
-    if level > 1:
-        return f"{get_space_string(level)}{get_left_round()}{topic}{get_right_round()}{line_separator}"
-
 def get_mermaid_from_mindmap(mindmap):
-    return recurse_topics("", mindmap, 0)
 
-def recurse_topics(mermaid_mindmap, this_topic, level):
-    this_topic_text = this_topic.text
-    if level == 0:
-        top_level = get_mermaid_line(0, this_topic_text)
-        mermaid_mindmap = recurse_topics(top_level, this_topic, 1)
+    def get_mermaid_line(level, topic):
+        if level == 0:
+            return (
+                f"mindmap{line_separator}"
+                f"{get_space_string(1)}{get_root()}{get_left_round()}{topic}{get_right_round()}{line_separator}"
+            )
+        if level > 1:
+            return f"{get_space_string(level)}{get_left_round()}{topic}{get_right_round()}{line_separator}"
+
+    def recurse_topics(mermaid_mindmap, this_topic, level):
+        this_topic_text = this_topic.text
+        if level == 0:
+            top_level = get_mermaid_line(0, this_topic_text)
+            mermaid_mindmap = recurse_topics(top_level, this_topic, 1)
+            return mermaid_mindmap
+        if level > 1:
+            mermaid_mindmap += get_mermaid_line(level, this_topic_text)
+        for child_topic in this_topic.subtopics:
+            mermaid_mindmap = recurse_topics(mermaid_mindmap, child_topic, level + 1)
         return mermaid_mindmap
-    if level > 1:
-        mermaid_mindmap += get_mermaid_line(level, this_topic_text)
-    for child_topic in this_topic.subtopics:
-        mermaid_mindmap = recurse_topics(mermaid_mindmap, child_topic, level + 1)
-    return mermaid_mindmap
+    return recurse_topics("", mindmap, 0)

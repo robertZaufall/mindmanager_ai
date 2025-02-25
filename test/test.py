@@ -10,9 +10,9 @@ from src.mindmap.mindmap_helper import *
 import json
 from collections import deque
 
-IGNORE_RTF = False
+IGNORE_RTF = True
 
-def serialize_object(obj, guid_mapping, name='', visited=None):
+def serialize_object(obj, guid_mapping, name='', visited=None, ignore_rtf=True):
     if visited is None:
         visited = set()
     if name == 'topic':
@@ -33,7 +33,7 @@ def serialize_object(obj, guid_mapping, name='', visited=None):
             if attr_name in ["parent", "level", "selected"]:
                 continue
             if attr_name in ["rtf"]:
-                if IGNORE_RTF == True:
+                if ignore_rtf == True:
                     continue
             if attr_value is None or attr_value == "" or attr_value == []:
                 continue
@@ -51,7 +51,7 @@ def serialize_object(obj, guid_mapping, name='', visited=None):
         return serialized
     return str(obj)
 
-def serialize_object_simple(obj, name='', visited=None):
+def serialize_object_simple(obj, name='', visited=None, ignore_rtf=True):
     if visited is None:
         visited = set()
     if name == 'topic':
@@ -71,7 +71,7 @@ def serialize_object_simple(obj, name='', visited=None):
             if attr_name in ["parent", "level", "selected"]:
                 continue
             if attr_name in ["rtf"]:
-                if IGNORE_RTF == True:
+                if ignore_rtf == True:
                     continue
             if attr_value is None or attr_value == "" or attr_value == []:
                 continue
@@ -371,16 +371,16 @@ def main():
 
     print("\n\n**************************************************\nJSON serialization\n**************************************************\n")
 
-    serialize_simple_result = serialize_object_simple(document.mindmap)
+    serialize_simple_result = serialize_object_simple(document.mindmap, ignore_rtf=IGNORE_RTF)
     print(json.dumps(serialize_simple_result, indent=1))
 
     print("\n\n**************************************************\nJSON serialization with GUID mapping\n**************************************************\n")
 
-    serialize_result = serialize_object(document.mindmap, guid_mapping)
+    serialize_result = serialize_object(document.mindmap, guid_mapping, ignore_rtf=IGNORE_RTF)
     print(json.dumps(serialize_result, indent=1))
 
     print("\n\n**************************************************\nYAML serialization with GUID mapping\n**************************************************\n")
-    yaml_data = serialize_object(document.mindmap, guid_mapping)
+    yaml_data = serialize_object(document.mindmap, guid_mapping, ignore_rtf=IGNORE_RTF)
     print(yaml.dump(yaml_data, sort_keys=False))
 
     print("\n\n**************************************************\nMermaid serialization, id only\n**************************************************\n")
