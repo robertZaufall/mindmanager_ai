@@ -11,6 +11,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4.5-preview'                                 # best in class (20x more expensive!)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o'                                          # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # best
 # CLOUD_TYPE = 'OPENAI+o1'                                              # best
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
