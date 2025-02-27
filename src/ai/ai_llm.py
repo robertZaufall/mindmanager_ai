@@ -113,11 +113,12 @@ def call_llm(model, str_user, data="", mimeType=""):
 
         payload = {}
 
-        if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE) and ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE):
+        if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE) and \
+           ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE):
             payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
-            if "+o3" in config.CLOUD_TYPE:
+            if "+o3" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
                 payload["reasoning_effort"] = config.REASONING_EFFORT
         else:
             if data == "":  
