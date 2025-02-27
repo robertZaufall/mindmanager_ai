@@ -9,6 +9,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
+# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview'                                 # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # best
 # CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
@@ -179,7 +180,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.REASONING_EFFORT = ""
 
     if "OPENAI+" in CLOUD_TYPE:
-        if "gpt-4o" in model:
+        if "gpt-4o" in model or "gpt-4.5" in model:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
