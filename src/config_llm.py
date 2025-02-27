@@ -9,10 +9,10 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
-# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview'                                 # best
+# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview'                                 # best in class (20x more expensive!)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # best
-# CLOUD_TYPE = 'OPENAI+o1'                                              # not available by now
+# CLOUD_TYPE = 'OPENAI+o1'                                              # best
 # CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
 # CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
 # CLOUD_TYPE = 'OPENAI+o3-mini'                                         # best
@@ -22,12 +22,18 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
-# CLOUD_TYPE = 'GITHUB+gpt-4o-mini'                                     # ok
-# CLOUD_TYPE = "GITHUB+Phi-3-medium-128k-instruct"                      # not so good
-# CLOUD_TYPE = "GITHUB+Phi-3.5-mini-instruct"                           # ok
-# CLOUD_TYPE = "GITHUB+meta-llama-3.1-70b-instruct"                     # best
-# CLOUD_TYPE = "GITHUB+Mistral-large-2407"                              # good
-# CLOUD_TYPE = "GITHUB+AI21-Jamba-Instruct"                             # best
+# CLOUD_TYPE = 'GITHUB+gpt-4o-mini'                                     # best
+# CLOUD_TYPE = 'GITHUB+o1-preview'                                      # best
+# CLOUD_TYPE = 'GITHUB+o1'                                              # best, slow
+# CLOUD_TYPE = 'GITHUB+o1-mini'                                         # best
+# CLOUD_TYPE = 'GITHUB+o3-mini'                                         # best
+# CLOUD_TYPE = 'GITHUB+Phi-4'                                           # best
+# CLOUD_TYPE = 'GITHUB+Phi-4-mini-instruct'                             # best
+# CLOUD_TYPE = 'GITHUB+Phi-3-medium-128k-instruct'                      # not so good
+# CLOUD_TYPE = 'GITHUB+Phi-3.5-mini-instruct'                           # ok
+# CLOUD_TYPE = 'GITHUB+meta-llama-3.1-70b-instruct'                     # best
+# CLOUD_TYPE = 'GITHUB+Mistral-large-2407'                              # good
+# CLOUD_TYPE = 'GITHUB+AI21-Jamba-Instruct'                             # best
 
 # Anthropic     
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best
