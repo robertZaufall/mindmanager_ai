@@ -2,10 +2,8 @@ import sys
 import os
 import yaml
 import re
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import src.mindmap.mindmap_helper as mindmap_helper
-from src.mindmap.mindmap_helper import *
+import mindm as mindmap_helper
+from mindm.mindmap_helper import *
 
 import json
 from collections import deque
