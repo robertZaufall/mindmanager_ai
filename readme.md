@@ -1,4 +1,4 @@
-# MindManager Automation and AI Integration <br/> Windows + macOS
+# MindManager AI Integration <br/> Windows + macOS
 
 These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
@@ -160,7 +160,6 @@ Run `install.bat` or  the following commands (requirements_auth.txt only if you 
 cd ..
 choco install python3
 pip install -r .\src\requirements.txt
-pip install -r .\src\requirements_win.txt
 pip install -r .\src\requirements_auth.txt
 powershell -ExecutionPolicy Bypass -File .\windows\macro_registration.ps1
 ```
@@ -180,7 +179,6 @@ Python has to be installed first. Go to https://www.python.org/downloads/macos/ 
 Install required python libraries (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`, requirements_mac_mlx.txt is only needed for local image generation using MLX):
 ```
 pip install -r requirements.txt
-pip install -r requirements_mac.txt
 pip install -r requirements_mac_mlx.txt
 pip install -r requirements_auth.txt
 ```
@@ -351,6 +349,10 @@ Prompt crafting is lightly implemented using the following strategy:
 ![Configuration](doc/prompt.png)  
 
 ## Platform specific implementations
+The `mindm` component is used on both platforms for MindManager automation.  
+[Link to GitHub Repository](https://github.com/robertzaufall/mindm/)  
+[Link to GitHub Pages](https://robertzaufall.github.io/mindm/)  
+
 ### Windows  
 MindManager COM objects are addressed by using the PyWin32 library:  
 
