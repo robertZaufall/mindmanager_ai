@@ -3,7 +3,7 @@ import os
 import yaml
 import re
 import mindm as mindmap_helper
-from mindm.mindmap_helper import *
+from mindmap.mindmap import *
 
 import json
 from collections import deque
@@ -28,7 +28,7 @@ def serialize_object(obj, guid_mapping, name='', visited=None, ignore_rtf=True):
     if hasattr(obj, '__dict__'):
         serialized = {}
         for attr_name, attr_value in vars(obj).items():
-            if attr_name in ["parent", "level", "selected"]:
+            if attr_name in ["parent", "level", "selected"]: 
                 continue
             if attr_name in ["rtf"]:
                 if ignore_rtf == True:
@@ -359,7 +359,7 @@ def build_mapping(topic, guid_mapping):
         build_mapping(sub, guid_mapping)
 
 def main():
-    document = mindmap_helper.MindmapDocument(charttype="auto")
+    document = MindmapDocument(charttype="auto")
     document.get_mindmap()
 
     guid_mapping = {}

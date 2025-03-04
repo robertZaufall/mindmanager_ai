@@ -5,7 +5,7 @@ import config_image as cfg_image
 import config_translate as cfg_translate
 import ai.prompts as prompts
 
-from mindm.mindmap_helper import *
+from mindmap.mindmap import *
 from mermaid.mermaid_helper import *
 import mermaid.mermaid_helper as mermaid_helper
 
