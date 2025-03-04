@@ -159,7 +159,7 @@ Run `install.bat` or  the following commands (requirements_auth.txt only if you 
 ```
 cd ..
 choco install python3
-pip install -r -U .\src\requirements.txt
+pip install -U -r .\src\requirements.txt
 pip install -r .\src\requirements_auth.txt
 powershell -ExecutionPolicy Bypass -File .\windows\macro_registration.ps1
 ```
@@ -178,7 +178,7 @@ You can also check here if the path to the python file is correct.
 Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
 Install required python libraries (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`, requirements_mac_mlx.txt is only needed for local image generation using MLX):
 ```
-pip install -r -U requirements.txt
+pip install -U -r requirements.txt
 pip install -r requirements_mac_mlx.txt
 pip install -r requirements_auth.txt
 ```
