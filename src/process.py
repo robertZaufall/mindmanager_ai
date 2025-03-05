@@ -6,6 +6,7 @@ import config_translate as cfg_translate
 import ai.prompts as prompts
 
 from mindmap.mindmap import *
+
 from mermaid.mermaid_helper import *
 import mermaid.mermaid_helper as mermaid_helper
 

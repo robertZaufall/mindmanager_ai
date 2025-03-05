@@ -25,10 +25,12 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # (does not work any more)
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-dev-4bit'              # good 
         
 # IdeogramAI        
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A'                       # best
+CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                 # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                        # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                  # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                        # best

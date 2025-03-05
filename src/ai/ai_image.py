@@ -107,12 +107,14 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                 "magic_prompt_option": "AUTO",
                 "prompt": str_user,
                 "seed": seed,
-                "negative_prompt": config.IMAGE_NEGATIV_PROMPT
             } }
 
             if config.IMAGE_MODEL_ID == "V_2" or config.IMAGE_MODEL_ID == "V_2_TURBO":
                 payload["image_request"]["style_type"] = config.IMAGE_EXPLICIT_STYLE
                 payload["image_request"]["resolution"] = config.IMAGE_RESOLUTION
+
+            if not config.IMAGE_MODEL_ID.startswith("V_2A"):
+                payload["image_request"]["negative_prompt"] = config.IMAGE_NEGATIV_PROMPT
 
             response = requests.post(
                 url=config.IMAGE_API_URL,
