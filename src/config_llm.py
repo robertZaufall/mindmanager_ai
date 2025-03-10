@@ -7,6 +7,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
+# CLOUD_TYPE = 'AZURE+o3-mini'                                          # not working by now
 
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4.5-preview'                                 # best in class (20x more expensive!)
@@ -202,7 +203,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
             config.MAX_TOKENS = 32767
-        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
         config.API_URL = os.getenv('OPENAI_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY') or "")}
 
@@ -212,9 +212,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        elif "o3-mini" == model:
-            config.MAX_TOKENS = 100000
-            config.REASONING_EFFORT = "low"
         elif "o3-mini" in model:
             config.MAX_TOKENS = 100000
             reasoning_effort = model.split("-")[-1]
@@ -227,7 +224,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
             config.MAX_TOKENS = 32767
-        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
         config.AZURE_DEPLOYMENT = model
         config.API_VERSION = os.getenv('AZURE_API_VERSION')
         config.API_URL = (
@@ -240,14 +236,12 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     elif "OPENROUTER+" in CLOUD_TYPE:
         if any(s in model for s in ["gpt-4o", "o1-mini", "o1-preview"]):
             config.MAX_TOKENS = 16383
-        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
         config.API_URL = os.getenv('OPENROUTER_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENROUTER_API_KEY') or "")}
 
     elif "GITHUB+" in CLOUD_TYPE:
         if "gpt-4o" in model:
             config.MAX_TOKENS = 16383
-        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
         config.API_URL = os.getenv('GITHUB_MODELS_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('GITHUB_MODELS_TOKEN') or "")}
 
@@ -307,7 +301,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             if "sonnet" in model:
                 config.MULTIMODAL = True
                 config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        config.MARKDOWN_OPTIMIZATION_LEVEL = 3
         config.ANTHROPIC_VERSION = os.getenv('ANTHROPIC_VERSION')
         config.API_URL = os.getenv('ANTHROPIC_API_URL')
         config.HEADERS = {

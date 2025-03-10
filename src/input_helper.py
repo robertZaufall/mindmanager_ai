@@ -54,10 +54,7 @@ def extract_and_optimize(optimization_level, output_file_path, md_text):
             md_text = text_helper.remove_section(md_text, "References")
                             
         if optimization_level > 1:
-            if optimization_level > 2:
-                md_text = text_helper.ultra_minimize_tokens(md_text)
-            else:
-                md_text = text_helper.cleanse_markdown(md_text)
+            md_text = text_helper.cleanse_markdown(md_text, optimization_level)
 
         pathlib.Path(output_file_path).write_bytes(md_text.encode())
 

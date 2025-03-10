@@ -10,4 +10,5 @@ gpt4all
 sv_ttk
 ollama
 python-dotenv
+nltk
 mindm

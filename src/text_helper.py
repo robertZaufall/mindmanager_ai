@@ -1,6 +1,12 @@
 import tiktoken
 import markdown_it
 import re
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.stem import SnowballStemmer
+import string
+import heapq
 
 def num_tokens_from_string(string: str, encoding_name: str) -> int:
     encoding = tiktoken.get_encoding(encoding_name)
@@ -14,7 +20,65 @@ def remove_section(markdown_content, section_title):
     cleaned_content = cleaned_content.rstrip() + '\n'
     return cleaned_content
 
-def cleanse_markdown(markdown_text):
+def guess_language(text):
+    sample_text = text[:1000].lower()
+    tokens = word_tokenize(sample_text)
+    supported_languages = {lang for lang in SnowballStemmer.languages if lang != "porter"}
+    available_languages = [lang for lang in stopwords.fileids() if lang in supported_languages]
+    stopword_counts = {}
+    for lang in available_languages:
+        sw = set(stopwords.words(lang))
+        count = sum(1 for token in tokens if token in sw)
+        stopword_counts[lang] = count
+    max_count = max(stopword_counts.values(), default=0)
+    candidate_languages = [lang for lang, count in stopword_counts.items() if count == max_count]
+    if not candidate_languages:
+        return "unknown"
+    priority = [lang for lang in SnowballStemmer.languages if lang != "porter"]
+    for lang in priority:
+        if lang in candidate_languages:
+            return lang
+    return candidate_languages[0]
+
+def nltk_summarize(text, language='english', reduction_ratio=0.5):
+    sentences = sent_tokenize(text)
+    if len(sentences) < 2:
+        return text
+    stop_words = set(stopwords.words(language))
+    words = word_tokenize(text.lower())
+    freq_table = {}
+    for word in words:
+        if word in stop_words or word in string.punctuation:
+            continue
+        freq_table[word] = freq_table.get(word, 0) + 1
+    sentence_scores = {}
+    for sentence in sentences:
+        sentence_words = word_tokenize(sentence.lower())
+        sentence_length = len(sentence_words)
+        for word in sentence_words:
+            if word in freq_table:
+                sentence_scores[sentence] = sentence_scores.get(sentence, 0) + freq_table[word]
+        if sentence in sentence_scores and sentence_length > 0:
+            sentence_scores[sentence] /= sentence_length
+    num_sentences = max(1, int(len(sentences) * reduction_ratio))
+    summary_sentences = heapq.nlargest(num_sentences, sentence_scores, key=sentence_scores.get)
+    summary_sentences = [sentence for sentence in sentences if sentence in summary_sentences]
+    return " ".join(summary_sentences)
+
+def summarize_and_stem(text, language='english', reduction_ratio=0.5):
+    summary = nltk_summarize(text, language, reduction_ratio)
+    sentences = sent_tokenize(summary)
+    stemmed_sentences = []
+    for i, sentence in enumerate(sentences):
+        tokens = word_tokenize(sentence)
+        tokens = [token for token in tokens if token not in string.punctuation]
+        stemmer = SnowballStemmer(language.lower())
+        stemmed_tokens = [stemmer.stem(token) for token in tokens]
+        stemmed_sentences.append(" ".join(stemmed_tokens))
+    result = ". ".join([s.strip() for s in stemmed_sentences]) + "."
+    return result.strip()
+
+def cleanse_markdown(markdown_text, optimization_level = 1):
     def clean_line(line):
         # Remove special characters (except #, -, *, and .)
         line = re.sub(r'[^\w\s#\-*.]', '', line)
@@ -52,117 +116,19 @@ def cleanse_markdown(markdown_text):
             cleaned_lines.append(clean_line(line))
     
     # Join the cleaned lines back together
-    return '\n'.join(cleaned_lines)
+    result = '\n'.join(cleaned_lines)
+
+    if optimization_level > 1:
+        nltk.download('punkt')
+        nltk.download('stopwords')
+        nltk.download('punkt_tab')
+        language = guess_language(result)
+        result = summarize_and_stem(result, language=language, reduction_ratio=0.75)
+
+    return result
 
 def cleanse_title(text):
     return text.replace(".pdf", "").replace(".md", "").replace("_", " ").replace("-", " ")
-
-def ultra_minimize_tokens(text):
-    abbrevs = {
-        'information': 'info', 'example': 'eg', 'without': 'wo', 'with': 'w/',
-        'about': 'abt', 'between': 'btw', 'number': '#', 'please': 'pls',
-        'people': 'ppl', 'because': 'bc', 'before': 'b4', 'software': 'sw',
-        'hardware': 'hw', 'language': 'lang', 'zero': '0', 'one': '1', 'two': '2',
-        'three': '3', 'four': '4', 'five': '5', 'six': '6', 'seven': '7',
-        'eight': '8', 'nine': '9', 'ten': '10', 'through': 'thru', 'okay': 'ok',
-        'thanks': 'thx', 'government': 'govt', 'management': 'mgmt',
-        'development': 'dev', 'international': 'intl', 'technology': 'tech',
-        'something': 'sth', 'someone': 'sm1', 'everybody': 'evrybdy',
-        'everyone': 'evryone', 'everything': 'evrythng', 'tomorrow': 'tmrw',
-        'tonight': '2nite', 'today': '2day', 'yesterday': 'ystday',
-        'application': 'app', 'applications': 'apps', 'appointment': 'appt',
-        'appointments': 'appts', 'message': 'msg', 'messages': 'msgs',
-        'question': 'q', 'questions': 'qs', 'answer': 'a', 'answers': 'as',
-        'document': 'doc', 'documents': 'docs', 'advertisement': 'ad',
-        'advertisements': 'ads', 'account': 'acct', 'accounts': 'accts',
-        'address': 'addr', 'addresses': 'addrs', 'administrator': 'admin',
-        'administrators': 'admins', 'approximately': 'approx', 'assignment': 'assgmt', 
-        'assignments': 'assgmts', 'attention': 'attn', 'avenue': 'ave', 'average': 'avg'
-    }
-    
-    verb_synonyms = {
-        'facilitate': 'help', 'investigate': 'study', 'utilize': 'use',
-        'implement': 'do', 'demonstrate': 'show', 'communicate': 'talk',
-        'collaborate': 'work', 'evaluate': 'check', 'generate': 'make',
-        'optimize': 'fix', 'analyze': 'study', 'establish': 'set',
-        'consider': 'think', 'determine': 'find', 'enhance': 'boost',
-        'provide': 'give', 'require': 'need', 'maintain': 'keep',
-        'indicate': 'show', 'accomplish': 'do', 'acquire': 'get',
-        'attempt': 'try', 'commence': 'start', 'complete': 'finish',
-        'comprise': 'form', 'construct': 'build', 'decrease': 'cut',
-        'designate': 'name', 'discontinue': 'stop', 'eliminate': 'cut',
-        'emphasize': 'stress', 'encounter': 'meet', 'endeavor': 'try',
-        'enumerate': 'list', 'exclude': 'bar', 'expedite': 'rush',
-        'initiate': 'start', 'terminate': 'end', 'transmit': 'send'
-    }
-
-    other_synonyms = {
-        'additional': 'more', 'alternatively': 'or', 'approximately': 'about',
-        'assistance': 'help', 'component': 'part', 'components': 'parts',
-        'concerning': 'about', 'consequently': 'so', 'currently': 'now',
-        'equitable': 'fair', 'evidenced': 'shown', 'furthermore': 'also',
-        'sufficient': 'enough', 'therefore': 'so'
-    }
-
-    contractions = {
-        "n't": "'t", "'re": "'r", "'ve": "'v", "'ll": "'l", "'m": "'m", "'s": "'s"
-    }
-    
-    stop_words = set(['a', 'an', 'and', 'are', 'as', 'at', 'be', 'by', 'for', 'from',
-                      'has', 'he', 'in', 'is', 'it', 'its', 'of', 'on', 'that', 'the',
-                      'to', 'was', 'were', 'will', 'with', 'very', 'your'])
-
-    def conjugate_verb(verb, tense):
-        if tense == 'present':
-            return verb + 's' if verb[-1] != 's' else verb
-        elif tense == 'past':
-            if verb[-1] == 'e':
-                return verb + 'd'
-            elif verb[-1] == 'y' and verb[-2] not in 'aeiou':
-                return verb[:-1] + 'ied'
-            else:
-                return verb + 'ed'
-        elif tense == 'present_participle':
-            if verb[-1] == 'e':
-                return verb[:-1] + 'ing'
-            else:
-                return verb + 'ing'
-        return verb
-
-    # Generate all verb forms for synonyms
-    all_synonyms = {}
-    for verb, synonym in verb_synonyms.items():
-        all_synonyms[verb] = synonym
-        all_synonyms[conjugate_verb(verb, 'present')] = conjugate_verb(synonym, 'present')
-        all_synonyms[conjugate_verb(verb, 'past')] = conjugate_verb(synonym, 'past')
-        all_synonyms[conjugate_verb(verb, 'present_participle')] = conjugate_verb(synonym, 'present_participle')
-    
-    all_synonyms.update(other_synonyms)
-
-    # Remove markdown elements and URLs
-    text = re.sub(r'```[\s\S]*?```|\|.*\||!\[.*?\]\(.*?\)|http\S+|[#*`>]', '', text.lower())
-    
-    # Apply abbreviations, contractions, and synonyms
-    for word, replacement in {**abbrevs, **contractions, **all_synonyms}.items():
-        text = re.sub(r'\b' + word + r'\b', replacement, text)
-    
-    # Split into words, keeping periods, commas, and decimal numbers
-    words = re.findall(r'\b\w+(?:\.\d+)?\b|[.,]', text)
-    
-    # Remove stop words, keep periods and commas, and join with correct spacing
-    result = ''
-    for i, w in enumerate(words):
-        if w not in stop_words or w in '.,':
-            if w in '.,':
-                result = result.rstrip() + w + ' '
-            elif '.' in w and w[0].isdigit() and w[-1].isdigit():  # Handle decimal numbers
-                result += w + ' '
-            elif i > 0 and words[i-1].isdigit() and w.isdigit():  # Handle cases like "gpt 3.5"
-                result = result.rstrip() + '.' + w + ' '
-            else:
-                result += w + ' '
-    
-    return result.strip()
 
 def clean_result(input):
     result = input \
