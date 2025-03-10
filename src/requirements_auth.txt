@@ -1,3 +1,4 @@
+openai
 azure.identity
 google-auth
 google-auth-oauthlib 
