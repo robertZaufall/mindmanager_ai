@@ -53,6 +53,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # best
+# CLOUD_TYPE = 'GEMINI+gemma-3-27b-it'                                  # best
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite'                         # best in class
@@ -129,6 +130,11 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
 # CLOUD_TYPE = 'OLLAMA+mistral-small'                                   #
+# CLOUD_TYPE = 'OLLAMA+gemma3:27b'                                      # best, slow
+# CLOUD_TYPE = 'OLLAMA+gemma3:12b'                                      # does not work, most of the time
+# CLOUD_TYPE = 'OLLAMA+gemma3:4b'                                       # does not work, most of the time
+# CLOUD_TYPE = 'OLLAMA+gemma3:1b-it-fp16'                               # does not work, most of the time
+# CLOUD_TYPE = 'OLLAMA+gemma3:1b'                                       # does not work
 
 # LMStudio
 # CLOUD_TYPE = 'LMSTUDIO+mlx-community/phi-4'                           # best
