@@ -125,15 +125,15 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
 # CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
-# CLOUD_TYPE = 'OLLAMA+llama3.1'                                        # ok
-# CLOUD_TYPE = 'OLLAMA+llama3.1:8b'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
-# CLOUD_TYPE = 'OLLAMA+mistral-small'                                   #
+# CLOUD_TYPE = 'OLLAMA+mistral'                                         # good
+# CLOUD_TYPE = 'OLLAMA+mistral:7b-instruct-v0.3-fp16'                   # good
+# CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
+# CLOUD_TYPE = 'OLLAMA+dolphin-mixtral'                                 # good
 # CLOUD_TYPE = 'OLLAMA+gemma3:27b'                                      # best, slow
 # CLOUD_TYPE = 'OLLAMA+gemma3:12b'                                      # does not work, most of the time
 # CLOUD_TYPE = 'OLLAMA+gemma3:4b'                                       # does not work, most of the time
-# CLOUD_TYPE = 'OLLAMA+gemma3:1b-it-fp16'                               # does not work, most of the time
 # CLOUD_TYPE = 'OLLAMA+gemma3:1b'                                       # does not work
 
 # LMStudio
