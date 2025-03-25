@@ -47,6 +47,7 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite'                           # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash'                                # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-01-21'             # best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-exp-03-25'                        # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-pro-exp-02-05'                        # best in class
 # CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
 # CLOUD_TYPE = 'GEMINI+learnlm-1.5-pro-experimental'                    # best
@@ -132,8 +133,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'OLLAMA+mixtral'                                         # ok
 # CLOUD_TYPE = 'OLLAMA+dolphin-mixtral'                                 # good
 # CLOUD_TYPE = 'OLLAMA+gemma3:27b'                                      # best, slow
-# CLOUD_TYPE = 'OLLAMA+gemma3:12b'                                      # does not work, most of the time
-# CLOUD_TYPE = 'OLLAMA+gemma3:4b'                                       # does not work, most of the time
+# CLOUD_TYPE = 'OLLAMA+gemma3:12b'                                      # does not work, most of the time (indentation problem)
+# CLOUD_TYPE = 'OLLAMA+gemma3:12b-it-q8_0'                              # does not work, most of the time (indentation problem)
+# CLOUD_TYPE = 'OLLAMA+gemma3:4b'                                       # does not work, most of the time (indentation problem)
 # CLOUD_TYPE = 'OLLAMA+gemma3:1b'                                       # does not work
 
 # LMStudio

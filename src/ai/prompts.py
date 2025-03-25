@@ -26,7 +26,7 @@ prompt_postfix = (
     "Suppress any text like 'Here is the refined mind map' or else in your answer. "
     "Don't stop content generation and don't generate unfinished or placeholder topics like '..'. "
     "Don't add 'Here is the refined mind map in Mermaid syntax:' or 'Here is the mindmap in Mermaid syntax based on the summary:' or any other text to your answer, but just the code. "
-    "Check twice if the Mermaid code is syntactically correct. "    
+    "Check twice if the Mermaid code is syntactically correct: level indentation for every line must be exactly 2 spaces ('  ') also for the first and second topic. Don't use '\\t' or '\t'. "
     "This is an example of an n level deep mindmap and how the output format has to look like: \n"
     "```mindmap\n  CentralTopic\n    Topic_1\n      Subtopic_11\n        Subtopic_111\n        ..\n        Subtopic_11n\n      Subtopic_12\n      ..\n      Subtopic_1n\n    Topic_2\n      Subtopic_21\n        Subtopic_211\n    ..\n    Topic_n```\n\n"
     "Here is the data: \n"
