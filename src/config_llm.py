@@ -10,17 +10,16 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o3-mini'                                          # not working by now
 
 # OpenAI     
-# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview'                                 # best in class (20x more expensive!)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best
-# CLOUD_TYPE = 'OPENAI+gpt-4o'                                          # best
-# CLOUD_TYPE = 'OPENAI+gpt-4o-mini'                                     # best
-# CLOUD_TYPE = 'OPENAI+o1'                                              # best
-# CLOUD_TYPE = 'OPENAI+o1-preview'                                      # best
-# CLOUD_TYPE = 'OPENAI+o1-mini'                                         # best
-# CLOUD_TYPE = 'OPENAI+o3-mini'                                         # best
-# CLOUD_TYPE = 'OPENAI+o3-mini-low'                                     # best
-# CLOUD_TYPE = 'OPENAI+o3-mini-medium'                                  # best
-# CLOUD_TYPE = 'OPENAI+o3-mini-high'                                    # best
+# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview-2025-02-27'                      # best in class (20x more expensive!) ($75, $150)
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best ($2.50, $10)
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best (OpenAI default) ($2.50, $10)
+# CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($0.15, $0.60)
+# CLOUD_TYPE = 'OPENAI+o1-2024-12-17'                                   # ok ($15, $60)
+# CLOUD_TYPE = 'OPENAI+o1-mini-2024-09-12'                              # best ($1.10, $4.40 inkl. reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31'                              # best ($1.10, $4.40 inkl. reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-low'                          # best
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-medium'                       # best
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-high'                         # best
 
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
