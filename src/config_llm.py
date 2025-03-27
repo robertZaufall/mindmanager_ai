@@ -4,22 +4,21 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
-# CLOUD_TYPE = 'AZURE+o3-mini'                                          # not working by now
 
 # OpenAI     
-# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview-2025-02-27'                      # best in class (20x more expensive!) ($75, $150)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best ($2.50, $10)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best (OpenAI default) ($2.50, $10)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($0.15, $0.60)
-# CLOUD_TYPE = 'OPENAI+o1-2024-12-17'                                   # ok ($15, $60)
-# CLOUD_TYPE = 'OPENAI+o1-mini-2024-09-12'                              # best ($1.10, $4.40 inkl. reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31'                              # best ($1.10, $4.40 inkl. reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-low'                          # best
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-medium'                       # best
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-high'                         # best
+# CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($ 0.15, $  0.60)
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best ($ 2.50, $ 10.00)
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best ($ 2.50, $ 10.00) (OpenAI's 4o default) 
+# CLOUD_TYPE = 'OPENAI+o1-mini-2024-09-12'                              # best ($ 1.10, $  4.40 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31'                              # best ($ 1.10, $  4.40 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-low'                          # best ($ 1.10, $  4.40 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-medium'                       # best ($ 1.10, $  4.40 ++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-high'                         # best ($ 1.10, $  4.40 +++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o1-2024-12-17'                                   # good ($15.00, $ 60.00)
+# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview-2025-02-27'                      # best ($75.00, $150.00)
 
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
