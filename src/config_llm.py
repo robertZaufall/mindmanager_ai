@@ -7,6 +7,11 @@ from file_helper import load_env
 CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
+# CLOUD_TYPE = 'AZURE+o3-mini'                                          # best
+# CLOUD_TYPE = 'AZURE+o3-mini-low'                                      # does not work (?)
+# CLOUD_TYPE = 'AZURE+o3-mini-medium'                                   # best
+# CLOUD_TYPE = 'AZURE+o3-mini-high'                                     # best
+# CLOUD_TYPE = 'AZURE+o1'                                               # best
 
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($ 0.15, $  0.60)
@@ -70,8 +75,11 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
-# CLOUD_TYPE = 'XAI+grok-2-1212'                                        # best
-# CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # best
+# CLOUD_TYPE = 'XAI+grok-3-mini-fast-beta'                              # ($ 0.60, $  4.00), best
+# CLOUD_TYPE = 'XAI+grok-3-mini-beta'                                   # ($ 0.30, $  0.50), best
+# CLOUD_TYPE = 'XAI+grok-3-fast-beta'                                   # ($ 5.00, $ 25.00), best in class
+# CLOUD_TYPE = 'XAI+grok-3-beta'                                        # ($ 3.00, $ 15.00), best in class
+# CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # ($ 2.00, $ 10.00), best
 
 # DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
@@ -230,11 +238,11 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 65535
         elif "o1-preview" in model:
             config.MAX_TOKENS = 32767
-        config.AZURE_DEPLOYMENT = model
+        config.AZURE_DEPLOYMENT = config.MODEL_ID
         config.API_VERSION = os.getenv('AZURE_API_VERSION')
         config.API_URL = (
             f"{os.getenv('AZURE_API_URL')}openai/deployments/"
-            f"{model}/chat/completions"
+            f"{config.MODEL_ID}/chat/completions"
             f"?api-version={config.API_VERSION}"
         )
         config.HEADERS = {**config.HEADERS, "api-key": os.getenv('AZURE_API_KEY') or ""}
