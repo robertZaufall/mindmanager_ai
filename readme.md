@@ -23,25 +23,25 @@ More animated examples are in the `doc` folder.
 ## Features
 
 ### AI platforms and LLMs
-  - **Azure OpenAI** w/ `GPT-4o` (use your key or log in with `Azure EntraID`) -> **best tested**
-  - **OpenAI** w/ `GPT-4o`, `o1-preview`, `o1-mini` (use your key) -> **best results**  
-  - **Anthropic** w/ `Claude 3.5` models (use your key)  
-  - **xAI** w/ `grok-2`, `grok-2-vision` (use your key)  
-  - **Google Gemini** w/ `Pro`, `Pro-Exp` and `2.0-Flash` (use your key)  
-  - **Google Vertex AI** w/ `Gemini Pro` and `Gemini 2.0 Flash` (use your access token / OAuth2)
+  - **Azure OpenAI** w/ `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key or log in with `Azure EntraID`)  
+  - **OpenAI** w/ `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key)  
+  - **Anthropic** w/ `Claude 3.7` etc. models (use your key)  
+  - **xAI** w/ `grok-3`, `grok-2-vision` etc.  (use your key)  
+  - **Google Gemini** w/ `Pro 2.5`, `Pro-Exp`, `2.0-Flash` etc. (use your key)  
+  - **Google Vertex AI** w/ `Gemini 2.0 Pro`, `Gemini 2.0 Flash` etc. (use your access token / OAuth2)
   - **DeepSeek** w/ `DeepSeek V3` (use your key)  
   - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
   - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral` (use your key)
-  - **AWS Bedrock** w/ `Nova`, `Titan` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
-  - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` models (use your key)  
-  - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` models (use your key)  
-  - **Perplexity** (platform) w/ `LLaMA 3.1-Sonar` (use your key)  
-  - **Groq** (platform) w/ `LLaMA 3.3`, `Mixtral`, `Gemma2` (use your key)  
+  - **AWS Bedrock** w/ `Nova` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
+  - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` etc. (use your key)  
+  - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` etc. (use your key)  
+  - **Perplexity** (platform) w/ `LLaMA 3.1-Sonar` etc. (use your key)  
+  - **Groq** (platform) w/ `Qwen`, `DeepSeek`, `LLaMA`, `Mixtral` etc. (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
-  - **Fireworks AI** (platform)  w/ `LLaMa 3`, `Qwen 2.5`, `QwQ` (serverless) and more models (use your key)  
-  - **OpenRouter** (platform) w/ `o1-preview`, `o1-mini` and many more models (use your key)
+  - **Fireworks AI** (platform)  w/ `LLaMa`, `Qwen` (serverless) etc. (use your key)  
+  - **OpenRouter** (platform) w/ many/all models (use your key)
   - **GPT4ALL** (local w/ SDK) w/ any `llama.cpp` model
-  - **Ollama** (local w/ API) w/ any `llama.cpp` model
+  - **Ollama** (local w/ API) w/ any `llama.cpp` or `MLX` model
   - **LMStudio** (local w/ API) w/ any `llama.cpp` or `MLX` model
   - **MLX** (local w/ API, Apple Silicon) w/ any `MLX` model
 
@@ -255,26 +255,25 @@ Recently there are more image generation plattforms trending. `Black Forrest Lab
 
 ### Generation using text summarization (eg. PDF to mindmap)
 Put the files into the `input`-folder and use the action `pdf_mindmap`. The PDF files are first converted to markdown (MD) format. 'Reference' sections are removed as these contain no information but take a lot of tokens (e.g. arXiv papers). No OCR takes place by now. Tables are removed and the content will be highly sanitized by removing irrelevant characters, code blocks, href-links, whitespace etc.  
-Still lots of input-tokens are needed in order to summarize the text by the LLM. These models have been tested and are working by now: `GPT-4o`, `o1-preview`, `o1-mini`, `Gemini 1.5`, `Claude 3.5 Haiku` and `Claude 3.5 Sonnet`.  
 There is no local LLM model using Ollama working for me by now.  
 
-`Sonnet 3.5` lately supports native `PDF` processing, which is also implemented (action `pdfsimple_mindmap`).  
+Some models (i.e. `Sonnet`) support native `PDF` processing, which is also implemented (action `pdfsimple_mindmap`).  
 
 ### Text generation from mindmaps (working paper (argumentation), glossary)
-Generation of larger text outputs needs a model with an higher max-token value like `GPT-4o`, `Gemini Flash`, `Sonnet 3.5`. Results are very good, most of the time. 
+Generation of larger text outputs needs a model with an higher max-token value like `GPT-4o`, `Gemini Flash`, `Sonnet`. Results are very good, most of the time. 
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
 The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `o1`, `GPT-4o` models. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
-`Gemini Pro 2.0` and `Gemini Exp 1206` results are best. `Gemini Flash 2.0` is also very good.  
+`Gemini Pro 2.5/2.0` results are best. `Gemini Flash 2.0` is also very good.  
 Vertex AI needs an security token which you can generate using the cloud console.  
 ### Anthropic Claude 3.5
-The Anthropic `Claude 3.5 Sonnet` model ist very good. Anthropic `Claude 3.5 Haiku` is good and also very cheap.
+The Anthropic `Claude 3.7 Sonnet` model ist very good. Anthropic `Claude 3.5 Haiku` is good and also very cheap.
 ### xAI grok
-Grok is very good and is able to refine mindmaps for several levels. The models `grok-2-1212` and `grok-2-vision-1212` are very good. The vision model can be used for pdf ocr.  
+Grok is very good and is able to refine mindmaps for several levels. The models `grok-3-beta` and `grok-2-vision-1212` are very good. The vision model can be used for pdf ocr.  
 ### Amazon Bedrock
-Amazon Bedrock has some native models as `Nova` (best), `Titan` (good) and host also 3rd party models of `Anthropic Claude 3.5` and `Mistral`.
+Amazon Bedrock has some native models i.e. `Nova` (best), and host also 3rd party models of `Anthropic Claude` and `Mistral`.
 ### DeepSeek
 DeepSeek created an extraordinary open source model DeepSeek V3 which seems to be as good as GPT-4o. The reasoning model `r1` does not work by now.  
 ### Alibaba Cloud
