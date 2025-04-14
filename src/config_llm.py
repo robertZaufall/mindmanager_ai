@@ -207,6 +207,10 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        elif "gpt-4.1-" in model :
+            config.MAX_TOKENS = 32767
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
         elif "o3-mini" in model:
             config.MAX_TOKENS = 100000
             reasoning_effort = model.split("-")[-1]
