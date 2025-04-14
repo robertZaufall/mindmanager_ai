@@ -14,6 +14,9 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'AZURE+o1'                                               # best
 
 # OpenAI     
+# CLOUD_TYPE = 'OPENAI+gpt-4.1-2025-04-14'                              # best ($ 2.00, $  8.00)
+# CLOUD_TYPE = 'OPENAI+gpt-4.1-mini-2025-04-14'                         # best ($ 0.40, $  1.60)
+# CLOUD_TYPE = 'OPENAI+gpt-4.1-nano-2025-04-14'                         # best ($ 0.10, $  0.40)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($ 0.15, $  0.60)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best ($ 2.50, $ 10.00)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best ($ 2.50, $ 10.00) (OpenAI's 4o default) 
@@ -23,7 +26,6 @@ CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 # CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-medium'                       # best ($ 1.10, $  4.40 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-high'                         # best ($ 1.10, $  4.40 +++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o1-2024-12-17'                                   # good ($15.00, $ 60.00)
-# CLOUD_TYPE = 'OPENAI+gpt-4.5-preview-2025-02-27'                      # best ($75.00, $150.00)
 
 # Github Models
 # CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
