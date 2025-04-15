@@ -23,8 +23,8 @@ More animated examples are in the `doc` folder.
 ## Features
 
 ### AI platforms and LLMs
-  - **Azure OpenAI** w/ `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key or log in with `Azure EntraID`)  
-  - **OpenAI** w/ `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key)  
+  - **Azure OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key or log in with `Azure EntraID`)  
+  - **OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key)  
   - **Anthropic** w/ `Claude 3.7` etc. models (use your key)  
   - **xAI** w/ `grok-3`, `grok-2-vision` etc.  (use your key)  
   - **Google Gemini** w/ `Pro 2.5`, `Pro-Exp`, `2.0-Flash` etc. (use your key)  
@@ -264,7 +264,8 @@ Generation of larger text outputs needs a model with an higher max-token value l
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
-The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Execution time is quite fast using the newest `o1`, `GPT-4o` models. Azure EntraID authentication can be used in enterprise scenarios.  
+The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Cheapest ones are `gpt-4.1-mini` and `gpt-4.1-nano`  
+Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
 `Gemini Pro 2.5/2.0` results are best. `Gemini Flash 2.0` is also very good.  
 Vertex AI needs an security token which you can generate using the cloud console.  
