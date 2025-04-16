@@ -10,6 +10,10 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
+# CLOUD_TYPE = 'AZURE+o4-mini-high'                                     # best
+# CLOUD_TYPE = 'AZURE+o4-mini-medium'                                   # best
+# CLOUD_TYPE = 'AZURE+o4-mini-low'                                      # best
+# CLOUD_TYPE = 'AZURE+o4-mini'                                          # best
 # CLOUD_TYPE = 'AZURE+o3-mini-high'                                     # good
 # CLOUD_TYPE = 'AZURE+o3-mini-medium'                                   # good
 # CLOUD_TYPE = 'AZURE+o3-mini-low'                                      # good
