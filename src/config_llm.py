@@ -5,7 +5,7 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
-# CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
+CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
@@ -27,7 +27,9 @@ from file_helper import load_env
 # CLOUD_TYPE = 'OPENAI+gpt-4.1-nano-2025-04-14'                         # best ($ 0.10, $  0.40)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best ($ 2.50, $ 10.00)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best ($ 2.50, $ 10.00) (OpenAI's 4o default) 
+# CLOUD_TYPE = 'OPENAI+gpt-4o-search-preview-2025-03-11'                # best ($ 2.50, $ 10.00)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($ 0.15, $  0.60)
+# CLOUD_TYPE = 'OPENAI+gpt-4o-mini-search-preview-2025-03-11'           # best ($ 0.15, $  0.60)
 
 # CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($ 10.00, $ 40.00 + reasoning tokens)
 
@@ -61,7 +63,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
 
 # Google Gemini
-CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-04-17'                  # best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-04-17'                  # best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-03-25'                    # ($ 1.25, $ 10.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-exp-03-25'                        # (free) best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-001'                       # ($ 0.08, $  0.30) best

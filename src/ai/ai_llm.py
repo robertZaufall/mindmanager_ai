@@ -148,6 +148,10 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE or "OPENROUTER+" in config.CLOUD_TYPE:
             payload["model"] = config.MODEL_ID
 
+        if "-search-" in config.MODEL_ID:
+            if "temperature" in payload:
+                del payload["temperature"]
+
         result = get_response(payload)
     
     # OLLAMA
