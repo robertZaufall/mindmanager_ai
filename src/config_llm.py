@@ -70,7 +70,7 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-01-21'             # best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-001'                         # ($ 0.04, $  0.15) best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # ($ 0.08, $  0.30) best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro'                                  # ($ 1.25, $  5.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                              # ($ 1.25, $  5.00) best
 # CLOUD_TYPE = 'GEMINI+gemma-3-27b-it'                                  # best
 
 # Google Gemini Vertex AI (OAuth2)     
@@ -81,6 +81,7 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-001'                          # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-thinking-exp-01-21'           # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best
 
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120

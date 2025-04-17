@@ -23,12 +23,12 @@ More animated examples are in the `doc` folder.
 ## Features
 
 ### AI platforms and LLMs
-  - **Azure OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key or log in with `Azure EntraID`)  
-  - **OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o3-mini`, `o1`, `o1-mini` etc. (use your key)  
+  - **Azure OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o4-mini`, `o3-mini`, `o1`, `o1-mini` etc. (use your key or log in with `Azure EntraID`)  
+  - **OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o4-mini`, `o3`, `o3-mini`, `o1`, `o1-mini` etc. (use your key)  
   - **Anthropic** w/ `Claude 3.7` etc. models (use your key)  
   - **xAI** w/ `grok-3`, `grok-2-vision` etc.  (use your key)  
-  - **Google Gemini** w/ `Pro 2.5`, `Pro-Exp`, `2.0-Flash` etc. (use your key)  
-  - **Google Vertex AI** w/ `Gemini 2.0 Pro`, `Gemini 2.0 Flash` etc. (use your access token / OAuth2)
+  - **Google Gemini** w/ `Gemini Pro 2.5`, `Gemini Flash 2.5`, `Gemma 3` etc. (use your key)  
+  - **Google Vertex AI** w/ `Gemini Pro 2.5`, `Gemini 2.5 Flash` etc. (use your access token / OAuth2)
   - **DeepSeek** w/ `DeepSeek V3` (use your key)  
   - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
   - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral` (use your key)
@@ -267,7 +267,7 @@ Generation of larger text outputs needs a model with an higher max-token value l
 The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Cheapest ones are `gpt-4.1-mini` and `gpt-4.1-nano`  
 Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
-`Gemini Pro 2.5/2.0` results are best. `Gemini Flash 2.0` is also very good.  
+`Gemini Pro 2.5` results are best. `Gemini Flash 2.5` is also very good.  
 Vertex AI needs an security token which you can generate using the cloud console.  
 ### Anthropic Claude 3.5
 The Anthropic `Claude 3.7 Sonnet` model ist very good. Anthropic `Claude 3.5 Haiku` is good and also very cheap.
