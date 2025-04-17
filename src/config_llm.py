@@ -5,8 +5,8 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
-# CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
-CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
+CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
+# CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
@@ -61,26 +61,26 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite'                           # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash'                                # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-01-21'             # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-exp-03-25'                        # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-pro-exp-02-05'                        # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-exp-1206'                                 # best in class
-# CLOUD_TYPE = 'GEMINI+learnlm-1.5-pro-experimental'                    # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-latest'                           # best in class
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-latest'                         # best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-latest'                      # best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-04-17'                  # best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-03-25'                    # ($ 1.25, $ 10.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-exp-03-25'                        # (free) best in class
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-001'                       # ($ 0.08, $  0.30) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-001'                            # ($ 0.10, $  0.40) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-exp'                            # best
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-thinking-exp-01-21'             # best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-001'                         # ($ 0.04, $  0.15) best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # ($ 0.08, $  0.30) best
+# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro'                                  # ($ 1.25, $  5.00) best
 # CLOUD_TYPE = 'GEMINI+gemma-3-27b-it'                                  # best
 
 # Google Gemini Vertex AI (OAuth2)     
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite'                         # best in class
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash'                              # best in class
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-thinking-exp-1219'            # not working
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-pro-exp-02-05'                      # best in class
-# CLOUD_TYPE = 'VERTEXAI+gemini-exp-1206'                               # best in class
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-04-17'                # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-preview-03-25'                  # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-exp-03-25'                      # best in class
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite-001'                     # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-001'                          # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-thinking-exp-01-21'           # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best in class
 
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
@@ -259,7 +259,10 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
-        config.MAX_TOKENS = 8191
+        if "gemini-2.5" in model:
+            config.MAX_TOKENS = 65535
+        else:
+            config.MAX_TOKENS = 8191
         config.MULTIMODAL = True
         config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
 
