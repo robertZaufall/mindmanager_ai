@@ -29,7 +29,7 @@ elif sys.platform.startswith('darwin'):
     platform = "darwin"
 
 valid_actions = [
-    "refine", "refine_dev", 
+    "refine", "refine_dev", "refine_grounding", 
     "complexity_1", "complexity_2", "complexity_3", 
     "examples", "cluster", "exp", "capex_opex", 
     "prc_org", "prj_prc_org", "exp_prj_prc_org", "prj_org", 
@@ -78,7 +78,7 @@ def generate_image(model, document, guid, count=1):
     else:
         str_user = prompts.prompt_image_flux(top_most_topic, subtopics) # prompts.prompt_image(top_most_topic, subtopics)
     if ("STABILITYAI+" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
-        final_prompt = ai_llm.call_llm(model=model, str_user=prompts.prompt_image_prompt(str_user))
+        final_prompt = ai_llm.call_llm(model=model, str_user=prompts.prompt_image_prompt(str_user), param="image")
     else:
         final_prompt = str_user
 
@@ -132,7 +132,7 @@ def main(param, charttype, model, freetext, inplace=False):
             # pdf to mindmap via text
             if "mindmap" in actions:
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, prompts_list=["text2mindmap"], input=value, topic_texts=key_plain)
+                    ai_llm.call_llm_sequence(model=model, params_list=["text2mindmap"], input=value, topic_texts=key_plain)
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 
@@ -142,14 +142,14 @@ def main(param, charttype, model, freetext, inplace=False):
 
                 # 1st call: pdf to knowledge graph
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, prompts_list=["text2knowledgegraph"], input=value, topic_texts=key_plain)
+                    ai_llm.call_llm_sequence(model=model, params_list=["text2knowledgegraph"], input=value, topic_texts=key_plain)
                 )
                 content, max_topic_level = mermaid.export_to_mermaid(False)
                 file_helper.generate_mermaid_html(content, max_topic_level, guid, False)
 
                 # 2nd call: knowledge graph to mindmap
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, prompts_list=["knowledgegraph2mindmap"], input=content, topic_texts=key_plain)
+                    ai_llm.call_llm_sequence(model=model, params_list=["knowledgegraph2mindmap"], input=content, topic_texts=key_plain)
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
     
@@ -164,7 +164,7 @@ def main(param, charttype, model, freetext, inplace=False):
                     mermaid = MermaidMindmap(
                         ai_llm.call_llm_sequence(
                             model=model, 
-                            prompts_list=["pdfsimple2mindmap"], 
+                            params_list=["pdfsimple2mindmap"], 
                             input="", 
                             topic_texts=text_helper.cleanse_title(key), 
                             data=value, 
@@ -180,7 +180,7 @@ def main(param, charttype, model, freetext, inplace=False):
                     mermaid = MermaidMindmap(
                         ai_llm.call_llm_sequence(
                             model=model, 
-                            prompts_list=["pdfsimple2mindmap"], 
+                            params_list=["pdfsimple2mindmap"], 
                             input="", 
                             topic_texts=text_helper.cleanse_title(key), 
                             data=value, 
@@ -199,7 +199,7 @@ def main(param, charttype, model, freetext, inplace=False):
             docs = input_helper.load_text_files("md")
             for key, value in docs.items():
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, prompts_list=["md2mindmap"], input=value, topic_texts=text_helper.cleanse_title(key))
+                    ai_llm.call_llm_sequence(model=model, params_list=["md2mindmap"], input=value, topic_texts=text_helper.cleanse_title(key))
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 
@@ -219,7 +219,7 @@ def main(param, charttype, model, freetext, inplace=False):
 
         else:
             mermaid = MermaidMindmap(get_mermaid_from_mindmap(mindmap=document.mindmap))
-            prompts_list = prompts.prompts_list_from_param(param=param)
+            params_list = prompts.prompts_list_from_param(param=param)
             topic_texts_join = ",".join(document.selected_topic_texts) if len(document.selected_topic_texts) > 0 else ""
 
             guid = uuid.uuid4()
@@ -242,17 +242,17 @@ def main(param, charttype, model, freetext, inplace=False):
 
             # text generation: glossary in MD format
             elif param == "glossary":
-                markdown = ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
+                markdown = ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
                 markdown = markdown[8:].strip() if markdown.startswith("markdown") else markdown
                 if "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
                     ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
                     # take an optimization round
-                    markdown = ai_llm.call_llm(model=model, str_user=prompts.prompt_glossary_optimize(markdown))
+                    markdown = ai_llm.call_llm(model=model, str_user=prompts.prompt_glossary_optimize(markdown), param=param)
                 file_helper.generate_glossary_html(markdown, guid)
 
             # text generation: argumentation in MD format
             elif param == "argumentation":
-                markdown = ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
+                markdown = ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
                 markdown = markdown[8:].strip() if markdown.startswith("markdown") else markdown
                 file_helper.generate_argumentation_html(markdown, guid)
 
@@ -277,7 +277,7 @@ def main(param, charttype, model, freetext, inplace=False):
             # mindmap to mindmap
             else:
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, prompts_list=prompts_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, freetext=freetext)
+                    ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, freetext=freetext)
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 

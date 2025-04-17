@@ -365,6 +365,7 @@ def prompts_list_from_param(param):
 def prompt(param, text, topic_texts="", freetext=""):
     text_input = text.replace("\r", "\n")
     if   param == "refine":                 return prompt_refine(text_input, topic_texts=topic_texts)
+    elif param == "refine_grounding":       return prompt_refine(text_input, topic_texts=topic_texts)
     elif param == "refine_dev":             return prompt_refine_dev(text_input, topic_texts=topic_texts)
     elif param == "examples":               return prompt_examples(text_input, topic_texts=topic_texts)
     elif param == "cluster":                return prompt_cluster(text_input, topic_texts=topic_texts)

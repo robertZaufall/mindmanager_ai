@@ -9,7 +9,7 @@ import json
 import os
 import sys
 
-def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeType="", freetext=""):
+def call_llm_sequence(model, params_list, input, topic_texts="", data="", mimeType="", freetext=""):
 
     config = cfg.get_config(model)
 
@@ -19,24 +19,24 @@ def call_llm_sequence(model, prompts_list, input, topic_texts="", data="", mimeT
     log_output = ""
     log_prompt = ""
 
-    for prompt in prompts_list:
+    for param in params_list:
         log_input += result + "\n\n"
 
-        this_prompt = prompts.prompt(param=prompt, text=result, topic_texts=topic_texts, freetext=freetext)
+        this_prompt = prompts.prompt(param=param, text=result, topic_texts=topic_texts, freetext=freetext)
         if this_prompt == "":
             return ""
 
-        result = call_llm(model=model, str_user=this_prompt, data=data, mimeType=mimeType)
+        result = call_llm(model=model, str_user=this_prompt, param=param, data=data, mimeType=mimeType)
                 
         log_output += result + "\n\n"
-        log_prompt += "Prompt = " + prompt + "\n-------\n" + this_prompt + "\n\n"
+        log_prompt += "Prompt = " + param + "\n-------\n" + this_prompt + "\n\n"
 
     if config.LOG == True:
         file_helper.log_input_output(log_input, log_output, log_prompt)
     
     return result
 
-def call_llm(model, str_user, data="", mimeType=""):
+def call_llm(model, str_user, param, data="", mimeType=""):
     config = cfg.get_config(model)
     print("Using model: " + config.CLOUD_TYPE)
 
@@ -187,7 +187,7 @@ def call_llm(model, str_user, data="", mimeType=""):
     # Vertex AI
     elif "VERTEXAI" in config.CLOUD_TYPE:
         import ai.ai_gcp as ai_gcp
-        return ai_gcp.call_llm_gcp(model=model, str_user=str_user, data=data, mimeType=mimeType)
+        return ai_gcp.call_llm_gcp(model=model, str_user=str_user, param=param, data=data, mimeType=mimeType)
 
     # GEMINI
     elif "GEMINI" in config.CLOUD_TYPE:
@@ -205,6 +205,12 @@ def call_llm(model, str_user, data="", mimeType=""):
                 "candidateCount": 1,
             }
         }
+
+        if "gemini-2.5-flash-preview" in config.MODEL_ID:
+            payload["generation_config"]["thinkingConfig"] = {"thinkingBudget": config.THINKING_BUDGET}
+
+        if param.endswith("_grounding") and "-lite" not in config.MODEL_ID:
+            payload["tools"] = {"google_search": {}}
 
         if data != "":
             if mimeType == "application/pdf":

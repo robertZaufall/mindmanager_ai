@@ -42,7 +42,7 @@ def get_credentials():
 
     return credentials  
   
-def call_llm_gcp(model, str_user, data, mimeType):
+def call_llm_gcp(model, str_user, param, data, mimeType):
 
     config = cfg.get_config(model)
 
@@ -71,6 +71,12 @@ def call_llm_gcp(model, str_user, data, mimeType):
         }
     }
 
+    if "gemini-2.5-flash-preview" in config.MODEL_ID:
+        payload["generation_config"]["thinkingConfig"] = {"thinkingBudget": config.THINKING_BUDGET}
+
+    if param.endswith("_grounding") and "-lite" not in config.MODEL_ID:
+        payload["tools"] = {"google_search": {}}
+            
     if data != "":
             payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
 

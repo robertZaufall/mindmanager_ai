@@ -12,6 +12,7 @@ SETTINGS_FILE = "settings.json"
 
 ACTION_MAP = {
     "Refine": "refine",
+    "Refine (Grounding)": "refine_grounding",
     "Refine (Dev)": "refine_dev",
     "Examples": "examples",
     "Cluster": "cluster",

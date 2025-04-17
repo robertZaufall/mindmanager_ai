@@ -5,7 +5,7 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
-CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
+# CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
@@ -61,7 +61,7 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-04-17'                  # best
+CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-04-17'                  # best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-03-25'                    # ($ 1.25, $ 10.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-exp-03-25'                        # (free) best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-001'                       # ($ 0.08, $  0.30) best
@@ -262,6 +262,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.OPENAI_COMPATIBILITY = False
         if "gemini-2.5" in model:
             config.MAX_TOKENS = 65535
+            config.THINKING_BUDGET = 2048
         else:
             config.MAX_TOKENS = 8191
         config.MULTIMODAL = True
