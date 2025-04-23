@@ -32,11 +32,16 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             payload = {
                 "prompt": str_user,
                 "quality": config.IMAGE_QUALITY,
-                "style": config.IMAGE_STYLE,
-                "size": "1024x1024",        # 1024x1024, 1792x1024, 1024x1792
-                "n": n_count,               # number of files
-                "response_format": format   # b64_json, url
+                "size": config.IMAGE_SIZE,
+                "n": n_count,
             }
+
+            if config.IMAGE_MODEL_ID == "dall-e-3":
+                payload["style"] = config.IMAGE_STYLE
+                payload["response_format"] = format
+
+            if config.IMAGE_MODEL_ID == "gpt-image-1":
+                payload["output_format"] = "png"
 
             if "OPENAI" in config.CLOUD_TYPE_IMAGE:
                 payload["model"] = config.IMAGE_MODEL_ID

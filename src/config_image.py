@@ -9,6 +9,7 @@ CLOUD_TYPE_IMAGE = ''
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                       # best
+CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                    # best
         
 # StabilityAI        
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'               # better
@@ -30,7 +31,7 @@ CLOUD_TYPE_IMAGE = ''
         
 # IdeogramAI        
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A'                       # best
-CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                 # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                 # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                        # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                  # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                        # best
@@ -73,8 +74,13 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
         config.USE_AZURE_ENTRA_IMAGE = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
         config.IMAGE_EXPLICIT_STYLE = "digital art"
-        config.IMAGE_QUALITY = "hd"    # hd, standard
-        config.IMAGE_STYLE = "vivid"  # natural, vivid
+        if model == "dall-e-3":
+            config.IMAGE_QUALITY = "hd"     # hd, standard, auto
+            config.IMAGE_STYLE = "vivid"    # natural, vivid
+            config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1792x1024, 1024x1792
+        if model == "gpt-image-1":
+            config.IMAGE_QUALITY = "medium" # hight, medium, low, auto
+            config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
 
         if "AZURE+" in CLOUD_TYPE_IMAGE:
             config.AZURE_DEPLOYMENT_IMAGE = model
