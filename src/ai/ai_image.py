@@ -42,6 +42,7 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
 
             if config.IMAGE_MODEL_ID == "gpt-image-1":
                 payload["output_format"] = "png"
+                payload["moderation"] = config.MODERATION
 
             if "OPENAI" in config.CLOUD_TYPE_IMAGE:
                 payload["model"] = config.IMAGE_MODEL_ID

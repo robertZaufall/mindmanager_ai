@@ -81,6 +81,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         if model == "gpt-image-1":
             config.IMAGE_QUALITY = "medium" # hight, medium, low, auto
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
+            config.MODERATION = "low" # low, auto
 
         if "AZURE+" in CLOUD_TYPE_IMAGE:
             config.AZURE_DEPLOYMENT_IMAGE = model
