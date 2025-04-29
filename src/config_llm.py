@@ -353,7 +353,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")}
         config.TOP_P = 0.8
         if model in ["qwen-plus-2025-04-28", "qwen-turbo-2025-04-28"]:
-            config.ENABLE_THINKING = False
+            config.ENABLE_THINKING = False # only with streaming supported
             config.THINKING_BUDGET = 0
         else:
             config.ENABLE_THINKING = False
