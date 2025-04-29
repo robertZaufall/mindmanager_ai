@@ -205,6 +205,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
             },
             "generation_config": {
                 "temperature": config.LLM_TEMPERATURE,
+                "topP": config.TOP_P, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
                 "maxOutputTokens": config.MAX_TOKENS,
                 "candidateCount": 1,
             }
@@ -299,17 +300,21 @@ def call_llm(model, str_user, param, data="", mimeType=""):
        
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
-        payload = get_payload()        
+        payload = get_payload()
         result = get_response(payload)
 
     # DeepSeek
     elif "DEEPSEEK+" in config.CLOUD_TYPE:
-        payload = get_payload()       
+        payload = get_payload()
         result = get_response(payload)
 
     # Alibaba Cloud
     elif "ALIBABACLOUD+" in config.CLOUD_TYPE:
-        payload = get_payload()        
+        payload = get_payload()
+        payload["top_p"] = config.TOP_P
+        if config.ENABLE_THINKING == True:
+            payload["enable_thinking"] = config.ENABLE_THINKING
+            payload["thinking_budget"] = config.THINKING_BUDGET
         result = get_response(payload)
 
     # Mistral AI
@@ -338,4 +343,3 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         raise Exception("Error: Unknown CLOUD_TYPE")
 
     return result
-

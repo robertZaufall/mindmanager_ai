@@ -64,8 +64,7 @@ def call_llm_gcp(model, str_user, param, data, mimeType):
         },
         "generation_config": {
             "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
-            #"topK": 3, # The maximum number of tokens to consider when sampling (default: 40)
-            "topP": 0.95, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
+            "topP": config.TOP_P, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
             "maxOutputTokens": config.MAX_TOKENS, # 2k / 4k
             "candidateCount": 1,
         }

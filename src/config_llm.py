@@ -102,12 +102,9 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
 
 # Alibaba Cloud
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-max'                                  # best
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus'                                 # best
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo'                                # good
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen2.5-72b-instruct'                      # good
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-vl-max'                               # only vision (image / video)
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-vl-plus'                              # only vision (image / video)
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-max-2025-01-25'                       # best (Qwen2.5)
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus-2025-04-28'                      # ok (Qwen3)
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo-2025-04-28'                     # good (Qwen3)
 
 # Mistral AI
 # CLOUD_TYPE = 'MISTRAL+mistral-large-latest'                           # best in class
@@ -262,6 +259,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
+        config.TOP_P = 0.95
         if "gemini-2.5" in model:
             config.MAX_TOKENS = 65535
             config.THINKING_BUDGET = 2048
@@ -353,6 +351,13 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.MAX_TOKENS = 8000
         config.API_URL = os.getenv('ALIBABACLOUD_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")}
+        config.TOP_P = 0.8
+        if model in ["qwen-plus-2025-04-28", "qwen-turbo-2025-04-28"]:
+            config.ENABLE_THINKING = False
+            config.THINKING_BUDGET = 0
+        else:
+            config.ENABLE_THINKING = False
+            config.THINKING_BUDGET = 0
 
     elif "MISTRAL+" in CLOUD_TYPE:
         config.API_URL = os.getenv('MISTRAL_API_URL')
