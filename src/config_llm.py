@@ -128,10 +128,13 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 
 # Firekworks.ai
 # CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
-# CLOUD_TYPE = 'FIREWORKS+llama-v3p3-70b-instruct'                      # good
+# CLOUD_TYPE = 'FIREWORKS+qwen3-235b-a22b'                              # good
+# CLOUD_TYPE = 'FIREWORKS+qwen3-30b-a3b'                                # good
+# CLOUD_TYPE = 'FIREWORKS+llama4-maverick-instruct-basic'               # good
+# CLOUD_TYPE = 'FIREWORKS+llama4-scout-instruct-basic'                  # good
 
 # Openrouter.ai
-# CLOUD_TYPE = 'OPENROUTER+openai/o1-preview'                           # best
+# CLOUD_TYPE = 'OPENROUTER+openai/o1'                                   # best
 # CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best
 # CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best
 # CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good
@@ -142,9 +145,14 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-8B-Instruct'                    # needs pro-subscription
 
 # Ollama (local models), best results     
+# CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
+# CLOUD_TYPE = 'OLLAMA+qwen3:4b'                                        # good
+# CLOUD_TYPE = 'OLLAMA+qwen3:7b'                                        # good
+# CLOUD_TYPE = 'OLLAMA+qwen3:14b'                                       # good
+# CLOUD_TYPE = 'OLLAMA+qwen3:32b'                                       # ggod
+# CLOUD_TYPE = 'OLLAMA+qwen3:30b-a3b'                                   # good
 # CLOUD_TYPE = 'OLLAMA+phi4:14b'                                        # best
 # CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
-# CLOUD_TYPE = 'OLLAMA+qwen2.5'                                         # good
 # CLOUD_TYPE = 'OLLAMA+wizardlm2'                                       # best
 # CLOUD_TYPE = 'OLLAMA+llama3.2:3b'                                     # ok
 # CLOUD_TYPE = 'OLLAMA+llama3.3:70b'                                    # best, slow
@@ -196,7 +204,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     You are a highly experienced business consultant with expertise in 
     strategic planning, financial analysis, marketing, and organizational development.
     Provide detailed, insightful, and professional advice tailored to the needs of business clients.
-    Your responses should reflect the latest industry trends and best practices.
+    Your responses should reflect the latest industry trends and best practices. /no_think
     """
 
     model = CLOUD_TYPE.split("+")[-1]

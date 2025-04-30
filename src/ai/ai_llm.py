@@ -3,6 +3,7 @@ import ai.prompts as prompts
 import input_helper
 import file_helper
 import text_helper
+import re
 from types import SimpleNamespace
 import requests
 import json
@@ -82,7 +83,8 @@ def call_llm(model, str_user, param, data="", mimeType=""):
             usage = parsed_json.get("usage", "")
         else:
             # OpenAI compatible
-            result = parsed_json["choices"][0]["message"]["content"]
+            result_pre = parsed_json["choices"][0]["message"]["content"]
+            result = re.sub(r'<(think(ing)?|reflect(ion|ing)?)>.*?</(think(ing)?|reflect(ion|ing)?)>', '', result_pre, flags=re.DOTALL)
             finish_reason = parsed_json["choices"][0].get("finish_reason", "")
             if finish_reason == "length":
                 print("warning: result truncated!")
