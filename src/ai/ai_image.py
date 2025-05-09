@@ -108,19 +108,33 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             n_count = 1 # override n_count to 1
             seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**16 - 1)
 
-            payload = { "image_request": {
-                "model": config.IMAGE_MODEL_ID,
-                "magic_prompt_option": "AUTO",
-                "prompt": str_user,
-                "seed": seed,
-            } }
+            if "V_3" in config.IMAGE_MODEL_ID:
+                payload = {
+                    "prompt": str_user,
+                    "seed": seed,
+                    "resultion": config.IMAGE_RESOLUTION,
+                    "rendering_speed": config.IMAGE_RENDERING_SPEED,
+                    "magic_prompt": "AUTO",
+                    "negative_prompt": config.IMAGE_NEGATIV_PROMPT,
+                    "style_type": config.IMAGE_STYLE_TYPE,
+                }
+            else:
+                payload = {
+                    "image_request": 
+                    {
+                        "model": config.IMAGE_MODEL_ID,
+                        "magic_prompt_option": "AUTO",
+                        "prompt": str_user,
+                        "seed": seed,
+                    }
+                }
 
-            if config.IMAGE_MODEL_ID == "V_2" or config.IMAGE_MODEL_ID == "V_2_TURBO":
-                payload["image_request"]["style_type"] = config.IMAGE_EXPLICIT_STYLE
-                payload["image_request"]["resolution"] = config.IMAGE_RESOLUTION
+                if config.IMAGE_MODEL_ID == "V_2" or config.IMAGE_MODEL_ID == "V_2_TURBO":
+                    payload["image_request"]["style_type"] = config.IMAGE_EXPLICIT_STYLE
+                    payload["image_request"]["resolution"] = config.IMAGE_RESOLUTION
 
-            if not config.IMAGE_MODEL_ID.startswith("V_2A"):
-                payload["image_request"]["negative_prompt"] = config.IMAGE_NEGATIV_PROMPT
+                if not config.IMAGE_MODEL_ID.startswith("V_2A"):
+                    payload["image_request"]["negative_prompt"] = config.IMAGE_NEGATIV_PROMPT
 
             response = requests.post(
                 url=config.IMAGE_API_URL,

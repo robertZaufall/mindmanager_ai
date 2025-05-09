@@ -45,9 +45,9 @@ def get_credentials():
 def call_llm_gcp(model, str_user, param, data, mimeType):
 
     config = cfg.get_config(model)
-
+    
     if data != "" and config.MULTIMODAL == False:
-        raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
+        raise Exception(f"Error: {model} does not support multimodal actions.")
 
     result = ""
 
@@ -119,23 +119,55 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
 
     credentials = get_credentials()  
     access_token = credentials.token   
-    
-    payload = {
-        "instances": [
-            {
-                "prompt": str_user
-            }
-        ],
-        "parameters": {
-            "sampleCount": n_count,
-            "addWatermark": config.IMAGE_ADD_WATERMARK,
-        }
-    }
-
     headers = {
         "Content-Type": "application/json",
         "Authorization" : "Bearer " + access_token
     }
+    
+    if config.IMAGE_MODEL_ID.startswith("imagen-"):
+        payload = {
+            "instances": [
+                {
+                    "prompt": str_user
+                }
+            ],
+            "parameters": {
+                "sampleCount": n_count,
+                "addWatermark": config.IMAGE_ADD_WATERMARK,
+            }
+        }
+    elif config.IMAGE_MODEL_ID.startswith("gemini-"):
+        payload = {
+            "contents": {
+                "role": "user",
+                "parts": [
+                    { "text": "Please generate a " + str_user }
+                ]
+            },
+            "generationConfig": {
+                "responseModalities": ["TEXT", "IMAGE"]
+            },
+            "safetySettings": [
+                {
+                    "category": "HARM_CATEGORY_HATE_SPEECH",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_HARASSMENT",
+                    "threshold": "OFF"
+                }
+            ]
+        }
+    else:
+        raise Exception(f"Error: {config.MODEL_ID} is not supported.")
 
     response = requests.post(
         url=config.IMAGE_API_URL,
@@ -150,16 +182,32 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
 
     parsed_json = json.loads(response_text)
 
-    b64_image = parsed_json['predictions'][0]['bytesBase64Encoded']
-    image_data = base64.b64decode(b64_image)
-    image = Image.open(BytesIO(image_data))
+    image = None
+    if config.IMAGE_MODEL_ID.startswith("imagen-"):
+        b64_image = parsed_json['predictions'][0]['bytesBase64Encoded']
+        image_data = base64.b64decode(b64_image)
+        image = Image.open(BytesIO(image_data))
+    
+    elif config.IMAGE_MODEL_ID.startswith("gemini-"):
+        parts = parsed_json["candidates"][0]["content"]["parts"]
+        for part in parts:
+            if "inlineData" in part:
+                image_data = part["inlineData"]["data"]
+                mimeType = part["inlineData"]["mimeType"]
+                if mimeType == "image/png":
+                    image_data = base64.b64decode(image_data)
+                    image = Image.open(BytesIO(image_data))
+                break
 
-    if config.RESIZE_IMAGE:
-        image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
-        for image_path in image_paths:
-            image.save(image_path)
+    if image:
+        if config.RESIZE_IMAGE:
+            image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
+            for image_path in image_paths:
+                image.save(image_path)
+        else:
+            for image_path in image_paths:
+                image.save(image_path)
     else:
-        for image_path in image_paths:
-            image.save(image_path)
+        raise Exception(f"Error: No image data found in the response.")
             
     return image_paths

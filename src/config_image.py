@@ -5,47 +5,51 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                        # best
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                     # best
         
 # OpenAI        
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                       # best
-CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                    # best
+CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                    # best
+# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                 # best
         
 # StabilityAI        
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'               # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo'         # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-medium'              # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'                 # good
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'           # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'                # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                      # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                     # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'                            # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo'                      # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-medium'                           # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'                              # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'                        # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'                             # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                                   # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                  # good
 
 # VertexAI
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'      # best
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001' # (does not work any more)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.0-flash-preview-image-generation' # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                   # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001'              # (does not work any more)
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'          # best 
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-dev-4bit'              # good 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'                       # best 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-dev-4bit'                           # good 
         
 # IdeogramAI        
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A'                       # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                 # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                        # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                  # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                        # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                  # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3'                                     # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_TURBO'                               # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_QUALITY'                             # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A'                                    # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                              # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                                     # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                               # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                                     # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                               # best
         
 # Black Forrest Labs        
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                      # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                          # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                          # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                             # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                                   # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                                       # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                                       # best
 
 # RecraftAI
-# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                   # best
-# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'                  # best
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                                # best
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'                               # best
 
 def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespace:
 
@@ -71,7 +75,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     config.IMAGE_HEADERS = {"Content-Type": "application/json"}
 
     # Branch logic
-    if "AZURE+" in CLOUD_TYPE_IMAGE or "OPENAI+" in CLOUD_TYPE_IMAGE:
+    if system in ["AZURE", "OPENAI"]:
         config.USE_AZURE_ENTRA_IMAGE = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
         config.IMAGE_EXPLICIT_STYLE = "digital art"
         if model == "dall-e-3":
@@ -83,7 +87,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
             config.MODERATION = "low" # low, auto
 
-        if "AZURE+" in CLOUD_TYPE_IMAGE:
+        if system == "AZURE":
             config.AZURE_DEPLOYMENT_IMAGE = model
             config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
             config.IMAGE_API_URL = (
@@ -93,11 +97,11 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             )
             config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
 
-        elif "OPENAI+" in CLOUD_TYPE_IMAGE:
+        elif system == "OPENAI":
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
             config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")}
 
-    elif "STABILITYAI+" in CLOUD_TYPE_IMAGE:
+    elif system == "STABILITYAI":
         config.MODEL_ENDPOINT = model.split("-")[0]
         # Map special case for sd3.5
         config.MODEL_ENDPOINT = "sd3" if config.MODEL_ENDPOINT == "sd3.5" else config.MODEL_ENDPOINT
@@ -116,21 +120,32 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_API_URL = f"{os.getenv('STABILITYAI_API_URL')}{config.MODEL_ENDPOINT}"
         config.IMAGE_HEADERS = {"authorization": "Bearer " + (os.getenv('STABILITYAI_API_KEY') or ""),"accept": "image/*"}
 
-    elif "VERTEXAI+" in CLOUD_TYPE_IMAGE:
+    elif system == "VERTEXAI":
+        config.GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
+        config.GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
+        config.GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
+
         config.IMAGE_ASPECT_RATIO = "1:1"  # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
         config.IMAGE_EXPLICIT_STYLE = "digital art"
         config.IMAGE_ADD_WATERMARK = False
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-        config.GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
-        config.GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
-        config.GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
-        config.IMAGE_API_URL = (
-            f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{os.getenv('VERTEXAI_PROJECT_ID_IMAGE')}"
-            f"/locations/{os.getenv('VERTEXAI_LOCATION_ID_IMAGE')}/publishers/google/models/"
-            f"{model}:predict"
-        )
 
-    elif "MLX+" in CLOUD_TYPE_IMAGE:
+        if model.startswith("imagen-"):
+            config.IMAGE_API_URL = (
+                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{os.getenv('VERTEXAI_PROJECT_ID_IMAGE')}"
+                f"/locations/{os.getenv('VERTEXAI_LOCATION_ID_IMAGE')}/publishers/google/models/"
+                f"{model}:predict"
+            )
+        elif model.startswith("gemini-"):
+            config.IMAGE_API_URL = (
+                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{os.getenv('VERTEXAI_PROJECT_ID_IMAGE')}"
+                f"/locations/{os.getenv('VERTEXAI_LOCATION_ID_IMAGE')}/publishers/google/models/"
+                f"{model}:generateContent"
+            )
+        else:
+            raise Exception("Error: Unknown VertexAI image model")
+
+    elif system == "MLX":
         config.IMAGE_SEED = 0
         #https://enragedantelope.github.io/Styles-FluxDev/
         config.IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
@@ -159,24 +174,34 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         else:
             raise Exception("Error: image model not supported using MLX")
 
-    elif "IDEOGRAMAI+" in CLOUD_TYPE_IMAGE:
-        if model in ("V_2", "V_2_TURBO"):
-            config.IMAGE_STYLE_PRESET = "GENERAL"  # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
-            config.IMAGE_EXPLICIT_STYLE = config.IMAGE_STYLE_PRESET
-        else:
-            config.IMAGE_EXPLICIT_STYLE = "computer collage art"
-
-        config.IMAGE_OUTPUT_FORMAT = "png"
+    elif system == "IDEOGRAMAI":
         config.IMAGE_SEED = 0
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-        config.IMAGE_HEIGHT = 1024
-        config.IMAGE_WIDTH = 1024
-        config.IMAGE_RESOLUTION = f"RESOLUTION_{config.IMAGE_WIDTH}_{config.IMAGE_HEIGHT}"
-        
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Api-Key": os.getenv('IDEOGRAMAI_API_KEY') or ""}
-        config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_URL')
 
-    elif "BFL+" in CLOUD_TYPE_IMAGE:
+        if model in ("V_3", "V_3_TURBO", "V_3_QUALITY"):
+            config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_V3_URL')
+            config.IMAGE_STYLE_TYPE = "AUTO"  # AUTO, GENERAL, REALISTIC, DESIGN
+            config.IMAGE_RESOLUTION = "1024x1024"
+            if model == "V_3_QUALITY":
+                config.IMAGE_RENDERING_SPEED = "QUALITY"
+            elif model == "V_3_TURBO":
+                config.IMAGE_RENDERING_SPEED = "TURBO"
+            else:
+                config.IMAGE_RENDERING_SPEED = "DEFAULT"
+        elif model in ("V_2", "V_2_TURBO", "V_2A", "V_2A_TURBO"):
+            config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_URL')
+            config.IMAGE_STYLE_PRESET = "GENERAL"  # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
+            config.IMAGE_EXPLICIT_STYLE = config.IMAGE_STYLE_PRESET
+            config.IMAGE_RESOLUTION = "RESOLUTION_1024_1024"
+            config.IMAGE_OUTPUT_FORMAT = "png"
+        else:
+            config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_URL')
+            config.IMAGE_EXPLICIT_STYLE = "computer collage art"
+            config.IMAGE_RESOLUTION = "RESOLUTION_1024_1024"
+            config.IMAGE_OUTPUT_FORMAT = "png"
+
+    elif system == "BFL":
         config.IMAGE_EXPLICIT_STYLE = "computer collage art"
         config.IMAGE_OUTPUT_FORMAT = "png"
         config.IMAGE_SEED = 0
@@ -209,7 +234,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "x-key": os.getenv('BFL_API_KEY') or ""}
         config.IMAGE_API_URL = os.getenv('BFL_API_URL')
 
-    elif "RECRAFTAI+" in CLOUD_TYPE_IMAGE:
+    elif system == "RECRAFTAI":
         config.IMAGE_API_URL = os.getenv('RECRAFT_API_URL')
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('RECRAFT_API_TOKEN') or "")}
         config.IMAGE_SIZE = "1024x1024"  # 1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024"
@@ -247,6 +272,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
 
     else:
         # If none of the above matched, it's unknown.
-        raise Exception("Error: Unknown CLOUD_TYPE_IMAGE")
+        raise Exception("Error: Unknown image system")
 
     return config
