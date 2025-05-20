@@ -5,7 +5,7 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
-CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
+# CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
@@ -63,7 +63,7 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-opus-20240229'                       # good
 
 # Google Gemini
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-04-17'                  # best
+CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-05-20'                  # ($ 0.15, $  0.60 (non-thinking) / 3.50 (thinking)) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-05-06'                    # ($ 1.25, $ 10.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-exp-03-25'                        # (free) best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-001'                       # ($ 0.08, $  0.30) best
@@ -76,7 +76,7 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'GEMINI+gemma-3-27b-it'                                  # best
 
 # Google Gemini Vertex AI (OAuth2)     
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-04-17'                # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-05-20'                # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-preview-05-06'                  # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-exp-03-25'                      # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite-001'                     # best
@@ -144,7 +144,7 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-70B-Instruct'                   # needs pro-subscription
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-8B-Instruct'                    # needs pro-subscription
 
-# Ollama (local models), best results     
+# Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
 # CLOUD_TYPE = 'OLLAMA+qwen3:4b'                                        # good
 # CLOUD_TYPE = 'OLLAMA+qwen3:7b'                                        # good
