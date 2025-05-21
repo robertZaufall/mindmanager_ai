@@ -74,6 +74,7 @@ CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-05-20'                  # ($ 0.15,
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # ($ 0.08, $  0.30) best
 # CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                              # ($ 1.25, $  5.00) best
 # CLOUD_TYPE = 'GEMINI+gemma-3-27b-it'                                  # best
+# CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-05-20'                # best
