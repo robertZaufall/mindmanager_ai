@@ -77,7 +77,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
             usage = parsed_json.get("usageMetadata", "")
 
         elif "ANTHROPIC" in config.CLOUD_TYPE:
-            result = parsed_json["content"][0]["text"] 
+            result = next((item["text"] for item in parsed_json["content"] if item.get("type") == "text"), "")
             stop_reason = parsed_json["stop_reason"]
             stop_sequence = parsed_json["stop_sequence"]
             usage = parsed_json.get("usage", "")
@@ -265,6 +265,13 @@ def call_llm(model, str_user, param, data="", mimeType=""):
                     ]})
             else:
                 raise
+
+        if param.endswith("_grounding") and ("-4-" in config.MODEL_ID or "-3-7-" in config.MODEL_ID):
+            payload["tools"] = [{
+                "type": "web_search_20250305",
+                "name": "web_search",
+                "max_uses": 5
+            }]
 
         result = get_response(payload)
 
