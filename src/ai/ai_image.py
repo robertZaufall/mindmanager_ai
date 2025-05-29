@@ -202,6 +202,13 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                 payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
                 payload["raw"] = config.IMAGE_RAW
 
+            elif config.IMAGE_MODEL_ID == "flux-kontext-pro" or config.IMAGE_MODEL_ID == "flux-kontext-max":
+                payload["seed"] = seed
+                payload["aspect_ratio"] = config.IMAGE_ASPECT_RATIO
+                payload["prompt_upsampling"] = config.IMAGE_PROMPT_UPSAMPLING
+                payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
+                payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
+
             else:
                 raise Exception("Error: Unknown Flux image model")
 

@@ -9,7 +9,7 @@ CLOUD_TYPE_IMAGE = ''
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                    # best
-# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                 # best
+CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                 # best
         
 # StabilityAI        
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'                            # better
@@ -24,7 +24,7 @@ CLOUD_TYPE_IMAGE = ''
 # VertexAI
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.0-flash-preview-image-generation' # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-05-20'         # good
-CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-exp-05-20'       # best in class
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-exp-05-20'       # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                   # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001'              # (does not work any more)
 
@@ -44,6 +44,8 @@ CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-exp-05-20'       # best i
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                               # best
         
 # Black Forrest Labs        
+# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-pro'                               # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                               # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                             # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                                   # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                                       # best
@@ -210,7 +212,10 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_SAFETY_TOLERANCE = 6  # 0-6, 6 = least strict
 
         # Example branching by model
-        if model == "flux-pro-1.1-ultra":
+        if model == "flux-kontext-pro" or model == "flux-kontext-max":
+            config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
+            config.IMAGE_PROMPT_UPSAMPLING = False
+        elif model == "flux-pro-1.1-ultra":
             config.IMAGE_RAW = False
             config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
         elif model == "flux-pro-1.1":
