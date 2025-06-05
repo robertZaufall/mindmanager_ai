@@ -57,7 +57,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'GITHUB+AI21-Jamba-Instruct'                             # best
 
 # Anthropic     
-CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # ($  3.00, $ 15.00)
+# CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-20250514'                       # ($ 15.00, $ 75.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best
@@ -66,7 +66,7 @@ CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # ($  3.00
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-05-20'                  # ($ 0.15, $  0.60 (non-thinking) / 3.50 (thinking)) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-05-06'                    # ($ 1.25, $ 10.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-06-05'                    # ($ 1.25, $ 10.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-exp-03-25'                        # (free) best in class
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-001'                       # ($ 0.08, $  0.30) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-001'                            # ($ 0.10, $  0.40) best
@@ -80,7 +80,7 @@ CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # ($  3.00
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-05-20'                # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-preview-05-06'                  # best
+CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-preview-06-05'                  # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-exp-03-25'                      # best in class
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite-001'                     # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-001'                          # best
