@@ -57,6 +57,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         }
         return payload
         
+        
     def get_response(payload):
         response = requests.post(
             url=config.API_URL,
@@ -108,11 +109,12 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         return ai_aws.call_llm(model=model, str_user=str_user, data=data, mimeType=mimeType)
     
     # Azure / OpenAI / GITHUB
-    if "AZURE+" in config.CLOUD_TYPE or \
+    if ("AZURE+" in config.CLOUD_TYPE or \
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_FOUNDRY+" in config.CLOUD_TYPE or \
        "OPENROUTER+" in config.CLOUD_TYPE or \
-       "GITHUB+" in config.CLOUD_TYPE:
+       "GITHUB+" in config.CLOUD_TYPE) and \
+       not "+o3-pro" in config.CLOUD_TYPE:
 
         payload = {}
 
@@ -161,6 +163,57 @@ def call_llm(model, str_user, param, data="", mimeType=""):
 
         result = get_response(payload)
     
+    elif config.CLOUD_TYPE.startswith("OPENAI+o3-pro"):
+        def get_payload_for_responses():
+            payload = {
+                "model": config.MODEL_ID,
+                "stream": False,
+                "max_output_tokens": config.MAX_TOKENS,
+                "store": False,
+                "instructions": str_system,
+                "input": [{"role": "user", "content": str_user}]
+            }
+            return payload
+        
+        def get_response_for_responses(payload):
+            response = requests.post(
+                url=config.API_URL,
+                headers=config.HEADERS,
+                data=json.dumps(payload)
+            )
+            response_text = response.text
+            response_status = response.status_code            
+            if response.status_code != 200:
+                raise Exception(f"Error: {response_status} - {response_text}")
+            parsed_json = json.loads(response_text)
+
+            contents = next((item["content"] for item in parsed_json["output"] if item.get("type") == "message"), "")
+            result_pre = next((item["text"] for item in contents if item.get("type") == "output_text"), "")
+            result = re.sub(r'<(think(ing)?|reflect(ion|ing)?)>.*?</(think(ing)?|reflect(ion|ing)?)>', '', result_pre, flags=re.DOTALL)
+
+            finish_incomplete = parsed_json.get("incomplete_details", "")
+            if finish_incomplete != "":
+                print("result incomplete: " + json.dumps(finish_incomplete))
+
+            usage = parsed_json.get("usage", "")
+            if usage != "":
+                print("usage: " + json.dumps(usage))
+            
+            return text_helper.clean_result(result)
+
+        payload = get_payload_for_responses()
+
+        #payload["temperature"] = config.LLM_TEMPERATURE # not supported with o3-pro
+
+        if config.REASONING_EFFORT != "":
+            payload["reasoning"] = { "effort": config.REASONING_EFFORT }
+        if config.CLOUD_TYPE.endswith("-flex"):
+            config.CLOUD_TYPE = config.CLOUD_TYPE.replace("-flex", "")
+            config.MODEL_ID = config.MODEL_ID.replace("-flex", "")
+            payload["service_tier"] = "flex"
+
+        result = get_response_for_responses(payload)
+
     # OLLAMA
     elif "OLLAMA+" in config.CLOUD_TYPE:
         payload = get_payload()
