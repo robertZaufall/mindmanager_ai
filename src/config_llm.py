@@ -32,6 +32,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini-search-preview-2025-03-11'           # best ($ 0.15, $  0.60)
 
 # CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($ 10.00, $ 40.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-2025-04-16-flex'                              # best ($  5.00, $ 20.00 + reasoning tokens)
 
 # CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-high'                         # best ($  1.10, $  4.40 +++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-medium'                       # best ($  1.10, $  4.40 ++ reasoning tokens)

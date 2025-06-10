@@ -97,7 +97,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     result = ""
     str_system = config.SYSTEM_PROMPT
 
-    # Azure / OpenAI / GITHUB
+    # Azure Entra ID
     if "AZURE" in config.CLOUD_TYPE and config.USE_AZURE_ENTRA:
         import ai.ai_azure_entra as ai_azure_entra
         return ai_azure_entra.call_llm_azure_entra(model=model, str_user=str_user, data=data, mimeType=mimeType)
@@ -107,6 +107,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         import ai.ai_aws as ai_aws
         return ai_aws.call_llm(model=model, str_user=str_user, data=data, mimeType=mimeType)
     
+    # Azure / OpenAI / GITHUB
     if "AZURE+" in config.CLOUD_TYPE or \
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_FOUNDRY+" in config.CLOUD_TYPE or \
@@ -122,6 +123,10 @@ def call_llm(model, str_user, param, data="", mimeType=""):
             payload["temperature"] = 1
             if "+o3" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
                 payload["reasoning_effort"] = config.REASONING_EFFORT
+            if config.CLOUD_TYPE.endswith("-flex"):
+                config.CLOUD_TYPE = config.CLOUD_TYPE.replace("-flex", "")
+                config.MODEL_ID = config.MODEL_ID.replace("-flex", "")
+                payload["service_tier"] = "flex"
         else:
             if data == "":  
                 payload["messages"] = [
