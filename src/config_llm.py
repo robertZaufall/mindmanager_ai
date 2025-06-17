@@ -73,7 +73,7 @@ CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($ 
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-06-17'             # ($ 0.10, $  0.40) best
 
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro'                                  # ($ 1.25, $ 10.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-06-05'                    # ($ 1.25, $ 10.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-pro-preview-05-06'                    # ($ 1.25, $ 10.00) best
 
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-001'                       # ($ 0.08, $  0.30) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-001'                            # ($ 0.10, $  0.40) best
@@ -92,7 +92,7 @@ CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($ 
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-06-17'           # best
 
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro'                                # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-preview-06-05'                  # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro-preview-05-06'                  # best
 
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite-001'                     # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-001'                          # best
