@@ -26,7 +26,6 @@ CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                 # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-06-06'         # good
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-preview-06-06'   # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                   # best
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001'              # (does not work any more)
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'                       # best 
