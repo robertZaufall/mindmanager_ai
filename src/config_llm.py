@@ -95,10 +95,10 @@ CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($ 
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
-# CLOUD_TYPE = 'XAI+grok-3-mini-fast-beta'                              # ($ 0.60, $  4.00), best
-# CLOUD_TYPE = 'XAI+grok-3-mini-beta'                                   # ($ 0.30, $  0.50), best
-# CLOUD_TYPE = 'XAI+grok-3-fast-beta'                                   # ($ 5.00, $ 25.00), best in class
-# CLOUD_TYPE = 'XAI+grok-3-beta'                                        # ($ 3.00, $ 15.00), best in class
+# CLOUD_TYPE = 'XAI+grok-4-0709'.                                       # ($ 3.00, $ 15.00), best
+# CLOUD_TYPE = 'XAI+grok-3-mini-fast'                                   # ($ 0.60, $  4.00), best
+# CLOUD_TYPE = 'XAI+grok-3-mini'.                                       # ($ 0.30, $  0.50), best
+# CLOUD_TYPE = 'XAI+grok-3-fast'                                        # ($ 5.00, $ 25.00), best
 # CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # ($ 2.00, $ 10.00), best
 
 # DeepSeek
