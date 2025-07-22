@@ -68,25 +68,20 @@ CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($ 
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash'                                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-06-17'             # ($ 0.10, $  0.40) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro'                                  # ($ 1.25, $ 10.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite-001'                       # ($ 0.08, $  0.30) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-001'                            # ($ 0.10, $  0.40) best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-8b-001'                         # ($ 0.04, $  0.15) best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-flash-002'                            # ($ 0.08, $  0.30) best
-# CLOUD_TYPE = 'GEMINI+gemini-1.5-pro-002'                              # ($ 1.25, $  5.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite'                           # ($ 0.08, $  0.30) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.0-flash'                                # ($ 0.10, $  0.40) best
 
 # CLOUD_TYPE = 'GEMINI+gemma-3-27b-it'                                  # best
 # CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash'                              # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-06-17'           # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite'                         # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro'                                # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite-001'                     # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-001'                          # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-flash-002'                          # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-1.5-pro-002'                            # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite'                         # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash'                              # best
 
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
