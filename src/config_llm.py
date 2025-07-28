@@ -86,7 +86,7 @@ CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($ 
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-lite-v1:0'                          # best, max token output only 5120
-# CLOUD_TYPE = 'BEDROCK+anthropic.claude-3-5-sonnet-20240620-v1:0'      # best
+# CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-20250514-v1:0'     # best
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
@@ -303,16 +303,17 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 3000
         elif model.startswith("amazon.nova-"):
             config.MAX_TOKENS = 5120
+        elif "-sonnet-4-" in model:
+            config.MAX_TOKENS = 64000
         config.AWS_ACCESS_KEY = os.getenv("BEDROCK_ACCESS_KEY")
         config.AWS_SECRET_KEY = os.getenv("BEDROCK_SECRET_KEY")
         config.AWS_SERVICE_NAME = "bedrock-runtime"
         config.AWS_MODEL_VERSION_KEY = ""
         config.AWS_MODEL_VERSION_TEXT = ""
         config.AWS_REGION = "us-east-1"
-        if model.startswith("mistral.") or model.startswith("amazon.titan-") or model.startswith("amazon.nova-"):
+        if model.startswith("mistral.") or model.startswith("amazon.nova-"):
             pass
-        elif model.startswith("anthropic."):
-            config.AWS_REGION = "eu-central-1"
+        elif model.startswith("anthropic.") or ".anthropic." in model:
             config.AWS_MODEL_VERSION_KEY = "anthropic_version"
             config.AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
         else:

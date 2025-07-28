@@ -38,7 +38,7 @@ def call_llm(model, str_user, data, mimeType):
         result = response["output"]["message"]["content"][0]["text"]
         result = text_helper.clean_result(result)
 
-    elif model_id.startswith("anthropic."):
+    elif model_id.startswith("anthropic.") or ".anthropic." in model_id:
         payload = {
             config.AWS_MODEL_VERSION_KEY: config.AWS_MODEL_VERSION_TEXT,
             "max_tokens": config.MAX_TOKENS,
