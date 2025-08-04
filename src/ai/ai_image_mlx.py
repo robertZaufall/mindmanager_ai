@@ -4,14 +4,16 @@ from types import SimpleNamespace
 from PIL import Image
 
 def generate_image(model, prompt, negative_prompt, n_images, outputs, seed):
-    from mflux import Flux1, Config
-
     config = cfg.get_image_config(model)
 
-    if "-flux1" in config.IMAGE_MODEL_ID:
-        flux = Flux1.from_alias(
-            alias = config.IMAGE_MODEL_VERSION,
-            quantize = config.IMAGE_MODEL_QUANTIZATION,
+    if "mflux-" in config.IMAGE_MODEL_ID:
+        from mflux.flux.flux import Flux1
+        from mflux.config.config import Config
+
+        name = config.IMAGE_MODEL_ID.replace("mflux-", "").replace("-4bit", "").replace("-8bit", "")
+        flux = Flux1.from_name(
+            model_name=name,
+            quantize=config.IMAGE_MODEL_QUANTIZATION,
         )
         for i in range(n_images):
             image = flux.generate_image(

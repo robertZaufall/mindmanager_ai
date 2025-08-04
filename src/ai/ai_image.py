@@ -306,9 +306,9 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             return ai_gcp.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count)
 
         # MLX
-        elif "MLX" in config.CLOUD_TYPE_IMAGE:
+        elif "MLX+" in config.CLOUD_TYPE_IMAGE:
             seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**32 - 1)
-            if "flux" in config.IMAGE_MODEL_ID or "sd3" in config.IMAGE_MODEL_ID:
+            if "mflux-" in config.IMAGE_MODEL_ID:
                 import ai.ai_image_mlx as ai_image_mlx
                 image_paths = ai_image_mlx.generate_image(
                     model=model,

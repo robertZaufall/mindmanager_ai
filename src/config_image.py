@@ -5,54 +5,55 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                     # best
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
         
 # OpenAI        
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                    # best
-CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                 # best
+# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                     # best
+# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                  # best
         
 # StabilityAI        
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'                            # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo'                      # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-medium'                           # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'                              # good
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'                        # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'                             # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                                   # better
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                  # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'                             # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo'                       # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-medium'                            # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'                               # good
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'                         # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'                              # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                                    # better
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.0-flash-preview-image-generation' # best
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-06-06'         # good
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-preview-06-06'   # best in class
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                   # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.0-flash-preview-image-generation'  # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-06-06'          # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-preview-06-06'    # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                    # best
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-schnell-4bit'                       # best 
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-flux1-dev-4bit'                           # good 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit       '                       # best 
+CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # good 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-krea-dev-4bit'                             # good 
         
 # IdeogramAI        
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3'                                     # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_TURBO'                               # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_QUALITY'                             # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A'                                    # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                              # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                                     # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                               # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                                     # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                               # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3'                                      # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_TURBO'                                # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_QUALITY'                              # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A'                                     # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                               # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                                      # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                                # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                                      # best
+# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                                # best
         
 # Black Forrest Labs        
-# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-pro'                               # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                               # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                             # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                                   # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                                       # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                                       # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-pro'                                # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                                # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                              # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                                    # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                                        # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                                        # best
 
 # RecraftAI
-# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                                # best
-# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'                               # best
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                                 # best
+# CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'                                # best
 
 def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespace:
 
@@ -158,11 +159,11 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_HEIGHT = 1024 # 1024 # 512 # 768
         config.IMAGE_WIDTH = 1024 # 1024 # 512 # 768
 
-        if "-flux1" in model:
-            if "-schnell" in model:
+        if "mflux-" in model:
+            if "-schnell-" in model:
                 config.IMAGE_MODEL_VERSION = "schnell"
                 config.IMAGE_NUM_STEPS = 2 # 2-4
-            elif "-dev" in model:
+            elif "-dev-" in model:
                 config.IMAGE_MODEL_VERSION = "dev"
                 config.IMAGE_NUM_STEPS = 20 # 20-25
             else:
