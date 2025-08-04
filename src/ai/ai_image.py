@@ -319,6 +319,73 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                     seed=seed)
             else:
                 raise Exception(f"Error: IMAGE_MODEL_ID for MLX not supported: {config.IMAGE_MODEL_ID}")
+        
+        # Alibabacloud
+        elif "ALIBABACLOUD" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
+            seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**16 - 1)
+
+            payload = {
+                "model": config.IMAGE_MODEL_ID,
+                "input":
+                {
+                    "prompt": str_user,
+                    "negative_prompt": config.IMAGE_NEGATIV_PROMPT,
+                },
+                "parameters": {
+                    "size": config.IMAGE_SIZE,
+                    "n": n_count,
+                    "seed": seed,
+                    "prompt_extend": config.IMAGE_PROMPT_EXTEND,
+                    "watermark": config.IMAGE_WATERMARK,
+                }   
+            }
+
+            response = requests.post(
+                url=config.IMAGE_API_URL,
+                json=payload,
+                headers=config.IMAGE_HEADERS
+            )
+            response_text = response.text
+            response_status = response.status_code
+
+            if response_status != 200:
+                raise Exception(f"Error: {response_status} - {response_text}")
+
+            parsed_json = json.loads(response_text)
+            if 'output' not in parsed_json or 'task_id' not in parsed_json['output']:
+                raise Exception("Error: Missing task_id in API response")
+            id = parsed_json['output']['task_id']
+            id_url = f"{config.IMAGE_API_URL_TASKS}/{id}"
+
+            url = ""
+            for _ in range(60):  # Maximum 60 retries
+                result = requests.get(
+                    url=id_url,
+                    headers=config.IMAGE_HEADERS
+                )
+
+                if result.status_code != 200:
+                    raise Exception(f"Error: {result.status_code} - {result.text}")
+
+                output = result.json().get("output", {})
+                if output.get("task_status") == "SUCCEEDED":
+                    results = output.get("results", [])
+                    if results and "url" in results[0]:
+                        url = results[0]["url"]
+                        break
+                time.sleep(1)
+            else:
+                raise Exception("Error: Image generation timed out or failed to complete.")
+
+            if url != "":
+                generated_image = httpx.get(url).content
+                for image_path in image_paths:
+                    with open(image_path, "wb") as file:
+                        file.write(generated_image)
+            else:
+                raise Exception(f"Error generating image.")
+
         else:
             raise Exception(f"Error: CLOUD_TYPE_IMAGE not supported: {config.CLOUD_TYPE_IMAGE}")
 

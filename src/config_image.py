@@ -5,7 +5,7 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                     # best
@@ -16,8 +16,8 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo'                       # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-medium'                            # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large'                               # good
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'                         # bad results
-# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'                              # bad results
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-large-turbo'                         # poor
+# CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3-medium'                              # poor
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                                    # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
@@ -29,7 +29,7 @@ CLOUD_TYPE_IMAGE = ''
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit       '                       # best 
-CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # good 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # good 
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-krea-dev-4bit'                             # good 
         
 # IdeogramAI        
@@ -54,6 +54,10 @@ CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # good
 # RecraftAI
 # CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                                 # best
 # CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraft20b'                                # best
+
+# Alibaba Cloud
+# CLOUD_TYPE_IMAGE = 'ALIBABACLOUD+wan2.2-t2i-flash'                       # poor
+# CLOUD_TYPE_IMAGE = 'ALIBABACLOUD+wan2.2-t2i-plus'                        # poor
 
 def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespace:
 
@@ -276,6 +280,17 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
 
         else:
             raise Exception("Error: Unknown Recraft image model")
+
+
+    elif system == "ALIBABACLOUD":
+        config.IMAGE_API_URL = os.getenv('ALIBABACLOUD_API_URL_IMAGE')
+        config.IMAGE_API_URL_TASKS = os.getenv('ALIBABACLOUD_API_URL_TASKS')
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY_IMAGE') or ""), "X-DashScope-Async": "enable"}
+        config.IMAGE_SIZE = "1024*1024"  # 512*512 1024*1024, 1365*1024, 1024*1365, 1536*1024, 1024*1536, 1820*1024, 1024*1820, 1024*2048, 2048*1024, 1434*1024, 1024*1434, 1024*1280, 1280*1024, 1024*1707, 1707*1024"
+        config.IMAGE_SEED = 0
+        config.IMAGE_PROMPT_EXTEND = False
+        config.IMAGE_WATERMARK = False
+        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
 
     else:
         # If none of the above matched, it's unknown.

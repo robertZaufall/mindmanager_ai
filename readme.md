@@ -53,7 +53,8 @@ More animated examples are in the `doc` folder.
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
   - **Black Forrest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`  (use your key)  
   - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
-  - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux.1` models
+  - **Alibaba Cloud** w/ `Qwen Wan 2.2` models
+  - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux` models
 
 ### Translation Services
  - **DeepL** (use your key)
