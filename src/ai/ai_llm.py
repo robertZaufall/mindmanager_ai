@@ -363,6 +363,8 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     # GROQ
     elif "GROQ+" in config.CLOUD_TYPE:
         payload = get_payload()
+        if "/gpt-" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
+            payload["reasoning_effort"] = config.REASONING_EFFORT
         result = get_response(payload)
        
     # CEREBRAS

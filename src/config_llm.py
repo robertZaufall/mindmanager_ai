@@ -6,7 +6,7 @@ from file_helper import load_env
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
-# CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
+CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
@@ -115,15 +115,15 @@ from file_helper import load_env
 # CLOUD_TYPE = 'MISTRAL+open-mistral-nemo'                              # not working, free
 
 # groq     
-# CLOUD_TYPE = 'GROQ+qwen-2.5-32b'                                      # best
-# CLOUD_TYPE = 'GROQ+deepseek-r1-distill-qwen-32b'                      # reasoning models do not work by now
-# CLOUD_TYPE = 'GROQ+llama-3.3-70b-specdec'                             # best
-# CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # best
-# CLOUD_TYPE = 'GROQ+mixtral-8x7b-32768'                                # good
+# CLOUD_TYPE = 'GROQ+qwen/qwen3-32b'                                    # best
+# CLOUD_TYPE = 'GROQ+deepseek-r1-distill-llama-70b'                     # best
+# CLOUD_TYPE = 'GROQ+llama-3.3-70b-versatile'                           # good
+# CLOUD_TYPE = 'GROQ+moonshotai/kimi-k2-instruct'                       # best
+# CLOUD_TYPE = 'GROQ+openai/gpt-oss-120b-medium'                        # best
 
 # Perplexity     
-# CLOUD_TYPE = 'PERPLEXITY+sonar'                                       #
-# CLOUD_TYPE = 'PERPLEXITY+sonar-pro'                                   #
+# CLOUD_TYPE = 'PERPLEXITY+sonar'                                       # best
+# CLOUD_TYPE = 'PERPLEXITY+sonar-pro'                                   # best
 
 # Firekworks.ai
 # CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
@@ -144,8 +144,8 @@ from file_helper import load_env
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-8B-Instruct'                    # needs pro-subscription
 
 # Cerebras.ai
-CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b-medium'                           #
-# CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                #
+# CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b-medium'                           # best
+# CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                # best
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
@@ -358,7 +358,23 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('XAI_API_KEY') or "")}
 
     elif "GROQ+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 8000
+        config.REASONING_EFFORT = ""
+        if "qwen/qwen3" in model:
+            config.MAX_TOKENS = 130000
+        elif "deepseek-r1" in model:
+            config.MAX_TOKENS = 130000
+        elif "llama-3.3-70b-versatile" in model:
+            config.MAX_TOKENS = 32766
+        elif "moonshot/kimi-k2-instruct" in model:
+            config.MAX_TOKENS = 16384
+        elif "openai/gpt-oss-" in model:
+            config.MAX_TOKENS = 32766
+            reasoning_effort = model.split("-")[-1]
+            if reasoning_effort == "pro":
+                reasoning_effort = ""
+            if reasoning_effort in ["low", "medium", "high"]:
+                config.REASONING_EFFORT = reasoning_effort
+                config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
         config.API_URL = os.getenv('GROQ_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('GROQ_API_KEY') or "")}
 

@@ -34,12 +34,12 @@ More animated examples are in the `doc` folder.
   - **Mistral AI** w/ `Mistral` models (use your key)
   - **AWS Bedrock** w/ `Nova` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
   - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` etc. (use your key)  
-  - **GitHub Models** (platform) w/ OpenAI `GPT`, `o`, META `LLaMA` models etc. (use your key)  
-  - **Perplexity** (platform) w/ `LLaMA` models etc. (use your key)  
-  - **Groq** (platform) w/ `Qwen`, `DeepSeek`, `LLaMA`, `Mixtral` etc. (use your key)  
+  - **Groq** (platform) w/ `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `Kimi-K2`, `LLaMA3` etc. (use your key)  
+  - **Fireworks AI** (platform)  w/ `LLaMa`, `Qwen` etc. (use your key)  
+  - **Cerebras** (platform)  w/ `GPT-OSS`, `Qwen` etc. (use your key)  
+  - **Perplexity** (platform) w/ `Sonar` models etc. (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
-  - **Fireworks AI** (platform)  w/ `LLaMa`, `Qwen` (serverless) etc. (use your key)  
-  - **Cerebras** (platform)  w/ `GPT-OSS`, `Qwen` (serverless) etc. (use your key)  
+  - **GitHub Models** (platform) w/ OpenAI `GPT`, `o`, META `LLaMA` models etc. (use your key)  
   - **OpenRouter** (platform) w/ many/all models (use your key)
   - **GPT4ALL** (local w/ SDK) w/ any `llama.cpp` model
   - **Ollama** (local w/ API) w/ any `llama.cpp` or `MLX` model
@@ -284,11 +284,11 @@ Alibaba Cloud models cannot generate large amounts of tokens (`Qwen-Max`: 2000, 
 ### Mistral AI
 Mistral AI is hosting their commercial flagship models `Mixtral-Large` and `Pixtral-Large`. `Mixtral-Large` is a 'best in class' model. The maximum numer of possible output tokens is a little bit unclear (max_tokens may meant to be the sum of input and output tokens).  
 ### Groq (platform)
-Groq is one of the fastest LLM hosting platforms. `LLaMA3`, `Mixtral` and `Gemma` are proven models. From time to time the supported models on the platform are changing.  
+Groq is one of the fastest LLM hosting platforms. `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `Kimi-K2`, `LLaMA3` and other models are available. From time to time the supported models on the platform are changing.  
 ### Cerebras (platform)
-Cerebras is hosting `OpenAI GPT-OSS`, `Gwen`, `DeepSeek`, `LLaMA3` and other models at high inteference speeds. From time to time the supported models on the platform are changing.  
+Cerebras is hosting `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `LLaMA3` and other models at high inteference speeds. From time to time the supported models on the platform are changing.  
 ### Perplexity (platform)
-Perplexity works perfect as an universal LLM platform. From time to time the supported models on the platform are changing.  
+Perplexity hosts its own `Sonar` models. From time to time the supported models on the platform are changing.  
 ### Hugging Face (platform)
 To access better models a pro-subscription is needed. `LLaMA-3-8B` still can be used.  
 ### Open Router (platform)  
