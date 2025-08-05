@@ -365,6 +365,13 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         payload = get_payload()
         result = get_response(payload)
        
+    # CEREBRAS
+    elif "CEREBRAS+" in config.CLOUD_TYPE:
+        payload = get_payload()
+        if "+gpt-" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
+            payload["reasoning_effort"] = config.REASONING_EFFORT
+        result = get_response(payload)
+       
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
         payload = get_payload()

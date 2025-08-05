@@ -6,7 +6,7 @@ from file_helper import load_env
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
-CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
+# CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
@@ -142,6 +142,10 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'HF+meta-llama/Meta-Llama-3-8B-Instruct'                 # good
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-70B-Instruct'                   # needs pro-subscription
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-8B-Instruct'                    # needs pro-subscription
+
+# Cerebras.ai
+CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b-medium'                           #
+# CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                #
 
 # Ollama (local models), best results
 # CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
@@ -357,6 +361,18 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.MAX_TOKENS = 8000
         config.API_URL = os.getenv('GROQ_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('GROQ_API_KEY') or "")}
+
+    elif "CEREBRAS+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 64000
+        config.API_URL = os.getenv('CEREBRAS_API_URL')
+        config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('CEREBRAS_API_KEY') or "")}
+        config.REASONING_EFFORT = ""
+        reasoning_effort = model.split("-")[-1]
+        if reasoning_effort == "pro":
+            reasoning_effort = ""
+        if reasoning_effort in ["low", "medium", "high"]:
+            config.REASONING_EFFORT = reasoning_effort
+            config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
 
     elif "PERPLEXITY+" in CLOUD_TYPE:
         config.API_URL = os.getenv('PERPLEXITY_API_URL')
