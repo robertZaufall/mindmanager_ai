@@ -23,19 +23,19 @@ More animated examples are in the `doc` folder.
 ## Features
 
 ### AI platforms and LLMs
-  - **Azure OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o4-mini`, `o3-mini`, `o1`, `o1-mini` etc. (use your key or log in with `Azure EntraID`)  
-  - **OpenAI** w/ `GPT-4.1`, `GPT-4o`, `o4-mini`, `o3`, `o3-mini`, `o1`, `o1-mini` etc. (use your key)  
-  - **Anthropic** w/ `Claude 3.7` etc. models (use your key)  
-  - **xAI** w/ `grok-3`, `grok-2-vision` etc.  (use your key)  
-  - **Google Gemini** w/ `Gemini Pro 2.5`, `Gemini Flash 2.5`, `Gemma 3` etc. (use your key)  
-  - **Google Vertex AI** w/ `Gemini Pro 2.5`, `Gemini 2.5 Flash` etc. (use your access token / OAuth2)
-  - **DeepSeek** w/ `DeepSeek V3` (use your key)  
-  - **Alibaba Cloud** w/ `Qwen-Max`, `Qwen-Plus`, `Qwen-Turbo` (use your key)  
-  - **Mistral AI** w/ `Mistral-Large`, `Pixtral`, `Ministral` (use your key)
+  - **Azure OpenAI** w/ `GPT` and `o` models (use your key or log in with `Azure EntraID`)  
+  - **OpenAI** w/ `GPT` and `o` models (use your key)  
+  - **Anthropic** w/ `Claude` models (use your key)  
+  - **xAI** w/ `grok` models (use your key)  
+  - **Google Gemini** w/ `Gemini`, `Gemma` models (use your key)  
+  - **Google Vertex AI** w/ `Gemini` models (use your access token / OAuth2)
+  - **DeepSeek** w/ `DeepSeek` models (use your key)  
+  - **Alibaba Cloud** w/ `Qwen` models (use your key)  
+  - **Mistral AI** w/ `Mistral` models (use your key)
   - **AWS Bedrock** w/ `Nova` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
   - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` etc. (use your key)  
-  - **GitHub Models** (platform) w/ `GPT-4o`, `LLaMA` etc. (use your key)  
-  - **Perplexity** (platform) w/ `LLaMA 3.1-Sonar` etc. (use your key)  
+  - **GitHub Models** (platform) w/ OpenAI `GPT`, `o`, META `LLaMA` models etc. (use your key)  
+  - **Perplexity** (platform) w/ `LLaMA` models etc. (use your key)  
   - **Groq** (platform) w/ `Qwen`, `DeepSeek`, `LLaMA`, `Mixtral` etc. (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
   - **Fireworks AI** (platform)  w/ `LLaMa`, `Qwen` (serverless) etc. (use your key)  
@@ -265,21 +265,21 @@ Generation of larger text outputs needs a model with an higher max-token value l
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
-The solution is best tested with `Azure OpenAI`. Results are perfect for every use case. Cheapest ones are `gpt-4.1-mini` and `gpt-4.1-nano`  
+The solution is best tested with `Azure OpenAI`. Results are perfect for most use cases.  
 Azure EntraID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
-`Gemini Pro 2.5` results are best. `Gemini Flash 2.5` is also very good.  
+`Gemini Pro` results are best. `Gemini Flash` is also very good.  
 Vertex AI needs an security token which you can generate using the cloud console.  
-### Anthropic Claude 3.5
-The Anthropic `Claude 3.7 Sonnet` model ist very good. Anthropic `Claude 3.5 Haiku` is good and also very cheap.
+### Anthropic Claude
+The `Sonnet` model ist very good, `Haiku` is good and also very cheap, `Opus` the most expensive.  
 ### xAI grok
-Grok is very good and is able to refine mindmaps for several levels. The models `grok-3-beta` and `grok-2-vision-1212` are very good. The vision model can be used for pdf ocr.  
+Grok is very good and is able to refine mindmaps for several levels. The models `grok-3` and `grok-2-vision-1212` are very good. The vision model can be used for pdf ocr. `grok-4` takes some time.  
 ### Amazon Bedrock
 Amazon Bedrock has some native models i.e. `Nova` (best), and host also 3rd party models of `Anthropic Claude` and `Mistral`.
 ### DeepSeek
-DeepSeek created an extraordinary open source model DeepSeek V3 which seems to be as good as GPT-4o. The reasoning model `r1` does not work by now.  
+DeepSeek created an extraordinary open source model DeepSeek V3. The reasoning model `r1` does not work by now.  
 ### Alibaba Cloud
-Alibaba Cloud models cannot generate large amounts of tokens (`Qwen-Max`: 2000, `Qwen-Plus` + `Qwen-Turbo`: 1500) but the results are good. `Qwen-Turbo` is very fast. `Qwen 2.5` model is still not available outside China by now (2024-11-22).  
+Alibaba Cloud models cannot generate large amounts of tokens (`Qwen-Max`: 2000, `Qwen-Plus` + `Qwen-Turbo`: 1500) but the results are good. `Qwen-Turbo` is very fast.  
 ### Mistral AI
 Mistral AI is hosting their commercial flagship models `Mixtral-Large` and `Pixtral-Large`. `Mixtral-Large` is a 'best in class' model. The maximum numer of possible output tokens is a little bit unclear (max_tokens may meant to be the sum of input and output tokens).  
 ### Groq (platform)
@@ -309,12 +309,13 @@ Image generation is extraordinary. Flagship model is `Flux Pro 1.1 / Ultra`. As 
 ### Recraft.AI
 Image genration is very good. There are many pre-defined styles which can be activated as needed. Available Models are `RecraftV3` and `Recraft20B`.  
 
-### MLX w/ Flux.1, SD3
-This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using `Flux.1` model and under average using `SD3` mostly because the prompt is optimized for `Flux.1`.  
+### MLX w/ Flux models
+This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using the `Flux` models.  
 
-There is a new action defined (`image_n` eg. `image=10`) to generate a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call. If there is only one topic selected there is a different prompt used as when more topics are selected. Only the first level of topics together with the central topic should be selected for better results.  
+Using the `image_n` action (eg. `image=10`) generates a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call. If there is only one topic selected there is a different prompt used as when more topics are selected. Only the first level of topics together with the central topic should be selected for better results.  
 
-When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount to be downloaded is about 50GB using `Flux.1` and 6GB using `SD3`. If you are using `SD3` for the first time you have to login at **huggingface** with your token first as you have to agree to the terms of **Stability AI** and the usage of their model: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
+When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount downloaded is up to 70GB.  
+If you are downloading for the first time you eventually have to login at **huggingface** with your token first as you have to agree to their terms of (model-) usage: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
 
 ## Translation systems
 ### DeepL
@@ -329,7 +330,7 @@ Translation works for these languages:
 Source language will be detected automatically. `Formality` parameter is not supported for all languages, so it is disabled by now. `Context` parameter was not used as DeepL states it's deprecated.
 API requests point to the free tier. If you have a paid subscription change the URL in the `config.py`.
 
-## Agentic frameworks  
+## Agentic frameworks (to be replaced by MCP soon) 
 There are only some example implementations using agentic frameworks. Results are requested as markdown code from the agents and are transformed to Mermaid mindmap by another LLM call. This should be addressed soon.  
 
 ### Agno (formerly Phidata)  
@@ -344,8 +345,8 @@ Framework is complex and not so easy to use. There is also a fork with a similar
 https://github.com/crewAIInc/crewAI  
 Mighty and complex framework. Installation on Windows 11 on ARM requires VS2022 build tools. Installation on MacOS seems to be more easy but still has a lot of dependencies.  
 
-## Prompt crafting  
-Prompt crafting is lightly implemented using the following strategy:  
+## Context engineering / Prompt crafting  
+Strategy:  
 
 ![Configuration](doc/prompt.png)  
 
@@ -416,9 +417,9 @@ You can also use the content inside the Mermaid online editor (https://mermaid.l
 
 ![Mermaid](doc/mermaid.png)  
 
+Remarks:  
+The mermaid layer will be replaced by structured output either using extended mermaid syntax or json in the future.  
+
 ## Disclaimer
-The API execution time depends heavily on the used LLM model or system and token count.  
-
 Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.  
-
 
