@@ -228,7 +228,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.REASONING_EFFORT = ""
 
     if "OPENAI+" in CLOUD_TYPE or "AZURE+" in CLOUD_TYPE or "OPENROUTER+" in CLOUD_TYPE or "GITHUB+" in CLOUD_TYPE:
-        if "gpt-4o" in model in model:
+        if "gpt-4o" in model:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
