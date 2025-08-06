@@ -101,9 +101,11 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
 
 # Alibaba Cloud
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus-2025-07-28'                      # best (Qwen3)
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-max-2025-01-25'                       # best (Qwen2.5)
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus-2025-04-28'                      # ok (Qwen3)
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo-2025-04-28'                     # good (Qwen3)
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen3-235b-a22b-instruct-2507'             # good
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen3-30b-a3b-instruct-2507'               # good
 
 # Mistral AI
 # CLOUD_TYPE = 'MISTRAL+mistral-large-latest'                           # best in class
@@ -400,16 +402,14 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('DEEPSEEK_API_KEY') or "")}
 
     elif "ALIBABACLOUD+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 8000
+        config.MAX_TOKENS = 32768
         config.API_URL = os.getenv('ALIBABACLOUD_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")}
         config.TOP_P = 0.8
-        if model in ["qwen-plus-2025-04-28", "qwen-turbo-2025-04-28"]:
-            config.ENABLE_THINKING = False # only with streaming supported
-            config.THINKING_BUDGET = 0
-        else:
-            config.ENABLE_THINKING = False
-            config.THINKING_BUDGET = 0
+        config.ENABLE_THINKING = False
+        config.THINKING_BUDGET = 0
+        if model in ["qwen-max-2025-01-25", "qwen-turbo-2025-04-28"]:
+            config.MAX_TOKENS = 8192
 
     elif "MISTRAL+" in CLOUD_TYPE:
         config.API_URL = os.getenv('MISTRAL_API_URL')
