@@ -6,7 +6,7 @@ from file_helper import load_env
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
-CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
+# CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
 # CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
 
@@ -22,6 +22,16 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
+# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07'                                # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-medium'                         # best ($  1.25, $ 10.00 ++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-high'                           # best ($  1.25, $ 10.00 +++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07'                           # ok   ($  0.25, $  2.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-medium'                    # best ($  0.25, $  2.00 ++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-high'                      # best ($  0.25, $  2.00 +++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07'                           # ok   ($  0.05, $  0.40 + reasoning tokens)
+CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-medium'                    # best ($  0.05, $  0.40 ++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-high'                      # best ($  0.05, $  0.40 +++ reasoning tokens)
+
 # CLOUD_TYPE = 'OPENAI+o3-pro-2025-06-10'                               # best ($ 20.00, $ 80.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($  2.00, $  8.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o3-2025-04-16-flex'                              # best ($  1.00, $  4.00 + reasoning tokens)
@@ -226,7 +236,23 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.REASONING_EFFORT = ""
 
     if "OPENAI+" in CLOUD_TYPE or "AZURE+" in CLOUD_TYPE or "OPENROUTER+" in CLOUD_TYPE or "GITHUB+" in CLOUD_TYPE:
-        if "gpt-4o" in model:
+        config.REASONING_EFFORT = ""
+
+        reasoning_effort_value = ""
+        reasoning_effort = model.split("-")[-1]
+        if reasoning_effort in ["low", "medium", "high"]:
+            reasoning_effort_value = reasoning_effort
+        
+        if "gpt-5" in model :
+            config.MAX_TOKENS = 128000
+            config.MULTIMODAL = True
+            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+            if reasoning_effort_value:
+                config.REASONING_EFFORT = reasoning_effort_value
+                config.MODEL_ID = model.replace(f"-{reasoning_effort_value}", "")
+            else:
+                config.REASONING_EFFORT = "low"
+        elif "gpt-4o" in model:
             config.MAX_TOKENS = 16383
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
@@ -238,18 +264,16 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 65535
         elif "o1-" in model or "o3-" in model or "o4-" in model or model == "o1" or model == "o3" or model == "o4":
             config.MAX_TOKENS = 100000
-            reasoning_effort = model.split("-")[-1]
-            if reasoning_effort == "pro":
-                reasoning_effort = ""
-            if reasoning_effort in ["low", "medium", "high"]:
-                config.REASONING_EFFORT = reasoning_effort
-                config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
+            if reasoning_effort_value:
+                config.REASONING_EFFORT = reasoning_effort_value
+                config.MODEL_ID = model.replace(f"-{reasoning_effort_value}", "")
             else:
                 config.REASONING_EFFORT = "low"
 
     if "OPENAI+" in CLOUD_TYPE:
         config.API_URL = os.getenv('OPENAI_API_URL')
-        if CLOUD_TYPE.startswith("OPENAI+o3-pro"):
+
+        if CLOUD_TYPE.startswith("OPENAI+o3-pro") or "+gpt5-" in CLOUD_TYPE:
             config.API_URL = os.getenv('OPENAI_API_URL').replace("chat/completions", "responses")
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY') or "")}
 

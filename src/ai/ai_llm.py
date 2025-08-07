@@ -119,11 +119,11 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         payload = {}
 
         if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE) and \
-           ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE or "+o4" in config.CLOUD_TYPE):
+           ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE or "+o4" in config.CLOUD_TYPE or "+gpt-5" in config.CLOUD_TYPE):
             payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
-            if "+o3" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
+            if ("+o3" in config.CLOUD_TYPE  or "+gpt-5" in config.CLOUD_TYPE) and config.REASONING_EFFORT != "":
                 payload["reasoning_effort"] = config.REASONING_EFFORT
             if config.CLOUD_TYPE.endswith("-flex"):
                 config.CLOUD_TYPE = config.CLOUD_TYPE.replace("-flex", "")
