@@ -92,9 +92,7 @@ CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-4-0709'                                        # ($ 3.00, $ 15.00), best
 # CLOUD_TYPE = 'XAI+grok-3'                                             # ($ 3.00, $ 15.00), best
-# CLOUD_TYPE = 'XAI+grok-3-mini-fast'                                   # ($ 0.60, $  4.00), best
 # CLOUD_TYPE = 'XAI+grok-3-mini'                                        # ($ 0.30, $  0.50), best
-# CLOUD_TYPE = 'XAI+grok-3-fast'                                        # ($ 5.00, $ 25.00), best
 # CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # ($ 2.00, $ 10.00), best
 
 # DeepSeek
