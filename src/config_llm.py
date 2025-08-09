@@ -4,8 +4,9 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
+CLOUD_TYPE = 'AZURE+model-router'                                       #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
@@ -272,6 +273,9 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
                 config.MODEL_ID = model.replace(f"-{reasoning_effort_value}", "")
             else:
                 config.REASONING_EFFORT = "low"
+        elif "model-router" in model:
+            config.MAX_TOKENS = 32768
+            config.MULTIMODAL = False
 
     if "OPENAI+" in CLOUD_TYPE:
         config.API_URL = os.getenv('OPENAI_API_URL')
