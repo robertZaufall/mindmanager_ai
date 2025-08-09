@@ -4,6 +4,9 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
+# CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
+CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+# CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
@@ -29,7 +32,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-medium'                    # best ($  0.25, $  2.00 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-high'                      # best ($  0.25, $  2.00 +++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07'                           # ok   ($  0.05, $  0.40 + reasoning tokens)
-CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-medium'                    # best ($  0.05, $  0.40 ++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-medium'                    # best ($  0.05, $  0.40 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-high'                      # best ($  0.05, $  0.40 +++ reasoning tokens)
 
 # CLOUD_TYPE = 'OPENAI+o3-pro-2025-06-10'                               # best ($ 20.00, $ 80.00 + reasoning tokens)
