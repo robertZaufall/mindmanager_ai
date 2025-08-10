@@ -83,13 +83,18 @@ def generate_image(model, document, guid, count=1):
         final_prompt = str_user
 
     image_paths = ai_image.call_image_ai(model=model, image_paths=file_paths, str_user=final_prompt, n_count=count)
+    if image_paths and isinstance(image_paths[0], str):
+    
+        if image_paths[0].endswith(".mp4"):
+            os.system(f'open "{image_paths[0]}"' if platform == "darwin" else f'start "" "{image_paths[0]}"')
+        else:
 
-    if config.INSERT_IMAGE_AS_BACKGROUND and document.central_topic_selected and platform == "win":
-        document.set_background_image(image_paths[1])
-    else:
-        from PIL import Image
-        image = Image.open(image_paths[0])  
-        image.show()
+            if config.INSERT_IMAGE_AS_BACKGROUND and document.central_topic_selected and platform == "win":
+                document.set_background_image(image_paths[1])
+            else:
+                from PIL import Image
+                image = Image.open(image_paths[0])  
+                image.show()
 
 
 def main(param, charttype, model, freetext, inplace=False):

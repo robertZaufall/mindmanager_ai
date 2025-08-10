@@ -5,7 +5,9 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
+CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1'                                   # best
+# CLOUD_TYPE_IMAGE = 'AZURE+sora'                                          #
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                     # best
@@ -67,7 +69,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
 
     config.LOG = True
     config.TURBO_MODE = True
-    config.USE_AZURE_ENTRA = True
+    config.USE_AZURE_ENTRA_IMAGE = False
     config.RESIZE_IMAGE = False
     config.RESIZE_IMAGE_WIDTH = 1024
     config.RESIZE_IMAGE_HEIGHT = 1024
@@ -85,6 +87,37 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     # Branch logic
     if system in ["AZURE", "OPENAI"]:
         config.USE_AZURE_ENTRA_IMAGE = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
+
+        if system == "AZURE":
+            config.AZURE_DEPLOYMENT_IMAGE = model
+            if model == "dall-e-3":
+                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
+                config.IMAGE_API_URL = (
+                    f"{os.getenv('AZURE_API_URL_IMAGE_EASTUS')}openai/deployments/"
+                    f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
+                    f"?api-version={config.IMAGE_API_VERSION}")
+                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_EASTUS') or ""}
+            elif model == "sora":
+                config.IMAGE_API_VERSION = "preview" # os.getenv('AZURE_API_VERSION_IMAGE')
+                config.IMAGE_API_URL = f"{os.getenv('AZURE_API_URL_IMAGE')}openai/v1/video/generations/jobs?api-version={config.IMAGE_API_VERSION}"
+                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
+            elif model == "gpt-image-1":
+                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
+                config.IMAGE_API_URL = (
+                    f"{os.getenv('AZURE_API_URL_IMAGE_WESTUS3')}openai/deployments/"
+                    f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
+                    f"?api-version={config.IMAGE_API_VERSION}")
+                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_WESTUS3') or ""}
+            else:
+                raise Exception("Error: Unsupported Azure image model")
+
+        elif system == "OPENAI":
+            config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
+            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")}
+        
+        else:
+            raise Exception("Error: Unknown image system")
+
         config.IMAGE_EXPLICIT_STYLE = "digital art"
         if model == "dall-e-3":
             config.IMAGE_QUALITY = "hd"     # hd, standard, auto
@@ -94,20 +127,11 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             config.IMAGE_QUALITY = "medium" # hight, medium, low, auto
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
             config.MODERATION = "low" # low, auto
-
-        if system == "AZURE":
-            config.AZURE_DEPLOYMENT_IMAGE = model
-            config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
-            config.IMAGE_API_URL = (
-                f"{os.getenv('AZURE_API_URL_IMAGE')}openai/deployments/"
-                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
-                f"?api-version={config.IMAGE_API_VERSION}"
-            )
-            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
-
-        elif system == "OPENAI":
-            config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
-            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")}
+        if model == "sora":
+            # (480, 480), (854, 480), (720, 720), (1280, 720), (1080, 1080), (1920, 1080)
+            config.IMAGE_WIDTH = 480
+            config.IMAGE_HEIGHT = 480
+            config.VIDEO_LENGTH = 3
 
     elif system == "STABILITYAI":
         config.MODEL_ENDPOINT = model.split("-")[0]

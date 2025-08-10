@@ -26,52 +26,109 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
 
         # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
-            n_count = 1 # override n_count to 1
-            #format = "url"
-            format = "b64_json"
-            payload = {
-                "prompt": str_user,
-                "quality": config.IMAGE_QUALITY,
-                "size": config.IMAGE_SIZE,
-                "n": n_count,
-            }
 
-            if config.IMAGE_MODEL_ID == "dall-e-3":
-                payload["style"] = config.IMAGE_STYLE
-                payload["response_format"] = format
+            if config.IMAGE_MODEL_ID == "sora":
+                payload = {
+                    "model": config.IMAGE_MODEL_ID,
+                    "prompt": str_user,
+                    "n_seconds": config.VIDEO_LENGTH,
+                    "width": config.IMAGE_WIDTH,
+                    "height": config.IMAGE_HEIGHT,
+                }
+            
+                response = requests.post(
+                    url=config.IMAGE_API_URL,
+                    headers=config.IMAGE_HEADERS,
+                    data=json.dumps(payload)
+                )
+                response_text = response.text
+                response_status = response.status_code
 
-            if config.IMAGE_MODEL_ID == "gpt-image-1":
-                payload["output_format"] = "png"
-                payload["moderation"] = config.MODERATION
+                if response_status not in (200,201):
+                    raise Exception(f"Error: {response_status} - {response_text}")
 
-            if "OPENAI" in config.CLOUD_TYPE_IMAGE:
-                payload["model"] = config.IMAGE_MODEL_ID
-                
-            response = requests.post(
-                url=config.IMAGE_API_URL,
-                headers=config.IMAGE_HEADERS,
-                data=json.dumps(payload)
-            )
-            response_text = response.text
-            response_status = response.status_code
+                job_id = response.json()["id"]
 
-            if response_status != 200:
-                raise Exception(f"Error: {response_status} - {response_text}")
+                status_url = config.IMAGE_API_URL.replace('/jobs?', f"/jobs/{job_id}?")
 
-            parsed_json = json.loads(response_text)
+                status = None
+                while status not in ("succeeded", "failed", "cancelled"):
+                    time.sleep(5)
+                    status_response = requests.get(
+                        status_url, 
+                        headers=config.IMAGE_HEADERS,
+                    ).json()
+                    status = status_response.get("status")
+            
+                if status == "succeeded":
+                    generations = status_response.get("generations", [])
+                    if generations:
+                        print(f"✅ Video generation succeeded.")
+                        generation_id = generations[0].get("id")
+                        video_url = config.IMAGE_API_URL.replace('/jobs?', f"/{generation_id}/content/video?")
+                        video_response = requests.get(
+                            video_url, 
+                            headers=config.IMAGE_HEADERS
+                        )
+                        if video_response.ok:
+                            for i, image_path in enumerate(image_paths):
+                                image_path = image_path.replace(".png", f"_{uuid.uuid4()}.mp4")
+                                image_paths[i] = image_path
+                                with open(image_path, "wb") as file:
+                                    file.write(video_response.content)
+                    else:
+                        raise Exception("No generations found in job result.")
+                else:
+                    raise Exception(f"Job didn't succeed. Status: {status}")
 
-            if format == "url":
-                url = parsed_json['data'][0]['url']
-                generated_image = httpx.get(url).content
-                for image_path in image_paths:
-                    with open(image_path, "wb") as file:
-                        file.write(generated_image)
             else:
-                b64_image = parsed_json['data'][0]['b64_json']
-                image_data = base64.b64decode(b64_image)
-                image = Image.open(BytesIO(image_data))
-                for image_path in image_paths:
-                    image.save(image_path)
+
+                n_count = 1 # override n_count to 1
+                #format = "url"
+                format = "b64_json"
+                payload = {
+                    "prompt": str_user,
+                    "quality": config.IMAGE_QUALITY,
+                    "size": config.IMAGE_SIZE,
+                    "n": n_count,
+                }
+
+                if config.IMAGE_MODEL_ID == "dall-e-3":
+                    payload["style"] = config.IMAGE_STYLE
+                    payload["response_format"] = format
+
+                if config.IMAGE_MODEL_ID == "gpt-image-1":
+                    payload["output_format"] = "png"
+                    payload["moderation"] = config.MODERATION
+
+                if "OPENAI" in config.CLOUD_TYPE_IMAGE :
+                    payload["model"] = config.IMAGE_MODEL_ID
+                    
+                response = requests.post(
+                    url=config.IMAGE_API_URL,
+                    headers=config.IMAGE_HEADERS,
+                    data=json.dumps(payload)
+                )
+                response_text = response.text
+                response_status = response.status_code
+
+                if response_status != 200:
+                    raise Exception(f"Error: {response_status} - {response_text}")
+
+                parsed_json = json.loads(response_text)
+
+                if format == "url":
+                    url = parsed_json['data'][0]['url']
+                    generated_image = httpx.get(url).content
+                    for image_path in image_paths:
+                        with open(image_path, "wb") as file:
+                            file.write(generated_image)
+                else:
+                    b64_image = parsed_json['data'][0]['b64_json']
+                    image_data = base64.b64decode(b64_image)
+                    image = Image.open(BytesIO(image_data))
+                    for image_path in image_paths:
+                        image.save(image_path)
 
         # Stability AI / Stable Diffusion
         elif "STABILITYAI" in config.CLOUD_TYPE_IMAGE:
