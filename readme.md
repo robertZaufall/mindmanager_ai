@@ -46,16 +46,19 @@ More animated examples are in the `doc` folder.
   - **LMStudio** (local w/ API) w/ any `llama.cpp` or `MLX` model
   - **MLX** (local w/ API, Apple Silicon) w/ any `MLX` model
 
-### Image Generation Systems
-  - **Azure OpenAI** w/ `DALL-E 3` (use your key or log in with `Azure EntraID`) -> **best tested**
-  - **OpenAI** w/ `DALL-E 3` (use your key) -> **best results**
+### Image Generation
+  - **Azure OpenAI** w/ `gpt-image-1`, `DALL-E 3`, `Flux Pro 1.1`, `Flux.1 Kontext Pro` (use your key or log in with `Azure EntraID`)  
+  - **OpenAI** w/ `gpt-image-1`, `DALL-E 3` (use your key)
   - **Stability AI** w/ `Stable Diffusion 3` `SD3.5` / `SD3` / `Ultra` / `Core` (use your key)  
   - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
-  - **Black Forrest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`  (use your key)  
+  - **Black Forrest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`, `Flux.1 Kontext Pro/Max`  (use your key)  
   - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
   - **Alibaba Cloud** w/ `Qwen Wan 2.2` models
   - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux` models
+
+### Video Generation
+  - **Azure OpenAI** w/ `sora` (use your key)  
 
 ### Translation Services
  - **DeepL** (use your key)

@@ -6,7 +6,9 @@ CLOUD_TYPE_IMAGE = ''
 
 # Azure
 # CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
-CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1'                                   # best
+# CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1'                                   # best
+CLOUD_TYPE_IMAGE = 'AZURE+FLUX-1.1-pro'                                  # best
+# CLOUD_TYPE_IMAGE = 'AZURE+FLUX.1-Kontext-pro'                            # best
 # CLOUD_TYPE_IMAGE = 'AZURE+sora'                                          #
         
 # OpenAI        
@@ -108,6 +110,13 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                     f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
                     f"?api-version={config.IMAGE_API_VERSION}")
                 config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_WESTUS3') or ""}
+            elif model in ("FLUX-1.1-pro", "FLUX.1-Kontext-pro"):
+                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
+                config.IMAGE_API_URL = (
+                    f"{os.getenv('AZURE_API_URL_IMAGE')}openai/deployments/"
+                    f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
+                    f"?api-version={config.IMAGE_API_VERSION}")
+                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
             else:
                 raise Exception("Error: Unsupported Azure image model")
 
@@ -123,15 +132,20 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             config.IMAGE_QUALITY = "hd"     # hd, standard, auto
             config.IMAGE_STYLE = "vivid"    # natural, vivid
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1792x1024, 1024x1792
-        if model == "gpt-image-1":
+        elif model == "gpt-image-1":
             config.IMAGE_QUALITY = "medium" # hight, medium, low, auto
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
             config.MODERATION = "low" # low, auto
-        if model == "sora":
+        elif model == "sora":
             # (480, 480), (854, 480), (720, 720), (1280, 720), (1080, 1080), (1920, 1080)
             config.IMAGE_WIDTH = 480
             config.IMAGE_HEIGHT = 480
             config.VIDEO_LENGTH = 3
+        elif model in ("FLUX-1.1-pro", "FLUX.1-Kontext-pro"):
+            config.IMAGE_QUALITY = "hd" # standard, hd
+            config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
+        else:
+            raise Exception("Error: Unsupported image model")
 
     elif system == "STABILITYAI":
         config.MODEL_ENDPOINT = model.split("-")[0]

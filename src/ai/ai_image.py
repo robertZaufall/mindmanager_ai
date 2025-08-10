@@ -27,6 +27,7 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
         # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
 
+            # sora
             if config.IMAGE_MODEL_ID == "sora":
                 payload = {
                     "model": config.IMAGE_MODEL_ID,
@@ -81,6 +82,7 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                 else:
                     raise Exception(f"Job didn't succeed. Status: {status}")
 
+            # gpt-image-1, FLUX-1.1-pro, dall-e-3
             else:
 
                 n_count = 1 # override n_count to 1
