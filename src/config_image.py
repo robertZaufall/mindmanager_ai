@@ -5,11 +5,11 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
 # CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1'                                   # best
-CLOUD_TYPE_IMAGE = 'AZURE+FLUX-1.1-pro'                                  # best
+# CLOUD_TYPE_IMAGE = 'AZURE+FLUX-1.1-pro'                                  # best
 # CLOUD_TYPE_IMAGE = 'AZURE+FLUX.1-Kontext-pro'                            # best
-# CLOUD_TYPE_IMAGE = 'AZURE+sora'                                          #
+# CLOUD_TYPE_IMAGE = 'AZURE+sora'                                          # good
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                     # best
@@ -30,6 +30,11 @@ CLOUD_TYPE_IMAGE = 'AZURE+FLUX-1.1-pro'                                  # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-06-06'          # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-preview-06-06'    # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                    # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-fast-generate-001'                  # good
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-generate-001'                       # good
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-fast-generate-preview'              # good
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-generate-preview'                   # good
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-2.0-generate-001'                       # best
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit       '                       # best 
@@ -176,17 +181,37 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_ADD_WATERMARK = False
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
 
+        config.IMAGE_PROJECT_ID = os.getenv('VERTEXAI_PROJECT_ID_IMAGE')
+        config.IMAGE_LOCATION_ID = os.getenv('VERTEXAI_LOCATION_ID_IMAGE')
+
         if model.startswith("imagen-"):
             config.IMAGE_API_URL = (
-                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{os.getenv('VERTEXAI_PROJECT_ID_IMAGE')}"
-                f"/locations/{os.getenv('VERTEXAI_LOCATION_ID_IMAGE')}/publishers/google/models/"
+                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
+                f"/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/"
                 f"{model}:predict"
             )
         elif model.startswith("gemini-"):
             config.IMAGE_API_URL = (
-                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{os.getenv('VERTEXAI_PROJECT_ID_IMAGE')}"
-                f"/locations/{os.getenv('VERTEXAI_LOCATION_ID_IMAGE')}/publishers/google/models/"
+                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
+                f"/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/"
                 f"{model}:generateContent"
+            )
+        elif model.startswith("veo-"):
+            config.VIDEO_ASPECT_RATIO = "16:9" # 16:9, 9:16
+            config.VIDEO_SAMPLE_COUNT = 1 # 1-4
+            config.VIDEO_LENGTH = "5" # 5-8
+            config.VIDEO_PERSON_GENERATION = "allow_all" # allow-all, allow-adult, disallow
+            config.VIDEO_ADD_WATERMARK = False
+            config.VIDEO_INCLUDE_RAI_REASON = False
+            config.VIDEO_GENERATE_AUDIO = False
+            config.VIDEO_RESOLUTION = "720p" # 720p, 1080p (only VEO-3 models)
+            config.VIDEO_NEGATIVE_PROMPT = "text, characters, letters, words, labels"
+            config.VIDEO_SEED = 0
+
+            config.IMAGE_API_URL = (
+                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
+                f"/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/"
+                f"{model}:predictLongRunning"
             )
         else:
             raise Exception("Error: Unknown VertexAI image model")

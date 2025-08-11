@@ -58,7 +58,8 @@ More animated examples are in the `doc` folder.
   - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux` models
 
 ### Video Generation
-  - **Azure OpenAI** w/ `sora` (use your key)  
+  - **Azure OpenAI** w/ `Sora` (use your key)  
+  - **Google Vertex AI** w/ `Veo 3`, `Veo 2` (use your access token / OAuth2)  
 
 ### Translation Services
  - **DeepL** (use your key)
@@ -245,7 +246,7 @@ To process the whole map, select the central topic (for right-clicking) or don't
 Select the central topic or deselect all topics and call the automation.  
 You can also select one or more topics and start the automation for just these topics, e.g. to generate examples for these topics, refine just these topics etc.  
 
-### Image generation
+### Image / Video generation
 Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image` or `image_n`.  
 After a while, the image will be opened and also stored in the MindManager-Library `Images`-folder.  
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
@@ -257,6 +258,8 @@ The prompt for image generation can optionally be optimized using a LLM call.
 Images can also be generated locally on macOS with Apple Silicon using the native `Apple MLX` framework.  
 
 Recently there are more image generation plattforms trending. `Black Forrest Labs`, `Ideogram AI` and `Recraft AI` image generation from mindmaps is already implemented and the results are amazing.  
+
+Video generation works with `Sora` (Azure OpenAI) and `Veo` (Google Vertex AI).  
 
 ### Generation using text summarization (eg. PDF to mindmap)
 Put the files into the `input`-folder and use the action `pdf_mindmap`. The PDF files are first converted to markdown (MD) format. 'Reference' sections are removed as these contain no information but take a lot of tokens (e.g. arXiv papers). No OCR takes place by now. Tables are removed and the content will be highly sanitized by removing irrelevant characters, code blocks, href-links, whitespace etc.  
@@ -301,12 +304,12 @@ Results are dependent on the used model. `LLaMA3`, `Zephyr` and `Mixtral` are wo
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
 MLX results are dependent on the used model. `LLaMA3` works well.
 
-## Image generation systems  
-### Azure OpenAI / OpenAI - DALL-E 3  
+## Image / Video generation systems  
+### Azure OpenAI / OpenAI - DALL-E 3, FLUX.1, GPT-image-1, Sora  
 The solution is best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images. Azure EntraID authentication can be used in enterprise scenarios.  
 ### Stability AI - Stable Diffusion 3 + 3.5  
 Image generation with `SD3.5` and `SD3` is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
-### Google Vertex AI - Imagen3  
+### Google Vertex AI - Imagen3, Veo 3  
 Image generation results are too simple by now as prompt engineering is also most important here. `Imagen3` has the highest image resolution (1:1 with 1536x1536). `Imagen3` is GA (globally available) but there is an approval process to get access to the API.  
 ### Ideogram AI  
 Image generation is quite good using the `V_2` model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  

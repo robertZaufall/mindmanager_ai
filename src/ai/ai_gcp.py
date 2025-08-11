@@ -1,7 +1,10 @@
+import uuid
 import config_llm as cfg
 import config_image as cfg_image
 import requests
 import json
+import time
+import os
 from types import SimpleNamespace
 import google.auth
 
@@ -124,6 +127,7 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
         "Authorization" : "Bearer " + access_token
     }
     
+    long_running = False
     if config.IMAGE_MODEL_ID.startswith("imagen-"):
         payload = {
             "instances": [
@@ -166,6 +170,33 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
                 }
             ]
         }
+    elif config.IMAGE_MODEL_ID.startswith("veo-"):
+        seed = config.VIDEO_SEED
+        if seed == 0:
+            seed = int.from_bytes(os.urandom(4), "big")
+
+        long_running = True
+        payload = {
+            # "endpoint": f"projects/{config.IMAGE_PROJECT_ID}/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/{config.IMAGE_MODEL_ID}",
+            "instances": [
+                {
+                    "prompt": str_user,
+                }
+            ],
+            "parameters": {
+                "aspectRatio": config.VIDEO_ASPECT_RATIO,
+                "sampleCount": config.VIDEO_SAMPLE_COUNT,
+                "durationSeconds": config.VIDEO_LENGTH,
+                "personGeneration": config.VIDEO_PERSON_GENERATION,
+                "addWatermark": config.VIDEO_ADD_WATERMARK,
+                "includeRaiReason": config.VIDEO_INCLUDE_RAI_REASON,
+                "generateAudio": config.VIDEO_GENERATE_AUDIO,
+                "seed": seed,
+                "negativePrompt": config.VIDEO_NEGATIVE_PROMPT
+            }
+        }
+        if config.IMAGE_MODEL_ID.startswith("veo-3"):
+            payload["parameters"]["resolution"] = config.VIDEO_RESOLUTION
     else:
         raise Exception(f"Error: {config.MODEL_ID} is not supported.")
 
@@ -183,22 +214,67 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
     parsed_json = json.loads(response_text)
 
     image = None
-    if config.IMAGE_MODEL_ID.startswith("imagen-"):
-        b64_image = parsed_json['predictions'][0]['bytesBase64Encoded']
-        image_data = base64.b64decode(b64_image)
-        image = Image.open(BytesIO(image_data))
-    
-    elif config.IMAGE_MODEL_ID.startswith("gemini-"):
-        parts = parsed_json["candidates"][0]["content"]["parts"]
-        for part in parts:
-            if "inlineData" in part:
-                image_data = part["inlineData"]["data"]
-                mimeType = part["inlineData"]["mimeType"]
-                if mimeType == "image/png":
-                    image_data = base64.b64decode(image_data)
-                    image = Image.open(BytesIO(image_data))
-                break
+    if not long_running:
 
+        if config.IMAGE_MODEL_ID.startswith("imagen-"):
+            b64_image = parsed_json['predictions'][0]['bytesBase64Encoded']
+            image_data = base64.b64decode(b64_image)
+            image = Image.open(BytesIO(image_data))
+        
+        elif config.IMAGE_MODEL_ID.startswith("gemini-"):
+            parts = parsed_json["candidates"][0]["content"]["parts"]
+            for part in parts:
+                if "inlineData" in part:
+                    image_data = part["inlineData"]["data"]
+                    mimeType = part["inlineData"]["mimeType"]
+                    if mimeType == "image/png":
+                        image_data = base64.b64decode(image_data)
+                        image = Image.open(BytesIO(image_data))
+                    break
+    else:
+        name = parsed_json.get("name")
+        # name = "projects/PROJECT_ID/locations/us-central1/publishers/google/models/MODEL_ID/operations/a1b07c8e-7b5a-4aba-bb34-3e1ccb8afcc8"
+        operations_url = config.IMAGE_API_URL.replace(":predictLongRunning", ":fetchPredictOperation")
+        operations_payload = {
+            "operationName": name
+        }
+
+        done = None
+        while not done:
+            time.sleep(5)
+            operations_response = requests.post(
+                url=operations_url,
+                headers=headers,
+                data=json.dumps(operations_payload)
+            )
+            operations_response_text = operations_response.text
+            operations_response_status = operations_response.status_code
+
+            if operations_response_status != 200 or operations_response_text == "":
+                raise Exception(f"Error: {operations_response_status} - {operations_response_text}")
+
+            operations_response_parsed_json = json.loads(operations_response_text)
+
+            done = operations_response_parsed_json.get("done", False)
+            if done:
+                if operations_response_parsed_json.get("response"):
+                    video_data = operations_response_parsed_json["response"].get("videos", [])
+                    if video_data:
+                        base64_array = video_data[0].get("bytesBase64Encoded")
+                        if base64_array:
+                            if isinstance(base64_array, list):
+                                b64_str = "".join(base64_array)
+                            else:
+                                b64_str = base64_array
+                            b64_str += "=" * (-len(b64_str) % 4)
+                            video_bytes = base64.b64decode(b64_str)
+
+                            for i, image_path in enumerate(image_paths):
+                                image_path = image_path.replace(".png", f"_{uuid.uuid4()}.mp4")
+                                image_paths[i] = image_path
+                                with open(image_path, "wb") as file:
+                                    file.write(video_bytes)
+                            return image_paths
     if image:
         if config.RESIZE_IMAGE:
             image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
