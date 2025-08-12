@@ -199,7 +199,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         elif model.startswith("veo-"):
             config.VIDEO_ASPECT_RATIO = "16:9" # 16:9, 9:16
             config.VIDEO_SAMPLE_COUNT = 1 # 1-4
-            config.VIDEO_LENGTH = "5" # 5-8
+            config.VIDEO_LENGTH = "8" # 5-8 (service always bills for 8 seconds!!!)
             config.VIDEO_PERSON_GENERATION = "allow_all" # allow-all, allow-adult, disallow
             config.VIDEO_ADD_WATERMARK = False
             config.VIDEO_INCLUDE_RAI_REASON = False
