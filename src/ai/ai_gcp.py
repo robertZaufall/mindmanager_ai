@@ -167,6 +167,22 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
                 {
                     "category": "HARM_CATEGORY_HARASSMENT",
                     "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_IMAGE_HATE",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_IMAGE_DANGEROUS_CONTENT",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_IMAGE_HARASSMENT",
+                    "threshold": "OFF"
+                },
+                {
+                    "category": "HARM_CATEGORY_IMAGE_SEXUALLY_EXPLICIT",
+                    "threshold": "OFF"
                 }
             ]
         }

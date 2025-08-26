@@ -5,7 +5,7 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
+# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
 # CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1'                                   # best
 # CLOUD_TYPE_IMAGE = 'AZURE+FLUX-1.1-pro'                                  # best
 # CLOUD_TYPE_IMAGE = 'AZURE+FLUX.1-Kontext-pro'                            # best
@@ -26,7 +26,7 @@ CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.0-flash-preview-image-generation'  # best
+CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image-preview'             # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-06-06'          # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-preview-06-06'    # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                    # best
@@ -192,8 +192,8 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             )
         elif model.startswith("gemini-"):
             config.IMAGE_API_URL = (
-                f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
-                f"/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/"
+                f"https://{os.getenv('VERTEXAI_API_ENDPOINT')}/v1/projects/{config.IMAGE_PROJECT_ID}"
+                f"/locations/{os.getenv('VERTEXAI_LOCATION_ID')}/publishers/google/models/"
                 f"{model}:generateContent"
             )
         elif model.startswith("veo-"):
