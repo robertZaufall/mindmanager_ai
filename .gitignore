@@ -22,3 +22,4 @@ src/config/*.env
 !src/config/mlx.env
 !src/config/ollama.env
 CLAUDE.md
+AGENTS.md
