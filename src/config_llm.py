@@ -75,7 +75,6 @@ CLOUD_TYPE = 'AZURE+model-router'                                       #
 # Anthropic     
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-1-20250805'                     # best ($ 15.00, $ 75.00)
-# CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-20250514'                       # best ($ 15.00, $ 75.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best ($  0.80, $  4.00)
@@ -111,6 +110,9 @@ CLOUD_TYPE = 'AZURE+model-router'                                       #
 
 # DeepSeek
 # CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
+
+# STACKIT
+# CLOUD_TYPE = 'STACKIT+cortecs/Llama-3.3-70B-Instruct-FP8-Dynamic'     # good
 
 # Alibaba Cloud
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus-2025-07-28'                      # best (Qwen3)
@@ -424,6 +426,11 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     elif "PERPLEXITY+" in CLOUD_TYPE:
         config.API_URL = os.getenv('PERPLEXITY_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('PERPLEXITY_API_KEY') or "")}
+
+    elif "STACKIT+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 4096
+        config.API_URL = f"{os.getenv('STACKIT_API_URL')}/chat/completions"
+        config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('STACKIT_API_KEY') or "")}
 
     elif "DEEPSEEK+" in CLOUD_TYPE:
         config.MAX_TOKENS = 8000

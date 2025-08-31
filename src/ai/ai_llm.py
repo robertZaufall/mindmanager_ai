@@ -379,6 +379,11 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         payload = get_payload()
         result = get_response(payload)
 
+    # STACKIT
+    elif "STACKIT+" in config.CLOUD_TYPE:
+        payload = get_payload()
+        result = get_response(payload)
+
     # DeepSeek
     elif "DEEPSEEK+" in config.CLOUD_TYPE:
         payload = get_payload()

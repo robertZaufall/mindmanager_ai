@@ -35,6 +35,7 @@ More animated examples are in the `doc` folder.
   - **AWS Bedrock** w/ `Nova` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
   - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` etc. (use your key)  
   - **Groq** (platform) w/ `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `Kimi-K2`, `LLaMA3` etc. (use your key)  
+  - **STACKIT (Schwarz Gruppe)** (platform) w/ `LLaMa` (use your key)  
   - **Fireworks AI** (platform)  w/ `LLaMa`, `Qwen` etc. (use your key)  
   - **Cerebras** (platform)  w/ `GPT-OSS`, `Qwen` etc. (use your key)  
   - **Perplexity** (platform) w/ `Sonar` models etc. (use your key)  
