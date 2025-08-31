@@ -14,7 +14,7 @@ Using Automator Workflow (Quick Action):
 
 ![Example](doc/anim_neu_2.gif)  
 
-Using TKInter UI and "Freetext" option (run the `app_tkinter.py` file):  
+Using Tkinter UI and "Freetext" option (run the `app_tkinter.py` file):  
 
 ![Example](doc/ui_freetext.gif)  
 
@@ -23,7 +23,7 @@ More animated examples are in the `doc` folder.
 ## Features
 
 ### AI platforms and LLMs
-  - **Azure OpenAI** w/ `GPT` and `o` models (use your key or log in with `Azure EntraID`)  
+  - **Azure OpenAI** w/ `GPT` and `o` models (use your key or log in with `Azure Entra ID`)  
   - **OpenAI** w/ `GPT` and `o` models (use your key)  
   - **Anthropic** w/ `Claude` models (use your key)  
   - **xAI** w/ `grok` models (use your key)  
@@ -35,8 +35,8 @@ More animated examples are in the `doc` folder.
   - **AWS Bedrock** w/ `Nova` native models or `Anthropic`, `Mistral` serverless models (use your key + secret)  
   - **Azure AI Foundry** (platform)  w/ `LLaMA`, `Mistral` etc. (use your key)  
   - **Groq** (platform) w/ `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `Kimi-K2`, `LLaMA3` etc. (use your key)  
-  - **STACKIT (Schwarz Gruppe)** (platform) w/ `LLaMa` (use your key)  
-  - **Fireworks AI** (platform)  w/ `LLaMa`, `Qwen` etc. (use your key)  
+  - **STACKIT (Schwarz Gruppe)** (platform) w/ `LLaMA` (use your key)  
+  - **Fireworks AI** (platform)  w/ `LLaMA`, `Qwen` etc. (use your key)  
   - **Cerebras** (platform)  w/ `GPT-OSS`, `Qwen` etc. (use your key)  
   - **Perplexity** (platform) w/ `Sonar` models etc. (use your key)  
   - **Hugging Face** (platform)  w/ `LLaMA` and more models (use your token)  
@@ -48,12 +48,12 @@ More animated examples are in the `doc` folder.
   - **MLX** (local w/ API, Apple Silicon) w/ any `MLX` model
 
 ### Image Generation
-  - **Azure OpenAI** w/ `gpt-image-1`, `DALL-E 3`, `Flux Pro 1.1`, `Flux.1 Kontext Pro` (use your key or log in with `Azure EntraID`)  
+  - **Azure OpenAI** w/ `gpt-image-1`, `DALL-E 3`, `Flux Pro 1.1`, `Flux.1 Kontext Pro` (use your key or log in with `Azure Entra ID`)  
   - **OpenAI** w/ `gpt-image-1`, `DALL-E 3` (use your key)
   - **Stability AI** w/ `Stable Diffusion 3` `SD3.5` / `SD3` / `Ultra` / `Core` (use your key)  
   - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
-  - **Black Forrest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`, `Flux.1 Kontext Pro/Max`  (use your key)  
+  - **Black Forest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`, `Flux.1 Kontext Pro/Max`  (use your key)  
   - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
   - **Alibaba Cloud** w/ `Qwen Wan 2.2` models
   - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux` models
@@ -85,7 +85,7 @@ More animated examples are in the `doc` folder.
 2. Refinement of the map or topic from a development perspective.  
 3. Create examples for one, more (selected) or all topics.  
 4. Clustering topics from scratch.  
-5. Clustering by one or more criterias eg. Organization/Process/Project/Expertise, Capex-Opex perspective.  
+5. Clustering by one or more criteria (e.g., Organization/Process/Project/Expertise, Capex–Opex perspective).  
 6. Complex cases (multiple calls): eg. refinement + clustering + examples.  
 7. Image generation from topics
 8. Professional translation of all topics by DeepL
@@ -95,7 +95,7 @@ More animated examples are in the `doc` folder.
 12. Generate a working paper (argumentation) HTML document for a detailed mindmap
 13. Generate a glossary HTML document of all terms
   
-![Refinemnt + Glossary](doc/glossary.gif)  
+![Refinement + Glossary](doc/glossary.gif)  
 
 ## Other Use Cases (implemented or easy to add)
 - Export mindmap to any other text format
@@ -105,7 +105,7 @@ More animated examples are in the `doc` folder.
 - Create a map based on external text data
 
 ## User Interface  
-There's a new user interface using TKInter to execute most of the operations and more. The app stays always on top and has several UI tabs:  
+There's a new user interface using Tkinter to execute most operations and more. The app stays always on top and has several UI tabs:  
   
 ### Action tab  
 Choose the desired model and action and click on execute:
@@ -113,42 +113,42 @@ Choose the desired model and action and click on execute:
 <img src="doc/tab_action.png" height="400" >  
   
 ### Image tab  
-Chose the desired model and the number of images to generate:
+Choose the desired model and the number of images to generate:
 
 <img src="doc/tab_image.png" height="400" >  
   
 ### Freetext tab  
-Choose the desired modell, fill in some text how to generate or modify the content and click on execute.  
+Choose the desired model, enter text describing how to generate or modify the content, and click Execute.  
 Examples:  
 - "refine"
 - "translate all topics to German"
-- "add an emoji to every topic" (does only work on MacOS)
+- "add an emoji to every topic" (only works on macOS)
 
 <img src="doc/tab_freetext.png" height="400" >  
   
 ### Translation tab  
-Just choose the destination language and click on execute:
+Choose the destination language and click Execute:
 
 <img src="doc/tab_translation.png" height="400" >  
   
 ### Agent tab  
 Choose an already implemented agent and the desired models.  
 The agents list is generated from scripts found in the `ai/agents` folder.  
-Before execution the needed libraries have to be installed:  
+Before execution, the required libraries must be installed:  
 `pip install -r requirements_agents.txt`.  
-CrewAI does not install well on Windows ARM64 by the time of writing.  
-Agents do a lot of AI roundtrip calls, so the costs have to be monitored.
+CrewAI does not install well on Windows ARM64 at the time of writing.  
+Agents make many AI round-trip calls, so costs should be monitored.
   
 <img src="doc/tab_agent.png" height="400" >  
   
 ### Configuration tab  
-By now only the resulting chart format is selectable (orgchart, radial map or automatic selection):  
+Currently, only the resulting chart format is selectable (orgchart, radial, or automatic):  
   
 <img src="doc/tab_configuration.png" height="400" >  
   
 ## Installation  
 ### Windows  
-First install the Windows package manager `Chocolatey` from an administration shell or choose any other way following https://chocolatey.org/install.  
+First install the Windows package manager `Chocolatey` from an administrative shell or choose any other way following https://chocolatey.org/install.  
 This is one line:  
 ```
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
@@ -162,7 +162,7 @@ Change to `windows` folder:
 ```
 cd windows
 ```
-Run `install.bat` or  the following commands (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`):
+Run `install.bat` or the following commands (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`):
 ```
 cd ..
 choco install python3
@@ -170,20 +170,20 @@ pip install -U -r .\src\requirements.txt
 pip install -r .\src\requirements_auth.txt
 powershell -ExecutionPolicy Bypass -File .\windows\macro_registration.ps1
 ```
-Check in registry and MindManager, if the macros are available (right click on topic).  
-Hint: The macro list is ordered according to the GUID-string, not the macro name.   
+Check in the registry and MindManager if the macros are available (right‑click on a topic).  
+Hint: The macro list is ordered according to the GUID string, not the macro name.   
 
 ![Registry](doc/windows_registry.png)  
 
-Macros can also be executed by the macro editor. The macros are similar but the action parameter.  
+Macros can also be executed from the macro editor. The macros are similar except for the action parameter.  
 
 ![Automator](doc/windows_macroeditor.png)  
 
-You can also check here if the path to the python file is correct.  
+You can also check here if the path to the Python file is correct.  
 
 ### macOS  
 Python has to be installed first. Go to https://www.python.org/downloads/macos/ and download the desired installer.  
-Install required python libraries (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`, requirements_mac_mlx.txt is only needed for local image generation using MLX):
+Install required Python libraries (requirements_auth.txt only if you want to use `Azure Entra ID` or `GCP OAuth2`, requirements_mac_mlx.txt is only needed for local image generation using MLX):
 ```
 pip install -U -r requirements.txt
 pip install -r requirements_mac_mlx.txt
@@ -198,7 +198,7 @@ mkdir mindmanager_ai
 cd mindmanager_ai
 ```
 Copy all repository files to this location as the Automator workflows contain this path.  
-Alternatively you can clone the repository in Terminal:  
+Alternatively, you can clone the repository in Terminal:  
 ```
 cd ~/
 mkdir git
@@ -212,7 +212,7 @@ cd macos/automator
 chmod +x ./copy_to_services.sh
 ./copy_to_services.sh
 ```
-If you need elevated privileges for copying the files use this command:
+If you need elevated privileges for copying the files, use this command:
 ```
 sudo sh ./copy_to_services.sh
 ```
@@ -220,28 +220,28 @@ All **Automator** workflow settings are similar but the action parameter:
 
 <img src="doc/macos_automator.png" width="600" >  
 
-The workflows are then available at the "MindManager" main menu -> Services  
+The workflows are then available in the "MindManager" main menu -> Services  
 
 <img src="doc/macos_services.png" width="400" >  
 
 ### VSCode
 
-I prefer to execute the python script directly from VSCode. Here you can easily adjust the settings, try different LLMs on the fly and even debug, if problems occur (external systems are sometimes not available).  
-There are some actions already predefined for quick execution.  
+I prefer to execute the Python script directly from VSCode. Here you can easily adjust settings, try different LLMs on the fly, and debug if problems occur (external systems are sometimes not available).  
+Some actions are already predefined for quick execution.  
 
 ![VSCode](doc/vscode.png)  
 
 ## How to use  
 ### Configuration  
-There are main configuration files, each for LLM, image generation and translation.
-Open each config file and uncomment the AI model you want to use. In the `config` folder are several environment files for every supported AI model. For example, if you want to use OpenAI models, copy the file `config/openai.env.example` to `config/openai.env` and fill in your api key.  
-Use the apropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
-If you want to run local models with `Ollama`, `GPT4All`, `LMStudio`, `MLX` you have to have either a newer Apple Mac model with M1-M4 processor or a desktop or notebook with NVidia graphic card with at least 8GB graphic ram.  
+There are main configuration files for LLMs, image generation, and translation.
+Open each config file and uncomment the AI model you want to use. The `config` folder contains environment files for every supported AI provider. For example, if you want to use OpenAI models, copy `config/openai.env.example` to `config/openai.env` and fill in your API key.  
+Use the appropriate LLM system for which you have an API key. These keys are available on the developer platforms of the AI vendors.  
+If you want to run local models with `Ollama`, `GPT4All`, `LMStudio`, or `MLX`, you need either a newer Apple Mac model with an M1–M4 processor or a desktop/notebook with an NVIDIA graphics card with at least 8 GB of VRAM.  
 
 ### General
 You can have more than one open document in MindManager. The document which should be processed must be the active document. For every processing a new document with the new topics will be created.  
 
-To process the whole map, select the central topic (for right-clicking) or don't select any topic at all and call a macro manually (Windows), choose Automator Workflow from MindManager Menu -> Services or call the python script from VSCode or commandline `python3 process.py <action> <format>`. If it's not working try either `python3` or `python`.  
+To process the whole map, select the central topic (for right‑clicking) or don't select any topic and call a macro manually (Windows), choose Automator Workflow from MindManager Menu -> Services, or call the Python script from VSCode or the command line: `python3 process.py <action> <format>`. If it doesn't work, try `python3` or `python`.  
 
 ### Map actions
 Select the central topic or deselect all topics and call the automation.  
@@ -249,83 +249,83 @@ You can also select one or more topics and start the automation for just these t
 
 ### Image / Video generation
 Just select the topics for which you want to generate an image and choose the action "Generate Image" (macro on Windows or Automator Workflow on macOS) or call the Python script with parameter `image` or `image_n`.  
-After a while, the image will be opened and also stored in the MindManager-Library `Images`-folder.  
+After a while, the image will open and also be stored in the MindManager library `Images` folder.  
 Unfortunately, on macOS the image cannot automatically be inserted into the map or added to a topic due to insufficient library support.  
 On Windows the image can be automatically set as the background image of the map.  
 
 The results from the generation process are best with `FLUX.1`, good with `DALL-E 3` and `SD 3.5`. Prompt crafting/engineering is still in progress.  
-The filename is enriched with the generation **seed** where this feature is supoported. This seed is useful if you want to generate similar images (e.g. with different prompt). `DALL-E 3` does not support a seed value anymore (by the time of writing).  
-The prompt for image generation can optionally be optimized using a LLM call.
+The filename includes the generation **seed** where this feature is supported. This seed is useful if you want to generate similar images (e.g., with a different prompt). `DALL-E 3` does not support a seed value anymore (at the time of writing).  
+The prompt for image generation can optionally be optimized using an LLM call.
 Images can also be generated locally on macOS with Apple Silicon using the native `Apple MLX` framework.  
 
-Recently there are more image generation plattforms trending. `Black Forrest Labs`, `Ideogram AI` and `Recraft AI` image generation from mindmaps is already implemented and the results are amazing.  
+Recently, more image‑generation platforms have emerged. `Black Forest Labs`, `Ideogram AI`, and `Recraft AI` image generation from mindmaps is already implemented and the results are excellent.  
 
 Video generation works with `Sora` (Azure OpenAI) and `Veo` (Google Vertex AI).  
 
-### Generation using text summarization (eg. PDF to mindmap)
+### Generation using text summarization (e.g., PDF to mindmap)
 Put the files into the `input`-folder and use the action `pdf_mindmap`. The PDF files are first converted to markdown (MD) format. 'Reference' sections are removed as these contain no information but take a lot of tokens (e.g. arXiv papers). No OCR takes place by now. Tables are removed and the content will be highly sanitized by removing irrelevant characters, code blocks, href-links, whitespace etc.  
-There is no local LLM model using Ollama working for me by now.  
+Ollama‑based local LLMs are not working for me yet.  
 
-Some models (i.e. `Sonnet`) support native `PDF` processing, which is also implemented (action `pdfsimple_mindmap`).  
+Some models (e.g., `Sonnet`) support native `PDF` processing, which is also implemented (action `pdfsimple_mindmap`).  
 
 ### Text generation from mindmaps (working paper (argumentation), glossary)
-Generation of larger text outputs needs a model with an higher max-token value like `GPT-4o`, `Gemini Flash`, `Sonnet`. Results are very good, most of the time. 
+Generating larger text outputs requires a model with a higher max‑token limit (e.g., `GPT-4o`, `Gemini Flash`, `Sonnet`). Results are very good most of the time. 
 
 ## LLM systems
 ### Azure OpenAI / OpenAI
 The solution is best tested with `Azure OpenAI`. Results are perfect for most use cases.  
-Azure EntraID authentication can be used in enterprise scenarios.  
+Azure Entra ID authentication can be used in enterprise scenarios.  
 ### Google Gemini / Vertex AI
 `Gemini Pro` results are best. `Gemini Flash` is also very good.  
-Vertex AI needs an security token which you can generate using the cloud console.  
+Vertex AI needs a security token, which you can generate using the Cloud Console.  
 ### Anthropic Claude
-The `Sonnet` model ist very good, `Haiku` is good and also very cheap, `Opus` the most expensive.  
+The `Sonnet` model is very good, `Haiku` is good and also very cheap, `Opus` the most expensive.  
 ### xAI grok
-Grok is very good and is able to refine mindmaps for several levels. The models `grok-3` and `grok-2-vision-1212` are very good. The vision model can be used for pdf ocr. `grok-4` takes some time.  
+Grok is very good and can refine mindmaps across several levels. The models `grok-3` and `grok-2-vision-1212` are very good. The vision model can be used for PDF OCR. `grok-4` takes some time.  
 ### Amazon Bedrock
-Amazon Bedrock has some native models i.e. `Nova` (best), and host also 3rd party models of `Anthropic Claude` and `Mistral`.
+Amazon Bedrock has native models (e.g., `Nova`) and also hosts third‑party models from `Anthropic Claude` and `Mistral`.
 ### DeepSeek
-DeepSeek created an extraordinary open source model DeepSeek V3. The reasoning model `r1` does not work by now.  
+DeepSeek created an extraordinary open‑source model, DeepSeek V3. The reasoning model `r1` does not work yet.  
 ### Alibaba Cloud
 Alibaba Cloud models cannot generate large amounts of tokens (`Qwen-Max`: 2000, `Qwen-Plus` + `Qwen-Turbo`: 1500) but the results are good. `Qwen-Turbo` is very fast.  
 ### Mistral AI
-Mistral AI is hosting their commercial flagship models `Mixtral-Large` and `Pixtral-Large`. `Mixtral-Large` is a 'best in class' model. The maximum numer of possible output tokens is a little bit unclear (max_tokens may meant to be the sum of input and output tokens).  
+Mistral AI hosts their commercial flagship models `Mixtral-Large` and `Pixtral-Large`. `Mixtral-Large` is a 'best in class' model. The maximum number of possible output tokens is a little unclear (max_tokens may be the sum of input and output tokens).  
 ### Groq (platform)
 Groq is one of the fastest LLM hosting platforms. `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `Kimi-K2`, `LLaMA3` and other models are available. From time to time the supported models on the platform are changing.  
 ### Cerebras (platform)
-Cerebras is hosting `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `LLaMA3` and other models at high inteference speeds. From time to time the supported models on the platform are changing.  
+Cerebras hosts `OpenAI GPT-OSS`, `Gwen3`, `DeepSeek-R1`, `LLaMA3` and other models at high inference speeds. From time to time the supported models on the platform change.  
 ### Perplexity (platform)
 Perplexity hosts its own `Sonar` models. From time to time the supported models on the platform are changing.  
 ### Hugging Face (platform)
-To access better models a pro-subscription is needed. `LLaMA-3-8B` still can be used.  
-### Open Router (platform)  
-On the Open Router platform there are a variety of models and systems available. Also fallback scenarios are supported. Furthermore you get access here to the newest OpenAI models like `o1-preview`.  
+To access better models a pro subscription is needed. `LLaMA-3-8B` can still be used.  
+### OpenRouter (platform)  
+On the OpenRouter platform there are a variety of models and systems available. Fallback scenarios are supported. You also get access to the newest OpenAI models like `o1-preview`.  
 ### GPT4ALL, Ollama, LMStudio (hosted locally - no internet access needed)
-Results are dependent on the used model. `LLaMA3`, `Zephyr` and `Mixtral` are working well.  
+Results depend on the model used. `LLaMA3`, `Zephyr`, and `Mixtral` work well.  
 ### MLX (hosted locally on Apple Silicon - no internet access needed)
-MLX results are dependent on the used model. `LLaMA3` works well.
+MLX results depend on the model used. `LLaMA3` works well.
 
 ## Image / Video generation systems  
 ### Azure OpenAI / OpenAI - DALL-E 3, FLUX.1, GPT-image-1, Sora  
-The solution is best tested with `Azure OpenAI`. Results are very good. There is a problem with texts generated within images. Azure EntraID authentication can be used in enterprise scenarios.  
+The solution is best tested with `Azure OpenAI`. Results are very good. There are issues with text generated in images. Azure Entra ID authentication can be used in enterprise scenarios.  
 ### Stability AI - Stable Diffusion 3 + 3.5  
 Image generation with `SD3.5` and `SD3` is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
 ### Google Vertex AI - Imagen3, Veo 3  
 Image generation results are too simple by now as prompt engineering is also most important here. `Imagen3` has the highest image resolution (1:1 with 1536x1536). `Imagen3` is GA (globally available) but there is an approval process to get access to the API.  
 ### Ideogram AI  
-Image generation is quite good using the `V_2` model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
-### Black Forrest Labs  
-Image generation is extraordinary. Flagship model is `Flux Pro 1.1 / Ultra`. As usual token have to be prepaid and you need accepted for accessing the platform.  
+Image generation is quite good using the `V2` model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
+### Black Forest Labs  
+Image generation is extraordinary. The flagship model is `Flux Pro 1.1 / Ultra`. As usual, tokens must be prepaid and you need to be accepted to access the platform.  
 ### Recraft.AI
-Image genration is very good. There are many pre-defined styles which can be activated as needed. Available Models are `RecraftV3` and `Recraft20B`.  
+Image generation is very good. There are many pre‑defined styles which can be activated as needed. Available models are `RecraftV3` and `Recraft20B`.  
 
 ### MLX w/ Flux models
 This local image generation alternative is only available on macOS with Apple Silicon processors like M1 and higher. The results are above average using the `Flux` models.  
 
-Using the `image_n` action (eg. `image=10`) generates a bunch of images in a row. A pre-executing step can be added to optimize the prompt using a LLM call. If there is only one topic selected there is a different prompt used as when more topics are selected. Only the first level of topics together with the central topic should be selected for better results.  
+Using the `image_n` action (e.g., `image_10`) generates a batch of images in a row. A pre‑execution step can optimize the prompt using an LLM call. If only one topic is selected a different prompt is used than when multiple topics are selected. Only the first‑level topics together with the central topic should be selected for better results.  
 
-When using this image generation way, the desired model and embeddings tokenizer will be downloaded automatically. The expected data amount downloaded is up to 70GB.  
-If you are downloading for the first time you eventually have to login at **huggingface** with your token first as you have to agree to their terms of (model-) usage: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
+When using this image‑generation approach, the desired model and embeddings tokenizer are downloaded automatically. The expected download size is up to 70 GB.  
+If you are downloading for the first time, you may have to log in at **Hugging Face** with your token first to agree to their terms of model usage: `huggingface-cli login --token <xyz>`. Downloaded models are cached at `~/.cache/huggingface`.
 
 ## Translation systems
 ### DeepL
@@ -353,7 +353,7 @@ Framework is complex and not so easy to use. There is also a fork with a similar
 
 ### CrewAI  
 https://github.com/crewAIInc/crewAI  
-Mighty and complex framework. Installation on Windows 11 on ARM requires VS2022 build tools. Installation on MacOS seems to be more easy but still has a lot of dependencies.  
+Mighty and complex framework. Installation on Windows 11 on ARM requires VS2022 build tools. Installation on macOS seems to be easier but still has many dependencies.  
 
 ## Context engineering / Prompt crafting  
 Strategy:  
@@ -380,7 +380,7 @@ The Mermaid mindmap syntax is used when talking to the OpenAI LLM as an intermed
 
 ![Log](doc/log.png)  
 
-Log files content:  
+Log file contents:  
 
 <img src="doc/log_files.png" width="500" >
 
@@ -404,7 +404,7 @@ mindmap
       Determine Key Partnerships```  
 ```
 
-Github rendering of the map:
+GitHub rendering of the map:
 
 ```mermaid
 mindmap
@@ -428,8 +428,7 @@ You can also use the content inside the Mermaid online editor (https://mermaid.l
 ![Mermaid](doc/mermaid.png)  
 
 Remarks:  
-The mermaid layer will be replaced by structured output either using extended mermaid syntax or json in the future.  
+The Mermaid layer will be replaced by structured output using extended Mermaid syntax or JSON in the future.  
 
 ## Disclaimer
 Currently, this project is in the early development phase, and generated outputs may include errors. Automated testing has not yet been implemented.  
-
