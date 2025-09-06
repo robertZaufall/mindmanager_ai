@@ -148,8 +148,11 @@ from file_helper import load_env
 # CLOUD_TYPE = 'FIREWORKS+llama4-scout-instruct-basic'                  # good
 
 # Openrouter.ai
-CLOUD_TYPE = 'OPENROUTER+openrouter/auto'                             #
-# CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-0905'                     #
+CLOUD_TYPE = 'OPENROUTER+openrouter/auto'                             # best
+# CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-0905'                     # best
+# CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.5v'                               # best
+# CLOUD_TYPE = 'OPENROUTER+openai/gpt-5-mini'                           # good
+# CLOUD_TYPE = 'OPENROUTER+openai/gpt-oss-120b'                         # best
 
 # Hugging Face
 # CLOUD_TYPE = 'HF+meta-llama/Meta-Llama-3-8B-Instruct'                 # good
@@ -295,6 +298,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "OPENROUTER+" in CLOUD_TYPE:
         config.REASONING_EFFORT = ""
+        config.MAX_TOKENS = 16384
         config.API_URL = os.getenv('OPENROUTER_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENROUTER_API_KEY') or "")}
         config.PROVIDER_ORDER = None
