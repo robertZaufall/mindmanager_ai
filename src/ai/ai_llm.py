@@ -112,7 +112,6 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     if ("AZURE+" in config.CLOUD_TYPE or \
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_FOUNDRY+" in config.CLOUD_TYPE or \
-       "OPENROUTER+" in config.CLOUD_TYPE or \
        "GITHUB+" in config.CLOUD_TYPE) and \
        not "+o3-pro" in config.CLOUD_TYPE:
 
@@ -154,7 +153,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
             payload["max_tokens"] = config.MAX_TOKENS
             payload["temperature"] = config.LLM_TEMPERATURE
 
-        if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE or "OPENROUTER+" in config.CLOUD_TYPE:
+        if "OPENAI+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE:
             payload["model"] = config.MODEL_ID
 
         if "-search-" in config.MODEL_ID:
@@ -358,6 +357,23 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         else:
             raise Exception(f"Error: {mimeType} not supported by {config.CLOUD_TYPE}")
             
+        result = get_response(payload)
+
+    # OpenRouter
+    elif "OPENROUTER+" in config.CLOUD_TYPE:
+        payload = get_payload()
+        payload["max_tokens"] = config.MAX_TOKENS
+        payload["temperature"] = config.LLM_TEMPERATURE
+        payload["model"] = config.MODEL_ID
+        payload["provider"] = {}
+        payload["provider"]["data_collection"] = config.PROVIDER_DATA_COLLECTION
+        if config.PROVIDER_ORDER:
+            payload["provider"]["order"] = config.PROVIDER_ORDER
+            payload["provider"]["allow_fallbacks"] = config.PROVIDER_ALLOW_FALLBACKS
+        if config.PROVIDER_SORT:
+            payload["provider"]["sort"] = config.PROVIDER_SORT
+        if "/gpt-" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
+            payload["reasoning_effort"] = config.REASONING_EFFORT
         result = get_response(payload)
 
     # GROQ

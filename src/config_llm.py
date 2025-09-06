@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+model-router'                                       #
+# CLOUD_TYPE = 'AZURE+model-router'                                       #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
@@ -148,10 +148,8 @@ CLOUD_TYPE = 'AZURE+model-router'                                       #
 # CLOUD_TYPE = 'FIREWORKS+llama4-scout-instruct-basic'                  # good
 
 # Openrouter.ai
-# CLOUD_TYPE = 'OPENROUTER+openai/o1'                                   # best
-# CLOUD_TYPE = 'OPENROUTER+openai/o1-mini'                              # best
-# CLOUD_TYPE = 'OPENROUTER+google/gemini-flash-1.5'                     # best
-# CLOUD_TYPE = 'OPENROUTER+perplexity/llama-3.1-sonar-huge-128k-online' # good
+CLOUD_TYPE = 'OPENROUTER+openrouter/auto'                             #
+# CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-0905'                     #
 
 # Hugging Face
 # CLOUD_TYPE = 'HF+meta-llama/Meta-Llama-3-8B-Instruct'                 # good
@@ -242,7 +240,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     if "OPENAI+" in CLOUD_TYPE or "AZURE+" in CLOUD_TYPE or "OPENROUTER+" in CLOUD_TYPE or "GITHUB+" in CLOUD_TYPE:
         config.REASONING_EFFORT = ""
-
         reasoning_effort_value = ""
         reasoning_effort = model.split("-")[-1]
         if reasoning_effort in ["low", "medium", "high"]:
@@ -297,8 +294,19 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.HEADERS = {**config.HEADERS, "api-key": os.getenv('AZURE_API_KEY') or ""}
 
     elif "OPENROUTER+" in CLOUD_TYPE:
+        config.REASONING_EFFORT = ""
         config.API_URL = os.getenv('OPENROUTER_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENROUTER_API_KEY') or "")}
+        config.PROVIDER_ORDER = None
+        config.PROVIDER_ALLOW_FALLBACKS = False
+        config.PROVIDER_DATA_COLLECTION = "deny"
+        config.PROVIDER_SORT = "price"
+        model_provider = model.split("/")[0]
+        if model.lower() == "openrouter/auto":
+            config.MAX_TOKENS = 16384
+            # config.PROVIDER_ORDER = ["anthropic", "openai"]
+        if model_provider.lower() == "moonshotai":
+            config.MAX_TOKENS = 130000
 
     elif "GITHUB+" in CLOUD_TYPE:
         config.API_URL = os.getenv('GITHUB_MODELS_API_URL')
