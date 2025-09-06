@@ -116,10 +116,9 @@ CLOUD_TYPE = 'AZURE+model-router'                                       #
 
 # Alibaba Cloud
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-plus-2025-07-28'                      # best (Qwen3)
+# CLOUD_TYPE = 'ALIBABACLOUD+qwen3-max-preview'                         # best (Qwen3)
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen-max-2025-01-25'                       # best (Qwen2.5)
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen-turbo-2025-04-28'                     # good (Qwen3)
 # CLOUD_TYPE = 'ALIBABACLOUD+qwen3-235b-a22b-instruct-2507'             # good
-# CLOUD_TYPE = 'ALIBABACLOUD+qwen3-30b-a3b-instruct-2507'               # good
 
 # Mistral AI
 # CLOUD_TYPE = 'MISTRAL+mistral-large-latest'                           # best in class
