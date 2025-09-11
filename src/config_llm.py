@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+model-router'                                       #
+CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
@@ -59,18 +59,19 @@ from file_helper import load_env
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini-search-preview-2025-03-11'           # best ($ 0.15, $  0.60)
 
 # Github Models
-# CLOUD_TYPE = 'GITHUB+gpt-4o'                                          # best
-# CLOUD_TYPE = 'GITHUB+gpt-4o-mini'                                     # best
-# CLOUD_TYPE = 'GITHUB+o1'                                              # best, slow
-# CLOUD_TYPE = 'GITHUB+o1-mini'                                         # best
-# CLOUD_TYPE = 'GITHUB+o3-mini'                                         # best
-# CLOUD_TYPE = 'GITHUB+Phi-4'                                           # best
-# CLOUD_TYPE = 'GITHUB+Phi-4-mini-instruct'                             # best
-# CLOUD_TYPE = 'GITHUB+Phi-3-medium-128k-instruct'                      # not so good
-# CLOUD_TYPE = 'GITHUB+Phi-3.5-mini-instruct'                           # ok
-# CLOUD_TYPE = 'GITHUB+meta-llama-3.1-70b-instruct'                     # best
-# CLOUD_TYPE = 'GITHUB+Mistral-large-2407'                              # good
-# CLOUD_TYPE = 'GITHUB+AI21-Jamba-Instruct'                             # best
+# CLOUD_TYPE = 'GITHUB+openai/gpt-4.1-nano'                             # 33k
+# CLOUD_TYPE = 'GITHUB+openai/gpt-4.1-mini'                             # 33k
+# CLOUD_TYPE = 'GITHUB+openai/gpt-4.1'                                  # 33k
+# CLOUD_TYPE = 'GITHUB+openai/gpt-4o'                                   # 16k
+# CLOUD_TYPE = 'GITHUB+openai/gpt-4o-mini'                              # 4k
+# CLOUD_TYPE = 'GITHUB+microsoft/Phi-4'                                 # 16k
+# CLOUD_TYPE = 'GITHUB+microsoft/Phi-4-mini-instruct'                   # 4k
+# CLOUD_TYPE = 'GITHUB+meta/Llama-3.3-70B-Instruct'                     # 4k
+# CLOUD_TYPE = 'GITHUB+deepseek/DeepSeek-R1'                            # 4k / slow
+# CLOUD_TYPE = 'GITHUB+deepseek/DeepSeek-R1-0528'                       # 4k / slow
+# CLOUD_TYPE = 'GITHUB+xai/grok-3-mini'                                 # 4k
+# CLOUD_TYPE = 'GITHUB+xai/grok-3'                                      # 4k
+# CLOUD_TYPE = 'GITHUB+mistral-ai/mistral-medium-2505'                  # 4k
 
 # Anthropic     
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # best ($  3.00, $ 15.00)
@@ -148,7 +149,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'FIREWORKS+llama4-scout-instruct-basic'                  # good
 
 # Openrouter.ai
-CLOUD_TYPE = 'OPENROUTER+openrouter/auto'                             # best
+# CLOUD_TYPE = 'OPENROUTER+openrouter/auto'                             # best
 # CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-0905'                     # best
 # CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.5v'                               # best
 # CLOUD_TYPE = 'OPENROUTER+openai/gpt-5-mini'                           # good
