@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+model-router'                                     #
+# CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
@@ -23,7 +23,6 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+o3-mini-low'                                      # good
 # CLOUD_TYPE = 'AZURE+o3-mini'                                          # good
 # CLOUD_TYPE = 'AZURE+o1'                                               # best
-# CLOUD_TYPE = 'AZURE+o1-mini'                                          # best
 
 # OpenAI     
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07'                                # best ($  1.25, $ 10.00 + reasoning tokens)
@@ -104,6 +103,8 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
+CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20, $  0.50), best in class
+# CLOUD_TYPE = 'XAI+grok-4-fast-non-reasoning'                          # ($ 0.20, $  0.50), best
 # CLOUD_TYPE = 'XAI+grok-4-0709'                                        # ($ 3.00, $ 15.00), best
 # CLOUD_TYPE = 'XAI+grok-3'                                             # ($ 3.00, $ 15.00), best
 # CLOUD_TYPE = 'XAI+grok-3-mini'                                        # ($ 0.30, $  0.50), best
@@ -399,6 +400,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         if "-vision-" in model:
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
+        if "grok-4-fast-" in model:
+            config.MAX_TOKENS = 128000
         config.API_URL = os.getenv('XAI_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('XAI_API_KEY') or "")}
 
