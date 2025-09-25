@@ -80,6 +80,8 @@ from file_helper import load_env
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best ($  0.80, $  4.00)
 
 # Google Gemini
+CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-09-2025'                # best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-09-2025'           # ok
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash'                                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro'                                  # ($ 1.25, $ 10.00) best
@@ -90,6 +92,8 @@ from file_helper import load_env
 # CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
 # Google Gemini Vertex AI (OAuth2)     
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-09-2025'              # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-09-2025'         # ok
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash'                              # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite'                         # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro'                                # best
@@ -103,7 +107,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
-CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20, $  0.50), best in class
+# CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20, $  0.50), best in class
 # CLOUD_TYPE = 'XAI+grok-4-fast-non-reasoning'                          # ($ 0.20, $  0.50), best
 # CLOUD_TYPE = 'XAI+grok-4-0709'                                        # ($ 3.00, $ 15.00), best
 # CLOUD_TYPE = 'XAI+grok-3'                                             # ($ 3.00, $ 15.00), best
