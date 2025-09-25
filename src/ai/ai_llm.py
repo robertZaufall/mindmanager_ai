@@ -393,6 +393,14 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
         payload = get_payload()
+        if ("-reasoning-" in config.CLOUD_TYPE or "-research-" in config.CLOUD_TYPE) and config.REASONING_EFFORT != "":
+            payload["reasoning_effort"] = config.REASONING_EFFORT
+        if "-search" in config.CLOUD_TYPE:
+            if config.SEARCH_MODE == "web":
+                payload["web_search_options"] = {
+                    "search_recency_filer": config.SEARCH_RECENCY_FILTER,
+                    "max_search_results": config.SEARCH_MAX_RESULTS
+                }
         result = get_response(payload)
 
     # STACKIT

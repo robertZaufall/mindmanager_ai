@@ -139,8 +139,16 @@ CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20,
 # CLOUD_TYPE = 'GROQ+openai/gpt-oss-120b-medium'                        # best
 
 # Perplexity     
-# CLOUD_TYPE = 'PERPLEXITY+sonar'                                       # best
-# CLOUD_TYPE = 'PERPLEXITY+sonar-pro'                                   # best
+# CLOUD_TYPE = 'PERPLEXITY+sonar'                                       # best ($ 1.00, $  1.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-search'                                # best ($ 1.00, $  1.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-pro'                                   # best ($ 3.00, $ 15.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-low'                         # best ($ 1.00, $  5.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-medium'                      # best ($ 1.00, $  5.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-high'                        # best ($ 1.00, $  5.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-pro-low'                     # best ($ 2.00, $  8.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-pro-medium'                  # best ($ 2.00, $  8.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-pro-high'                    # best ($ 2.00, $  8.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-deep-research-low'                     # best ($ 2.00, $  8.00) (+++ $2, $5, $3)
 
 # Firekworks.ai
 # CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
@@ -242,6 +250,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.MAX_TOKENS = 4000
     config.HEADERS = {"Content-Type": "application/json"}
     config.REASONING_EFFORT = ""
+    config.SEARCH_MODE = ""
 
     if "OPENAI+" in CLOUD_TYPE or "AZURE+" in CLOUD_TYPE or "OPENROUTER+" in CLOUD_TYPE or "GITHUB+" in CLOUD_TYPE:
         config.REASONING_EFFORT = ""
@@ -418,8 +427,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         elif "openai/gpt-oss-" in model:
             config.MAX_TOKENS = 32766
             reasoning_effort = model.split("-")[-1]
-            if reasoning_effort == "pro":
-                reasoning_effort = ""
             if reasoning_effort in ["low", "medium", "high"]:
                 config.REASONING_EFFORT = reasoning_effort
                 config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
@@ -439,8 +446,21 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
 
     elif "PERPLEXITY+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 8000
         config.API_URL = os.getenv('PERPLEXITY_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('PERPLEXITY_API_KEY') or "")}
+        if "-reasoning-" in model or "-research-" in model:
+            reasoning_effort = model.split("-")[-1]
+            if reasoning_effort in ["low", "medium", "high"]:
+                config.REASONING_EFFORT = reasoning_effort
+                config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
+            else:
+                config.REASONING_EFFORT = "low"
+        if "-search" in model:
+            config.SEARCH_MODE = "web"
+            config.SEARCH_MAX_RESULTS = 5
+            config.SEARCH_RECENCY_FILTER = "week"
+            config.MODEL_ID = model.replace(f"-search", "")
 
     elif "STACKIT+" in CLOUD_TYPE:
         config.MAX_TOKENS = 4096
