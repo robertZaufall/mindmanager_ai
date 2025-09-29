@@ -102,7 +102,7 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash'                              # best
 
 # AWS Bedrock
-# CLOUD_TYPE = 'BEDROCK+amazon.nova-premier-v1:0'                       # best
+# CLOUD_TYPE = 'BEDROCK+amazon.nova-premier-v1:0'                       # ok
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-lite-v1:0'                          # best, max token output only 5120
 # CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-5-20250929-v1:0'   # best
