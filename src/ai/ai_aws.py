@@ -13,6 +13,8 @@ def call_llm(model, str_user, data, mimeType):
 
     result = ""
     model_id = config.MODEL_ID
+    if config.AWS_ACCOUNT_ID != "":
+        model_id = f"arn:aws:bedrock:{config.AWS_REGION}:{config.AWS_ACCOUNT_ID}:inference-profile/{config.AWS_REGION[0:2]}.{config.MODEL_ID}"
     str_system = config.SYSTEM_PROMPT
 
     bedrock_client = boto3.client(
@@ -22,7 +24,7 @@ def call_llm(model, str_user, data, mimeType):
         aws_secret_access_key=config.AWS_SECRET_KEY
     )
     
-    if model_id.startswith("amazon."):
+    if model_id.startswith("amazon.") or ".amazon." in model_id:
         payload = [{"role": "user", "content": [{"text": str_user}]}]
 
         response = bedrock_client.converse(

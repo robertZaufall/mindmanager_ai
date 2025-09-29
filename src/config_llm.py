@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+model-router'                                     #
+CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
@@ -73,6 +73,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'GITHUB+mistral-ai/mistral-medium-2505'                  # 4k
 
 # Anthropic     
+# CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-5-20250929'                   # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-1-20250805'                     # best ($ 15.00, $ 75.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best ($  3.00, $ 15.00)
@@ -80,10 +81,10 @@ from file_helper import load_env
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best ($  0.80, $  4.00)
 
 # Google Gemini
-CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-09-2025'                # best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-09-2025'           # ok
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-09-2025'                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-09-2025'           # ($ 0.10, $  0.40) ok
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash'                                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) best
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) ok
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro'                                  # ($ 1.25, $ 10.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite'                           # ($ 0.08, $  0.30) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash'                                # ($ 0.10, $  0.40) best
@@ -101,10 +102,13 @@ CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-09-2025'                # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash'                              # best
 
 # AWS Bedrock
+# CLOUD_TYPE = 'BEDROCK+amazon.nova-premier-v1:0'                       # best
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-lite-v1:0'                          # best, max token output only 5120
+# CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-5-20250929-v1:0'   # best
 # CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-20250514-v1:0'     # best
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
+
 
 # xAI     
 # CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20, $  0.50), best in class
@@ -363,9 +367,15 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "BEDROCK" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
+        config.AWS_ACCOUNT_ID = ""
         if model.startswith("amazon.titan-"):
             config.MAX_TOKENS = 3000
-        elif model.startswith("amazon.nova-"):
+        elif model.startswith("amazon.nova-premier-"):
+            config.MAX_TOKENS = 32000
+            config.AWS_ACCOUNT_ID = os.getenv("BEDROCK_ACCOUNT_ID")
+        elif model.startswith("amazon.nova-pro-"):
+            config.MAX_TOKENS = 5120
+        elif model.startswith("amazon.nova-lite-"):
             config.MAX_TOKENS = 5120
         elif "-sonnet-4-" in model:
             config.MAX_TOKENS = 64000
@@ -375,13 +385,9 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.AWS_MODEL_VERSION_KEY = ""
         config.AWS_MODEL_VERSION_TEXT = ""
         config.AWS_REGION = "us-east-1"
-        if model.startswith("mistral.") or model.startswith("amazon.nova-"):
-            pass
-        elif model.startswith("anthropic.") or ".anthropic." in model:
+        if model.startswith("anthropic.") or ".anthropic." in model:
             config.AWS_MODEL_VERSION_KEY = "anthropic_version"
             config.AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
-        else:
-            raise Exception("Error: Unsupported AWS Bedrock model.")
 
     elif "ANTHROPIC" in CLOUD_TYPE:
         if "claude-opus-4" in model:
