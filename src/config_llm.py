@@ -119,7 +119,8 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'XAI+grok-2-vision-1212'                                 # ($ 2.00, $ 10.00), best
 
 # DeepSeek
-# CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best (V3!)
+# CLOUD_TYPE = 'DEEPSEEK+deepseek-chat'                                 # best
+# CLOUD_TYPE = 'DEEPSEEK+deepseek-reasoner'                             # best (slow)
 
 # STACKIT
 # CLOUD_TYPE = 'STACKIT+cortecs/Llama-3.3-70B-Instruct-FP8-Dynamic'     # good
@@ -475,6 +476,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "DEEPSEEK+" in CLOUD_TYPE:
         config.MAX_TOKENS = 8000
+        if "deepseek-reasoner" in model:
+            config.MAX_TOKENS = 64000
         config.API_URL = os.getenv('DEEPSEEK_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('DEEPSEEK_API_KEY') or "")}
 
