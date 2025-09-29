@@ -439,11 +439,6 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         payload = get_payload()
         result = get_response(payload)
 
-    # MLX
-    elif "MLX+" in config.CLOUD_TYPE:
-        payload = get_payload()
-        del payload["model"]
-        result = get_response(payload)
     else:
         raise Exception("Error: Unknown CLOUD_TYPE")
 

@@ -181,12 +181,12 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b-medium'                           # best
 # CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                # best
 
-# Ollama (local models), best results
+# Ollama (local models), best results *** not up-to-date ***
 # CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
 # CLOUD_TYPE = 'OLLAMA+qwen3:4b'                                        # good
 # CLOUD_TYPE = 'OLLAMA+qwen3:7b'                                        # good
 # CLOUD_TYPE = 'OLLAMA+qwen3:14b'                                       # good
-# CLOUD_TYPE = 'OLLAMA+qwen3:32b'                                       # ggod
+# CLOUD_TYPE = 'OLLAMA+qwen3:32b'                                       # good
 # CLOUD_TYPE = 'OLLAMA+qwen3:30b-a3b'                                   # good
 # CLOUD_TYPE = 'OLLAMA+phi4:14b'                                        # best
 # CLOUD_TYPE = 'OLLAMA+nemotron'                                        # best, slow
@@ -216,10 +216,6 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.2-1B-Instruct-Q4_0.gguf'                #
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.2-3B-Instruct-Q4_0.gguf'                # ok
 # CLOUD_TYPE = 'GPT4ALL+Llama-3.3-70B-Instruct-Q4_K_M.gguf'             # best, slow
-
-# MLX server, macOS only (pip install -r requirements_mac_mlx.txt --upgrade)
-# python -m mlx_lm.server --model mlx-community/Meta-Llama-3.1-8B-Instruct-4bit --port 8080 --log-level DEBUG
-# CLOUD_TYPE = 'MLX+mlx-community/Meta-Llama-3.1-8B-Instruct-4bit'      # good
 
 if sys.platform.startswith('win'):
     platform = "win"
@@ -527,9 +523,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             if model_path != "":
                 config.MODEL_PATH = model_path.upper().replace("%LOCALAPPDATA%", os.getenv('LOCALAPPDATA'))
         config.API_URL = ""
-
-    elif "MLX+" in CLOUD_TYPE:
-        config.API_URL = os.getenv('MLX_API_URL')
 
     else:
         raise Exception("Error: Unknown CLOUD_TYPE")
