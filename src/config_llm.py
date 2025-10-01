@@ -82,9 +82,9 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 
 # Google Gemini
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-09-2025'                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-09-2025'           # ($ 0.10, $  0.40) ok
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-09-2025'           # ($ 0.10, $  0.40) bad
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash'                                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) ok
+# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) good
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro'                                  # ($ 1.25, $ 10.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash-lite'                           # ($ 0.08, $  0.30) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.0-flash'                                # ($ 0.10, $  0.40) best
@@ -94,12 +94,12 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 
 # Google Gemini Vertex AI (OAuth2)     
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-09-2025'              # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-09-2025'         # ok
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-09-2025'         # bad
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash'                              # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite'                         # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite'                         # good
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro'                                # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash-lite'                         # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash'                              # best
+# CLOUD_TYPE = 'VERTEXAI+anthropic/claude-sonnet-4'                     # *** implementation does not work ***
 
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-premier-v1:0'                       # ok
@@ -169,6 +169,7 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # Openrouter.ai
 # CLOUD_TYPE = 'OPENROUTER+openrouter/auto'                             # best
 # CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-0905'                     # best
+# CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.6'                                # best (slow)
 # CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.5v'                               # best
 # CLOUD_TYPE = 'OPENROUTER+openai/gpt-5-mini'                           # good
 # CLOUD_TYPE = 'OPENROUTER+openai/gpt-oss-120b'                         # best
@@ -327,6 +328,13 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             # config.PROVIDER_ORDER = ["anthropic", "openai"]
         if model_provider.lower() == "moonshotai":
             config.MAX_TOKENS = 130000
+        elif model_provider.lower() == "x-ai":
+            if "4.6" in model:
+                config.MAX_TOKENS = 128000
+            elif "4.5v" in model:
+                config.MAX_TOKENS = 16000
+            elif "4.5" in model:
+                config.MAX_TOKENS = 96000
 
     elif "GITHUB+" in CLOUD_TYPE:
         config.API_URL = os.getenv('GITHUB_MODELS_API_URL')
@@ -349,10 +357,23 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.PROJECT_ID = os.getenv('VERTEXAI_PROJECT_ID')
             config.API_ENDPOINT = os.getenv('VERTEXAI_API_ENDPOINT')
             config.LOCATION_ID = os.getenv('VERTEXAI_LOCATION_ID')
-            config.API_URL = (
-                f"https://{config.API_ENDPOINT}/v1beta1/projects/{config.PROJECT_ID}/"
-                f"locations/{config.LOCATION_ID}/publishers/google/models/{model}:generateContent"
-            )
+            config.GCP_MODEL_VERSION_KEY = ""
+            config.GCP_MODEL_VERSION_TEXT = ""
+            if "anthropic/" in model:
+                config.LOCATION_ID = "europe-west1"
+                config.MAX_TOKENS = 64000
+                model = model.replace("anthropic/", "")
+                config.API_URL = (
+                    f"https://{config.API_ENDPOINT}/v1/projects/{config.PROJECT_ID}/"
+                    f"locations/{config.LOCATION_ID}/publishers/anthropic/models/{model}:rawPredict"
+                )
+                config.GCP_MODEL_VERSION_KEY = "anthropic_version"
+                config.GCP_MODEL_VERSION_TEXT = "vertex-2023-10-16"
+            else:
+                config.API_URL = (
+                    f"https://{config.API_ENDPOINT}/v1/projects/{config.PROJECT_ID}/"
+                    f"locations/{config.LOCATION_ID}/publishers/google/models/{model}:generateContent"
+                )
             config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('VERTEXAI_ACCESS_TOKEN') or "")}
             
             # Example GCP environment fields

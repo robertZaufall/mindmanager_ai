@@ -57,30 +57,43 @@ def call_llm_gcp(model, str_user, param, data, mimeType):
     credentials = get_credentials()  
     access_token = credentials.token   
     
-    payload = {
-        "contents": {
-            "role": "user",
-            "parts": [
-                { "text": config.SYSTEM_PROMPT },
-                { "text": str_user }
+    if config.GCP_MODEL_VERSION_KEY == "anthropic_version":
+        payload = {
+            "max_tokens": config.MAX_TOKENS,
+            "temperature": config.LLM_TEMPERATURE,
+            "stream": False,
+            config.GCP_MODEL_VERSION_KEY: config.GCP_MODEL_VERSION_TEXT,
+            "messages": [
+                { "role": "user", "content": [ { "type": "text", "text": "Hello, Claude." } ] },
+                { "role": "assistant", "content": [ { "type": "text", "text": config.SYSTEM_PROMPT.replace("You are ", "Hi, I'm Claude, ") } ] },
+                { "role": "user", "content": [ { "type": "text", "text": str_user } ] }
             ]
-        },
-        "generation_config": {
-            "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
-            "topP": config.TOP_P, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
-            "maxOutputTokens": config.MAX_TOKENS, # 2k / 4k
-            "candidateCount": 1,
         }
-    }
+    else:
+        payload = {
+            "contents": {
+                "role": "user",
+                "parts": [
+                    { "text": config.SYSTEM_PROMPT },
+                    { "text": str_user }
+                ]
+            },
+            "generation_config": {
+                "temperature": config.LLM_TEMPERATURE, # Controls the randomness of the output. 
+                "topP": config.TOP_P, # The maximum cumulative probability of tokens to consider when sampling (default: 0.95)
+                "maxOutputTokens": config.MAX_TOKENS, # 2k / 4k
+                "candidateCount": 1,
+            }
+        }
 
-    if "gemini-2.5-flash-preview" in config.MODEL_ID:
-        payload["generation_config"]["thinkingConfig"] = {"thinkingBudget": config.THINKING_BUDGET}
+        if "gemini-2.5-flash-preview" in config.MODEL_ID:
+            payload["generation_config"]["thinkingConfig"] = {"thinkingBudget": config.THINKING_BUDGET}
 
-    if param.endswith("_grounding") and "-lite" not in config.MODEL_ID:
-        payload["tools"] = {"google_search": {}}
-            
-    if data != "":
-            payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
+        if param.endswith("_grounding") and "-lite" not in config.MODEL_ID:
+            payload["tools"] = {"google_search": {}}
+
+        if data != "":
+                payload["contents"]["parts"].append({ "inlineData": {"data": data, "mimeType": mimeType } })
 
     headers = {
         "Content-Type": "application/json",
