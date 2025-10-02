@@ -27,9 +27,12 @@ CLOUD_TYPE_IMAGE = ''
 
 # VertexAI
 CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                       # best in class
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-06-06'          # best
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-preview-06-06'    # best
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                    # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-001'                    # best in class
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-001'              # best in class
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-fast-generate-001'               # good
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                    # good
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001'               # good
+
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-fast-generate-001'                  # good
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-generate-001'                       # good
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-fast-generate-preview'              # good
