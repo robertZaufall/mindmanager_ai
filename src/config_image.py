@@ -26,7 +26,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image-preview'             # best in class
+CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                       # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-preview-06-06'          # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-preview-06-06'    # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                    # best
