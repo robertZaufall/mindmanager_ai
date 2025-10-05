@@ -445,6 +445,98 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
             else:
                 raise Exception(f"Error generating image.")
 
+        # FAL
+        elif "FAL" in config.CLOUD_TYPE_IMAGE:
+            n_count = 1 # override n_count to 1
+            format = config.IMAGE_OUTPUT_FORMAT
+
+            if "hunyuan-image" in model:
+                payload = {
+                    "prompt": str_user,
+                    "negative_prompt": config.IMAGE_NEGATIV_PROMPT,
+                    "image_size": config.IMAGE_SIZE,
+                    "num_images": n_count,
+                    "num_inference_steps": config.IMAGE_NUM_INFERENCE_STEPS,
+                    "guidance_scale": config.IMAGE_GUIDANCE_SCALE,
+                    "seed": config.IMAGE_SEED,
+                    "enable_safety_checker": config.IMAGE_ENABLE_SAFETY_CHECKER,
+                    "sync_mode": config.IMAGE_SYNC_MODE,
+                    "output_format": format,
+                    "enable_prompt_expansion": config.IMAGE_ENABLE_PROMPT_EXPANSION,
+                }
+            elif "bytedance/seedream" in model:
+                payload = {
+                    "prompt": str_user,
+                    "image_size": config.IMAGE_SIZE,
+                    "num_images": n_count,
+                    "seed": config.IMAGE_SEED,
+                    "sync_mode": config.IMAGE_SYNC_MODE,
+                    "enable_safety_checker": config.IMAGE_ENABLE_SAFETY_CHECKER,
+                }
+            else:
+                raise Exception("Error: Unknown FAL image model")
+            
+            response = requests.post(
+                url=config.IMAGE_API_URL,
+                headers=config.IMAGE_HEADERS,
+                data=json.dumps(payload)
+            )
+            response_text = response.text
+            response_status = response.status_code
+            if response_status != 200:
+                raise Exception(f"Error: {response_status} - {response_text}")
+            parsed_json = json.loads(response_text)
+
+            id = parsed_json.get('request_id', '')
+            if id == '':
+                raise Exception("Error: Missing request_id in API response")
+            status_url = parsed_json.get('status_url', '')
+            if status_url == '':
+                raise Exception("Error: Missing status_url in API response")
+
+            result = None
+            for _ in range(60):  # Maximum 60 retries
+                status = requests.get(
+                    url=status_url,
+                    headers=config.IMAGE_HEADERS
+                )
+
+                if status.status_code not in [200, 202]:
+                    raise Exception(f"Error: {status.status_code} - {status.text}")
+
+                status_json = status.json()
+                if status_json.get("status") == "COMPLETED":
+                    response_url = status_json.get("response_url", '')
+                    if response_url == '':
+                        raise Exception("Error: Missing response_url in API response")
+                    result = requests.get(
+                        url=response_url,
+                        headers=config.IMAGE_HEADERS
+                    )
+                    if result is None:
+                        raise Exception("Error: No result from image generation.")
+                    result_text = result.text
+                    result_status = result.status_code
+                    if result_status != 200:
+                        raise Exception(f"Error: {result_status} - {result_text}")
+                    break
+                time.sleep(1)
+            else:
+                raise Exception("Error: Image generation timed out or failed to complete.")
+
+            result_json = json.loads(result_text)
+            images = result_json.get('images', [])
+            for image in images:
+                url = image['url']
+                if url.startswith('data:image'):
+                    header, encoded = url.split(',', 1)
+                    generated_image = base64.b64decode(encoded)
+                else:
+                    generated_image = httpx.get(url).content                
+                for image_path in image_paths:
+                    with open(image_path, "wb") as file:
+                        file.write(generated_image)
+
         else:
             raise Exception(f"Error: CLOUD_TYPE_IMAGE not supported: {config.CLOUD_TYPE_IMAGE}")
 

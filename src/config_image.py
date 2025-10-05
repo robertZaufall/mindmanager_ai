@@ -26,7 +26,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                       # best in class
+CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                       # best in class (nano banana)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-001'                    # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-001'              # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-fast-generate-001'               # good
@@ -70,6 +70,12 @@ CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                       # bes
 # Alibaba Cloud
 # CLOUD_TYPE_IMAGE = 'ALIBABACLOUD+wan2.2-t2i-flash'                       # poor
 # CLOUD_TYPE_IMAGE = 'ALIBABACLOUD+wan2.2-t2i-plus'                        # poor
+
+# Fal.ai
+# CLOUD_TYPE_IMAGE = 'FAL+hunyuan-image/v3'                                # poor
+# CLOUD_TYPE_IMAGE = 'FAL+bytedance/seedream/v4'                           # best
+
+
 
 def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespace:
 
@@ -155,6 +161,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         else:
             raise Exception("Error: Unsupported image model")
 
+
     elif system == "STABILITYAI":
         config.MODEL_ENDPOINT = model.split("-")[0]
         # Map special case for sd3.5
@@ -173,6 +180,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
         config.IMAGE_API_URL = f"{os.getenv('STABILITYAI_API_URL')}{config.MODEL_ENDPOINT}"
         config.IMAGE_HEADERS = {"authorization": "Bearer " + (os.getenv('STABILITYAI_API_KEY') or ""),"accept": "image/*"}
+
 
     elif system == "VERTEXAI":
         config.GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
@@ -219,6 +227,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         else:
             raise Exception("Error: Unknown VertexAI image model")
 
+
     elif system == "MLX":
         config.IMAGE_SEED = 0
         #https://enragedantelope.github.io/Styles-FluxDev/
@@ -248,6 +257,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         else:
             raise Exception("Error: image model not supported using MLX")
 
+
     elif system == "IDEOGRAMAI":
         config.IMAGE_SEED = 0
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
@@ -275,13 +285,13 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             config.IMAGE_RESOLUTION = "RESOLUTION_1024_1024"
             config.IMAGE_OUTPUT_FORMAT = "png"
 
+
     elif system == "BFL":
         config.IMAGE_EXPLICIT_STYLE = "computer collage art"
         config.IMAGE_OUTPUT_FORMAT = "png"
         config.IMAGE_SEED = 0
         config.IMAGE_SAFETY_TOLERANCE = 6  # 0-6, 6 = least strict
 
-        # Example branching by model
         if model == "flux-kontext-pro" or model == "flux-kontext-max":
             config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
             config.IMAGE_PROMPT_UPSAMPLING = False
@@ -310,6 +320,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
 
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "x-key": os.getenv('BFL_API_KEY') or ""}
         config.IMAGE_API_URL = os.getenv('BFL_API_URL')
+
 
     elif system == "RECRAFTAI":
         config.IMAGE_API_URL = os.getenv('RECRAFT_API_URL')
@@ -352,11 +363,39 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_API_URL = os.getenv('ALIBABACLOUD_API_URL_IMAGE')
         config.IMAGE_API_URL_TASKS = os.getenv('ALIBABACLOUD_API_URL_TASKS')
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY_IMAGE') or ""), "X-DashScope-Async": "enable"}
-        config.IMAGE_SIZE = "1024*1024"  # 512*512 1024*1024, 1365*1024, 1024*1365, 1536*1024, 1024*1536, 1820*1024, 1024*1820, 1024*2048, 2048*1024, 1434*1024, 1024*1434, 1024*1280, 1280*1024, 1024*1707, 1707*1024"
+        config.IMAGE_SIZE = "1024*1024"  # 512*512 1024*1024, 1365*1024, 1024*1365, 1536*1024, 1024*1536, 1820*1024, 1024*1820, 1024*2048, 2048*1024, 1434*1024, 1024*1434, 1024*1280, 1280*1024, 1024*1707, 1707*1024
         config.IMAGE_SEED = 0
         config.IMAGE_PROMPT_EXTEND = False
         config.IMAGE_WATERMARK = False
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
+
+
+    elif system == "FAL":
+        base_model = model.split("/")[0]
+        config.IMAGE_API_URL = f"{os.getenv('FAL_API_URL')}/{model}/text-to-image"
+        config.IMAGE_API_URL_REQUESTS = f"{os.getenv('FAL_API_URL')}/{base_model}/requests"
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Key " + (os.getenv('FAL_API_KEY') or "")}
+
+        if model == "hunyuan-image/v3":
+            config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
+            config.IMAGE_SIZE = "square"  # square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9, custom (width, height)
+            config.IMAGE_NUM_INFERENCE_STEPS = 28  # default: 28
+            config.IMAGE_GUIDANCE_SCALE = 7.5  # default: 7.5
+            config.IMAGE_SEED = 0
+            config.IMAGE_ENABLE_SAFETY_CHECKER = False  # default: True
+            config.IMAGE_SYNC_MODE = True  # default: True
+            config.IMAGE_OUTPUT_FORMAT = "png" # png, jpeg
+            config.IMAGE_ENABLE_PROMPT_EXPANSION = False
+        
+        elif model == "bytedance/seedream/v4":
+            config.IMAGE_SIZE = "square"  # square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9, custom (width, height)
+            config.IMAGE_SEED = 0
+            config.IMAGE_SYNC_MODE = True  # default: True
+            config.IMAGE_ENABLE_SAFETY_CHECKER = False  # default: True
+            config.IMAGE_OUTPUT_FORMAT = "png"
+        
+        else:
+            raise Exception("Error: Unknown FAL image model")
 
     else:
         # If none of the above matched, it's unknown.
