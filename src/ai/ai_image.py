@@ -27,8 +27,8 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
         # Azure + OpenAI Dall-e 3
         if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
 
-            # sora
-            if config.IMAGE_MODEL_ID == "sora":
+            # sora on Azure
+            if "AZURE" in config.CLOUD_TYPE_IMAGE and "sora" in config.IMAGE_MODEL_ID:
                 payload = {
                     "model": config.IMAGE_MODEL_ID,
                     "prompt": str_user,
@@ -82,6 +82,54 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                 else:
                     raise Exception(f"Job didn't succeed. Status: {status}")
 
+            # sora on OpenAI
+            elif "OPENAI" in config.CLOUD_TYPE_IMAGE and "sora" in config.IMAGE_MODEL_ID:
+                payload = {
+                    "model": config.IMAGE_MODEL_ID,
+                    "prompt": str_user,
+                    "seconds": config.VIDEO_LENGTH,
+                    "size": config.IMAGE_SIZE,
+                }
+            
+                response = requests.post(
+                    url=config.IMAGE_API_URL,
+                    headers=config.IMAGE_HEADERS,
+                    data=json.dumps(payload)
+                )
+                response_text = response.text
+                response_status = response.status_code
+
+                if response_status not in (200,201):
+                    raise Exception(f"Error: {response_status} - {response_text}")
+
+                job_id = response.json()["id"]
+
+                status_url = f"{config.IMAGE_API_URL}/{job_id}"
+
+                status = None
+                while status not in ("completed", "failed", "cancelled"): # queued, in_progress, completed, failed
+                    time.sleep(5)
+                    status_response = requests.get(
+                        status_url, 
+                        headers=config.IMAGE_HEADERS,
+                    ).json()
+                    status = status_response.get("status")
+            
+                if status == "completed":
+                    video_url = f"{config.IMAGE_API_URL}/{job_id}/content"
+                    video_response = requests.get(
+                        video_url, 
+                        headers=config.IMAGE_HEADERS
+                    )
+                    if video_response.ok:
+                        for i, image_path in enumerate(image_paths):
+                            image_path = image_path.replace(".png", f"_{uuid.uuid4()}.mp4")
+                            image_paths[i] = image_path
+                            with open(image_path, "wb") as file:
+                                file.write(video_response.content)
+                else:
+                    raise Exception(f"Job didn't succeed. Status: {status}")
+
             # gpt-image-1, FLUX-1.1-pro, dall-e-3
             else:
 
@@ -99,7 +147,7 @@ def call_image_ai(model, image_paths, str_user, n_count = 1):
                     payload["style"] = config.IMAGE_STYLE
                     payload["response_format"] = format
 
-                if config.IMAGE_MODEL_ID == "gpt-image-1":
+                if "gpt-image-1" in config.IMAGE_MODEL_ID:
                     payload["output_format"] = "png"
                     payload["moderation"] = config.MODERATION
 

@@ -13,8 +13,11 @@ CLOUD_TYPE_IMAGE = ''
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                     # best
-# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                  # best
-        
+# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                  # good
+# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1-mini'                             # good
+# CLOUD_TYPE_IMAGE = 'OPENAI+sora-2'                                       # best
+# CLOUD_TYPE_IMAGE = 'OPENAI+sora-2-pro'                                   # best
+
 # StabilityAI        
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large'                             # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+sd3.5-large-turbo'                       # better
@@ -113,7 +116,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                     f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
                     f"?api-version={config.IMAGE_API_VERSION}")
                 config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_EASTUS') or ""}
-            elif model == "sora":
+            elif "sora" in model:
                 config.IMAGE_API_VERSION = "preview" # os.getenv('AZURE_API_VERSION_IMAGE')
                 config.IMAGE_API_URL = f"{os.getenv('AZURE_API_URL_IMAGE')}openai/v1/video/generations/jobs?api-version={config.IMAGE_API_VERSION}"
                 config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
@@ -135,7 +138,12 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                 raise Exception("Error: Unsupported Azure image model")
 
         elif system == "OPENAI":
-            config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
+            if model in ("dall-e-3", "gpt-image-1", "gpt-image-1-mini"):
+                config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
+            elif "sora" in model:
+                config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE_VIDEO')
+            else:
+                raise Exception("Error: Unknown OpenAI image model")
             config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")}
         
         else:
@@ -146,15 +154,18 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             config.IMAGE_QUALITY = "hd"     # hd, standard, auto
             config.IMAGE_STYLE = "vivid"    # natural, vivid
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1792x1024, 1024x1792
-        elif model == "gpt-image-1":
+        elif "gpt-image-1" in model:
             config.IMAGE_QUALITY = "medium" # hight, medium, low, auto
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
             config.MODERATION = "low" # low, auto
-        elif model == "sora":
+        elif system == "AZURE" and "sora" in model:
             # (480, 480), (854, 480), (720, 720), (1280, 720), (1080, 1080), (1920, 1080)
             config.IMAGE_WIDTH = 480
             config.IMAGE_HEIGHT = 480
-            config.VIDEO_LENGTH = 3
+            config.VIDEO_LENGTH = 4
+        elif system == "OPENAI" and "sora" in model:
+            config.IMAGE_SIZE = "1280x720" # 720x1280, 1280x720, 1024x1792, 1792x1024
+            config.VIDEO_LENGTH = "4" # 4, 8, 12
         elif model in ("FLUX-1.1-pro", "FLUX.1-Kontext-pro"):
             config.IMAGE_QUALITY = "hd" # standard, hd
             config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
