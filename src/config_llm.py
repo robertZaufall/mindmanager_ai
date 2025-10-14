@@ -4,9 +4,9 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+model-router'                                     #
+# CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
