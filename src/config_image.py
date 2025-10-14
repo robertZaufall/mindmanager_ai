@@ -5,10 +5,11 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
+CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
 # CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1'                                   # best
 # CLOUD_TYPE_IMAGE = 'AZURE+FLUX-1.1-pro'                                  # best
 # CLOUD_TYPE_IMAGE = 'AZURE+FLUX.1-Kontext-pro'                            # best
+
 # CLOUD_TYPE_IMAGE = 'AZURE+sora'                                          # good
         
 # OpenAI        
@@ -29,7 +30,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                       # best in class (nano banana)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                     # best in class (nano banana)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-001'                    # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-001'              # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-fast-generate-001'               # good
@@ -43,11 +44,12 @@ CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                       # bes
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-2.0-generate-001'                       # best
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit       '                       # best 
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # good 
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-krea-dev-4bit'                             # good 
-        
-# IdeogramAI        
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit       '                       # good 
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # poor (slow)
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-krea-dev-4bit'                             # good (slow)
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-qwen-6bit'                                 # good (slow)
+
+# IdeogramAI
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3'                                      # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_TURBO'                                # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_QUALITY'                              # best
@@ -256,6 +258,9 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             elif "-dev-" in model:
                 config.IMAGE_MODEL_VERSION = "dev"
                 config.IMAGE_NUM_STEPS = 20 # 20-25
+            elif "-qwen-" in model:
+                config.IMAGE_MODEL_VERSION = "qwen"
+                config.IMAGE_NUM_STEPS = 20
             else:
                 raise Exception("Error: image model version not supported using MLX")
             
@@ -263,6 +268,8 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                 config.IMAGE_MODEL_QUANTIZATION = 4
             elif "-8bit" in model:
                 config.IMAGE_MODEL_QUANTIZATION = 8
+            elif "-6bit" in model:
+                config.IMAGE_MODEL_QUANTIZATION = 6
             else:
                 raise Exception("Error: image model quantization not supported using MLX")
         else:

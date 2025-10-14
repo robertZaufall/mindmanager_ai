@@ -24,7 +24,7 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+o3-mini'                                          # good
 # CLOUD_TYPE = 'AZURE+o1'                                               # best
 
-# OpenAI     
+# OpenAI
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07'                                # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-medium'                         # best ($  1.25, $ 10.00 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-high'                           # best ($  1.25, $ 10.00 +++ reasoning tokens)
