@@ -412,7 +412,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 32000
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        elif "claude-sonnet-4" in model:
+        elif "claude-sonnet-4" in model or "claude-haiku-4" in model:
             config.MAX_TOKENS = 64000
             config.MULTIMODAL = True
             config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
