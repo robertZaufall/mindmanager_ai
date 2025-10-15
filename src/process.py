@@ -225,6 +225,7 @@ def main(param, charttype, model, freetext, inplace=False):
         else:
             mermaid = MermaidMindmap(get_mermaid_from_mindmap(mindmap=document.mindmap))
             params_list = prompts.prompts_list_from_param(param=param)
+            _ = document.get_selection()
             topic_texts_join = ",".join(document.selected_topic_texts) if len(document.selected_topic_texts) > 0 else ""
 
             guid = uuid.uuid4()
