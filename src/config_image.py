@@ -37,6 +37,8 @@ CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-generate-002'                    # good
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-3.0-fast-generate-001'               # good
 
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.1-fast-generate-preview'              # best
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.1-generate-preview'                   # best
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-fast-generate-001'                  # good
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-generate-001'                       # good
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-3.0-fast-generate-preview'              # good
