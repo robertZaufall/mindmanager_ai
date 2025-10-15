@@ -6,7 +6,7 @@ from file_helper import load_env
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
@@ -73,6 +73,7 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'GITHUB+mistral-ai/mistral-medium-2505'                  # 4k
 
 # Anthropic     
+CLOUD_TYPE = 'ANTHROPIC+claude-haiku-4-5-20251001'                    # best ($  1.00, $  5.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-5-20250929'                   # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-1-20250805'                     # best ($ 15.00, $ 75.00)
@@ -170,7 +171,7 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-0905'                     # best
 # CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.6'                                # best (slow)
 # CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.5v'                               # best
-# CLOUD_TYPE = 'OPENROUTER+openai/gpt-5-mini'                           # good
+# CLOUD_TYPE = 'OPENROUTER+openai/gpt-5-mini'                           # best (slow)
 # CLOUD_TYPE = 'OPENROUTER+openai/gpt-oss-120b'                         # best
 
 # Hugging Face
