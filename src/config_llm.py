@@ -4,7 +4,7 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+model-router'                                     #
+CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
@@ -73,7 +73,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'GITHUB+mistral-ai/mistral-medium-2505'                  # 4k
 
 # Anthropic     
-CLOUD_TYPE = 'ANTHROPIC+claude-haiku-4-5-20251001'                    # best ($  1.00, $  5.00)
+# CLOUD_TYPE = 'ANTHROPIC+claude-haiku-4-5-20251001'                    # best ($  1.00, $  5.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-5-20250929'                   # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-1-20250805'                     # best ($ 15.00, $ 75.00)
@@ -140,6 +140,9 @@ CLOUD_TYPE = 'ANTHROPIC+claude-haiku-4-5-20251001'                    # best ($ 
 # CLOUD_TYPE = 'MISTRAL+pixtral-12b-2409'                               # good, free
 # CLOUD_TYPE = 'MISTRAL+open-mistral-nemo'                              # not working, free
 
+# Minimax
+# CLOUD_TYPE = 'MINIMAX+MiniMax-M2'                                     # good, slow
+
 # groq     
 # CLOUD_TYPE = 'GROQ+qwen/qwen3-32b'                                    # best
 # CLOUD_TYPE = 'GROQ+deepseek-r1-distill-llama-70b'                     # best
@@ -181,7 +184,8 @@ CLOUD_TYPE = 'ANTHROPIC+claude-haiku-4-5-20251001'                    # best ($ 
 
 # Cerebras.ai
 # CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b-medium'                           # best
-# CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                # best
+# CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                # best (deprecated)
+# CLOUD_TYPE = 'CEREBRAS+zai-glm-4.6'                                   # best (coming soon)
 
 # Ollama (local models), best results *** not up-to-date ***
 # CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
@@ -441,6 +445,11 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 128000
         config.API_URL = os.getenv('XAI_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('XAI_API_KEY') or "")}
+
+    elif "MINIMAX+" in CLOUD_TYPE:
+        config.MAX_TOKENS = 128000
+        config.API_URL = os.getenv('MINIMAX_API_URL')
+        config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('MINIMAX_API_KEY') or "")}
 
     elif "GROQ+" in CLOUD_TYPE:
         config.REASONING_EFFORT = ""

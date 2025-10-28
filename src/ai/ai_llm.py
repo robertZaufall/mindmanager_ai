@@ -428,6 +428,11 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         payload["response_format"] = { "type": "text" }
         result = get_response(payload)
 
+    # Minimax
+    elif "MINIMAX+" in config.CLOUD_TYPE:
+        payload = get_payload()
+        result = get_response(payload)
+
     # Hugging Face
     elif "HF+" in config.CLOUD_TYPE:
         payload = get_payload()
