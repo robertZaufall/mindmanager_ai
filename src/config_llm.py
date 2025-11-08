@@ -4,9 +4,9 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+model-router'                                     #
+# CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
@@ -172,9 +172,10 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # Openrouter.ai
 # CLOUD_TYPE = 'OPENROUTER+openrouter/auto'                             # best
 # CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-0905'                     # best
-# CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.6'                                # best (slow)
+# CLOUD_TYPE = 'OPENROUTER+moonshotai/kimi-k2-thinking'                 # best, slow, rate-limited
+# CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.6'                                # best, slow
 # CLOUD_TYPE = 'OPENROUTER+z-ai/glm-4.5v'                               # best
-# CLOUD_TYPE = 'OPENROUTER+openai/gpt-5-mini'                           # best (slow)
+# CLOUD_TYPE = 'OPENROUTER+openai/gpt-5-mini'                           # best, slow
 # CLOUD_TYPE = 'OPENROUTER+openai/gpt-oss-120b'                         # best
 
 # Hugging Face
@@ -185,7 +186,7 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # Cerebras.ai
 # CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b-medium'                           # best
 # CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                # best (deprecated)
-# CLOUD_TYPE = 'CEREBRAS+zai-glm-4.6'                                   # best (coming soon)
+# CLOUD_TYPE = 'CEREBRAS+zai-glm-4.6'                                   # best
 
 # Ollama (local models), best results *** not up-to-date ***
 # CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
