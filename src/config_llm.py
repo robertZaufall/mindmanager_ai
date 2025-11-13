@@ -25,6 +25,10 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+o1'                                               # best
 
 # OpenAI
+#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-none'                          # best ($  1.25, $ 10.00)
+#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-low'                           # best ($  1.25, $ 10.00 + reasoning tokens)
+#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-medium'                        # best ($  1.25, $ 10.00 + reasoning tokens)
+#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-high'                          # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07'                                # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-medium'                         # best ($  1.25, $ 10.00 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-high'                           # best ($  1.25, $ 10.00 +++ reasoning tokens)
@@ -267,7 +271,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.REASONING_EFFORT = ""
         reasoning_effort_value = ""
         reasoning_effort = model.split("-")[-1]
-        if reasoning_effort in ["low", "medium", "high"]:
+        if reasoning_effort in ["none", "low", "medium", "high"]:
             reasoning_effort_value = reasoning_effort
         
         if "gpt-5" in model :
@@ -303,8 +307,9 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     if "OPENAI+" in CLOUD_TYPE:
         config.API_URL = os.getenv('OPENAI_API_URL')
 
-        if CLOUD_TYPE.startswith("OPENAI+o3-pro") or "+gpt5-" in CLOUD_TYPE:
+        if CLOUD_TYPE.startswith("OPENAI+o3-pro") or "+gpt-5.1" in CLOUD_TYPE:
             config.API_URL = os.getenv('OPENAI_API_URL').replace("chat/completions", "responses")
+        
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY') or "")}
 
     elif "AZURE+" in CLOUD_TYPE:

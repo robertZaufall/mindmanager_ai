@@ -113,12 +113,12 @@ def call_llm(model, str_user, param, data="", mimeType=""):
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_FOUNDRY+" in config.CLOUD_TYPE or \
        "GITHUB+" in config.CLOUD_TYPE) and \
-       not "+o3-pro" in config.CLOUD_TYPE:
+       not "+o3-pro" in config.CLOUD_TYPE and not "+gpt-5.1" in config.CLOUD_TYPE:
 
         payload = {}
 
         if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE) and \
-           ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE or "+o4" in config.CLOUD_TYPE or "+gpt-5" in config.CLOUD_TYPE):
+           ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE or "+o4" in config.CLOUD_TYPE or "+gpt-5-" in config.CLOUD_TYPE):
             payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
@@ -162,7 +162,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
 
         result = get_response(payload)
     
-    elif config.CLOUD_TYPE.startswith("OPENAI+o3-pro"):
+    elif config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") or config.CLOUD_TYPE.startswith("OPENAI+o3-pro"):
         def get_payload_for_responses():
             payload = {
                 "model": config.MODEL_ID,
@@ -202,10 +202,11 @@ def call_llm(model, str_user, param, data="", mimeType=""):
 
         payload = get_payload_for_responses()
 
-        #payload["temperature"] = config.LLM_TEMPERATURE # not supported with o3-pro
-
         if config.REASONING_EFFORT != "":
-            payload["reasoning"] = { "effort": config.REASONING_EFFORT }
+            payload["reasoning"] = {"effort": config.REASONING_EFFORT}
+        if config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") and config.REASONING_EFFORT == "none":
+            payload["temperature"] = config.LLM_TEMPERATURE
+        
         if config.CLOUD_TYPE.endswith("-flex"):
             config.CLOUD_TYPE = config.CLOUD_TYPE.replace("-flex", "")
             config.MODEL_ID = config.MODEL_ID.replace("-flex", "")
