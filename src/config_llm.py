@@ -4,9 +4,9 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+model-router'                                     #
+CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
@@ -25,17 +25,28 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+o1'                                               # best
 
 # OpenAI
-#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-none'                          # best ($  1.25, $ 10.00)
-#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-low'                           # best ($  1.25, $ 10.00 + reasoning tokens)
-#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-medium'                        # best ($  1.25, $ 10.00 + reasoning tokens)
-#CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-high'                          # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-none'                         # best ($  1.25, $ 10.00)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-low'                          # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-medium'                       # best ($  1.25, $ 10.00 ++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-high'                         # best ($  1.25, $ 10.00 +++ reasoning tokens)
+
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-codex-low'                               # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-codex-medium'                            # best ($  1.25, $ 10.00 ++ reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-codex-high'                              # best ($  1.25, $ 10.00 +++ reasoning tokens)
+
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07'                                # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-minimal'                        # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-low'                            # best ($  1.25, $ 10.00 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-medium'                         # best ($  1.25, $ 10.00 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-high'                           # best ($  1.25, $ 10.00 +++ reasoning tokens)
+
 # CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07'                           # ok   ($  0.25, $  2.00 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-low'                       # ok   ($  0.25, $  2.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-medium'                    # best ($  0.25, $  2.00 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-high'                      # best ($  0.25, $  2.00 +++ reasoning tokens)
+
 # CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07'                           # ok   ($  0.05, $  0.40 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-low'                       # ok   ($  0.05, $  0.40 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-medium'                    # best ($  0.05, $  0.40 ++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-high'                      # best ($  0.05, $  0.40 +++ reasoning tokens)
 
@@ -43,14 +54,14 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($  2.00, $  8.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o3-2025-04-16-flex'                              # best ($  1.00, $  4.00 + reasoning tokens)
 
+# CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16'                              # best ($  1.10, $  4.40 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-low'                          # best ($  1.10, $  4.40 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-high'                         # best ($  1.10, $  4.40 +++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-medium'                       # best ($  1.10, $  4.40 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-low'                          # best ($  1.10, $  4.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16'                              # best ($  1.10, $  4.40 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31'                              # best ($  1.10, $  4.40 + reasoning tokens)
+# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-low'                          # best ($  1.10, $  4.40 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-high'                         # best ($  1.10, $  4.40 +++ reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-medium'                       # best ($  1.10, $  4.40 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-low'                          # best ($  1.10, $  4.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31'                              # best ($  1.10, $  4.40 + reasoning tokens)
 
 # CLOUD_TYPE = 'OPENAI+gpt-4.1-2025-04-14'                              # best ($ 2.00, $  8.00)
 # CLOUD_TYPE = 'OPENAI+gpt-4.1-mini-2025-04-14'                         # best ($ 0.40, $  1.60)
@@ -271,7 +282,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.REASONING_EFFORT = ""
         reasoning_effort_value = ""
         reasoning_effort = model.split("-")[-1]
-        if reasoning_effort in ["none", "low", "medium", "high"]:
+        if reasoning_effort in ["none", "minimal", "low", "medium", "high"]:
             reasoning_effort_value = reasoning_effort
         
         if "gpt-5" in model :
