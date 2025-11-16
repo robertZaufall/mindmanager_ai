@@ -51,7 +51,7 @@ More animated examples are in the `doc` folder.
   - **Azure OpenAI** w/ `gpt-image-1`, `DALL-E 3`, `Flux Pro 1.1`, `Flux.1 Kontext Pro` (use your key or log in with `Azure Entra ID`)  
   - **OpenAI** w/ `gpt-image-1`, `DALL-E 3` (use your key)
   - **Stability AI** w/ `Stable Diffusion 3` `SD3.5` / `SD3` / `Ultra` / `Core` (use your key)  
-  - **Google Vertex AI** w/ `Imagen3` (use your access token / OAuth2, GCP approval required!)  
+  - **Google Vertex AI** w/ `Gemini Flash 2.5` (nano banana),`Imagen3` (use your access token / OAuth2, GCP approval required!)  
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
   - **Black Forest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`, `Flux.1 Kontext Pro/Max`  (use your key)  
   - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
@@ -59,8 +59,8 @@ More animated examples are in the `doc` folder.
   - **MLX** (local w/ SDK, Apple Silicon) w/ `Flux` models
 
 ### Video Generation
-  - **Azure OpenAI** w/ `Sora` (use your key)  
-  - **Google Vertex AI** w/ `Veo 3`, `Veo 2` (use your access token / OAuth2)  
+  - **Azure OpenAI** w/ `Sora`, `Sora 2` (use your key)  
+  - **Google Vertex AI** w/ `Veo 3.1`, `Veo 3`, `Veo 2` (use your access token / OAuth2)  
 
 ### Translation Services
  - **DeepL** (use your key)
