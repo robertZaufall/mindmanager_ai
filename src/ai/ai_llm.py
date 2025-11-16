@@ -118,7 +118,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         payload = {}
 
         if ("OPENAI+" in config.CLOUD_TYPE or "AZURE+" in config.CLOUD_TYPE or "GITHUB+" in config.CLOUD_TYPE) and \
-           ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE or "+o4" in config.CLOUD_TYPE or "+gpt-5-" in config.CLOUD_TYPE):
+           ("+o1" in config.CLOUD_TYPE or "+o3" in config.CLOUD_TYPE or "+o4" in config.CLOUD_TYPE or "+gpt-5-" in config.CLOUD_TYPE or config.CLOUD_TYPE.endswith("+gpt-5")):
             payload["messages"] = [{"role": "user", "content": str_user}]
             payload["max_completion_tokens"] = config.MAX_TOKENS
             payload["temperature"] = 1
@@ -162,10 +162,11 @@ def call_llm(model, str_user, param, data="", mimeType=""):
 
         result = get_response(payload)
     
-    elif config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") or config.CLOUD_TYPE.startswith("OPENAI+o3-pro"):
+    elif config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") or config.CLOUD_TYPE.startswith("AZURE+gpt-5.1") or config.CLOUD_TYPE.startswith("OPENAI+o3-pro"):
+        this_model = config.MODEL_ID if config.CLOUD_TYPE.startswith("OPENAI+") else config.AZURE_DEPLOYMENT
         def get_payload_for_responses():
             payload = {
-                "model": config.MODEL_ID,
+                "model": this_model, # here Azure: equal deployment name
                 "stream": False,
                 "max_output_tokens": config.MAX_TOKENS,
                 "store": False,
@@ -204,7 +205,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
 
         if config.REASONING_EFFORT != "":
             payload["reasoning"] = {"effort": config.REASONING_EFFORT}
-        if config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") and config.REASONING_EFFORT == "none":
+        if (config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") or config.CLOUD_TYPE.startswith("AZURE+gpt-5.1")) and config.REASONING_EFFORT == "none":
             payload["temperature"] = config.LLM_TEMPERATURE
         
         if config.CLOUD_TYPE.endswith("-flex"):

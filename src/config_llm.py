@@ -5,6 +5,9 @@ from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 CLOUD_TYPE = 'AZURE+model-router'                                     #
+# CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best in class
+# CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # best in class
+# CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
@@ -326,12 +329,20 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     elif "AZURE+" in CLOUD_TYPE:
         config.USE_AZURE_ENTRA = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
         config.AZURE_DEPLOYMENT = config.MODEL_ID
-        config.API_VERSION = os.getenv('AZURE_API_VERSION')
-        config.API_URL = (
-            f"{os.getenv('AZURE_API_URL')}openai/deployments/"
-            f"{config.MODEL_ID}/chat/completions"
-            f"?api-version={config.API_VERSION}"
-        )
+        if "+gpt-5.1" in CLOUD_TYPE:
+            config.API_VERSION = os.getenv('AZURE_API_VERSION_RESPONSES')
+            config.API_URL = (
+                f"{os.getenv('AZURE_API_URL_RESPONSES')}"
+                f"responses"
+                f"?api-version=preview"
+            )
+        else:
+            config.API_VERSION = os.getenv('AZURE_API_VERSION')
+            config.API_URL = (
+                f"{os.getenv('AZURE_API_URL')}openai/deployments/"
+                f"{config.MODEL_ID}/chat/completions"
+                f"?api-version={config.API_VERSION}"
+            )
         config.HEADERS = {**config.HEADERS, "api-key": os.getenv('AZURE_API_KEY') or ""}
 
     elif "OPENROUTER+" in CLOUD_TYPE:
