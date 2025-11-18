@@ -4,12 +4,12 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+model-router'                                     #
+# CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
@@ -113,6 +113,7 @@ CLOUD_TYPE = 'AZURE+model-router'                                     #
 # CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
 # Google Gemini Vertex AI (OAuth2)     
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview'                          # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-09-2025'              # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-09-2025'         # bad
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash'                              # best
