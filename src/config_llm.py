@@ -9,9 +9,9 @@ from file_helper import load_env
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
-# CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
+# CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
@@ -112,7 +112,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'GEMINI+gemma-3-27b-it'                                  # best
 # CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
-# Google Gemini Vertex AI (OAuth2)     
+# Google Gemini Vertex AI (OAuth2)
 # CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview'                          # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-09-2025'              # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-09-2025'         # bad
@@ -131,7 +131,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
-CLOUD_TYPE = 'XAI+grok-4-1-fast-reasoning'                            # ($ 0.20, $  0.50), best
+# CLOUD_TYPE = 'XAI+grok-4-1-fast-reasoning'                            # ($ 0.20, $  0.50), best
 # CLOUD_TYPE = 'XAI+grok-4-1-fast-non-reasoning'                        # ($ 0.20, $  0.50), best
 # CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20, $  0.50), best
 # CLOUD_TYPE = 'XAI+grok-4-fast-non-reasoning'                          # ($ 0.20, $  0.50), best
@@ -379,7 +379,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
         config.TOP_P = 0.95
-        if "gemini-2.5" in model:
+        if "gemini-2.5" in model or "gemini-3" in model:
             config.MAX_TOKENS = 64000
             config.THINKING_BUDGET = 2048
         else:

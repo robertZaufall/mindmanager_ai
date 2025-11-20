@@ -29,8 +29,12 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                                    # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
+# VertexAI + Infographic generation
+CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview-infographic'     # best in class (nano banana pro)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image-infographic'         # best in class (nano banana)
+
 # VertexAI
-CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                     # best in class (nano banana)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-001'                    # best in class
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-ultra-generate-001'              # best in class
@@ -203,6 +207,8 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
         config.GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
 
+        config.CREATE_INFOGRAPHIC = False
+
         config.IMAGE_ASPECT_RATIO = "1:1"  # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
         config.IMAGE_EXPLICIT_STYLE = "digital art"
         config.IMAGE_ADD_WATERMARK = False
@@ -218,6 +224,9 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                 f"{model}:predict"
             )
         elif model.startswith("gemini-"):
+            if model.endswith("-infographic"):
+                config.CREATE_INFOGRAPHIC = True
+                model = model.replace("-infographic", "")
             config.IMAGE_API_URL = (
                 f"https://{os.getenv('VERTEXAI_API_ENDPOINT_GLOBAL_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
                 f"/locations/{os.getenv('VERTEXAI_LOCATION_ID')}/publishers/google/models/"

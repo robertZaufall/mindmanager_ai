@@ -69,14 +69,18 @@ def generate_image(model, document, guid, count=1):
 
     # store images in the library under images and background images
     file_paths = file_helper.get_image_file_paths(library_folder=document.get_library_folder(), top_most_topic=top_most_topic, guid=guid)
-    
-    if "MLX+" in config.CLOUD_TYPE_IMAGE:
-        if "flux" in config.IMAGE_MODEL_ID:
-            str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
-        else:
-            str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
+
+    if hasattr(config, "CREATE_INFOGRAPHIC") and config.CREATE_INFOGRAPHIC:
+        str_user = prompts.prompt_infographic(get_mermaid_from_mindmap(mindmap=document.mindmap))
     else:
-        str_user = prompts.prompt_image_flux(top_most_topic, subtopics) # prompts.prompt_image(top_most_topic, subtopics)
+        if "MLX+" in config.CLOUD_TYPE_IMAGE:
+            if "flux" in config.IMAGE_MODEL_ID:
+                str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
+            else:
+                str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
+        else:
+            str_user = prompts.prompt_image_flux(top_most_topic, subtopics) # prompts.prompt_image(top_most_topic, subtopics)
+
     if ("STABILITYAI+" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
         final_prompt = ai_llm.call_llm(model=model, str_user=prompts.prompt_image_prompt(str_user), param="image")
     else:
