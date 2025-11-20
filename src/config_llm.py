@@ -9,7 +9,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best in class
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
+# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best in class
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
@@ -131,7 +131,9 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
-# CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20, $  0.50), best in class
+CLOUD_TYPE = 'XAI+grok-4-1-fast-reasoning'                            # ($ 0.20, $  0.50), best
+# CLOUD_TYPE = 'XAI+grok-4-1-fast-non-reasoning'                        # ($ 0.20, $  0.50), best
+# CLOUD_TYPE = 'XAI+grok-4-fast-reasoning'                              # ($ 0.20, $  0.50), best
 # CLOUD_TYPE = 'XAI+grok-4-fast-non-reasoning'                          # ($ 0.20, $  0.50), best
 # CLOUD_TYPE = 'XAI+grok-4-0709'                                        # ($ 3.00, $ 15.00), best
 # CLOUD_TYPE = 'XAI+grok-3'                                             # ($ 3.00, $ 15.00), best
