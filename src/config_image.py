@@ -29,10 +29,6 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+core'                                    # better
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
-# VertexAI + Infographic generation
-CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview-infographic'     # best in class (nano banana pro)
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image-infographic'         # best in class (nano banana)
-
 # VertexAI
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                     # best in class (nano banana)
@@ -224,9 +220,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                 f"{model}:predict"
             )
         elif model.startswith("gemini-"):
-            if model.endswith("-infographic"):
-                config.CREATE_INFOGRAPHIC = True
-                model = model.replace("-infographic", "")
             config.IMAGE_API_URL = (
                 f"https://{os.getenv('VERTEXAI_API_ENDPOINT_GLOBAL_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
                 f"/locations/{os.getenv('VERTEXAI_LOCATION_ID')}/publishers/google/models/"

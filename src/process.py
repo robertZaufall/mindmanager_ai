@@ -34,7 +34,7 @@ valid_actions = [
     "examples", "cluster", "exp", "capex_opex", 
     "prc_org", "prj_prc_org", "exp_prj_prc_org", "prj_org", 
     "finalize", # (no llm call - just existing (win) or new map (macos) with defined charttype / formattings)
-    "image", "image_5", "image_10", 
+    #"image", "image_5", "image_10", 
     #"translate_deepl+EN-US", "translate_deepl+DE", 
     "glossary", "argumentation",
     "export_markmap", "export_mermaid", 
@@ -60,9 +60,12 @@ def create_mindmap_from_mermaid(document, mermaid, inplace=False):
         document.mindm = None
 
 
-def generate_image(model, document, guid, count=1):
+def generate_image(model, document, guid, count=1, image_prompt="generic"):
 
     config = cfg_image.get_image_config(model)
+
+    # get map as mermaid
+    context = get_mermaid_from_mindmap(mindmap=document.mindmap)
 
     # collect some grounding information for LLM
     top_most_topic, subtopics = document.get_grounding_information()
@@ -70,23 +73,7 @@ def generate_image(model, document, guid, count=1):
     # store images in the library under images and background images
     file_paths = file_helper.get_image_file_paths(library_folder=document.get_library_folder(), top_most_topic=top_most_topic, guid=guid)
 
-    if hasattr(config, "CREATE_INFOGRAPHIC") and config.CREATE_INFOGRAPHIC:
-        str_user = prompts.prompt_infographic(get_mermaid_from_mindmap(mindmap=document.mindmap))
-    else:
-        if "MLX+" in config.CLOUD_TYPE_IMAGE:
-            if "flux" in config.IMAGE_MODEL_ID:
-                str_user = prompts.prompt_image_flux(top_most_topic, subtopics)
-            else:
-                str_user = prompts.prompt_image_sd(top_most_topic, subtopics)
-        else:
-            str_user = prompts.prompt_image_flux(top_most_topic, subtopics) # prompts.prompt_image(top_most_topic, subtopics)
-
-    if ("STABILITYAI+" in config.CLOUD_TYPE_IMAGE) and config.OPTIMIZE_PROMPT_IMAGE:
-        final_prompt = ai_llm.call_llm(model=model, str_user=prompts.prompt_image_prompt(str_user), param="image")
-    else:
-        final_prompt = str_user
-
-    image_paths = ai_image.call_image_ai(model=model, image_paths=file_paths, str_user=final_prompt, n_count=count)
+    image_paths = ai_image.call_image_ai(model=model, image_paths=file_paths, context=context, top_most_topic=top_most_topic, subtopics=subtopics, n_count=count, image_prompt=image_prompt)
     if image_paths and isinstance(image_paths[0], str):
     
         if image_paths[0].endswith(".mp4"):
@@ -236,12 +223,9 @@ def main(param, charttype, model, freetext, inplace=False):
 
             # Image generation
             if param.startswith("image"):
-                count = param.split("_")[-1]
-                if count.isdigit():
-                    count = int(count)
-                else:
-                    count = 1
-                generate_image(model, document, guid, count)
+                image_prompt = param.split("_")[-1] if "_" in param else "generic"
+                count = 1
+                generate_image(model, document, guid, count, image_prompt)
 
             elif param.startswith("agent+"):
                 agent_action = param.split("+")[-1]
@@ -298,7 +282,7 @@ def main(param, charttype, model, freetext, inplace=False):
     print("Done.")
 
 def validate_input(param, charttype, model, freetext):
-    if param not in valid_actions and not param.startswith("translate_deepl+"):
+    if param not in valid_actions and not param.startswith("translate_deepl+") and not param.startswith("image"):
         print("Invalid action. Use one of the following: " + ", ".join(valid_actions))
         sys.exit(1)
 

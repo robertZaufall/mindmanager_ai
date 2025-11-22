@@ -12,7 +12,6 @@ class PromptSettings:
     top_most_results: int = 5
     levels_deep: int = 5
     line_separator: str = "\n"
-    image_explicit_style: str = ""
 
 
 DEFAULT_SETTINGS = PromptSettings()
@@ -22,7 +21,6 @@ MAX_RETURN_WORDS = DEFAULT_SETTINGS.max_return_words
 TOP_MOST_RESULTS = DEFAULT_SETTINGS.top_most_results
 LEVELS_DEEP = DEFAULT_SETTINGS.levels_deep
 LINE_SEPARATOR = DEFAULT_SETTINGS.line_separator
-image_explicit_style = DEFAULT_SETTINGS.image_explicit_style
 
 prompt_prefix = "Given is the following Mermaid mindmap. "
 prompt_prefix_text = "Given is the following text to be summarized as a mindmap with Mermaid syntax. "
@@ -87,63 +85,6 @@ def _mermaid_prompt(
 
 def _recluster_prompt(text: str, lead: str, **mermaid_kwargs) -> str:
     return _mermaid_prompt(f"{lead}{RECLUSTER_SUFFIX}", text, **mermaid_kwargs)
-
-
-def _explicit_image_style() -> str:
-    return image_explicit_style
-
-
-def prompt_image(top_most_topic: str, subtopics: str) -> str:
-    """Prompt for generating a marketing logo style image."""
-    explicit_style = _explicit_image_style()
-    topics = f" and the subtopics {subtopics}" if subtopics else ""
-    return (
-        f"A clean, minimalistic, professional marketing logo{explicit_style} on a white background with focus on {top_most_topic}{topics}. "
-        "Use a visually appealing and professional look."
-    )
-
-
-def prompt_image_sd(top_most_topic: str, subtopics: str) -> str:
-    """Prompt tailored for Stable Diffusion image generation."""
-    explicit_style = _explicit_image_style()
-    topics = f" and also influenced by thought of {subtopics}" if subtopics else ""
-    return (
-        f"One professional graphic, minimalistic, professional{explicit_style} on a white background about {top_most_topic}{topics}. "
-        "Visually appealing, high-detailed, polished and expensive look."
-    )
-
-
-def prompt_image_flux(top_most_topic: str, subtopics: str) -> str:
-    """Prompt tailored for Flux-style image generation."""
-    explicit_style = _explicit_image_style()
-    prefix = f"Business graphic, minimalistic, professional{explicit_style}"
-    postfix = "on a gray gradient background, visually appealing, expensive look, no text."
-    topics = f" and also influenced by thought on {subtopics}" if subtopics else ""
-
-    if "," not in subtopics:
-        top_most_topic = subtopics
-        subtopics = ""
-
-    if subtopics == "" and "," not in top_most_topic:
-        return f"{prefix} showing a strong scene representing {{{top_most_topic}}}, {postfix}"
-    return f"{prefix} stuffed with typical big symbols or a strong scene representing '{top_most_topic}'{topics}, {postfix}"
-
-
-def prompt_image_prompt(text: str) -> str:
-    """Optimize a Stable Diffusion prompt."""
-    return (
-        "Please optimize this prompt to generate a good marketing logo like image or pictogram on a white background without gradient "
-        f"using Stable Diffusion: ```{text}```\n "
-        "Return only the prompt without any further text or explanations."
-    )
-
-def prompt_infographic(mermaid_text: str) -> str:
-    """Prompt tailored for infographic generation."""
-    return (
-        f"Take this mindmap in mermaid syntax and transform it into the image of a professor's whiteboard: diagrams, arrows, boxes, and captions explaining the core idea visually. "
-        f"Use colors as well. "
-        f"Here is the mindmap: \n```{mermaid_text}```\n "
-    )
 
 
 def _topic_context_message(topic_texts: str, scoped_message: str, default_message: str) -> tuple[str, str]:

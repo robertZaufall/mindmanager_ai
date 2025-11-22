@@ -313,6 +313,7 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
             for image_path in image_paths:
                 image.save(image_path)
     else:
-        raise Exception(f"Error: No image data found in the response.")
+        print(f"Error: No image data found in the response.")
+        return []
             
     return image_paths

@@ -26,6 +26,20 @@ ACTION_MAP = {
     "Import MD": "import_md"
 }
 
+def load_image_prompts():
+    directory_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_prompts')
+    try:
+        file_names = os.listdir(directory_path)
+        file_dict = {
+            file.replace(".py", "").replace("_", " ").title(): \
+                file for file in file_names \
+                    if os.path.isfile(os.path.join(directory_path, file)) and file.endswith(".py") and not file.startswith("_")
+        }
+        return file_dict
+    except FileNotFoundError:
+        return {}
+
+
 
 def load_settings():
     if os.path.exists(SETTINGS_FILE):
@@ -231,16 +245,17 @@ class MindmanagerAIApp(tk.Tk):
         self.tab_to_textbox[tab_name] = txt
         return txt
 
-    def create_labeled_combobox(self, parent, label_text, var, values, width=34):
-        """Create a label + Combobox as a row."""
+    def create_labeled_combobox(self, parent, label_text, var, values, width=34, label_width=7):
+        """Create a label + Combobox row with aligned columns."""
         frame = ttk.Frame(parent)
-        frame.pack(padx=10, pady=5)
-        ttk.Label(frame, text=label_text).pack(side="left")
+        frame.pack(padx=10, pady=5, fill="x")
+        ttk.Label(frame, text=label_text, width=label_width, anchor="w").grid(row=0, column=0, sticky="w")
         combo = ttk.Combobox(
             frame, textvariable=var, values=values,
             state="readonly", justify="left", width=width
         )
-        combo.pack(side="left", padx=5)
+        combo.grid(row=0, column=1, sticky="ew", padx=(2, 0))
+        frame.grid_columnconfigure(1, weight=1)
         return combo
 
     # ------------------------------------------------------------------------
@@ -257,17 +272,10 @@ class MindmanagerAIApp(tk.Tk):
         )
 
         # Action combobox
-        frame_actions = ttk.Frame(tab)
-        frame_actions.pack(padx=10, pady=5)
-        ttk.Label(frame_actions, text="Action:").pack(side="left")
         self.var_action_tab1 = tk.StringVar(value="Refine")
-        dropdown_action_tab1 = ttk.Combobox(
-            frame_actions,
-            textvariable=self.var_action_tab1,
-            values=list(ACTION_MAP.keys()),
-            state="readonly", justify="left", width=34
+        self.create_labeled_combobox(
+            tab, "Action:", self.var_action_tab1, list(ACTION_MAP.keys())
         )
-        dropdown_action_tab1.pack(padx=10, pady=5)
 
         def submit_tab1():
             selected_cloud_type = self.var_cloud_type_tab1.get()
@@ -293,26 +301,27 @@ class MindmanagerAIApp(tk.Tk):
             tab, "Model:", self.var_cloud_img_tab2, self.all_cloud_images
         )
 
-        def submit_tab2(action):
+        image_prompts = load_image_prompts()
+        image_prompt_names = sorted(image_prompts.keys())
+        default_prompt = "Generic" if "Generic" in image_prompt_names else (image_prompt_names[0] if image_prompt_names else "")
+        self.var_image_action_tab2 = tk.StringVar(value=default_prompt)
+        self.create_labeled_combobox(
+            tab, "Type:", self.var_image_action_tab2, image_prompt_names
+        )
+
+        def submit_tab2():
             selected_image_model = self.var_cloud_img_tab2.get()
+            selected_action_key = self.var_image_action_tab2.get()
+            prompt_file = image_prompts.get(selected_action_key, "")
+            prompt_base = os.path.splitext(prompt_file)[0] if prompt_file else "generic"
+            action = "image" if prompt_base == "generic" else f"image_{prompt_base}"
             payload = self.build_payload(selected_image_model, action)
             self.call_process_json(payload)
 
         # Buttons
-        self.btn_tab2_1 = ttk.Button(tab, text="1 Image",
-                                     command=lambda: submit_tab2("image"), default='normal')
-        self.btn_tab2_1.pack(side="top", padx=10, pady=5)
-
-        button_frame_image = ttk.Frame(tab)
-        button_frame_image.pack(side="top", padx=10, pady=5)
-
-        btn_tab2_5 = ttk.Button(button_frame_image, text="5 Images",
-                                command=lambda: submit_tab2("image_5"), default='normal')
-        btn_tab2_5.pack(side="left", padx=10, pady=5)
-
-        btn_tab2_10 = ttk.Button(button_frame_image, text="10 Images",
-                                 command=lambda: submit_tab2("image_10"), default='normal')
-        btn_tab2_10.pack(side="left", padx=10, pady=5)
+        self.btn_tab2_1 = ttk.Button(tab, text="Generate",
+                                     command=submit_tab2, default='normal')
+        self.btn_tab2_1.pack(padx=10, pady=10)
 
         # Output
         self.create_output_box(tab, "Img")
