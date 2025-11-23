@@ -1,3 +1,5 @@
+# Title: Infographic Business
+
 class MPrompt:
     _cloud_type: str = ""
     _explicit_style: str = ""
@@ -12,8 +14,10 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Create an image with a funny humorous comic ultrarealistic, Donald Duck style. Use colors. "
-            f"Take this mindmap in mermaid syntax as context: \n```\n{context}```\n "
+            "Take this mindmap in mermaid syntax and transform it into the image of a "
+            "professional presentable expensive looking business infographic: "
+            "diagrams, arrows, boxes, and captions explaining the core idea visually. "
+            f"Here is the mindmap: \n```\n{context}```\n "
         )
 
 def main():

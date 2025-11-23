@@ -1,4 +1,4 @@
-# Title: Advertisement
+# Title: Cover Image
 
 class MPrompt:
     _cloud_type: str = ""
@@ -14,7 +14,7 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Take this mindmap in mermaid syntax. Generate a high class advertorial image from the core topics of the mindmap. "
+            "Take this mindmap in mermaid syntax. Generate a high class cover image from the core topics of the mindmap. "
             f"Here is the mindmap: \n```\n{context}```\n "
         )
 

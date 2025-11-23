@@ -1,3 +1,5 @@
+# Title: Infographic Professor
+
 class MPrompt:
     _cloud_type: str = ""
     _explicit_style: str = ""
@@ -11,9 +13,11 @@ class MPrompt:
             top_most_topic: str="", 
             subtopics: str="" 
         ) -> str:
+        """Prompt tailored for infographic generation."""
         return (
-            "Create an image with a funny humorous comic ultrarealistic, Simpsons style. Use colors. "
-            f"Take this mindmap in mermaid syntax as context: \n```\n{context}```\n "
+            f"Take this mindmap in mermaid syntax and transform it into the image of a professor's whiteboard: diagrams, arrows, boxes, and captions explaining the core idea visually. "
+            f"Use colors as well. "
+            f"Here is the mindmap: \n```\n{context}```\n "
         )
 
 def main():

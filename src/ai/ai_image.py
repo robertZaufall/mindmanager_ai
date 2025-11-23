@@ -17,7 +17,8 @@ def call_image_ai(model,
             top_most_topic: str="", 
             subtopics: str="", 
             n_count = 1, 
-            image_prompt="generic"):
+            image_prompt="generic",
+            data={}):
 
     import httpx
     from PIL import Image
@@ -30,7 +31,7 @@ def call_image_ai(model,
 
     if config.CLOUD_TYPE_IMAGE == "":
         raise Exception("Error: CLOUD_TYPE_IMAGE is not set in config_image.py")
-
+    
     prompt_path = os.path.join(os.path.dirname(__file__), 'image_prompts', f"{image_prompt}.py")
     if not os.path.exists(prompt_path):
         raise Exception(f"Error: {prompt_path} does not exist.")
@@ -42,7 +43,7 @@ def call_image_ai(model,
     if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA_IMAGE:
         n_count = 1 # override n_count to 1
         import ai.ai_azure_entra as ai_azure_entra
-        return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count)
+        return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count, data=data)
 
     # Azure + OpenAI Dall-e 3
     if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
@@ -430,7 +431,7 @@ def call_image_ai(model,
     elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
         import ai.ai_gcp as ai_gcp
-        return ai_gcp.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count)
+        return ai_gcp.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count, data=data)
 
     # MLX
     elif "MLX+" in config.CLOUD_TYPE_IMAGE:
@@ -443,7 +444,9 @@ def call_image_ai(model,
                 negative_prompt=config.IMAGE_NEGATIV_PROMPT, 
                 n_images=n_count, 
                 outputs=image_paths, 
-                seed=seed)
+                seed=seed,
+                data=data
+                )
         else:
             raise Exception(f"Error: IMAGE_MODEL_ID for MLX not supported: {config.IMAGE_MODEL_ID}")
     

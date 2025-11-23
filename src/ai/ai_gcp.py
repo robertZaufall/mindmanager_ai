@@ -125,7 +125,7 @@ def call_llm_gcp(model, str_user, param, data, mimeType):
 
     return result
 
-def call_image_ai(model, str_user, image_paths, n_count = 1):
+def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
     from PIL import Image
     from io import BytesIO
     import base64
@@ -162,7 +162,8 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
                 ]
             },
             "generationConfig": {
-                "responseModalities": ["TEXT", "IMAGE"]
+                "responseModalities": ["TEXT", "IMAGE"],
+                "imageConfig": { "aspectRatio": config.IMAGE_ASPECT_RATIO, "imageSize": config.IMAGE_RESOLUTION },
             },
             "safetySettings": [
                 {
@@ -199,6 +200,10 @@ def call_image_ai(model, str_user, image_paths, n_count = 1):
                 }
             ]
         }
+        
+        if hasattr(config, "IMAGE_USE_GROUNDING") and config.IMAGE_USE_GROUNDING:
+            payload["tools"] = {"google_search": {}}
+
     elif config.IMAGE_MODEL_ID.startswith("veo-"):
         seed = config.VIDEO_SEED
         if seed == 0:

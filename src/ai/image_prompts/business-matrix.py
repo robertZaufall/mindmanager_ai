@@ -1,4 +1,4 @@
-# Title: Advertisement
+# Title: Business Matrix
 
 class MPrompt:
     _cloud_type: str = ""
@@ -14,7 +14,7 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Take this mindmap in mermaid syntax. Generate a high class advertorial image from the core topics of the mindmap. "
+            "Take this mindmap in mermaid syntax. Generate an image from a very detailed business matrix from the core topics of the mindmap. "
             f"Here is the mindmap: \n```\n{context}```\n "
         )
 

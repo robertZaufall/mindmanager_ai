@@ -1,3 +1,5 @@
+# Title: Chart Process Organization
+
 class MPrompt:
     _cloud_type: str = ""
     _explicit_style: str = ""
@@ -11,10 +13,8 @@ class MPrompt:
             top_most_topic: str="", 
             subtopics: str="" 
         ) -> str:
-        """Prompt tailored for infographic generation."""
         return (
-            f"Take this mindmap in mermaid syntax and transform it into the image of a professor's whiteboard: diagrams, arrows, boxes, and captions explaining the core idea visually. "
-            f"Use colors as well. "
+            "Take this mindmap in mermaid syntax. Generate an image from a very detailed process organization chart from the core topics of the mindmap. "
             f"Here is the mindmap: \n```\n{context}```\n "
         )
 

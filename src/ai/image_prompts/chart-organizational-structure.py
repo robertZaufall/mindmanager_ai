@@ -1,3 +1,5 @@
+# Title: Chart Organizational Structure
+
 class MPrompt:
     _cloud_type: str = ""
     _explicit_style: str = ""
@@ -12,9 +14,7 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Take this mindmap in mermaid syntax and transform it into the image of a "
-            "professional presentable expensive looking business infographic: "
-            "diagrams, arrows, boxes, and captions explaining the core idea visually. "
+            "Take this mindmap in mermaid syntax. Generate an image from a very detailed organizational structure chart using avatars from the core topics of the mindmap. "
             f"Here is the mindmap: \n```\n{context}```\n "
         )
 

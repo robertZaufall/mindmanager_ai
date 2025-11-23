@@ -5,7 +5,7 @@ from PIL import Image
 
 import config_image as cfg
 
-def generate_image(model, prompt, negative_prompt, n_images, outputs, seed):
+def generate_image(model, prompt, negative_prompt, n_images, outputs, seed, data={}):
     config = cfg.get_image_config(model)
 
     if "mflux-" not in config.IMAGE_MODEL_ID:

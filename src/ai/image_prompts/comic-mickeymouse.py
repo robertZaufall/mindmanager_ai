@@ -1,3 +1,5 @@
+# Title: Comic Mickey Mouse
+
 class MPrompt:
     _cloud_type: str = ""
     _explicit_style: str = ""
@@ -12,7 +14,7 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Create an image with a dark humorous comic sketch. "
+            "Create an image with a funny humorous comic ultrarealistic, mickey mouse style. Use colors. "
             f"Take this mindmap in mermaid syntax as context: \n```\n{context}```\n "
         )
 

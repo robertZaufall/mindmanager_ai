@@ -60,7 +60,7 @@ def create_mindmap_from_mermaid(document, mermaid, inplace=False):
         document.mindm = None
 
 
-def generate_image(model, document, guid, count=1, image_prompt="generic"):
+def generate_image(model, document, guid, count=1, image_prompt="generic", data={}):
 
     config = cfg_image.get_image_config(model)
 
@@ -73,7 +73,17 @@ def generate_image(model, document, guid, count=1, image_prompt="generic"):
     # store images in the library under images and background images
     file_paths = file_helper.get_image_file_paths(library_folder=document.get_library_folder(), top_most_topic=top_most_topic, guid=guid)
 
-    image_paths = ai_image.call_image_ai(model=model, image_paths=file_paths, context=context, top_most_topic=top_most_topic, subtopics=subtopics, n_count=count, image_prompt=image_prompt)
+    image_paths = ai_image.call_image_ai(
+        model=model, 
+        image_paths=file_paths, 
+        context=context, 
+        top_most_topic=top_most_topic, 
+        subtopics=subtopics, 
+        n_count=count, 
+        image_prompt=image_prompt, 
+        data=data
+    )
+
     if image_paths and isinstance(image_paths[0], str):
     
         if image_paths[0].endswith(".mp4"):
@@ -88,7 +98,7 @@ def generate_image(model, document, guid, count=1, image_prompt="generic"):
                 image.show()
 
 
-def main(param, charttype, model, freetext, inplace=False):
+def main(param, charttype, model, data={}, inplace=False):
 
     document = None
     mermaid = None
@@ -225,7 +235,7 @@ def main(param, charttype, model, freetext, inplace=False):
             if param.startswith("image"):
                 image_prompt = param.split("_")[-1] if "_" in param else "generic"
                 count = 1
-                generate_image(model, document, guid, count, image_prompt)
+                generate_image(model, document, guid, count, image_prompt, data=data)
 
             elif param.startswith("agent+"):
                 agent_action = param.split("+")[-1]
@@ -270,6 +280,7 @@ def main(param, charttype, model, freetext, inplace=False):
 
             # mindmap to mindmap
             else:
+                freetext = data.get("freetext", "") if "freetext" in param else ""
                 mermaid = MermaidMindmap(
                     ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, freetext=freetext)
                 )
@@ -315,7 +326,7 @@ def ui_main(payload):
         param = param + "+" + agent_action
 
     try:
-        main(param=param, charttype=charttype, model=model, freetext=freetext, inplace=inplace)
+        main(param=param, charttype=charttype, model=model, data=data, inplace=inplace)
     except Exception as e:
         print(f"An error occurred: {str(e)}")
 
@@ -343,6 +354,6 @@ if __name__ == "__main__":
     validate_input(param, charttype, model, freetext)
 
     try:
-        main(param, charttype, model, freetext)
+        main(param, charttype, model, { "freetext": freetext })
     except Exception as e:
         print(f"An error occurred: {str(e)}")

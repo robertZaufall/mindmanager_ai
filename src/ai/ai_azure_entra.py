@@ -104,7 +104,7 @@ def call_llm_azure_entra(model, str_user, data, mimeType):
     result = response.choices[0].message.content.replace("```mermaid", "").replace("```", "").lstrip("\n")  
     return result
 
-def call_image_ai(model, str_user, image_paths, n_count = 1):
+def call_image_ai(model, str_user, image_paths, n_count = 1, data={}):
     from PIL import Image
 
     config = cfg_image.get_image_config(model)

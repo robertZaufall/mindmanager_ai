@@ -1,3 +1,5 @@
+# Title: Comic Daffy Duck Vulgar
+
 class MPrompt:
     _cloud_type: str = ""
     _explicit_style: str = ""
@@ -12,7 +14,7 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Create an image with a funny humorous comic ultrarealistic, Donald Duck style - very rude and vulgar. Use colors. "
+            "Create an image with a funny humorous comic ultrarealistic, Daffy Duck style - ultra rude and vulgar. Use colors. "
             f"Take this mindmap in mermaid syntax as context: \n```\n{context}```\n "
         )
 

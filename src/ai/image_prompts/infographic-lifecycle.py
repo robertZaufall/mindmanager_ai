@@ -1,4 +1,4 @@
-# Title: Advertisement
+# Title: Infographic Lifecycle
 
 class MPrompt:
     _cloud_type: str = ""
@@ -14,8 +14,9 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Take this mindmap in mermaid syntax. Generate a high class advertorial image from the core topics of the mindmap. "
-            f"Here is the mindmap: \n```\n{context}```\n "
+            "Create an info graphic "
+            "about the entire life cycle from start to finish. focus especially on planning, implementation and review stages. "
+            f"Here is a mindmap in mermaid syntax just as contextual information: \n```\n{context}```\n "
         )
 
 def main():

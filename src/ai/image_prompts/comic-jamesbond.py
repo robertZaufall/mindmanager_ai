@@ -1,3 +1,5 @@
+# Title: Comic James Bond
+
 class MPrompt:
     _cloud_type: str = ""
     _explicit_style: str = ""
@@ -12,8 +14,8 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Take this mindmap in mermaid syntax. Generate a high class business brochure cover image from the core topics of the mindmap. "
-            f"Here is the mindmap: \n```\n{context}```\n "
+            "Create an image with a funny humorous comic ultrarealistic, James Bond style. Use colors. "
+            f"Take this mindmap in mermaid syntax as context: \n```\n{context}```\n "
         )
 
 def main():
