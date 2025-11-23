@@ -226,7 +226,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             else:
                 config.IMAGE_USE_GROUNDING = False
 
-            config.IMAGE_ASPECT_RATIO = "16:9" # "1:1","2:3","3:2","3:4","4:3","4:5","5:4","9:16","16:9","21:9"
+            config.IMAGE_ASPECT_RATIO = "21:9" # "1:1","2:3","3:2","3:4","4:3","4:5","5:4","9:16","16:9","21:9"
             config.IMAGE_RESOLUTION = "2K" # "1K", "2K", "4K"
             config.IMAGE_API_URL = (
                 f"https://{os.getenv('VERTEXAI_API_ENDPOINT_GLOBAL_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
