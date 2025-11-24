@@ -101,6 +101,9 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     config.INSERT_IMAGE_AS_BACKGROUND = True
     config.OPTIMIZE_PROMPT_IMAGE = False
 
+    # only relevant for MACOS platform
+    config.MACOS_ACCESS = 'appscript'
+
     model = CLOUD_TYPE_IMAGE.split("+")[-1]
     config.IMAGE_MODEL_ID = model
     system = CLOUD_TYPE_IMAGE.split("+")[0]

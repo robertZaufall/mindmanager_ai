@@ -51,7 +51,8 @@ valid_charttypes = ["orgchart", "radial", "auto"] # (-> on macos factory templat
 def create_mindmap_from_mermaid(document, mermaid, inplace=False):
     charttype = document.charttype
     turbo_mode = document.turbo_mode
-    document = MindmapDocument(charttype=charttype, turbo_mode=turbo_mode)
+    macos_access = document.macos_access
+    document = MindmapDocument(charttype=charttype, turbo_mode=turbo_mode, macos_access=macos_access)
     if mermaid.mermaid_mindmap != "":
         document.mindmap = mermaid.create_mindmap_from_mermaid()
         document.max_topic_level = document.get_max_topic_level(mindmap_topic=document.mindmap)
@@ -125,7 +126,7 @@ def main(param, charttype, model, data={}, inplace=False):
     if param.startswith("pdf_") and charttype == "auto":
         charttype = "radial"
 
-    document = MindmapDocument(charttype=charttype, turbo_mode=config.TURBO_MODE)
+    document = MindmapDocument(charttype=charttype, turbo_mode=config.TURBO_MODE, macos_access=config.MACOS_ACCESS)
     mermaid = MermaidMindmap("")
 
     # PDF import

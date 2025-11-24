@@ -14,6 +14,9 @@ def get_translation_config(CLOUD_TYPE_TRANSLATION: str = CLOUD_TYPE_TRANSLATION)
     config.TURBO_MODE = True # just generate text topics
     config.TRANSLATION_HEADERS = {"Content-Type": "application/json"}
 
+    # only relevant for MACOS platform
+    config.MACOS_ACCESS = 'appscript'
+
     load_env(CLOUD_TYPE_TRANSLATION.split("+")[0])
 
     if "DEEPL" in CLOUD_TYPE_TRANSLATION:
