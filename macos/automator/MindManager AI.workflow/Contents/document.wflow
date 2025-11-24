@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>AMApplicationBuild</key>
-	<string>523</string>
+	<string>533</string>
 	<key>AMApplicationVersion</key>
 	<string>2.10</string>
 	<key>AMDocumentVersion</key>
@@ -60,7 +60,7 @@
 				<dict>
 					<key>COMMAND_STRING</key>
 					<string>source $HOME/.zshrc
-python3 ~/git/mindmanager_ai/src/process.py image</string>
+python3 ~/git/mindmanager_ai/src/app_tkinter.py</string>
 					<key>CheckedForUserDefaultShell</key>
 					<true/>
 					<key>inputMethod</key>
@@ -85,7 +85,7 @@ python3 ~/git/mindmanager_ai/src/process.py image</string>
 				<key>Class Name</key>
 				<string>RunShellScriptAction</string>
 				<key>InputUUID</key>
-				<string>5304B204-3CDD-47E2-BE0A-C59327589F00</string>
+				<string>74759027-384E-48A0-B27A-4BBE8B2A29E0</string>
 				<key>Keywords</key>
 				<array>
 					<string>Shell</string>
@@ -95,9 +95,9 @@ python3 ~/git/mindmanager_ai/src/process.py image</string>
 					<string>Unix</string>
 				</array>
 				<key>OutputUUID</key>
-				<string>A28A961B-C4A7-4C70-A51C-021EE02CA923</string>
+				<string>9F0D18E1-FC7A-4E6D-9999-BC57E1F98354</string>
 				<key>UUID</key>
-				<string>9D200C28-A36F-406C-BCD5-78F8824B9175</string>
+				<string>8AACD44B-C485-4C79-A4EC-D3052A71046D</string>
 				<key>UnlocalizedApplications</key>
 				<array>
 					<string>Automator</string>
@@ -217,7 +217,7 @@ python3 ~/git/mindmanager_ai/src/process.py image</string>
 		<key>serviceProcessesInput</key>
 		<false/>
 		<key>systemImageName</key>
-		<string>NSTouchBarColorPickerWheel</string>
+		<string>NSTouchBarGlobe</string>
 		<key>useAutomaticInputType</key>
 		<false/>
 		<key>workflowTypeIdentifier</key>

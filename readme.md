@@ -153,7 +153,7 @@ This is one line:
 ```
 Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 ```  
-Change to folder `%localappdata%\Mindjet\MindManager\23\macros`:
+Change to folder `%localappdata%\Mindjet\MindManager\23\macros` (user your version number!):
 ```
 cd %localappdata%\Mindjet\MindManager\23\macros
 ```
@@ -170,12 +170,12 @@ pip install -U -r .\src\requirements.txt
 pip install -r .\src\requirements_auth.txt
 powershell -ExecutionPolicy Bypass -File .\windows\macro_registration.ps1
 ```
-Check in the registry and MindManager if the macros are available (right‑click on a topic).  
+Check in the registry and MindManager if the macro is available (right‑click on a topic).  
 Hint: The macro list is ordered according to the GUID string, not the macro name.   
 
 ![Registry](doc/windows_registry.png)  
 
-Macros can also be executed from the macro editor. The macros are similar except for the action parameter.  
+The macro can also be executed from the macro editor.  
 
 ![Automator](doc/windows_macroeditor.png)  
 
@@ -206,7 +206,7 @@ cd git
 git clone https://github.com/robertZaufall/mindmanager_ai.git
 cd mindmanager_ai
 ```
-Change to folder `macos` and copy the Automator workflows to the `~/Library/Services` (hidden) folder:
+Change to folder `macos` and copy the Automator workflow to the `~/Library/Services` (hidden) folder:
 ```
 cd macos/automator
 chmod +x ./copy_to_services.sh
@@ -216,11 +216,11 @@ If you need elevated privileges for copying the files, use this command:
 ```
 sudo sh ./copy_to_services.sh
 ```
-All **Automator** workflow settings are similar but the action parameter:  
+The **Automator** workflow settings:  
 
 <img src="doc/macos_automator.png" width="600" >  
 
-The workflows are then available in the "MindManager" main menu -> Services  
+The workflow is then available in the "MindManager" main menu -> Services  
 
 <img src="doc/macos_services.png" width="400" >  
 
@@ -371,9 +371,11 @@ MindManager COM objects are addressed by using the PyWin32 library:
 <img src="doc/windows_mindmanager.png" height="210" >
 
 ### macOS  
-MindManager objects are addressed by using the AppScript library:  
+MindManager objects are addressed by using AppleScript or the AppScript library:  
 
 <img src="doc/macos_mindmanager.png" height="200" >
+
+The behaviour can be switched in the config-files: `"appscript"` vs. `"applescript"`.  
 
 ## Implementation details  
 The Mermaid mindmap syntax is used when talking to the OpenAI LLM as an intermediate "language". Log file contents for input, output, prompt can be used in other use cases eg. mindmap visualizations in GitHub markdown files.  

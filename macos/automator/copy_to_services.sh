@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -e
+
+SOURCE_DIR="."
 DESTINATION=~/Library/Services
 
 # Create the destination directory if it doesn't exist
@@ -8,29 +11,26 @@ if [ ! -d "$DESTINATION" ]; then
     mkdir -p "$DESTINATION"
 fi
 
-# Function to delete directories in destination that exist in source
-delete_overlap() {
-    for dir in $(ls -d */); do
-        if [ -d "$DESTINATION/${dir}" ]; then
-            echo "Deleting overlapping directory: $dir"
-            rm -rf "$DESTINATION/${dir}"
-        fi
-    done
-}
+workflows=(
+    "MindManager AI.workflow"
+)
 
-# Function to copy from source to destination
-copy_to_destination() {
-    rsync -av . "$DESTINATION"
-}
+for dir in "${workflows[@]}"; do
+    target="$DESTINATION/$dir"
+    source_dir="$SOURCE_DIR/$dir"
 
-# Delete the script from the destination after execution
-delete_script() {
-    rm -f "$DESTINATION/$(basename $0)"
-}
+    if [ -d "$target" ]; then
+        echo "Deleting $target"
+        rm -rf "$target"
+    fi
 
-# Main execution
-delete_overlap
-copy_to_destination
-delete_script
+    if [ ! -d "$source_dir" ]; then
+        echo "Source $source_dir not found." >&2
+        exit 1
+    fi
+
+    echo "Copying $source_dir to $DESTINATION"
+    cp -R "$source_dir" "$DESTINATION"
+done
 
 echo "Copy completed."
