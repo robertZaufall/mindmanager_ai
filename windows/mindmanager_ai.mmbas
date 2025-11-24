@@ -9,7 +9,5 @@ Sub Main
 
     scriptPath = wsh.ExpandEnvironmentStrings("%LOCALAPPDATA%") + "\Mindjet\MindManager\23\macros\src"
 
-    action = "capex_opex"
-
-    wsh.Run "cmd /c python " + scriptPath + "\process.py " + action, 0, True
+    wsh.Run "cmd /c python " + scriptPath + "\app_tkinter.py", 0, True
 End Sub
