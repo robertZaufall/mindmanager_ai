@@ -91,12 +91,12 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'GITHUB+mistral-ai/mistral-medium-2505'                  # 4k
 
 # Anthropic     
+# CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-5-20251101'                     # best ($  5.00, $ 25.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-haiku-4-5-20251001'                    # best ($  1.00, $  5.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-5-20250929'                   # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-sonnet-4-20250514'                     # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-opus-4-1-20250805'                     # best ($ 15.00, $ 75.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-7-sonnet-20250219'                   # best ($  3.00, $ 15.00)
-# CLOUD_TYPE = 'ANTHROPIC+claude-3-5-sonnet-20241022'                   # best ($  3.00, $ 15.00)
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best ($  0.80, $  4.00)
 
 # Google Gemini
@@ -123,11 +123,12 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'VERTEXAI+anthropic/claude-sonnet-4'                     # *** implementation does not work ***
 
 # AWS Bedrock
+# CLOUD_TYPE = 'BEDROCK+global.anthropic.claude-opus-4-5-20251101-v1:0' # best
+# CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-5-20250929-v1:0'   # best
+# CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-20250514-v1:0'     # best
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-premier-v1:0'                       # ok
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-pro-v1:0'                           # best, max token output only 5120
 # CLOUD_TYPE = 'BEDROCK+amazon.nova-lite-v1:0'                          # best, max token output only 5120
-# CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-5-20250929-v1:0'   # best
-# CLOUD_TYPE = 'BEDROCK+us.anthropic.claude-sonnet-4-20250514-v1:0'     # best
 # CLOUD_TYPE = 'BEDROCK+mistral.mistral-large-2402-v1:0'                # ok
 
 # xAI     
@@ -261,6 +262,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.LLM_TEMPERATURE = 0.5
     config.MAX_RETRIES = 3
 
+    # only relevant for MACOS platform
+    config.MACOS_ACCESS = 'appscript'
 
     config.SYSTEM_PROMPT = """
     You are a highly experienced business consultant with expertise in 
@@ -431,7 +434,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MAX_TOKENS = 5120
         elif model.startswith("amazon.nova-lite-"):
             config.MAX_TOKENS = 5120
-        elif "-sonnet-4-" in model:
+        elif "-sonnet-4" in model or "-opus-4" in model or "-haiku-4" in model:
             config.MAX_TOKENS = 64000
         config.AWS_ACCESS_KEY = os.getenv("BEDROCK_ACCESS_KEY")
         config.AWS_SECRET_KEY = os.getenv("BEDROCK_SECRET_KEY")
