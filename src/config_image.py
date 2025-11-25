@@ -65,6 +65,8 @@ CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best 
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                                # best
         
 # Black Forrest Labs        
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-pro'                                      # best (fast and efficient) (0,03ct per image)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-flex'                                     # best (max quality) (0,06ct per image)
 # CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-pro'                                # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                                # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                              # best
@@ -324,9 +326,17 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_EXPLICIT_STYLE = "computer collage art"
         config.IMAGE_OUTPUT_FORMAT = "png"
         config.IMAGE_SEED = 0
-        config.IMAGE_SAFETY_TOLERANCE = 6  # 0-6, 6 = least strict
+        config.IMAGE_SAFETY_TOLERANCE = 5  # 0-6, 6 = least strict
 
-        if model == "flux-kontext-pro" or model == "flux-kontext-max":
+        if model == "flux-2-pro":
+            config.IMAGE_HEIGHT = 720  # 21:9: 2016x864/1680x720, 16:9: 1920x1080, 4:3: 1440x1080, 1:1: 1024x1024
+            config.IMAGE_WIDTH = 1680
+        elif model == "flux-2-flex":
+            config.IMAGE_HEIGHT = 720
+            config.IMAGE_WIDTH = 1680
+            config.IMAGE_STEPS = 50
+            config.IMAGE_GUIDANCE = 4.5 # 1.5 - 10 (closer prompt adherence)
+        elif model == "flux-kontext-pro" or model == "flux-kontext-max":
             config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
             config.IMAGE_PROMPT_UPSAMPLING = False
         elif model == "flux-pro-1.1-ultra":
