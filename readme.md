@@ -2,23 +2,11 @@
 
 These automations and macros enhance mindmaps created by **MindManager** on macOS and Windows.
 
-## Windows  
+Example 1:
+![Example](doc/anim_new_1.gif)  
 
-Using MindManager Macro:  
-
-![Example](doc/anim_neu_1.gif)  
-
-## macOS  
-
-Using Automator Workflow (Quick Action):  
-
-![Example](doc/anim_neu_2.gif)  
-
-Using Tkinter UI and "Freetext" option (run the `app_tkinter.py` file):  
-
-![Example](doc/ui_freetext.gif)  
-
-More animated examples are in the `doc` folder.
+Example 2:
+![Example](doc/anim_new_2.gif)  
 
 ## Features
 
