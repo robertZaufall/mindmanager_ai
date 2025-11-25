@@ -9,7 +9,6 @@ src/archive/**
 .DS_Store
 macos/automator/.DS_Store
 token_cache.json
-**.mp4
 .aider*
 test/~$Test_DOM.mmap.~$lock
 src/import/**
