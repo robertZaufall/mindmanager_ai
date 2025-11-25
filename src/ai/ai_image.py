@@ -294,7 +294,23 @@ def call_image_ai(model,
             "prompt": str_user
         }
 
-        if config.IMAGE_MODEL_ID == "flux-pro-1.1":
+        if config.IMAGE_MODEL_ID == "flux-2-pro":
+            payload["width"] = config.IMAGE_WIDTH
+            payload["height"] = config.IMAGE_HEIGHT
+            payload["seed"] = seed
+            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
+            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
+
+        elif config.IMAGE_MODEL_ID == "flux-2-flex":
+            payload["width"] = config.IMAGE_WIDTH
+            payload["height"] = config.IMAGE_HEIGHT
+            payload["steps"] = config.IMAGE_STEPS
+            payload["seed"] = seed
+            payload["guidance"] = config.IMAGE_GUIDANCE
+            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
+            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
+
+        elif config.IMAGE_MODEL_ID == "flux-pro-1.1":
             payload["width"] = config.IMAGE_WIDTH
             payload["height"] = config.IMAGE_HEIGHT
             payload["prompt_upsampling"] = config.IMAGE_PROMPT_UPSAMPLING
