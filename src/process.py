@@ -90,9 +90,10 @@ def generate_image(model, document, guid, count=1, image_prompt="generic", data=
         if image_paths[0].endswith(".mp4"):
             os.system(f'open "{image_paths[0]}"' if platform == "darwin" else f'start "" "{image_paths[0]}"')
         else:
-
             if config.INSERT_IMAGE_AS_BACKGROUND and document.central_topic_selected and platform == "win":
                 document.set_background_image(image_paths[1])
+            elif platform == "win":
+                os.system(f'start "" "{image_paths[0]}"')
             else:
                 from PIL import Image
                 image = Image.open(image_paths[0])  
