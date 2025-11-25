@@ -11,12 +11,13 @@ class MPrompt:
     def get_prompt(self, 
             context: str="",
             top_most_topic: str="", 
-            subtopics: str="" 
+            subtopics: str="",
+            style: str="",
         ) -> str:
         return (
-            "Create an info graphic "
-            "about the entire life cycle from start to finish. focus especially on planning, implementation and review stages. "
-            f"Take this markdown as context: \n```markdown\n{context}```\n "
+            f"Create an info graphic about the entire life cycle from start to finish. Focus especially on planning, implementation and review stages{(", " + style + ",") if style else ""} "
+            f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
+            f"\n```markdown\n{context}```\n "
         )
 
 def main():

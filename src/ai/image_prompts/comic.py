@@ -1,4 +1,4 @@
-# Title: Comic Beavis and Butthead
+# Title: Comic
 
 class MPrompt:
     _cloud_type: str = ""
@@ -11,11 +11,13 @@ class MPrompt:
     def get_prompt(self, 
             context: str="",
             top_most_topic: str="", 
-            subtopics: str="" 
+            subtopics: str="",
+            style: str="",
         ) -> str:
         return (
-            "Create an image with a funny humorous comic ultrarealistic, Beavis and Butthead style. Use colors. "
-            f"Take this markdown as context: \n```markdown\n{context}```\n "
+            f"Generate an image with a funny humorous comic ultrarealistic{(", " + style + ",") if style else ""} "
+            f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
+            f"\n```markdown\n{context}```\n "
         )
 
 def main():

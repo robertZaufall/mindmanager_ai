@@ -11,10 +11,12 @@ class MPrompt:
     def get_prompt(self, 
             context: str="",
             top_most_topic: str="", 
-            subtopics: str="" 
+            subtopics: str="",
+            style: str="",
         ) -> str:
         return (
-            "Generate an image from a very detailed process organization chart from the core topics of this markdown. "
+            f"Generate a process organization chart image{(", " + style + ",") if style else ""} "
+            f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
             f"\n```markdown\n{context}```\n "
         )
 

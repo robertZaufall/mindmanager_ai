@@ -20,6 +20,20 @@ class MPrompt:
             f"Take this markdown as context: \n```markdown\n{context}```\n "
         )
 
+    def get_prompt(self, 
+            context: str="",
+            top_most_topic: str="", 
+            subtopics: str="",
+            style: str="",
+        ) -> str:
+        return (
+            f"Create a beautifully entertaining 8 part story in one image with one blue character and his adventures{(", " + style + ",") if style else ""} "
+            f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
+            f"\n```markdown\n{context}```\n "
+            "The story is thrilling throughout with emotional highs and lows and ending on a "
+            "great twist and high note. Do not include any words or text on the images but tell the story purely through the imagery itself. "
+        )
+
 def main():
     _prompt = MPrompt()
     prompt_text = _prompt.get_prompt(context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n')

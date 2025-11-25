@@ -32,13 +32,19 @@ def call_image_ai(model,
     if config.CLOUD_TYPE_IMAGE == "":
         raise Exception("Error: CLOUD_TYPE_IMAGE is not set in config_image.py")
     
+    style_prompt = ""
+    try:
+        style_prompt = data.get("style_prompt", "")
+    except Exception:
+        style_prompt = ""
+
     prompt_path = os.path.join(os.path.dirname(__file__), 'image_prompts', f"{image_prompt}.py")
     if not os.path.exists(prompt_path):
         raise Exception(f"Error: {prompt_path} does not exist.")
     module = file_helper.load_module_from_path(prompt_path, "mprompt")
     mprompt = module.MPrompt(config.CLOUD_TYPE_IMAGE, config.IMAGE_EXPLICIT_STYLE if hasattr(config, "IMAGE_EXPLICIT_STYLE") else "")
 
-    str_user = mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics)
+    str_user = mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics, style=style_prompt)
 
     if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA_IMAGE:
         n_count = 1 # override n_count to 1

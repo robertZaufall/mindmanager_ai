@@ -39,6 +39,53 @@ def load_image_prompts():
     except FileNotFoundError:
         return {}
 
+def load_image_styles():
+    styles_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_prompts', 'styles.yaml')
+    if not os.path.exists(styles_path):
+        return {}
+
+    def _parse_styles(data):
+        styles_dict = {}
+        if isinstance(data, dict):
+            candidate = data.get("styles", data)
+            if isinstance(candidate, dict):
+                for name, prompt in candidate.items():
+                    if isinstance(prompt, dict):
+                        prompt_text = prompt.get("prompt") or prompt.get("style") or prompt.get("description")
+                    else:
+                        prompt_text = str(prompt)
+                    if name and prompt_text:
+                        styles_dict[name] = prompt_text
+            elif isinstance(candidate, list):
+                for entry in candidate:
+                    if not isinstance(entry, dict):
+                        continue
+                    name = entry.get("name") or entry.get("title") or entry.get("label")
+                    prompt_text = entry.get("prompt") or entry.get("style") or entry.get("description")
+                    if name and prompt_text:
+                        styles_dict[name] = prompt_text
+        elif isinstance(data, list):
+            for entry in data:
+                if not isinstance(entry, dict):
+                    continue
+                name = entry.get("name") or entry.get("title") or entry.get("label")
+                prompt_text = entry.get("prompt") or entry.get("style") or entry.get("description")
+                if name and prompt_text:
+                    styles_dict[name] = prompt_text
+        return styles_dict
+
+    try:
+        try:
+            import yaml
+        except ImportError:
+            yaml = None
+
+        with open(styles_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f) if yaml else json.load(f)
+        return _parse_styles(data)
+    except Exception:
+        return {}
+
 
 
 def load_settings():
@@ -306,7 +353,15 @@ class MindmanagerAIApp(tk.Tk):
         default_prompt = "Generic" if "Generic" in image_prompt_names else (image_prompt_names[0] if image_prompt_names else "")
         self.var_image_action_tab2 = tk.StringVar(value=default_prompt)
         self.create_labeled_combobox(
-            tab, "Type:", self.var_image_action_tab2, image_prompt_names
+            tab, "Content:", self.var_image_action_tab2, image_prompt_names
+        )
+
+        image_styles = load_image_styles()
+        style_names = list(image_styles.keys())
+        default_style = style_names[0] if style_names else ""
+        self.var_image_style_tab2 = tk.StringVar(value=default_style)
+        self.create_labeled_combobox(
+            tab, "Style:", self.var_image_style_tab2, style_names
         )
 
         def submit_tab2():
@@ -315,7 +370,10 @@ class MindmanagerAIApp(tk.Tk):
             prompt_file = image_prompts.get(selected_action_key, "")
             prompt_base = os.path.splitext(prompt_file)[0] if prompt_file else "generic"
             action = "image" if prompt_base == "generic" else f"image_{prompt_base}"
-            payload = self.build_payload(selected_image_model, action)
+            selected_style_key = self.var_image_style_tab2.get()
+            style_prompt = image_styles.get(selected_style_key, "")
+            data = {"style_name": selected_style_key, "style_prompt": style_prompt}
+            payload = self.build_payload(selected_image_model, action, data=data)
             self.call_process_json(payload)
 
         # Buttons

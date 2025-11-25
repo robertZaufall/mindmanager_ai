@@ -11,12 +11,12 @@ class MPrompt:
     def get_prompt(self, 
             context: str="",
             top_most_topic: str="", 
-            subtopics: str="" 
+            subtopics: str="",
+            style: str="",
         ) -> str:
         return (
-            "Transform this markdown into the image of a "
-            "professional presentable expensive looking business infographic: "
-            "diagrams, arrows, boxes, and captions explaining the core idea visually. "
+            f"Transform this markdown into the image of a business infographic{(", " + style + ",") if style else ""} "
+            f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
             f"\n```markdown\n{context}```\n "
         )
 
