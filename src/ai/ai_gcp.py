@@ -163,41 +163,20 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
             },
             "generationConfig": {
                 "responseModalities": ["TEXT", "IMAGE"],
-                "imageConfig": { "aspectRatio": config.IMAGE_ASPECT_RATIO, "imageSize": config.IMAGE_RESOLUTION },
+                "imageConfig": { 
+                    "aspectRatio": config.IMAGE_ASPECT_RATIO, 
+                    "imageSize": config.IMAGE_RESOLUTION
+                }
             },
             "safetySettings": [
-                {
-                    "category": "HARM_CATEGORY_HATE_SPEECH",
-                    "threshold": "OFF"
-                },
-                {
-                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                    "threshold": "OFF"
-                },
-                {
-                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    "threshold": "OFF"
-                },
-                {
-                    "category": "HARM_CATEGORY_HARASSMENT",
-                    "threshold": "OFF"
-                },
-                {
-                    "category": "HARM_CATEGORY_IMAGE_HATE",
-                    "threshold": "OFF"
-                },
-                {
-                    "category": "HARM_CATEGORY_IMAGE_DANGEROUS_CONTENT",
-                    "threshold": "OFF"
-                },
-                {
-                    "category": "HARM_CATEGORY_IMAGE_HARASSMENT",
-                    "threshold": "OFF"
-                },
-                {
-                    "category": "HARM_CATEGORY_IMAGE_SEXUALLY_EXPLICIT",
-                    "threshold": "OFF"
-                }
+                { "category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_IMAGE_HATE", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_IMAGE_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_IMAGE_HARASSMENT", "threshold": "BLOCK_NONE" },
+                { "category": "HARM_CATEGORY_IMAGE_SEXUALLY_EXPLICIT", "threshold": "BLOCK_NONE" }
             ]
         }
         
