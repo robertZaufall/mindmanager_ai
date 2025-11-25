@@ -15,13 +15,15 @@ class MPrompt:
         postfix = "on a gray gradient background, visually appealing, expensive look, no text."
         topics = f" and also influenced by thought on {subtopics}" if subtopics else ""
 
-        if "," not in subtopics:
+        if "," not in subtopics and subtopics != "":
             top_most_topic = subtopics
             subtopics = ""
 
         if subtopics == "" and "," not in top_most_topic:
-            return f"{prefix} showing a strong scene representing {{{top_most_topic}}}, {postfix}"
-        return f"{prefix} stuffed with typical big symbols or a strong scene representing '{top_most_topic}'{topics}, {postfix}"
+            result = f"{prefix} showing a strong scene representing {{{top_most_topic}}}, {postfix}"
+        else:
+            result = f"{prefix} stuffed with typical big symbols or a strong scene representing '{top_most_topic}'{topics}, {postfix}"
+        return result
 
 def main():
     _prompt = MPrompt()
