@@ -98,7 +98,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     config.RESIZE_IMAGE = False
     config.RESIZE_IMAGE_WIDTH = 1024
     config.RESIZE_IMAGE_HEIGHT = 1024
-    config.INSERT_IMAGE_AS_BACKGROUND = True
+    config.INSERT_IMAGE_AS_BACKGROUND = False
     config.OPTIMIZE_PROMPT_IMAGE = False
 
     # only relevant for MACOS platform
