@@ -14,13 +14,13 @@ class MPrompt:
             subtopics: str="" 
         ) -> str:
         return (
-            "Take this mindmap in mermaid syntax. Generate a high class advertorial image from the core topics of the mindmap. "
-            f"Here is the mindmap: \n```\n{context}```\n "
+            "Generate a high class advertorial image from the core topics of this markdown. "
+            f"\n```markdown\n{context}```\n "
         )
 
 def main():
     _prompt = MPrompt()
-    prompt_text = _prompt.get_prompt(context='mindmap\n  Main Topic\n    Topic 1\n      Topic 1.1\n      Topic 1.2\n')
+    prompt_text = _prompt.get_prompt(context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n')
     print(prompt_text)
 
 if __name__ == "__main__":

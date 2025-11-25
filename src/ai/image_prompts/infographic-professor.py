@@ -13,16 +13,15 @@ class MPrompt:
             top_most_topic: str="", 
             subtopics: str="" 
         ) -> str:
-        """Prompt tailored for infographic generation."""
         return (
-            f"Take this mindmap in mermaid syntax and transform it into the image of a professor's whiteboard: diagrams, arrows, boxes, and captions explaining the core idea visually. "
+            f"Transform this markdown into the image of a professor's whiteboard: diagrams, arrows, boxes, and captions explaining the core idea visually. "
             f"Use colors as well. "
-            f"Here is the mindmap: \n```\n{context}```\n "
+            f"\n```markdown\n{context}```\n "
         )
 
 def main():
     _prompt = MPrompt()
-    prompt_text = _prompt.get_prompt(context='mindmap\n  Main Topic\n    Topic 1\n      Topic 1.1\n      Topic 1.2\n')
+    prompt_text = _prompt.get_prompt(context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n')
     print(prompt_text)
 
 if __name__ == "__main__":

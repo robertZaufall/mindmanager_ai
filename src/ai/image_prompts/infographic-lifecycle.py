@@ -16,12 +16,12 @@ class MPrompt:
         return (
             "Create an info graphic "
             "about the entire life cycle from start to finish. focus especially on planning, implementation and review stages. "
-            f"Here is a mindmap in mermaid syntax just as contextual information: \n```\n{context}```\n "
+            f"Take this markdown as context: \n```markdown\n{context}```\n "
         )
 
 def main():
     _prompt = MPrompt()
-    prompt_text = _prompt.get_prompt(context='mindmap\n  Main Topic\n    Topic 1\n      Topic 1.1\n      Topic 1.2\n')
+    prompt_text = _prompt.get_prompt(context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n')
     print(prompt_text)
 
 if __name__ == "__main__":

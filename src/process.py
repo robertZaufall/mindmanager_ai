@@ -6,6 +6,7 @@ import config_translate as cfg_translate
 import ai.prompts as prompts
 
 from mindmap.mindmap import MindmapDocument
+import mindmap.serialization as mms
 
 from mermaid.mermaid_helper import *
 import mermaid.mermaid_helper as mermaid_helper
@@ -65,8 +66,8 @@ def generate_image(model, document, guid, count=1, image_prompt="generic", data=
 
     config = cfg_image.get_image_config(model)
 
-    # get map as mermaid
-    context = get_mermaid_from_mindmap(mindmap=document.mindmap)
+    # get map as md
+    context = mms.serialize_mindmap_markdown(document.mindmap)
 
     # collect some grounding information for LLM
     top_most_topic, subtopics = document.get_grounding_information()

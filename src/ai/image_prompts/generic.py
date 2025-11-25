@@ -11,6 +11,14 @@ class MPrompt:
             top_most_topic: str="", 
             subtopics: str="" 
         ) -> str:
+
+        # Fallback for Nano Banana
+        if subtopics == "" and ("+gemini-3-pro-image" in self._cloud_type or "+gemini-2.5-flash-image" in self._cloud_type):
+            import os, file_helper
+            module = file_helper.load_module_from_path(os.path.join(os.path.dirname(__file__), 'infographic-business.py'), "mprompt")
+            mprompt = module.MPrompt(self._cloud_type, self._explicit_style)
+            return mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics)
+        
         prefix = f"Business graphic, minimalistic, professional {self._explicit_style}"
         postfix = "on a gray gradient background, visually appealing, expensive look, no text."
         topics = f" and also influenced by thought on {subtopics}" if subtopics else ""

@@ -15,12 +15,12 @@ class MPrompt:
         ) -> str:
         return (
             "Create an image with a funny humorous comic ultrarealistic, mickey mouse style. Use colors. "
-            f"Take this mindmap in mermaid syntax as context: \n```\n{context}```\n "
+            f"Take this markdown as context: \n```markdown\n{context}```\n "
         )
 
 def main():
     _prompt = MPrompt()
-    prompt_text = _prompt.get_prompt(context='mindmap\n  Main Topic\n    Topic 1\n      Topic 1.1\n      Topic 1.2\n')
+    prompt_text = _prompt.get_prompt(context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n')
     print(prompt_text)
 
 if __name__ == "__main__":
