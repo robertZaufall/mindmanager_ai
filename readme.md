@@ -39,7 +39,7 @@ Example 2:
   - **Azure OpenAI** w/ `gpt-image-1`, `DALL-E 3`, `Flux Pro 1.1`, `Flux.1 Kontext Pro` (use your key or log in with `Azure Entra ID`)  
   - **OpenAI** w/ `gpt-image-1`, `DALL-E 3` (use your key)
   - **Stability AI** w/ `Stable Diffusion 3` `SD3.5` / `SD3` / `Ultra` / `Core` (use your key)  
-  - **Google Vertex AI** w/ `Gemini Flash 2.5` (nano banana),`Imagen3` (use your access token / OAuth2, GCP approval required!)  
+  - **Google Vertex AI** w/ `Gemini Pro 3 Preview` (Nano Banana Pro), `Gemini Flash 2.5` (Nano Banana),`Imagen4/3` (use your access token / OAuth2, GCP approval required!)  
   - **Ideogram AI** w/ `V1` / `V2` (use your key)  
   - **Black Forest Labs** w/ `Flux Pro 1.1 Ultra`, `Flux Pro 1.1`, `Flux.1 Pro`, `Flux.1 Dev`, `Flux.1 Kontext Pro/Max`  (use your key)  
   - **Recraft AI** w/ `RecraftV3`, `Recraft20B` (use your token)  
@@ -298,8 +298,8 @@ MLX results depend on the model used. `LLaMA3` works well.
 The solution is best tested with `Azure OpenAI`. Results are very good. There are issues with text generated in images. Azure Entra ID authentication can be used in enterprise scenarios.  
 ### Stability AI - Stable Diffusion 3 + 3.5  
 Image generation with `SD3.5` and `SD3` is the most flexible, as you can use a seed value, negative prompt, etc. Prompt engineering is most important here, as the results are far from being perfect by now.  
-### Google Vertex AI - Imagen3, Veo 3  
-Image generation results are too simple by now as prompt engineering is also most important here. `Imagen3` has the highest image resolution (1:1 with 1536x1536). `Imagen3` is GA (globally available) but there is an approval process to get access to the API.  
+### Google Vertex AI - Gemini Pro 3 (Nano Banana), Imagen4, Veo 3.1  
+Image generation results are best using Gemini Pro 3.  
 ### Ideogram AI  
 Image generation is quite good using the `V2` model. When activating API access, keep in mind that generating an API key immediately results in a $40 bill.  
 ### Black Forest Labs  
