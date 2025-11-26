@@ -1,21 +1,17 @@
-# Consolidated model capabilities derived from config_image.py
-# Uses explicit defaults plus option lists for configurable fields.
-
 azure:
   defaults:
     cloud_type: AZURE
-    image_explicit_style: digital art
   models:
     - id: dall-e-3
       image_quality:
         default: hd
         options: [hd, standard, auto]
-      image_style:
-        default: vivid
-        options: [natural, vivid]
       image_size:
         default: 1792x1024
         options: [1024x1024, 1792x1024, 1024x1792]
+      image_style:
+        default: vivid
+        options: [vivid, neutral]
     - id: gpt-image-1
       image_quality:
         default: medium
@@ -41,30 +37,25 @@ azure:
         default: 1536x1024
         options: [1024x1024, 1536x1024, 1024x1536]
     - id: sora
-      image_api_version: preview
-      image_width:
-        default: 480
-        options: [480, 720, 854, 1080, 1280, 1920]
-      image_height:
-        default: 480
-        options: [480, 720, 854, 1080, 1280, 1920]
+      image_size:
+        default: 854x480
+        options: [480x480, 854x480, 720x720, 1280x720, 1080x1080, 1920x1080]
       video_length: 4
 
 openai:
   defaults:
     cloud_type: OPENAI
-    image_explicit_style: digital art
   models:
     - id: dall-e-3
       image_quality:
         default: hd
         options: [hd, standard, auto]
-      image_style:
-        default: vivid
-        options: [natural, vivid]
       image_size:
         default: 1792x1024
         options: [1024x1024, 1792x1024, 1024x1792]
+      image_style:
+        default: vivid
+        options: [vivid, neutral]
     - id: gpt-image-1
       image_quality:
         default: medium
@@ -72,9 +63,6 @@ openai:
       image_size:
         default: 1536x1024
         options: [1024x1024, 1536x1024, 1024x1536]
-      moderation:
-        default: low
-        options: [low, auto]
     - id: gpt-image-1-mini
       image_quality:
         default: medium
@@ -82,9 +70,6 @@ openai:
       image_size:
         default: 1536x1024
         options: [1024x1024, 1536x1024, 1024x1536]
-      moderation:
-        default: low
-        options: [low, auto]
     - id: sora-2
       image_size:
         default: 1280x720
@@ -99,17 +84,12 @@ openai:
 stabilityai:
   defaults:
     cloud_type: STABILITYAI
-    image_style_preset:
-      default: digital-art
-      options: [digital-art, 3d-model, analog-film, anime, cinematic, comic-book, enhance, fantasy-art, isometric, line-art, low-poly, modeling-compound, neon-punk, origami, photographic, pixel-art, tile-texture]
-    image_output_format:
-      default: png
-      options: [png, jpeg, webp]
     image_aspect_ratio:
-      default: 16:9
-      options: [16:9, 1:1, 21:9, 2:3, 3:2, 4:5, 5:4, 9:16, 9:21]
-    image_seed: 0
-    image_negativ_prompt: "text, characters, letters, words, labels"
+      default: "16:9"
+      options: ["16:9", "1:1", "21:9", "2:3", "3:2", "4:5", "5:4", "9:16", "9:21"]
+    style_presets:
+      default: digital-art
+      options: [3d-model, analog-film, anime, cinematic, comic-book, digital-art, enhance, fantasy-art, isometric, line-art, low-poly, modeling-compound, neon-punk, origami, photographic, pixel-art, tile-texture]
   models:
     - id: sd3.5-large
       model_endpoint: sd3
@@ -125,214 +105,130 @@ stabilityai:
       model_endpoint: sd3
     - id: core
       model_endpoint: core
-      image_explicit_style: ""
     - id: ultra
       model_endpoint: ultra
 
 vertexai:
   defaults:
     cloud_type: VERTEXAI
-    image_explicit_style: digital art
-    image_add_watermark: false
-    image_negativ_prompt: "text, characters, letters, words, labels"
   models:
     - id: gemini-3-pro-image-preview
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9]
+        default: "16:9"
+        options: ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"]
       image_resolution:
         default: 2K
         options: [1K, 2K, 4K]
       image_use_grounding: false
     - id: gemini-3-pro-image-preview-grounding
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9]
+        default: "16:9"
+        options: ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"]
       image_resolution:
         default: 2K
         options: [1K, 2K, 4K]
       image_use_grounding: true
     - id: gemini-2.5-flash-image
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9]
+        default: "16:9"
+        options: ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9"]
       image_resolution:
         default: 2K
         options: [1K, 2K, 4K]
     - id: imagen-4.0-generate-001
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 9:16, 16:9, 3:4, 4:3]
+        default: "16:9"
+        options: ["1:1", "9:16", "16:9", "3:4", "4:3"]
     - id: imagen-4.0-ultra-generate-001
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 9:16, 16:9, 3:4, 4:3]
+        default: "16:9"
+        options: ["1:1", "9:16", "16:9", "3:4", "4:3"]
     - id: imagen-4.0-fast-generate-001
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 9:16, 16:9, 3:4, 4:3]
+        default: "16:9"
+        options: ["1:1", "9:16", "16:9", "3:4", "4:3"]
     - id: imagen-3.0-generate-002
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 9:16, 16:9, 3:4, 4:3]
+        default: "16:9"
+        options: ["1:1", "9:16", "16:9", "3:4", "4:3"]
     - id: imagen-3.0-fast-generate-001
       image_aspect_ratio:
-        default: 16:9
-        options: [1:1, 9:16, 16:9, 3:4, 4:3]
+        default: "16:9"
+        options: ["1:1", "9:16", "16:9", "3:4", "4:3"]
     - id: veo-3.1-fast-generate-preview
       video_aspect_ratio:
-        default: 16:9
-        options: [16:9, 9:16]
-      video_sample_count:
-        default: 1
-        options: [1, 2, 3, 4]
+        default: "16:9"
+        options: ["16:9", "9:16"]
       video_length:
         default: 8
-        options: [5, 6, 7, 8]
-      video_person_generation:
-        default: allow_all
-        options: [allow_all, allow_adult, disallow]
-      video_add_watermark: false
-      video_include_rai_reason: false
-      video_generate_audio: false
+        options: [8]
       video_resolution:
         default: 720p
         options: [720p, 1080p]
-      video_negative_prompt: "text, characters, letters, words, labels"
-      video_seed: 0
     - id: veo-3.1-generate-preview
       video_aspect_ratio:
-        default: 16:9
-        options: [16:9, 9:16]
-      video_sample_count:
-        default: 1
-        options: [1, 2, 3, 4]
+        default: "16:9"
+        options: ["16:9", "9:16"]
       video_length:
         default: 8
-        options: [5, 6, 7, 8]
-      video_person_generation:
-        default: allow_all
-        options: [allow_all, allow_adult, disallow]
-      video_add_watermark: false
-      video_include_rai_reason: false
-      video_generate_audio: false
+        options: [8]
       video_resolution:
         default: 720p
         options: [720p, 1080p]
-      video_negative_prompt: "text, characters, letters, words, labels"
-      video_seed: 0
     - id: veo-3.0-fast-generate-001
       video_aspect_ratio:
-        default: 16:9
-        options: [16:9, 9:16]
-      video_sample_count:
-        default: 1
-        options: [1, 2, 3, 4]
+        default: "16:9"
+        options: ["16:9", "9:16"]
       video_length:
         default: 8
-        options: [5, 6, 7, 8]
-      video_person_generation:
-        default: allow_all
-        options: [allow_all, allow_adult, disallow]
-      video_add_watermark: false
-      video_include_rai_reason: false
-      video_generate_audio: false
+        options: [8]
       video_resolution:
         default: 720p
         options: [720p, 1080p]
-      video_negative_prompt: "text, characters, letters, words, labels"
-      video_seed: 0
     - id: veo-3.0-generate-001
       video_aspect_ratio:
-        default: 16:9
-        options: [16:9, 9:16]
-      video_sample_count:
-        default: 1
-        options: [1, 2, 3, 4]
+        default: "16:9"
+        options: ["16:9", "9:16"]
       video_length:
         default: 8
-        options: [5, 6, 7, 8]
-      video_person_generation:
-        default: allow_all
-        options: [allow_all, allow_adult, disallow]
-      video_add_watermark: false
-      video_include_rai_reason: false
-      video_generate_audio: false
+        options: [8]
       video_resolution:
         default: 720p
         options: [720p, 1080p]
-      video_negative_prompt: "text, characters, letters, words, labels"
-      video_seed: 0
     - id: veo-3.0-fast-generate-preview
       video_aspect_ratio:
-        default: 16:9
-        options: [16:9, 9:16]
-      video_sample_count:
-        default: 1
-        options: [1, 2, 3, 4]
+        default: "16:9"
+        options: ["16:9", "9:16"]
       video_length:
         default: 8
-        options: [5, 6, 7, 8]
-      video_person_generation:
-        default: allow_all
-        options: [allow_all, allow_adult, disallow]
-      video_add_watermark: false
-      video_include_rai_reason: false
-      video_generate_audio: false
+        options: [8]
       video_resolution:
         default: 720p
         options: [720p, 1080p]
-      video_negative_prompt: "text, characters, letters, words, labels"
-      video_seed: 0
     - id: veo-3.0-generate-preview
       video_aspect_ratio:
-        default: 16:9
-        options: [16:9, 9:16]
-      video_sample_count:
-        default: 1
-        options: [1, 2, 3, 4]
+        default: "16:9"
+        options: ["16:9", "9:16"]
       video_length:
         default: 8
-        options: [5, 6, 7, 8]
-      video_person_generation:
-        default: allow_all
-        options: [allow_all, allow_adult, disallow]
-      video_add_watermark: false
-      video_include_rai_reason: false
-      video_generate_audio: false
+        options: [8]
       video_resolution:
         default: 720p
         options: [720p, 1080p]
-      video_negative_prompt: "text, characters, letters, words, labels"
-      video_seed: 0
     - id: veo-2.0-generate-001
       video_aspect_ratio:
-        default: 16:9
-        options: [16:9, 9:16]
-      video_sample_count:
-        default: 1
-        options: [1, 2, 3, 4]
+        default: "16:9"
+        options: ["16:9", "9:16"]
       video_length:
         default: 8
-        options: [5, 6, 7, 8]
-      video_person_generation:
-        default: allow_all
-        options: [allow_all, allow_adult, disallow]
-      video_add_watermark: false
-      video_include_rai_reason: false
-      video_generate_audio: false
+        options: [8]
       video_resolution:
         default: 720p
         options: [720p, 1080p]
-      video_negative_prompt: "text, characters, letters, words, labels"
-      video_seed: 0
 
 mlx:
   defaults:
     cloud_type: MLX
-    image_seed: 0
-    image_explicit_style: photorealistic 3D art
-    image_negativ_prompt: ""
     image_height: 1024
     image_width: 1024
   models:
@@ -357,88 +253,26 @@ ideogramai:
   defaults:
     cloud_type: IDEOGRAMAI
     image_seed: 0
-    image_negativ_prompt: "text, characters, letters, words, labels"
   models:
     - id: V_3
-      image_style_type:
-        default: AUTO
-        options: [AUTO, GENERAL, REALISTIC, DESIGN]
       image_resolution: 1024x1024
       image_rendering_speed:
         default: DEFAULT
         options: [DEFAULT, TURBO, QUALITY]
     - id: V_3_TURBO
-      image_style_type:
-        default: AUTO
-        options: [AUTO, GENERAL, REALISTIC, DESIGN]
       image_resolution: 1024x1024
       image_rendering_speed:
         default: TURBO
         options: [DEFAULT, TURBO, QUALITY]
     - id: V_3_QUALITY
-      image_style_type:
-        default: AUTO
-        options: [AUTO, GENERAL, REALISTIC, DESIGN]
       image_resolution: 1024x1024
       image_rendering_speed:
         default: QUALITY
         options: [DEFAULT, TURBO, QUALITY]
-    - id: V_2A
-      image_style_preset:
-        default: GENERAL
-        options: [DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME]
-      image_explicit_style: GENERAL
-      image_resolution: RESOLUTION_1024_1024
-      image_output_format:
-        default: png
-        options: [png]
-    - id: V_2A_TURBO
-      image_style_preset:
-        default: GENERAL
-        options: [DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME]
-      image_explicit_style: GENERAL
-      image_resolution: RESOLUTION_1024_1024
-      image_output_format:
-        default: png
-        options: [png]
-    - id: V_2
-      image_style_preset:
-        default: GENERAL
-        options: [DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME]
-      image_explicit_style: GENERAL
-      image_resolution: RESOLUTION_1024_1024
-      image_output_format:
-        default: png
-        options: [png]
-    - id: V_2_TURBO
-      image_style_preset:
-        default: GENERAL
-        options: [DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME]
-      image_explicit_style: GENERAL
-      image_resolution: RESOLUTION_1024_1024
-      image_output_format:
-        default: png
-        options: [png]
-    - id: V_1
-      image_explicit_style: computer collage art
-      image_resolution: RESOLUTION_1024_1024
-      image_output_format:
-        default: png
-        options: [png]
-    - id: V_1_TURBO
-      image_explicit_style: computer collage art
-      image_resolution: RESOLUTION_1024_1024
-      image_output_format:
-        default: png
-        options: [png]
 
 bfl:
   defaults:
     cloud_type: BFL
-    image_explicit_style: computer collage art
-    image_output_format: png
-    image_seed: 0
-    image_safety_tolerance: 5
   models:
     - id: flux-2-pro
       image_height:
@@ -458,36 +292,23 @@ bfl:
       image_guidance: 4.5
     - id: flux-kontext-pro
       image_aspect_ratio:
-        default: 4:3
-        options: [21:9, 16:9, 4:3, 1:1, 9:16, 9:21]
+        default: "4:3"
+        options: ["21:9", "16:9", "4:3", "1:1", "9:16", "9:21"]
       image_prompt_upsampling: false
     - id: flux-kontext-max
       image_aspect_ratio:
-        default: 4:3
-        options: [21:9, 16:9, 4:3, 1:1, 9:16, 9:21]
+        default: "4:3"
+        options: ["21:9", "16:9", "4:3", "1:1", "9:16", "9:21"]
       image_prompt_upsampling: false
     - id: flux-pro-1.1-ultra
       image_raw: false
       image_aspect_ratio:
-        default: 4:3
-        options: [21:9, 16:9, 4:3, 1:1, 9:16, 9:21]
+        default: "4:3"
+        options: ["21:9", "16:9", "4:3", "1:1", "9:16", "9:21"]
     - id: flux-pro-1.1
       image_height: 1024
       image_width: 1024
       image_prompt_upsampling: false
-    - id: flux-pro
-      image_height: 1024
-      image_width: 1024
-      image_steps: 28
-      image_interval: 2
-      image_prompt_upsampling: false
-      image_guidance: 3
-    - id: flux-dev
-      image_height: 1024
-      image_width: 1024
-      image_steps: 28
-      image_prompt_upsampling: false
-      image_guidance: 3
 
 recraftai:
   defaults:
@@ -495,33 +316,17 @@ recraftai:
     image_size:
       default: 1024x1024
       options: [1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024]
-    image_response_format:
-      default: url
-      options: [url, b64_json]
-    image_explicit_style: ""
-    image_substyle: ""
   models:
     - id: recraftv3
-      image_style:
-        default: realistic_image
-        options: [realistic_image, digital_illustration, vector_illustration, icon]
-      image_substyle: enterprise
     - id: recraft20b
-      image_style:
-        default: realistic_image
-        options: [realistic_image, digital_illustration, vector_illustration, icon]
-      image_substyle: enterprise
 
 alibabacloud:
   defaults:
     cloud_type: ALIBABACLOUD
     image_size:
-      default: 1024*1024
-      options: [512*512, 1024*1024, 1365*1024, 1024*1365, 1536*1024, 1024*1536, 1820*1024, 1024*1820, 1024*2048, 2048*1024, 1434*1024, 1024*1434, 1024*1280, 1280*1024, 1024*1707, 1707*1024]
-    image_seed: 0
+      default: "1024*1024"
+      options: ["512*512", "1024*1024", "1365*1024", "1024*1365", "1536*1024", "1024*1536", "1820*1024", "1024*1820", "1024*2048", "2048*1024", "1434*1024", "1024*1434", "1024*1280", "1280*1024", "1024*1707", "1707*1024"]
     image_prompt_extend: false
-    image_watermark: false
-    image_negativ_prompt: "text, characters, letters, words, labels"
   models:
     - id: wan2.2-t2i-flash
     - id: wan2.2-t2i-plus
@@ -531,26 +336,13 @@ fal:
     cloud_type: FAL
   models:
     - id: hunyuan-image/v3
-      image_negativ_prompt: "text, characters, letters, words, labels"
       image_size:
         default: square
         options: [square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9, custom]
       image_num_inference_steps: 28
       image_guidance_scale: 7.5
-      image_seed: 0
-      image_enable_safety_checker: false
-      image_sync_mode: true
-      image_output_format:
-        default: png
-        options: [png, jpeg]
       image_enable_prompt_expansion: false
     - id: bytedance/seedream/v4
       image_size:
         default: square
         options: [square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9, custom]
-      image_seed: 0
-      image_sync_mode: true
-      image_enable_safety_checker: false
-      image_output_format:
-        default: png
-        options: [png, jpeg]
