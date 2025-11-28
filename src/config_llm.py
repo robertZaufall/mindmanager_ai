@@ -4,13 +4,17 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+model-router'                                     #
-# CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best in class
-# CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # best in class
-# CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best in class
-# CLOUD_TYPE = 'AZURE+gpt-5'                                            # best in class
-CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
-# CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best
+# CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best ($  0.05, $  0.44)
+# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($  0.25, $  2.20)
+# CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'AZURE+gpt-5'                                            # best ($  1.25, $ 10.00 + reasoning tokens)
+# CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best ($  1.25, $ 10.00)
+# CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # good
+
+CLOUD_TYPE = 'AZURE+anthropic/claude-haiku-4-5'                       # best
+# CLOUD_TYPE = 'AZURE+anthropic/claude-sonnet-4-5'                      # best
+# CLOUD_TYPE = 'AZURE+anthropic/claude-opus-4-5'                        # best
+
 # CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
 # CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
@@ -25,7 +29,6 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best
 # CLOUD_TYPE = 'AZURE+o3-mini-medium'                                   # good
 # CLOUD_TYPE = 'AZURE+o3-mini-low'                                      # good
 # CLOUD_TYPE = 'AZURE+o3-mini'                                          # good
-# CLOUD_TYPE = 'AZURE+o1'                                               # best
 
 # OpenAI
 # CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-none'                         # best ($  1.25, $ 10.00)
@@ -324,6 +327,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         elif "model-router" in model:
             config.MAX_TOKENS = 32768
             config.MULTIMODAL = False
+        elif "anthropic/" in model:
+            config.MAX_TOKENS = 32000
 
     if "OPENAI+" in CLOUD_TYPE:
         config.API_URL = os.getenv('OPENAI_API_URL')
@@ -335,22 +340,36 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "AZURE+" in CLOUD_TYPE:
         config.USE_AZURE_ENTRA = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
-        config.AZURE_DEPLOYMENT = config.MODEL_ID
-        if "+gpt-5.1" in CLOUD_TYPE:
-            config.API_VERSION = os.getenv('AZURE_API_VERSION_RESPONSES')
-            config.API_URL = (
-                f"{os.getenv('AZURE_API_URL_RESPONSES')}"
-                f"responses"
-                f"?api-version=preview"
-            )
+
+        if "anthropic/" in model:
+            config.AZURE_DEPLOYMENT = "anthropic"
+            config.MODEL_ID = model.split("anthropic/")[-1]
+            config.API_VERSION = ""
+            config.API_URL = f"{os.getenv('AZURE_API_URL')}anthropic/v1/messages"
+            config.HEADERS = {
+                **config.HEADERS, 
+                "x-api-key": os.getenv('AZURE_API_KEY') or "", 
+                "anthropic-version": os.getenv('AZURE_API_VERSION_ANTHROPIC') or ""
+            }
+
         else:
-            config.API_VERSION = os.getenv('AZURE_API_VERSION')
-            config.API_URL = (
-                f"{os.getenv('AZURE_API_URL')}openai/deployments/"
-                f"{config.MODEL_ID}/chat/completions"
-                f"?api-version={config.API_VERSION}"
-            )
-        config.HEADERS = {**config.HEADERS, "api-key": os.getenv('AZURE_API_KEY') or ""}
+
+            config.AZURE_DEPLOYMENT = config.MODEL_ID
+            if "+gpt-5.1" in CLOUD_TYPE:
+                config.API_VERSION = os.getenv('AZURE_API_VERSION_RESPONSES')
+                config.API_URL = (
+                    f"{os.getenv('AZURE_API_URL_RESPONSES')}"
+                    f"responses"
+                    f"?api-version=preview"
+                )
+            else:
+                config.API_VERSION = os.getenv('AZURE_API_VERSION')
+                config.API_URL = (
+                    f"{os.getenv('AZURE_API_URL')}openai/deployments/"
+                    f"{config.MODEL_ID}/chat/completions"
+                    f"?api-version={config.API_VERSION}"
+                )
+            config.HEADERS = {**config.HEADERS, "api-key": os.getenv('AZURE_API_KEY') or ""}
 
     elif "OPENROUTER+" in CLOUD_TYPE:
         config.REASONING_EFFORT = ""

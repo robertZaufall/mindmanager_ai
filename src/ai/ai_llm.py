@@ -77,7 +77,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
                 print("finish reason is " + finish_reason)
             usage = parsed_json.get("usageMetadata", "")
 
-        elif "ANTHROPIC" in config.CLOUD_TYPE:
+        elif "ANTHROPIC" in config.CLOUD_TYPE or "AZURE+anthropic/" in config.CLOUD_TYPE:
             result = next((item["text"] for item in parsed_json["content"] if item.get("type") == "text"), "")
             stop_reason = parsed_json["stop_reason"]
             stop_sequence = parsed_json["stop_sequence"]
@@ -113,7 +113,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_FOUNDRY+" in config.CLOUD_TYPE or \
        "GITHUB+" in config.CLOUD_TYPE) and \
-       not "+o3-pro" in config.CLOUD_TYPE and not "+gpt-5.1" in config.CLOUD_TYPE:
+       not "+o3-pro" in config.CLOUD_TYPE and not "+gpt-5.1" in config.CLOUD_TYPE and not "+anthropic/" in config.CLOUD_TYPE:
 
         payload = {}
 
@@ -297,7 +297,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
         result = get_response(payload)
 
     # Anthropic
-    elif "ANTHROPIC" in config.CLOUD_TYPE:
+    elif "ANTHROPIC" in config.CLOUD_TYPE or "AZURE+anthropic/" in config.CLOUD_TYPE:
         payload = {
             "model": config.MODEL_ID,
             "max_tokens": config.MAX_TOKENS,
