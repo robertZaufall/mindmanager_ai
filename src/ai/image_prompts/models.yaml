@@ -362,22 +362,22 @@ bfl:
         options: [1024, 1440, 768]
       prompt_upsampling: false
 
-# recraftai:
-#   defaults:
-#     cloud_type: RECRAFTAI
-#     response_format: url
-#     image_size:
-#       default: 1280x1024
-#       options: [1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024]
-#   models:
-#     - id: recraftv3
-#       style: 
-#         default: realistic_image|enterprise
-#         options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|engraving_color, digital_illustration|grain, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|pixel_art, realistic_image|enterprise, vector_illustration|engraving, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut]
-#     - id: recraft20b
-#       style:
-#         default: realistic_image|enterprise
-#         options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|3d, digital_illustration|80s, digital_illustration|engraving_color, digital_illustration|flat_air_art, digital_illustration|glow, digital_illustration|grain, digital_illustration|halloween_drawings, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|kawaii, digital_illustration|pixel_art, digital_illustration|psychedelic, digital_illustration|seamless, digital_illustration|stickers_drawings, digital_illustration|voxel, digital_illustration|watercolor, realistic_image|enterprise, vector_illustration|70s, vector_illustration|cartoon, vector_illustration|doodle_line_art, vector_illustration|engraving, vector_illustration|flat_2, vector_illustration|halloween_stickers, vector_illustration|kawaii, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut, vector_illustration|seamless, icon|broken_line, icon|colored_outline, icon|colored_shapes, icon|colored_shapes_gradient, icon|doodle_fill, icon|doodle_offset_fill, icon|offset_fill, icon|outline, icon|outline_gradient, icon|uneven_fill]
+recraftai:
+  defaults:
+    cloud_type: RECRAFTAI
+    response_format: url
+    image_size:
+      default: 1280x1024
+      options: [1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024]
+  models:
+    - id: recraftv3
+      style: 
+        default: realistic_image|enterprise
+        options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|engraving_color, digital_illustration|grain, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|pixel_art, realistic_image|enterprise, vector_illustration|engraving, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut]
+    - id: recraft20b
+      style:
+        default: realistic_image|enterprise
+        options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|3d, digital_illustration|80s, digital_illustration|engraving_color, digital_illustration|flat_air_art, digital_illustration|glow, digital_illustration|grain, digital_illustration|halloween_drawings, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|kawaii, digital_illustration|pixel_art, digital_illustration|psychedelic, digital_illustration|seamless, digital_illustration|stickers_drawings, digital_illustration|voxel, digital_illustration|watercolor, realistic_image|enterprise, vector_illustration|70s, vector_illustration|cartoon, vector_illustration|doodle_line_art, vector_illustration|engraving, vector_illustration|flat_2, vector_illustration|halloween_stickers, vector_illustration|kawaii, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut, vector_illustration|seamless, icon|broken_line, icon|colored_outline, icon|colored_shapes, icon|colored_shapes_gradient, icon|doodle_fill, icon|doodle_offset_fill, icon|offset_fill, icon|outline, icon|outline_gradient, icon|uneven_fill]
 
 alibabacloud:
   defaults:
