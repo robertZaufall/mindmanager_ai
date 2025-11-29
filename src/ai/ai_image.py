@@ -51,7 +51,7 @@ def call_image_ai(model,
         import ai.ai_azure_entra as ai_azure_entra
         return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count, data=data)
 
-    # Azure + OpenAI Dall-e 3
+    # Azure + OpenAI
     if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
 
         # sora on Azure
@@ -59,9 +59,9 @@ def call_image_ai(model,
             payload = {
                 "model": config.IMAGE_MODEL_ID,
                 "prompt": str_user,
-                "n_seconds": config.VIDEO_LENGTH,
-                "width": config.IMAGE_WIDTH,
-                "height": config.IMAGE_HEIGHT,
+                "n_seconds": data.get("video_length"),
+                "width": data.get("image_size").split("x")[0],
+                "height": data.get("image_size").split("x")[1],
             }
         
             response = requests.post(
@@ -114,8 +114,8 @@ def call_image_ai(model,
             payload = {
                 "model": config.IMAGE_MODEL_ID,
                 "prompt": str_user,
-                "seconds": config.VIDEO_LENGTH,
-                "size": config.IMAGE_SIZE,
+                "seconds": data.get("video_length"),
+                "size": data.get("image_size"),
             }
         
             response = requests.post(
@@ -165,18 +165,28 @@ def call_image_ai(model,
             format = "b64_json"
             payload = {
                 "prompt": str_user,
-                "quality": config.IMAGE_QUALITY,
-                "size": config.IMAGE_SIZE,
                 "n": n_count,
             }
 
             if config.IMAGE_MODEL_ID == "dall-e-3":
-                payload["style"] = config.IMAGE_STYLE
+                payload["style"] = data.get("style")
                 payload["response_format"] = format
+                payload["quality"] = data.get("image_quality")
+                payload["size"] = data.get("image_size")
 
-            if "gpt-image-1" in config.IMAGE_MODEL_ID:
+            elif "gpt-image-1" in config.IMAGE_MODEL_ID:
                 payload["output_format"] = "png"
-                payload["moderation"] = config.MODERATION
+                payload["moderation"] = data.get("moderation")
+                payload["quality"] = data.get("image_quality")
+                payload["size"] = data.get("image_size")
+
+            elif config.IMAGE_MODEL_ID == "FLUX-1.1-pro":
+                payload["size"] = data.get("image_size")
+                payload["prompt_upsampling"] = data.get("prompt_upsampling")
+
+            elif config.IMAGE_MODEL_ID == "FLUX.1-Kontext-pro":
+                payload["aspect_ratio"] = data.get("image_aspect_ratio")
+                payload["prompt_upsampling"] = data.get("prompt_upsampling")
 
             if "OPENAI" in config.CLOUD_TYPE_IMAGE :
                 payload["model"] = config.IMAGE_MODEL_ID
@@ -210,9 +220,11 @@ def call_image_ai(model,
     # Stability AI / Stable Diffusion
     elif "STABILITYAI" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
-        negative_prompt = config.IMAGE_NEGATIV_PROMPT if config.IMAGE_MODEL_ID != "sd3-large-turbo" else ""
-        seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**32 - 1)
-        style = config.IMAGE_STYLE_PRESET if config.MODEL_ENDPOINT == "core" else ""
+        negative_prompt = data.get("negative_prompt") if config.IMAGE_MODEL_ID != "sd3-large-turbo" else ""
+        seed = data.get("seed") if data.get("seed") != 0 else random.randint(0, 2**32 - 1)
+        style = ""
+        #if config.MODEL_ENDPOINT == "core":
+        style = data.get("style_preset") or data.get("style_presets") or ""
 
         response = requests.post(
             url=config.IMAGE_API_URL,
@@ -221,11 +233,11 @@ def call_image_ai(model,
             data={
                 "prompt": str_user,
                 "model": config.IMAGE_MODEL_ID,
-                "output_format": config.IMAGE_OUTPUT_FORMAT,
-                "aspect_ratio": config.IMAGE_ASPECT_RATIO,
+                "output_format": data.get("output_format"),
+                "aspect_ratio": data.get("image_aspect_ratio"),
                 "negative_prompt": negative_prompt,
                 "seed": seed,
-                "IMAGE_STYLE_PRESET": style,
+                "style_preset": style,
             },
         )
 
@@ -240,35 +252,20 @@ def call_image_ai(model,
     # Ideogram AI
     elif "IDEOGRAMAI" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
-        seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**16 - 1)
+        seed = data.get("seed") if data.get("seed") != 0 else random.randint(0, 2**16 - 1)
 
         if "V_3" in config.IMAGE_MODEL_ID:
             payload = {
                 "prompt": str_user,
                 "seed": seed,
-                "resultion": config.IMAGE_RESOLUTION,
-                "rendering_speed": config.IMAGE_RENDERING_SPEED,
+                "resolution": data.get("image_resolution"),
+                "rendering_speed": data.get("image_rendering_speed"),
                 "magic_prompt": "AUTO",
-                "negative_prompt": config.IMAGE_NEGATIV_PROMPT,
-                "style_type": config.IMAGE_STYLE_TYPE,
+                "negative_prompt": data.get("negative_prompt"),
+                "style_type": data.get("style_type"),
             }
         else:
-            payload = {
-                "image_request": 
-                {
-                    "model": config.IMAGE_MODEL_ID,
-                    "magic_prompt_option": "AUTO",
-                    "prompt": str_user,
-                    "seed": seed,
-                }
-            }
-
-            if config.IMAGE_MODEL_ID == "V_2" or config.IMAGE_MODEL_ID == "V_2_TURBO":
-                payload["image_request"]["style_type"] = config.IMAGE_EXPLICIT_STYLE
-                payload["image_request"]["resolution"] = config.IMAGE_RESOLUTION
-
-            if not config.IMAGE_MODEL_ID.startswith("V_2A"):
-                payload["image_request"]["negative_prompt"] = config.IMAGE_NEGATIV_PROMPT
+            raise Exception("Error: Unknown Ideogram AI image model")
 
         response = requests.post(
             url=config.IMAGE_API_URL,
@@ -294,70 +291,39 @@ def call_image_ai(model,
     # Black Forest Labs
     elif "BFL" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
-        seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**16 - 1)
+        seed = data.get("seed") if data.get("seed") != 0 else random.randint(0, 2**16 - 1)
 
         payload = {
-            "prompt": str_user
+            "prompt": str_user,
+            "seed": seed,
+            "safety_tolerance": data.get("safety_tolerance"),
+            "output_format": data.get("output_format")
         }
 
         if config.IMAGE_MODEL_ID == "flux-2-pro":
-            payload["width"] = config.IMAGE_WIDTH
-            payload["height"] = config.IMAGE_HEIGHT
-            payload["seed"] = seed
-            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
-            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
+            payload["width"] = data.get("image_width")
+            payload["height"] = data.get("image_height")
+            payload["steps"] = data.get("steps")
+            payload["guidance"] = data.get("guidance")
 
         elif config.IMAGE_MODEL_ID == "flux-2-flex":
-            payload["width"] = config.IMAGE_WIDTH
-            payload["height"] = config.IMAGE_HEIGHT
-            payload["steps"] = config.IMAGE_STEPS
-            payload["seed"] = seed
-            payload["guidance"] = config.IMAGE_GUIDANCE
-            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
-            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
+            payload["width"] = data.get("image_width")
+            payload["height"] = data.get("image_height")
+            payload["steps"] = data.get("steps")
+            payload["guidance"] = data.get("guidance")
 
         elif config.IMAGE_MODEL_ID == "flux-pro-1.1":
-            payload["width"] = config.IMAGE_WIDTH
-            payload["height"] = config.IMAGE_HEIGHT
-            payload["prompt_upsampling"] = config.IMAGE_PROMPT_UPSAMPLING
-            payload["seed"] = seed
-            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
-            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
-
-        elif config.IMAGE_MODEL_ID == "flux-pro":
-            payload["width"] = config.IMAGE_WIDTH
-            payload["height"] = config.IMAGE_HEIGHT
-            payload["steps"] = config.IMAGE_STEPS
-            payload["prompt_upsampling"] = config.IMAGE_PROMPT_UPSAMPLING
-            payload["seed"] = seed
-            payload["guidance"] = config.IMAGE_GUIDANCE
-            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
-            payload["interval"] = config.IMAGE_INTERVAL
-            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
-
-        elif config.IMAGE_MODEL_ID == "flux-dev":
-            payload["width"] = config.IMAGE_WIDTH
-            payload["height"] = config.IMAGE_HEIGHT
-            payload["steps"] = config.IMAGE_STEPS
-            payload["prompt_upsampling"] = config.IMAGE_PROMPT_UPSAMPLING
-            payload["seed"] = seed
-            payload["guidance"] = config.IMAGE_GUIDANCE
-            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
-            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
+            payload["width"] = data.get("image_width")
+            payload["height"] = data.get("image_height")
+            payload["prompt_upsampling"] = data.get("prompt_upsampling")
 
         elif config.IMAGE_MODEL_ID == "flux-pro-1.1-ultra":
-            payload["seed"] = seed
-            payload["aspect_ratio"] = config.IMAGE_ASPECT_RATIO
-            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
-            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
-            payload["raw"] = config.IMAGE_RAW
+            payload["aspect_ratio"] = data.get("image_aspect_ratio")
+            payload["raw"] = data.get("raw")
 
         elif config.IMAGE_MODEL_ID == "flux-kontext-pro" or config.IMAGE_MODEL_ID == "flux-kontext-max":
-            payload["seed"] = seed
-            payload["aspect_ratio"] = config.IMAGE_ASPECT_RATIO
-            payload["prompt_upsampling"] = config.IMAGE_PROMPT_UPSAMPLING
-            payload["safety_tolerance"] = config.IMAGE_SAFETY_TOLERANCE
-            payload["output_format"] = config.IMAGE_OUTPUT_FORMAT
+            payload["aspect_ratio"] = data.get("image_aspect_ratio")
+            payload["prompt_upsampling"] = data.get("prompt_upsampling")
 
         else:
             raise Exception("Error: Unknown Flux image model")
@@ -377,6 +343,7 @@ def call_image_ai(model,
         id = parsed_json['id']
 
         url = ""
+        i = 0
         while True:
             result = requests.get(
                 url=config.IMAGE_API_URL + 'get_result',
@@ -393,6 +360,10 @@ def call_image_ai(model,
                 url = result_json['result']['sample']
                 break
             
+            i += 1
+            if i >= 60:  # Maximum 60 retries
+                break
+            
             time.sleep(1)
 
         if url != "":
@@ -406,21 +377,16 @@ def call_image_ai(model,
     # RecraftAI
     elif "RECRAFTAI" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
-        format = config.IMAGE_RESPONSE_FORMAT
+        format = data.get("response_format")
 
         payload = {
-            "prompt": str_user,
-            "n": n_count,
-            #"style_id": config.IMAGE_STYLE_ID,
-            "style": config.IMAGE_STYLE,
-            "substyle": config.IMAGE_SUBSTYLE, 
             "model": config.IMAGE_MODEL_ID,
+            "n": n_count,
+            "prompt": str_user,
+            "style": data.get("style").split("|")[0],
+            "substyle": data.get("style").split("|")[1],
             "response_format": format,
-            "size": config.IMAGE_SIZE,
-            #"controls": {
-            #    "image_type": "realistic_image",
-            #    "colors": [ { "rgb": [0,255,0] } ]
-            #}
+            "size": data.get("image_size"),
         }
 
         response = requests.post(
@@ -457,13 +423,13 @@ def call_image_ai(model,
 
     # MLX
     elif "MLX+" in config.CLOUD_TYPE_IMAGE:
-        seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**32 - 1)
+        seed = data.get("seed") if data.get("seed") != 0 else random.randint(0, 2**32 - 1)
         if "mflux-" in config.IMAGE_MODEL_ID:
             import ai.ai_image_mlx as ai_image_mlx
             image_paths = ai_image_mlx.generate_image(
                 model=model,
                 prompt=str_user, 
-                negative_prompt=config.IMAGE_NEGATIV_PROMPT, 
+                negative_prompt=data.get("negative_prompt"), 
                 n_images=n_count, 
                 outputs=image_paths, 
                 seed=seed,
@@ -475,22 +441,22 @@ def call_image_ai(model,
     # Alibabacloud
     elif "ALIBABACLOUD" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
-        seed = config.IMAGE_SEED if config.IMAGE_SEED != 0 else random.randint(0, 2**16 - 1)
+        seed = data.get("seed") if data.get("seed") != 0 else random.randint(0, 2**16 - 1)
 
         payload = {
             "model": config.IMAGE_MODEL_ID,
             "input":
             {
                 "prompt": str_user,
-                "negative_prompt": config.IMAGE_NEGATIV_PROMPT,
+                "negative_prompt": data.get("negative_prompt"),
             },
             "parameters": {
-                "size": config.IMAGE_SIZE,
+                "size": data.get("image_size"),
                 "n": n_count,
                 "seed": seed,
-                "prompt_extend": config.IMAGE_PROMPT_EXTEND,
-                "watermark": config.IMAGE_WATERMARK,
-            }   
+                "prompt_extend": data.get("prompt_extend"),
+                "watermark": data.get("watermark"),
+            }
         }
 
         response = requests.post(
@@ -541,30 +507,30 @@ def call_image_ai(model,
     # FAL
     elif "FAL" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
-        format = config.IMAGE_OUTPUT_FORMAT
+        format = data.get("output_format") or getattr(config, "IMAGE_OUTPUT_FORMAT", None) or "png"
 
         if "hunyuan-image" in model:
             payload = {
                 "prompt": str_user,
-                "negative_prompt": config.IMAGE_NEGATIV_PROMPT,
-                "image_size": config.IMAGE_SIZE,
+                "negative_prompt": data.get("negative_prompt"),
+                "image_size": data.get("image_size"),
                 "num_images": n_count,
-                "num_inference_steps": config.IMAGE_NUM_INFERENCE_STEPS,
-                "guidance_scale": config.IMAGE_GUIDANCE_SCALE,
-                "seed": config.IMAGE_SEED,
-                "enable_safety_checker": config.IMAGE_ENABLE_SAFETY_CHECKER,
-                "sync_mode": config.IMAGE_SYNC_MODE,
+                "num_inference_steps": data.get("num_inference_steps"),
+                "guidance_scale": data.get("guidance_scale"),
+                "seed": data.get("seed"),
+                "enable_safety_checker": data.get("enable_safety_checker"),
+                "sync_mode": data.get("sync_mode"),
                 "output_format": format,
-                "enable_prompt_expansion": config.IMAGE_ENABLE_PROMPT_EXPANSION,
+                "enable_prompt_expansion": data.get("enable_prompt_expansion"),
             }
         elif "bytedance/seedream" in model:
             payload = {
                 "prompt": str_user,
-                "image_size": config.IMAGE_SIZE,
+                "image_size": data.get("image_size"),
                 "num_images": n_count,
-                "seed": config.IMAGE_SEED,
-                "sync_mode": config.IMAGE_SYNC_MODE,
-                "enable_safety_checker": config.IMAGE_ENABLE_SAFETY_CHECKER,
+                "seed": data.get("seed"),
+                "sync_mode": data.get("sync_mode"),
+                "enable_safety_checker": data.get("enable_safety_checker"),
             }
         else:
             raise Exception("Error: Unknown FAL image model")
@@ -629,11 +595,5 @@ def call_image_ai(model,
             for image_path in image_paths:
                 with open(image_path, "wb") as file:
                     file.write(generated_image)
-
-    if config.RESIZE_IMAGE and n_count == 1:
-        for image_path in image_paths:
-            image = Image.open(image_path)
-            image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
-            image.save(image_path)
 
     return image_paths

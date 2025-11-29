@@ -38,28 +38,28 @@ def generate_image(model, prompt, negative_prompt, n_images, outputs, seed, data
         )
         generator = QwenImage(
             model_config=model_config,
-            quantize=config.IMAGE_MODEL_QUANTIZATION,
+            quantize=data.get("model_quantization"),
             local_path=local_path,
         )
     else:
         generator = Flux1.from_name(
             model_name=model_name,
-            quantize=config.IMAGE_MODEL_QUANTIZATION,
+            quantize=data.get("model_quantization"),
         )
 
     base_outputs = outputs[:]
     current_seed = seed
-    default_guidance = 3.5 if getattr(config, "IMAGE_MODEL_VERSION", "") == "dev" else 4.0
-    guidance = getattr(config, "IMAGE_GUIDANCE", default_guidance)
+    default_guidance = "3.5" if getattr(config, "IMAGE_MODEL_VERSION", "") == "dev" else "4.0"
+    guidance = float(data.get("guidance", default_guidance))
     config_kwargs = dict(
-        num_inference_steps=config.IMAGE_NUM_STEPS,
-        height=config.IMAGE_HEIGHT,
-        width=config.IMAGE_WIDTH,
+        num_inference_steps=int(data.get("num_steps")),
+        height=int(data.get("image_height")),
+        width=int(data.get("image_width")),
         guidance=guidance,
     )
     precision_dtype = None
-    if getattr(config, "IMAGE_MODEL_QUANTIZATION", None) is not None:
-        if int(config.IMAGE_MODEL_QUANTIZATION) <= 4:
+    if data.get("model_quantization", None) is not None:
+        if int(data.get("model_quantization")) <= 4:
             precision_dtype = mx.float16
     for index in range(n_images):
         generation_config = Config(**config_kwargs)

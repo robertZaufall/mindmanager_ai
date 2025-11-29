@@ -8,10 +8,10 @@ azure:
         options: [1024x1024, 1792x1024, 1024x1792]
       image_quality:
         default: hd
-        options: [hd, standard, auto]
+        options: [hd, standard]
       style:
         default: vivid
-        options: [vivid, neutral]
+        options: [vivid, natural]
     - id: gpt-image-1
       image_size:
         default: 1536x1024
@@ -22,20 +22,19 @@ azure:
       moderation:
         default: low
         options: [low, auto]
+      output_compression:
+        default: 100
+        options: [100, 80, 60]
     - id: FLUX-1.1-pro
       image_size:
         default: 1440x1024
-        options: [1024x1024, 1440x1024, 768x1440, 1024x1440]
-      image_quality:
-        default: hd
-        options: [standard, hd]
+        options: [1024x1024, 1440x768, 1440x1024, 768x1440, 1024x1440]
+      prompmt_upsampling: false
     - id: FLUX.1-Kontext-pro
-      image_size:
-        default: 1536x1024
-        options: [1024x1024, 1536x1024, 1024x1536]
-      image_quality:
-        default: hd
-        options: [standard, hd]
+      image_aspect_ratio:
+        default: "4:3"
+        options: ["21:9", "16:9", "4:3", "1:1", "9:16", "9:21"]
+      prompt_upsampling: false
     - id: sora
       image_size:
         default: 854x480
@@ -52,10 +51,10 @@ openai:
         options: [1024x1024, 1792x1024, 1024x1792]
       image_quality:
         default: hd
-        options: [hd, standard, auto]
+        options: [hd, standard]
       style:
         default: vivid
-        options: [vivid, neutral]
+        options: [vivid, natural]
     - id: gpt-image-1
       image_size:
         default: 1536x1024
@@ -63,6 +62,12 @@ openai:
       image_quality:
         default: medium
         options: [high, medium, low, auto]
+      moderation:
+        default: low
+        options: [low, auto]
+      output_compression:
+        default: 100
+        options: [100, 80, 60]
     - id: gpt-image-1-mini
       image_size:
         default: 1536x1024
@@ -70,6 +75,12 @@ openai:
       image_quality:
         default: medium
         options: [high, medium, low, auto]
+      moderation:
+        default: low
+        options: [low, auto]
+      output_compression:
+        default: 100
+        options: [100, 80, 60]
     - id: sora-2
       image_size:
         default: 1280x720
@@ -273,37 +284,37 @@ mlx:
         options: [20]
       model_quantization: 6
 
-ideogramai:
-  defaults:
-    cloud_type: IDEOGRAMAI
-    seed: 0
-    negative_prompt: "text, characters, letters, words, labels"
-    style_type:
-      default: AUTO
-      options: [AUTO, GENERAL, REALISTIC, DESIGN]
-  models:
-    - id: V_3
-      image_resolution: 1024x1024
-      image_rendering_speed:
-        default: DEFAULT
-        options: [DEFAULT, TURBO, QUALITY]
-    - id: V_3_TURBO
-      image_resolution: 1024x1024
-      image_rendering_speed:
-        default: TURBO
-        options: [DEFAULT, TURBO, QUALITY]
-    - id: V_3_QUALITY
-      image_resolution: 1024x1024
-      image_rendering_speed:
-        default: QUALITY
-        options: [DEFAULT, TURBO, QUALITY]
+# ideogramai:
+#   defaults:
+#     cloud_type: IDEOGRAMAI
+#     seed: 0
+#     negative_prompt: "text, characters, letters, words, labels"
+#     style_type:
+#       default: AUTO
+#       options: [AUTO, GENERAL, REALISTIC, DESIGN]
+#   models:
+#     - id: V_3
+#       image_resolution: 1024x1024
+#       image_rendering_speed:
+#         default: DEFAULT
+#         options: [DEFAULT, TURBO, QUALITY]
+#     - id: V_3_TURBO
+#       image_resolution: 1024x1024
+#       image_rendering_speed:
+#         default: TURBO
+#         options: [DEFAULT, TURBO, QUALITY]
+#     - id: V_3_QUALITY
+#       image_resolution: 1024x1024
+#       image_rendering_speed:
+#         default: QUALITY
+#         options: [DEFAULT, TURBO, QUALITY]
 
 bfl:
   defaults:
     cloud_type: BFL
     seed: 0
-    safety_tolerance: low
     output_format: png
+    safety_tolerance: 5
   models:
     - id: flux-2-pro
       image_width:
@@ -319,8 +330,12 @@ bfl:
       image_height:
         default: 720
         options: [864, 720, 1080, 1024]
-      steps: 50
-      guidance: 4.5
+      steps: # 1-50
+        default: 50
+        options: [10, 25, 50]
+      guidance: # 1.5-10
+        default: 5
+        options: [1.5, 5, 7.5, 10]
     - id: flux-kontext-pro
       image_aspect_ratio:
         default: "4:3"
@@ -336,31 +351,33 @@ bfl:
       image_aspect_ratio:
         default: "4:3"
         options: ["21:9", "16:9", "4:3", "1:1", "9:16", "9:21"]
+      prompt_upsampling: false
+      prompt_strength: 0.1
     - id: flux-pro-1.1
       image_width:
         default: 1024
-        options: [1024]
+        options: [1024, 1440, 768]
       image_height:
         default: 1024
-        options: [1024]
+        options: [1024, 1440, 768]
       prompt_upsampling: false
 
-recraftai:
-  defaults:
-    cloud_type: RECRAFTAI
-    response_format: url
-    image_size:
-      default: 1280x1024
-      options: [1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024]
-  models:
-    - id: recraftv3
-      style: 
-        default: realistic_image|enterprise
-        options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|engraving_color, digital_illustration|grain, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|pixel_art, realistic_image|enterprise, vector_illustration|engraving, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut]
-    - id: recraft20b
-      style:
-        default: realistic_image|enterprise
-        options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|3d, digital_illustration|80s, digital_illustration|engraving_color, digital_illustration|flat_air_art, digital_illustration|glow, digital_illustration|grain, digital_illustration|halloween_drawings, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|kawaii, digital_illustration|pixel_art, digital_illustration|psychedelic, digital_illustration|seamless, digital_illustration|stickers_drawings, digital_illustration|voxel, digital_illustration|watercolor, realistic_image|enterprise, vector_illustration|70s, vector_illustration|cartoon, vector_illustration|doodle_line_art, vector_illustration|engraving, vector_illustration|flat_2, vector_illustration|halloween_stickers, vector_illustration|kawaii, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut, vector_illustration|seamless, icon|broken_line, icon|colored_outline, icon|colored_shapes, icon|colored_shapes_gradient, icon|doodle_fill, icon|doodle_offset_fill, icon|offset_fill, icon|outline, icon|outline_gradient, icon|uneven_fill]
+# recraftai:
+#   defaults:
+#     cloud_type: RECRAFTAI
+#     response_format: url
+#     image_size:
+#       default: 1280x1024
+#       options: [1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024]
+#   models:
+#     - id: recraftv3
+#       style: 
+#         default: realistic_image|enterprise
+#         options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|engraving_color, digital_illustration|grain, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|pixel_art, realistic_image|enterprise, vector_illustration|engraving, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut]
+#     - id: recraft20b
+#       style:
+#         default: realistic_image|enterprise
+#         options: [digital_illustration|2d_art_poster, digital_illustration|2d_art_poster_2, digital_illustration|3d, digital_illustration|80s, digital_illustration|engraving_color, digital_illustration|flat_air_art, digital_illustration|glow, digital_illustration|grain, digital_illustration|halloween_drawings, digital_illustration|hand_drawn, digital_illustration|hand_drawn_outline, digital_illustration|handmade_3d, digital_illustration|infantile_sketch, digital_illustration|kawaii, digital_illustration|pixel_art, digital_illustration|psychedelic, digital_illustration|seamless, digital_illustration|stickers_drawings, digital_illustration|voxel, digital_illustration|watercolor, realistic_image|enterprise, vector_illustration|70s, vector_illustration|cartoon, vector_illustration|doodle_line_art, vector_illustration|engraving, vector_illustration|flat_2, vector_illustration|halloween_stickers, vector_illustration|kawaii, vector_illustration|line_art, vector_illustration|line_circuit, vector_illustration|linocut, vector_illustration|seamless, icon|broken_line, icon|colored_outline, icon|colored_shapes, icon|colored_shapes_gradient, icon|doodle_fill, icon|doodle_offset_fill, icon|offset_fill, icon|outline, icon|outline_gradient, icon|uneven_fill]
 
 alibabacloud:
   defaults:

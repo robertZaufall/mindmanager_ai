@@ -150,7 +150,7 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
             ],
             "parameters": {
                 "sampleCount": n_count,
-                "addWatermark": config.IMAGE_ADD_WATERMARK,
+                "addWatermark": data.get("add_watermark"),
             }
         }
     elif config.IMAGE_MODEL_ID.startswith("gemini-"):
@@ -164,8 +164,8 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
             "generationConfig": {
                 "responseModalities": ["TEXT", "IMAGE"],
                 "imageConfig": { 
-                    "aspectRatio": config.IMAGE_ASPECT_RATIO, 
-                    "imageSize": config.IMAGE_RESOLUTION
+                    "aspectRatio": data.get("image_aspect_ratio"), 
+                    "imageSize": data.get("image_size"),
                 }
             },
             "safetySettings": [
@@ -184,7 +184,7 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
             payload["tools"] = {"google_search": {}}
 
     elif config.IMAGE_MODEL_ID.startswith("veo-"):
-        seed = config.VIDEO_SEED
+        seed = data.get("seed")
         if seed == 0:
             seed = int.from_bytes(os.urandom(4), "big")
 
@@ -197,19 +197,19 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
                 }
             ],
             "parameters": {
-                "aspectRatio": config.VIDEO_ASPECT_RATIO,
-                "sampleCount": config.VIDEO_SAMPLE_COUNT,
-                "durationSeconds": config.VIDEO_LENGTH,
-                "personGeneration": config.VIDEO_PERSON_GENERATION,
-                "addWatermark": config.VIDEO_ADD_WATERMARK,
-                "includeRaiReason": config.VIDEO_INCLUDE_RAI_REASON,
-                "generateAudio": config.VIDEO_GENERATE_AUDIO,
+                "aspectRatio": data.get("image_aspect_ratio"),
+                "sampleCount": 1,
+                "durationSeconds": data.get("video_length"),
+                "personGeneration": data.get("person_generation"),
+                "addWatermark": data.get("add_watermark"),
+                "includeRaiReason": data.get("include_rai_reason"),
+                "generateAudio": data.get("generate_audio"),
                 "seed": seed,
-                "negativePrompt": config.VIDEO_NEGATIVE_PROMPT
+                "negativePrompt": data.get("negative_prompt"),
             }
         }
         if config.IMAGE_MODEL_ID.startswith("veo-3"):
-            payload["parameters"]["resolution"] = config.VIDEO_RESOLUTION
+            payload["parameters"]["resolution"] = data.get("image_resolution")
     else:
         raise Exception(f"Error: {config.MODEL_ID} is not supported.")
 
@@ -289,13 +289,8 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
                                     file.write(video_bytes)
                             return image_paths
     if image:
-        if config.RESIZE_IMAGE:
-            image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
-            for image_path in image_paths:
-                image.save(image_path)
-        else:
-            for image_path in image_paths:
-                image.save(image_path)
+        for image_path in image_paths:
+            image.save(image_path)
     else:
         print(f"Error: No image data found in the response.")
         return []

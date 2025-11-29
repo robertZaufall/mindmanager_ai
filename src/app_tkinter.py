@@ -7,6 +7,7 @@ import re
 import os
 import sys
 import json
+import itertools
 
 SETTINGS_FILE = "settings.json"
 
@@ -86,6 +87,42 @@ def load_image_styles():
     except Exception:
         return {}
 
+def load_model_capabilities():
+    models_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_prompts', 'models.yaml')
+    if not os.path.exists(models_path):
+        return {}
+
+    try:
+        try:
+            import yaml
+        except ImportError:
+            yaml = None
+
+        with open(models_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            data = yaml.safe_load(content) if yaml else json.loads(content)
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def filter_image_models(all_models, capabilities):
+    """
+    Keep only models that have an active entry in models.yaml.
+    """
+    if not capabilities or not all_models:
+        return all_models
+
+    filtered = []
+    for model_entry in all_models:
+        if not model_entry:
+            continue
+        system, model_id = (model_entry.split("+", 1) + [""])[:2] if "+" in model_entry else ("", model_entry)
+        section = capabilities.get(system.lower(), {})
+        models = section.get("models", []) if isinstance(section, dict) else []
+        if any(isinstance(m, dict) and m.get("id") == model_id for m in models):
+            filtered.append(model_entry)
+    return filtered
 
 
 def load_settings():
@@ -187,15 +224,16 @@ class MindmanagerAIApp(tk.Tk):
         config_file_image = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config_image.py'))
         data = parse_cloud_definitions(config_file_llm, config_file_image)
         agents = load_agents()
+        self.model_capabilities = load_model_capabilities()
 
         self.all_cloud_types = data['all_cloud_types']
         self.active_cloud_type = data['active_cloud_type'] or (
             self.all_cloud_types[0] if self.all_cloud_types else ""
         )
-        self.all_cloud_images = data['all_cloud_images']
-        self.active_cloud_image = data['active_cloud_image'] or (
-            self.all_cloud_images[0] if self.all_cloud_images else ""
-        )
+        self.all_cloud_images = filter_image_models(data['all_cloud_images'], self.model_capabilities)
+        self.active_cloud_image = data['active_cloud_image']
+        if not self.active_cloud_image or self.active_cloud_image not in self.all_cloud_images:
+            self.active_cloud_image = self.all_cloud_images[0] if self.all_cloud_images else ""
 
         # Load or init stored values:
         self.agentic_model_strong = self.settings_data.get("agentic_model_strong", self.active_cloud_type)
@@ -274,6 +312,100 @@ class MindmanagerAIApp(tk.Tk):
                 "modifyLiveMap": self.modifyLiveMap
             }
         }
+
+    def build_model_option_list(self, capabilities, system, model_id):
+        """Return list of (label, payload) tuples for all image_* property combinations."""
+        system_key = (system or "").strip().lower()
+        if not system_key or not isinstance(capabilities, dict):
+            return []
+
+        section = capabilities.get(system_key, {})
+        models = section.get("models", []) if isinstance(section, dict) else []
+        entry = next((m for m in models if isinstance(m, dict) and m.get("id") == model_id), None)
+        if not entry:
+            return []
+
+        defaults = section.get("defaults", {}) if isinstance(section, dict) else {}
+
+        def collect_values(key):
+            val = entry.get(key, defaults.get(key))
+            if isinstance(val, dict):
+                vals = []
+                if "default" in val and val.get("default") not in (None, ""):
+                    vals.append(val.get("default"))
+                opts = val.get("options") or []
+                vals.extend([o for o in opts if o not in (None, "")])
+                return [str(v) for v in vals if str(v) != ""]
+            if val in (None, ""):
+                return []
+            return [str(val)]
+
+        # Identify all image_* keys preserving the order from the model entry, then defaults
+        image_keys = []
+        for k in entry.keys():
+            if k.startswith("image_") and k not in image_keys:
+                image_keys.append(k)
+        for k in defaults.keys():
+            if k.startswith("image_") and k not in image_keys:
+                image_keys.append(k)
+        prop_values = []
+        for k in image_keys:
+            vals = collect_values(k)
+            if vals:
+                prop_values.append((k, vals))
+
+        if not prop_values:
+            return []
+
+        combos = []
+        seen_labels = set()
+        for product in itertools.product(*[vals for _, vals in prop_values]):
+            payload = {prop_values[i][0]: product[i] for i in range(len(prop_values))}
+            label = "|".join(product)
+            if label in seen_labels:
+                continue
+            seen_labels.add(label)
+            combos.append((label, payload))
+
+        return combos
+
+    def get_model_properties(self, capabilities, system, model_id):
+        """Return flattened default values for the given model + system."""
+        system_key = (system or "").strip().lower()
+        if not system_key or not isinstance(capabilities, dict):
+            return {}
+
+        section = capabilities.get(system_key, {})
+        models = section.get("models", []) if isinstance(section, dict) else []
+        entry = next((m for m in models if isinstance(m, dict) and m.get("id") == model_id), None)
+        if not entry:
+            return {}
+        defaults = section.get("defaults", {}) if isinstance(section, dict) else {}
+
+        props = {}
+        skip_keys = {"models", "id"}
+
+        def pick_val(val):
+            if isinstance(val, dict):
+                if "default" in val:
+                    return val.get("default")
+                # if it's a mapping of options without default, use first option
+                opts = val.get("options")
+                if isinstance(opts, list) and opts:
+                    return opts[0]
+                return None
+            return val
+
+        all_keys = set(defaults.keys()) | set(entry.keys())
+        for key in all_keys:
+            if key in skip_keys:
+                continue
+            val = entry.get(key, defaults.get(key))
+            chosen = pick_val(val)
+            if chosen not in (None, ""):
+                props[key] = chosen
+
+        return props
 
     def call_process_json(self, payload_dict):
         print("Process called. Please wait...")
@@ -364,6 +496,21 @@ class MindmanagerAIApp(tk.Tk):
             tab, "Style:", self.var_image_style_tab2, style_names
         )
 
+        # Resolution / ratio combobox + Generate button in one row
+        self.image_option_map = {}
+        frame_generate = ttk.Frame(tab)
+        frame_generate.pack(padx=10, pady=10, fill="x")
+        ttk.Label(frame_generate, text="Size/Ratio:", width=11, anchor="w").pack(side="left")
+        self.var_image_config_tab2 = tk.StringVar(value="")
+        self.dropdown_image_config = ttk.Combobox(
+            frame_generate,
+            textvariable=self.var_image_config_tab2,
+            state="readonly",
+            justify="left",
+            width=12
+        )
+        self.dropdown_image_config.pack(side="left", padx=(2, 6))
+
         def submit_tab2():
             selected_image_model = self.var_cloud_img_tab2.get()
             selected_action_key = self.var_image_action_tab2.get()
@@ -372,14 +519,32 @@ class MindmanagerAIApp(tk.Tk):
             action = "image" if prompt_base == "generic" else f"image_{prompt_base}"
             selected_style_key = self.var_image_style_tab2.get()
             style_prompt = image_styles.get(selected_style_key, "")
-            data = {"style_name": selected_style_key, "style_prompt": style_prompt}
+            option_payload = self.image_option_map.get(self.var_image_config_tab2.get(), {})
+            system, model_id = (selected_image_model.split("+", 1) + [""])[:2] if "+" in selected_image_model else ("", selected_image_model)
+            base_props = self.get_model_properties(self.model_capabilities, system, model_id)
+            data = {**base_props, **option_payload, "style_name": selected_style_key, "style_prompt": style_prompt}
             payload = self.build_payload(selected_image_model, action, data=data)
             self.call_process_json(payload)
 
-        # Buttons
-        self.btn_tab2_1 = ttk.Button(tab, text="Generate",
-                                     command=submit_tab2, default='normal')
-        self.btn_tab2_1.pack(padx=10, pady=10)
+        # Generate button (aligned right)
+        self.btn_tab2_1 = ttk.Button(frame_generate, text="Generate",
+                                     command=submit_tab2, default='normal', width=36)
+        self.btn_tab2_1.pack(side="right")
+
+        def update_image_option_choices(*args):
+            selected_model = self.var_cloud_img_tab2.get()
+            system, model_id = (selected_model.split("+", 1) + [""])[:2] if "+" in selected_model else ("", selected_model)
+            options = self.build_model_option_list(self.model_capabilities, system, model_id)
+            if not options:
+                options = [("Default", {})]
+            self.image_option_map = {label: payload for label, payload in options}
+            labels = list(self.image_option_map.keys())
+            current = labels[0] if labels else ""
+            self.dropdown_image_config["values"] = labels
+            self.var_image_config_tab2.set(current)
+
+        self.var_cloud_img_tab2.trace_add("write", update_image_option_choices)
+        update_image_option_choices()
 
         # Output
         self.create_output_box(tab, "Img")

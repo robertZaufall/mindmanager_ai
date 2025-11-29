@@ -57,12 +57,6 @@ CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best 
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3'                                      # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_TURBO'                                # best
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_QUALITY'                              # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A'                                     # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2A_TURBO'                               # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2'                                      # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_2_TURBO'                                # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1'                                      # best
-# CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_1_TURBO'                                # best
         
 # Black Forrest Labs        
 # CLOUD_TYPE_IMAGE = 'BFL+flux-2-pro'                                      # best (fast and efficient) (0,03ct per image)
@@ -71,8 +65,6 @@ CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best 
 # CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                                # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                              # best
 # CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                                    # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro'                                        # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-dev'                                        # best
 
 # RecraftAI
 # CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                                 # best
@@ -97,9 +89,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     config.LOG = True
     config.TURBO_MODE = True
     config.USE_AZURE_ENTRA_IMAGE = False
-    config.RESIZE_IMAGE = False
-    config.RESIZE_IMAGE_WIDTH = 1024
-    config.RESIZE_IMAGE_HEIGHT = 1024
     config.INSERT_IMAGE_AS_BACKGROUND = False
     config.OPTIMIZE_PROMPT_IMAGE = False
 
@@ -115,109 +104,63 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     config.IMAGE_HEADERS = {"Content-Type": "application/json"}
 
     # Branch logic
-    if system in ["AZURE", "OPENAI"]:
+    if system == "AZURE":
         config.USE_AZURE_ENTRA_IMAGE = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
 
-        if system == "AZURE":
-            config.AZURE_DEPLOYMENT_IMAGE = model
-            if model == "dall-e-3":
-                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
-                config.IMAGE_API_URL = (
-                    f"{os.getenv('AZURE_API_URL_IMAGE_EASTUS')}openai/deployments/"
-                    f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
-                    f"?api-version={config.IMAGE_API_VERSION}")
-                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_EASTUS') or ""}
-            elif "sora" in model:
-                config.IMAGE_API_VERSION = "preview" # os.getenv('AZURE_API_VERSION_IMAGE')
-                config.IMAGE_API_URL = f"{os.getenv('AZURE_API_URL_IMAGE')}openai/v1/video/generations/jobs?api-version={config.IMAGE_API_VERSION}"
-                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
-            elif model == "gpt-image-1":
-                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
-                config.IMAGE_API_URL = (
-                    f"{os.getenv('AZURE_API_URL_IMAGE_WESTUS3')}openai/deployments/"
-                    f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
-                    f"?api-version={config.IMAGE_API_VERSION}")
-                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_WESTUS3') or ""}
-            elif model in ("FLUX-1.1-pro", "FLUX.1-Kontext-pro"):
-                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
-                config.IMAGE_API_URL = (
-                    f"{os.getenv('AZURE_API_URL_IMAGE')}openai/deployments/"
-                    f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
-                    f"?api-version={config.IMAGE_API_VERSION}")
-                config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
-            else:
-                raise Exception("Error: Unsupported Azure image model")
-
-        elif system == "OPENAI":
-            if model in ("dall-e-3", "gpt-image-1", "gpt-image-1-mini"):
-                config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
-            elif "sora" in model:
-                config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE_VIDEO')
-            else:
-                raise Exception("Error: Unknown OpenAI image model")
-            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")}
-        
-        else:
-            raise Exception("Error: Unknown image system")
-
-        config.IMAGE_EXPLICIT_STYLE = "digital art"
+        config.AZURE_DEPLOYMENT_IMAGE = model
         if model == "dall-e-3":
-            config.IMAGE_QUALITY = "hd"     # hd, standard, auto
-            config.IMAGE_STYLE = "vivid"    # natural, vivid
-            config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1792x1024, 1024x1792
-        elif "gpt-image-1" in model:
-            config.IMAGE_QUALITY = "medium" # hight, medium, low, auto
-            config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
-            config.MODERATION = "low" # low, auto
-        elif system == "AZURE" and "sora" in model:
-            # (480, 480), (854, 480), (720, 720), (1280, 720), (1080, 1080), (1920, 1080)
-            config.IMAGE_WIDTH = 480
-            config.IMAGE_HEIGHT = 480
-            config.VIDEO_LENGTH = 4
-        elif system == "OPENAI" and "sora" in model:
-            config.IMAGE_SIZE = "1280x720" # 720x1280, 1280x720, 1024x1792, 1792x1024
-            config.VIDEO_LENGTH = "4" # 4, 8, 12
+            config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
+            config.IMAGE_API_URL = (
+                f"{os.getenv('AZURE_API_URL_IMAGE_EASTUS')}openai/deployments/"
+                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
+                f"?api-version={config.IMAGE_API_VERSION}")
+            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_EASTUS') or ""}
+        elif "sora" in model:
+            config.IMAGE_API_VERSION = "preview" # os.getenv('AZURE_API_VERSION_IMAGE')
+            config.IMAGE_API_URL = f"{os.getenv('AZURE_API_URL_IMAGE')}openai/v1/video/generations/jobs?api-version={config.IMAGE_API_VERSION}"
+            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
+        elif model == "gpt-image-1":
+            config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
+            config.IMAGE_API_URL = (
+                f"{os.getenv('AZURE_API_URL_IMAGE_WESTUS3')}openai/deployments/"
+                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
+                f"?api-version={config.IMAGE_API_VERSION}")
+            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_WESTUS3') or ""}
         elif model in ("FLUX-1.1-pro", "FLUX.1-Kontext-pro"):
-            config.IMAGE_QUALITY = "hd" # standard, hd
-            config.IMAGE_SIZE = "1024x1024" # 1024x1024, 1536x1024, 1024x1536
+            config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
+            config.IMAGE_API_URL = (
+                f"{os.getenv('AZURE_API_URL_IMAGE')}openai/deployments/"
+                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
+                f"?api-version={config.IMAGE_API_VERSION}")
+            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
         else:
-            raise Exception("Error: Unsupported image model")
+            raise Exception("Error: Unsupported Azure image model")
 
-
+    elif system == "OPENAI":
+        if model in ("dall-e-3", "gpt-image-1", "gpt-image-1-mini"):
+            config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
+        elif "sora" in model:
+            config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE_VIDEO')
+        else:
+            raise Exception("Error: Unknown OpenAI image model")
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY_IMAGE') or "")}
+        
     elif system == "STABILITYAI":
         config.MODEL_ENDPOINT = model.split("-")[0]
-        # Map special case for sd3.5
         config.MODEL_ENDPOINT = "sd3" if config.MODEL_ENDPOINT == "sd3.5" else config.MODEL_ENDPOINT
-
-        # 3d-model analog-film anime cinematic comic-book digital-art 
-        # enhance fantasy-art isometric line-art low-poly modeling-compound 
-        # neon-punk origami photographic pixel-art tile-texture
-        config.IMAGE_STYLE_PRESET = "digital-art"
-        config.IMAGE_EXPLICIT_STYLE = (
-            config.IMAGE_STYLE_PRESET if config.MODEL_ENDPOINT != "core" else ""
-        )
-        config.IMAGE_OUTPUT_FORMAT = "png" # png, jpeg, webp
-        config.IMAGE_ASPECT_RATIO = "1:1" # 16:9 1:1 21:9 2:3 3:2 4:5 5:4 9:16 9:21
-        config.IMAGE_SEED = 0 # Stable Diffusion images are generated deterministically based on the seed value (stored in the filename)
-        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
         config.IMAGE_API_URL = f"{os.getenv('STABILITYAI_API_URL')}{config.MODEL_ENDPOINT}"
         config.IMAGE_HEADERS = {"authorization": "Bearer " + (os.getenv('STABILITYAI_API_KEY') or ""),"accept": "image/*"}
-
 
     elif system == "VERTEXAI":
         config.GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
         config.GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
         config.GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
 
-        config.IMAGE_EXPLICIT_STYLE = "digital art"
-        config.IMAGE_ADD_WATERMARK = False
-        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-
         config.IMAGE_PROJECT_ID = os.getenv('VERTEXAI_PROJECT_ID_IMAGE')
         config.IMAGE_LOCATION_ID = os.getenv('VERTEXAI_LOCATION_ID_IMAGE')
 
         if model.startswith("imagen-"):
-            config.IMAGE_ASPECT_RATIO = "16:9"  # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
+            #config.IMAGE_ASPECT_RATIO = "16:9"  # 1:1 (1024x1024) 9:16 (768x1408) 16:9 (1408x768) 3:4 (896x1280) 4:3 (1280x896)
             config.IMAGE_API_URL = (
                 f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
                 f"/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/"
@@ -231,25 +174,12 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             else:
                 config.IMAGE_USE_GROUNDING = False
 
-            config.IMAGE_ASPECT_RATIO = "21:9" # "1:1","2:3","3:2","3:4","4:3","4:5","5:4","9:16","16:9","21:9"
-            config.IMAGE_RESOLUTION = "2K" # "1K", "2K", "4K"
             config.IMAGE_API_URL = (
                 f"https://{os.getenv('VERTEXAI_API_ENDPOINT_GLOBAL_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
                 f"/locations/{os.getenv('VERTEXAI_LOCATION_ID')}/publishers/google/models/"
                 f"{model}:generateContent"
             )
         elif model.startswith("veo-"):
-            config.VIDEO_ASPECT_RATIO = "16:9" # 16:9, 9:16
-            config.VIDEO_SAMPLE_COUNT = 1 # 1-4
-            config.VIDEO_LENGTH = "8" # 5-8 (service always bills for 8 seconds!!!)
-            config.VIDEO_PERSON_GENERATION = "allow_all" # allow-all, allow-adult, disallow
-            config.VIDEO_ADD_WATERMARK = False
-            config.VIDEO_INCLUDE_RAI_REASON = False
-            config.VIDEO_GENERATE_AUDIO = False
-            config.VIDEO_RESOLUTION = "720p" # 720p, 1080p (only VEO-3 models)
-            config.VIDEO_NEGATIVE_PROMPT = "text, characters, letters, words, labels"
-            config.VIDEO_SEED = 0
-
             config.IMAGE_API_URL = (
                 f"https://{os.getenv('VERTEXAI_API_ENDPOINT_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
                 f"/locations/{config.IMAGE_LOCATION_ID}/publishers/google/models/"
@@ -265,7 +195,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
         #config.IMAGE_EXPLICIT_STYLE = "papercraft-kirigami art"
         #config.IMAGE_EXPLICIT_STYLE = "computer collage art"
-        config.IMAGE_NEGATIV_PROMPT = ""
         config.IMAGE_HEIGHT = 1024 # 1024 # 512 # 768
         config.IMAGE_WIDTH = 1024 # 1024 # 512 # 768
 
@@ -298,148 +227,26 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_SEED = 0
         config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Api-Key": os.getenv('IDEOGRAMAI_API_KEY') or ""}
-
-        if model in ("V_3", "V_3_TURBO", "V_3_QUALITY"):
-            config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_V3_URL')
-            config.IMAGE_STYLE_TYPE = "AUTO"  # AUTO, GENERAL, REALISTIC, DESIGN
-            config.IMAGE_RESOLUTION = "1024x1024"
-            if model == "V_3_QUALITY":
-                config.IMAGE_RENDERING_SPEED = "QUALITY"
-            elif model == "V_3_TURBO":
-                config.IMAGE_RENDERING_SPEED = "TURBO"
-            else:
-                config.IMAGE_RENDERING_SPEED = "DEFAULT"
-        elif model in ("V_2", "V_2_TURBO", "V_2A", "V_2A_TURBO"):
-            config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_URL')
-            config.IMAGE_STYLE_PRESET = "GENERAL"  # DESIGN, GENERAL, REALISTIC, RENDER_3D, ANIME
-            config.IMAGE_EXPLICIT_STYLE = config.IMAGE_STYLE_PRESET
-            config.IMAGE_RESOLUTION = "RESOLUTION_1024_1024"
-            config.IMAGE_OUTPUT_FORMAT = "png"
-        else:
-            config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_URL')
-            config.IMAGE_EXPLICIT_STYLE = "computer collage art"
-            config.IMAGE_RESOLUTION = "RESOLUTION_1024_1024"
-            config.IMAGE_OUTPUT_FORMAT = "png"
-
+        config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_V3_URL')
 
     elif system == "BFL":
-        config.IMAGE_EXPLICIT_STYLE = "computer collage art"
-        config.IMAGE_OUTPUT_FORMAT = "png"
-        config.IMAGE_SEED = 0
-        config.IMAGE_SAFETY_TOLERANCE = 5  # 0-6, 6 = least strict
-
-        if model == "flux-2-pro":
-            config.IMAGE_HEIGHT = 720  # 21:9: 2016x864/1680x720, 16:9: 1920x1080, 4:3: 1440x1080, 1:1: 1024x1024
-            config.IMAGE_WIDTH = 1680
-        elif model == "flux-2-flex":
-            config.IMAGE_HEIGHT = 720
-            config.IMAGE_WIDTH = 1680
-            config.IMAGE_STEPS = 50
-            config.IMAGE_GUIDANCE = 4.5 # 1.5 - 10 (closer prompt adherence)
-        elif model == "flux-kontext-pro" or model == "flux-kontext-max":
-            config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
-            config.IMAGE_PROMPT_UPSAMPLING = False
-        elif model == "flux-pro-1.1-ultra":
-            config.IMAGE_RAW = False
-            config.IMAGE_ASPECT_RATIO = "4:3" # between 21:9 and 9:21
-        elif model == "flux-pro-1.1":
-            config.IMAGE_HEIGHT = 1024
-            config.IMAGE_WIDTH = 1024
-            config.IMAGE_PROMPT_UPSAMPLING = False
-        elif model == "flux-pro":
-            config.IMAGE_HEIGHT = 1024
-            config.IMAGE_WIDTH = 1024
-            config.IMAGE_STEPS = 28
-            config.IMAGE_INTERVAL = 2
-            config.IMAGE_PROMPT_UPSAMPLING = False
-            config.IMAGE_GUIDANCE = 3
-        elif model == "flux-dev":
-            config.IMAGE_HEIGHT = 1024
-            config.IMAGE_WIDTH = 1024
-            config.IMAGE_STEPS = 28
-            config.IMAGE_PROMPT_UPSAMPLING = False
-            config.IMAGE_GUIDANCE = 3
-        else:
-            raise Exception("Error: Unknown Flux image model")
-
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "x-key": os.getenv('BFL_API_KEY') or ""}
         config.IMAGE_API_URL = os.getenv('BFL_API_URL')
 
-
     elif system == "RECRAFTAI":
-        config.IMAGE_API_URL = os.getenv('RECRAFT_API_URL')
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('RECRAFT_API_TOKEN') or "")}
-        config.IMAGE_SIZE = "1024x1024"  # 1024x1024, 1365x1024, 1024x1365, 1536x1024, 1024x1536, 1820x1024, 1024x1820, 1024x2048, 2048x1024, 1434x1024, 1024x1434, 1024x1280, 1280x1024, 1024x1707, 1707x1024"
-        config.IMAGE_RESPONSE_FORMAT = "url" # url, b64_json
-        config.IMAGE_EXPLICIT_STYLE = ""
-        config.IMAGE_SUBSTYLE = ""
-
-        if model == "recraftv3":
-
-            # IMAGE_STYLE = "digital_illustration"
-            # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, engraving_color, grain, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, pixel_art
-            
-            config.IMAGE_STYLE = "realistic_image"
-            config.IMAGE_SUBSTYLE = "enterprise"
-            
-            # IMAGE_STYLE = "vector_illustration"
-            # IMAGE_SUBSTYLE = "engraving" # engraving, line_art, line_circuit, linocut
-
-        elif model == "recraft20b":
-            
-            # IMAGE_STYLE = "digital_illustration"
-            # IMAGE_SUBSTYLE = "2d_art_poster" # 2d_art_poster, 2d_art_poster_2, 3d, 80s, engraving_color, flat_air_art, glow, grain, halloween_drawings, hand_drawn, hand_drawn_outline, handmade_3d, infantile_sketch, kawaii, pixel_art, psychedelic, seamless, stickers_drawings, voxel, watercolor
-            
-            config.IMAGE_STYLE = "realistic_image"
-            config.IMAGE_SUBSTYLE = "enterprise"
-            
-            # IMAGE_STYLE = "vector_illustration"
-            # IMAGE_SUBSTYLE = "70s" # 70s, cartoon, doodle_line_art, engraving, flat_2, halloween_stickers, kawaii, line_art, line_circuit, linocut, seamless
-            
-            # IMAGE_STYLE = "icon"
-            # IMAGE_SUBSTYLE = "broken_line" # broken_line, colored_outline, colored_shapes, colored_shapes_gradient, doodle_fill, doodle_offset_fill, offset_fill, outline, outline_gradient, uneven_fill
-
-        else:
-            raise Exception("Error: Unknown Recraft image model")
-
+        config.IMAGE_API_URL = os.getenv('RECRAFT_API_URL')
 
     elif system == "ALIBABACLOUD":
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY_IMAGE') or ""), "X-DashScope-Async": "enable"}
         config.IMAGE_API_URL = os.getenv('ALIBABACLOUD_API_URL_IMAGE')
         config.IMAGE_API_URL_TASKS = os.getenv('ALIBABACLOUD_API_URL_TASKS')
-        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY_IMAGE') or ""), "X-DashScope-Async": "enable"}
-        config.IMAGE_SIZE = "1024*1024"  # 512*512 1024*1024, 1365*1024, 1024*1365, 1536*1024, 1024*1536, 1820*1024, 1024*1820, 1024*2048, 2048*1024, 1434*1024, 1024*1434, 1024*1280, 1280*1024, 1024*1707, 1707*1024
-        config.IMAGE_SEED = 0
-        config.IMAGE_PROMPT_EXTEND = False
-        config.IMAGE_WATERMARK = False
-        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-
 
     elif system == "FAL":
         base_model = model.split("/")[0]
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Key " + (os.getenv('FAL_API_KEY') or "")}
         config.IMAGE_API_URL = f"{os.getenv('FAL_API_URL')}/{model}/text-to-image"
         config.IMAGE_API_URL_REQUESTS = f"{os.getenv('FAL_API_URL')}/{base_model}/requests"
-        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Key " + (os.getenv('FAL_API_KEY') or "")}
-
-        if model == "hunyuan-image/v3":
-            config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-            config.IMAGE_SIZE = "square"  # square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9, custom (width, height)
-            config.IMAGE_NUM_INFERENCE_STEPS = 28  # default: 28
-            config.IMAGE_GUIDANCE_SCALE = 7.5  # default: 7.5
-            config.IMAGE_SEED = 0
-            config.IMAGE_ENABLE_SAFETY_CHECKER = False  # default: True
-            config.IMAGE_SYNC_MODE = True  # default: True
-            config.IMAGE_OUTPUT_FORMAT = "png" # png, jpeg
-            config.IMAGE_ENABLE_PROMPT_EXPANSION = False
-        
-        elif model == "bytedance/seedream/v4":
-            config.IMAGE_SIZE = "square"  # square_hd, square, portrait_4_3, portrait_16_9, landscape_4_3, landscape_16_9, custom (width, height)
-            config.IMAGE_SEED = 0
-            config.IMAGE_SYNC_MODE = True  # default: True
-            config.IMAGE_ENABLE_SAFETY_CHECKER = False  # default: True
-            config.IMAGE_OUTPUT_FORMAT = "png"
-        
-        else:
-            raise Exception("Error: Unknown FAL image model")
 
     else:
         # If none of the above matched, it's unknown.
