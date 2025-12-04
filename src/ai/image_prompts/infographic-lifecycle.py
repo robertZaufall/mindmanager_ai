@@ -15,7 +15,8 @@ class MPrompt:
             style: str="",
         ) -> str:
         return (
-            f"Create an info graphic about the entire life cycle from start to finish. Focus especially on planning, implementation and review stages{(", " + style + ",") if style else ""} "
+            "Create an info graphic about the entire life cycle from start to finish. "
+            f"Focus especially on planning, implementation and review stages{(", " + style + ",") if style else ""} in the same language as the context "
             f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
             f"\n```markdown\n{context}```\n "
         )

@@ -15,7 +15,7 @@ class MPrompt:
             style: str="",
         ) -> str:
         return (
-            f"Generate an image of isometric perspective, detailed pixel art{(", " + style + ",") if style else ""} "
+            f"Generate an image of isometric perspective, detailed pixel art{(", " + style + ",") if style else ""} in the same language as the context "
             f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
             f"\n```markdown\n{context}```\n "
         )
