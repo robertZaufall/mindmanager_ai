@@ -30,7 +30,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview-grounding'       # best in class (nano banana pro + vendor web search grounding)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                     # best in class (nano banana)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-001'                    # best in class
@@ -48,10 +48,12 @@ CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best 
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-2.0-generate-001'                       # best
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-# CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit       '                       # good 
+CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit'                              # good
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # poor (slow)
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-krea-dev-4bit'                             # good (slow)
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-qwen-6bit'                                 # good (slow)
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-fibo-4bit'                                 #
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-z-image-turbo-4bit'                        #
 
 # IdeogramAI
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3'                                      # best
@@ -195,19 +197,20 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
         #config.IMAGE_EXPLICIT_STYLE = "papercraft-kirigami art"
         #config.IMAGE_EXPLICIT_STYLE = "computer collage art"
-        config.IMAGE_HEIGHT = 1024 # 1024 # 512 # 768
-        config.IMAGE_WIDTH = 1024 # 1024 # 512 # 768
 
         if "mflux-" in model:
             if "-schnell-" in model:
                 config.IMAGE_MODEL_VERSION = "schnell"
-                config.IMAGE_NUM_STEPS = 2 # 2-4
+            elif "-krea-dev-" in model:
+                config.IMAGE_MODEL_VERSION = "krea-dev"
             elif "-dev-" in model:
                 config.IMAGE_MODEL_VERSION = "dev"
-                config.IMAGE_NUM_STEPS = 20 # 20-25
             elif "-qwen-" in model:
                 config.IMAGE_MODEL_VERSION = "qwen"
-                config.IMAGE_NUM_STEPS = 20
+            elif "-fibo-" in model:
+                config.IMAGE_MODEL_VERSION = "fibo"
+            elif "-z-" in model:
+                config.IMAGE_MODEL_VERSION = "z-image-turbo"
             else:
                 raise Exception("Error: image model version not supported using MLX")
             

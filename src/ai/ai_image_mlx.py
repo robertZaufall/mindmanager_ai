@@ -1,18 +1,27 @@
+import gc
 import random
 
 from mlx import core as mx
 from PIL import Image
 
 import config_image as cfg
+from huggingface_hub import snapshot_download
+
+from mflux.models.common.config import ModelConfig
+from mflux.models.flux.variants.txt2img.flux import Flux1
+from mflux.models.qwen.variants.txt2img.qwen_image import QwenImage
+from mflux.models.fibo.variants.txt2img.fibo import FIBO
+from mflux.models.fibo_vlm.model.fibo_vlm import FiboVLM
+from mflux.models.z_image.variants.turbo.z_image_turbo import ZImageTurbo
+
 
 def generate_image(model, prompt, negative_prompt, n_images, outputs, seed, data={}):
     config = cfg.get_image_config(model)
 
     if "mflux-" not in config.IMAGE_MODEL_ID:
-        raise ValueError("Only FLUX model is supported")
+        raise ValueError("Model not supported")
 
-    from mflux.generate import Config, Flux1
-
+    quantize = data.get("model_quantization")
     model_name = (
         config.IMAGE_MODEL_ID.replace("mflux-", "")
         .replace("-4bit", "")
@@ -20,57 +29,63 @@ def generate_image(model, prompt, negative_prompt, n_images, outputs, seed, data
         .replace("-6bit", "")
     )
 
-    if getattr(config, "IMAGE_MODEL_VERSION", "") == "qwen":
-        from huggingface_hub import snapshot_download
-        from mflux.config.model_config import ModelConfig
-        from mflux.models.qwen.variants.txt2img.qwen_image import QwenImage
-
-        model_config = ModelConfig.from_name(model_name=model_name)
-        local_path = snapshot_download(
-            repo_id=model_config.model_name,
-            allow_patterns=[
-                "text_encoder/*",
-                "transformer/*",
-                "vae/*",
-                "tokenizer/*",
-            ],
-            resume_download=True,
-        )
-        generator = QwenImage(
-            model_config=model_config,
-            quantize=data.get("model_quantization"),
-            local_path=local_path,
-        )
-    else:
-        generator = Flux1.from_name(
-            model_name=model_name,
-            quantize=data.get("model_quantization"),
-        )
-
     base_outputs = outputs[:]
     current_seed = seed
-    default_guidance = "3.5" if getattr(config, "IMAGE_MODEL_VERSION", "") == "dev" else "4.0"
-    guidance = float(data.get("guidance", default_guidance))
-    config_kwargs = dict(
-        num_inference_steps=int(data.get("num_steps")),
-        height=int(data.get("image_height")),
-        width=int(data.get("image_width")),
-        guidance=guidance,
-    )
-    precision_dtype = None
-    if data.get("model_quantization", None) is not None:
-        if int(data.get("model_quantization")) <= 4:
-            precision_dtype = mx.float16
-    for index in range(n_images):
-        generation_config = Config(**config_kwargs)
-        if precision_dtype is not None:
-            generation_config.precision = precision_dtype
-        image = generator.generate_image(
-            seed=current_seed,
-            prompt=prompt,
-            config=generation_config,
-            negative_prompt=negative_prompt or None,
+    guidance = float(data.get("guidance", "3.5"))
+    height = int(data.get("image_height"))
+    width = int(data.get("image_width"))
+    num_inference_steps = int(data.get("num_steps"))
+    negative_prompt = data.get("negative_prompt", "")
+
+    # Qwen
+    if getattr(config, "IMAGE_MODEL_VERSION", "") == "qwen":
+        generator = QwenImage(
+            quantize=quantize
         )
+    
+    # Fibo
+    elif getattr(config, "IMAGE_MODEL_VERSION", "") == "fibo":
+        generator = FIBO(
+            quantize=quantize
+        )
+        vlm = FiboVLM(quantize=quantize)
+        prompt = vlm.generate(prompt=prompt, seed=seed)
+        del vlm
+        gc.collect()
+        mx.clear_cache()
+    
+    # Z-Image Turbo
+    elif getattr(config, "IMAGE_MODEL_VERSION", "") == "z-image-turbo":
+        generator = ZImageTurbo(
+            quantize=quantize
+        )
+    
+    # Flux
+    else:
+        generator = Flux1(
+            model_config=ModelConfig.from_name(model_name=model_name, base_model=model_name),
+            quantize=quantize
+        )
+    
+    for index in range(n_images):
+        if getattr(config, "IMAGE_MODEL_VERSION", "") == "z-image-turbo":
+            image = generator.generate_image(
+                        seed=current_seed,
+                        prompt=prompt,
+                        width=width,
+                        height=height,
+                        num_inference_steps=num_inference_steps,
+                    )
+        else:
+            image = generator.generate_image(
+                        seed=current_seed,
+                        prompt=prompt,
+                        width=width,
+                        height=height,
+                        guidance=guidance,
+                        num_inference_steps=num_inference_steps,
+                        negative_prompt=negative_prompt or None,
+                    )
 
         used_seed = current_seed
         for output_index, base_path in enumerate(base_outputs):

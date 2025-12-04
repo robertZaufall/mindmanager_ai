@@ -258,6 +258,12 @@ mlx:
       options: [1024, 768, 512]
     seed: 0
     negative_prompt: "text, characters, letters, words, labels"
+    #mlx_controlnet_strength:
+    #  default: 0.4
+    #  options: [0.4]
+    #mlx_image_strength:
+    #  default: 0.4
+    #  options: [0.4]
   models:
     - id: mflux-schnell-4bit
       model_version: schnell
@@ -265,24 +271,42 @@ mlx:
         default: 2
         options: [2, 3, 4]
       model_quantization: 4
+      guidance: 3.5
     - id: mflux-dev-4bit
       model_version: dev
       num_steps: 
         default: 20
         options: [20, 25]
       model_quantization: 4
+      guidance: 3.5
     - id: mflux-krea-dev-4bit
-      model_version: dev
+      model_version: krea-dev
       num_steps: 
         default: 20
         options: [20, 25]
       model_quantization: 4
+      guidance: 3.5
     - id: mflux-qwen-6bit
       model_version: qwen
       num_steps: 
         default: 20
         options: [20]
       model_quantization: 6
+      guidance: 3.5
+    - id: mflux-fibo-4bit
+      model_version: fibo
+      num_steps: 
+        default: 20
+        options: [20]
+      model_quantization: 4
+      guidance: 3.5
+    - id: mflux-z-image-turbo-4bit
+      model_version: z-image-turbo
+      num_steps: 
+        default: 9
+        options: [9]
+      model_quantization: 4
+      guidance: 3.5
 
 # ideogramai:
 #   defaults:
