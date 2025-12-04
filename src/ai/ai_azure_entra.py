@@ -105,43 +105,130 @@ def call_llm_azure_entra(model, str_user, data, mimeType):
     return result
 
 def call_image_ai(model, str_user, image_paths, n_count = 1, data={}):
+    import base64
+    import time
+    import uuid
+    from io import BytesIO
     from PIL import Image
 
     config = cfg_image.get_image_config(model)
 
-    interactive_browser_credential = InteractiveBrowserCredential()  
-    token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)  
-  
-    client = AzureOpenAI(  
-        azure_endpoint=config.IMAGE_API_URL,  
-        azure_ad_token_provider=token_provider.get_token, 
-        api_version=config.IMAGE_API_VERSION
-    )  
+    interactive_browser_credential = InteractiveBrowserCredential()
+    token_provider = CachedTokenProvider(interactive_browser_credential, TOKEN_PROVIDER_NS)
+    bearer_token = token_provider.get_token()
 
-    response = client.images.generate(  
-        model = config.AZURE_DEPLOYMENT_IMAGE,  
-        prompt = str_user,
-        n = n_count,
-        quality = config.IMAGE_QUALITY,
-        style = config.IMAGE_STYLE,
-        size = "1024x1024"
-    )  
-  
-    json_response = json.loads(response.model_dump_json())
+    headers = {
+        "Authorization": f"Bearer {bearer_token}",
+        "Content-Type": "application/json",
+    }
 
-    n = 1
-    for item in json_response["data"]:
-        image_url = item["url"]
-        generated_image = requests.get(image_url).content
+    if "sora" in config.IMAGE_MODEL_ID:
+        payload = {
+            "model": config.IMAGE_MODEL_ID,
+            "prompt": str_user,
+            "n_seconds": data.get("video_length"),
+            "width": data.get("image_size").split("x")[0],
+            "height": data.get("image_size").split("x")[1],
+        }
+
+        response = requests.post(
+            url=config.IMAGE_API_URL,
+            headers=headers,
+            data=json.dumps(payload),
+        )
+        response_text = response.text
+        response_status = response.status_code
+
+        if response_status not in (200, 201):
+            raise Exception(f"Error: {response_status} - {response_text}")
+
+        job_id = response.json()["id"]
+        status_url = config.IMAGE_API_URL.replace("/jobs?", f"/jobs/{job_id}?")
+
+        status = None
+        while status not in ("succeeded", "failed", "cancelled"):
+            time.sleep(5)
+            status_response = requests.get(
+                status_url,
+                headers=headers,
+            ).json()
+            status = status_response.get("status")
+
+        if status == "succeeded":
+            generations = status_response.get("generations", [])
+            if generations:
+                generation_id = generations[0].get("id")
+                video_url = config.IMAGE_API_URL.replace("/jobs?", f"/{generation_id}/content/video?")
+                video_response = requests.get(video_url, headers=headers)
+                if video_response.ok:
+                    for i, image_path in enumerate(image_paths):
+                        image_path = image_path.replace(".png", f"_{uuid.uuid4()}.mp4")
+                        image_paths[i] = image_path
+                        with open(image_path, "wb") as file:
+                            file.write(video_response.content)
+            else:
+                raise Exception("No generations found in job result.")
+        else:
+            raise Exception(f"Job didn't succeed. Status: {status}")
+
+        return image_paths
+
+    n_count = 1  # override n_count to 1 (align with ai_image.py)
+    response_format = "b64_json"
+    payload = {
+        "prompt": str_user,
+        "n": n_count,
+    }
+
+    if config.IMAGE_MODEL_ID == "dall-e-3":
+        payload["style"] = data.get("style")
+        payload["response_format"] = response_format
+        payload["quality"] = data.get("image_quality")
+        payload["size"] = data.get("image_size")
+    elif "gpt-image-1" in config.IMAGE_MODEL_ID:
+        payload["output_format"] = "png"
+        payload["moderation"] = data.get("moderation")
+        payload["quality"] = data.get("image_quality")
+        payload["size"] = data.get("image_size")
+    elif config.IMAGE_MODEL_ID == "FLUX-1.1-pro":
+        payload["size"] = data.get("image_size")
+        payload["prompt_upsampling"] = data.get("prompt_upsampling")
+    elif config.IMAGE_MODEL_ID == "FLUX.1-Kontext-pro":
+        payload["aspect_ratio"] = data.get("image_aspect_ratio")
+        payload["prompt_upsampling"] = data.get("prompt_upsampling")
+
+    response = requests.post(
+        url=config.IMAGE_API_URL,
+        headers=headers,
+        data=json.dumps(payload),
+    )
+    response_text = response.text
+    response_status = response.status_code
+
+    if response_status != 200:
+        raise Exception(f"Error: {response_status} - {response_text}")
+
+    parsed_json = json.loads(response_text)
+    data_item = parsed_json["data"][0]
+
+    if response_format == "url" and data_item.get("url"):
+        generated_image = requests.get(data_item["url"]).content
         for image_path in image_paths:
-            image_path = image_path.replace(".png", f"_{n}.png") if n_count > 1 else image_path
-            with open(image_path, "wb") as image_file:
-                image_file.write(generated_image)
-
-            if config.RESIZE_IMAGE:
-                image = Image.open(image_path)  # Assuming PIL or Pillow for image handling
-                image = image.resize((config.RESIZE_IMAGE_WIDTH, config.RESIZE_IMAGE_HEIGHT))
+            with open(image_path, "wb") as file:
+                file.write(generated_image)
+    else:
+        b64_image = data_item.get("b64_json")
+        if b64_image:
+            image_data = base64.b64decode(b64_image)
+            image = Image.open(BytesIO(image_data))
+            for image_path in image_paths:
                 image.save(image_path)
-        n+=1
-            
-    return image_paths # path of last generated image
+        elif data_item.get("url"):
+            generated_image = requests.get(data_item["url"]).content
+            for image_path in image_paths:
+                with open(image_path, "wb") as file:
+                    file.write(generated_image)
+        else:
+            raise Exception("Error: No image content returned from Azure Entra image generation.")
+
+    return image_paths
