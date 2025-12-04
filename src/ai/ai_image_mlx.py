@@ -38,13 +38,13 @@ def generate_image(model, prompt, negative_prompt, n_images, outputs, seed, data
     negative_prompt = data.get("negative_prompt", "")
 
     # Qwen
-    if getattr(config, "IMAGE_MODEL_VERSION", "") == "qwen":
+    if model_name == "qwen":
         generator = QwenImage(
             quantize=quantize
         )
     
     # Fibo
-    elif getattr(config, "IMAGE_MODEL_VERSION", "") == "fibo":
+    elif model_name == "fibo":
         generator = FIBO(
             quantize=quantize
         )
@@ -55,7 +55,7 @@ def generate_image(model, prompt, negative_prompt, n_images, outputs, seed, data
         mx.clear_cache()
     
     # Z-Image Turbo
-    elif getattr(config, "IMAGE_MODEL_VERSION", "") == "z-image-turbo":
+    elif model_name == "z-image-turbo":
         generator = ZImageTurbo(
             quantize=quantize
         )
@@ -68,24 +68,25 @@ def generate_image(model, prompt, negative_prompt, n_images, outputs, seed, data
         )
     
     for index in range(n_images):
-        if getattr(config, "IMAGE_MODEL_VERSION", "") == "z-image-turbo":
-            image = generator.generate_image(
-                        seed=current_seed,
-                        prompt=prompt,
-                        width=width,
-                        height=height,
-                        num_inference_steps=num_inference_steps,
-                    )
+        generate_kwargs = {
+            "seed": current_seed,
+            "prompt": prompt,
+            "width": width,
+            "height": height,
+            "num_inference_steps": num_inference_steps,
+        }
+
+        if model_name == "z-image-turbo":
+            image = generator.generate_image(**generate_kwargs)
         else:
-            image = generator.generate_image(
-                        seed=current_seed,
-                        prompt=prompt,
-                        width=width,
-                        height=height,
-                        guidance=guidance,
-                        num_inference_steps=num_inference_steps,
-                        negative_prompt=negative_prompt or None,
-                    )
+            generate_kwargs.update(
+                guidance=guidance,
+                negative_prompt=negative_prompt or None,
+            )
+            if model_name == "fibo":
+                generate_kwargs["scheduler"] = "flow_match_euler_discrete"
+
+            image = generator.generate_image(**generate_kwargs)
 
         used_seed = current_seed
         for output_index, base_path in enumerate(base_outputs):

@@ -297,9 +297,9 @@ mlx:
       model_version: fibo
       num_steps: 
         default: 20
-        options: [20]
+        options: [4, 20]
       model_quantization: 4
-      guidance: 3.5
+      guidance: 4.0
     - id: mflux-z-image-turbo-4bit
       model_version: z-image-turbo
       num_steps: 

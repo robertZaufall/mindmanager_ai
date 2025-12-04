@@ -198,33 +198,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         #config.IMAGE_EXPLICIT_STYLE = "papercraft-kirigami art"
         #config.IMAGE_EXPLICIT_STYLE = "computer collage art"
 
-        if "mflux-" in model:
-            if "-schnell-" in model:
-                config.IMAGE_MODEL_VERSION = "schnell"
-            elif "-krea-dev-" in model:
-                config.IMAGE_MODEL_VERSION = "krea-dev"
-            elif "-dev-" in model:
-                config.IMAGE_MODEL_VERSION = "dev"
-            elif "-qwen-" in model:
-                config.IMAGE_MODEL_VERSION = "qwen"
-            elif "-fibo-" in model:
-                config.IMAGE_MODEL_VERSION = "fibo"
-            elif "-z-" in model:
-                config.IMAGE_MODEL_VERSION = "z-image-turbo"
-            else:
-                raise Exception("Error: image model version not supported using MLX")
-            
-            if "-4bit" in model:
-                config.IMAGE_MODEL_QUANTIZATION = 4
-            elif "-8bit" in model:
-                config.IMAGE_MODEL_QUANTIZATION = 8
-            elif "-6bit" in model:
-                config.IMAGE_MODEL_QUANTIZATION = 6
-            else:
-                raise Exception("Error: image model quantization not supported using MLX")
-        else:
-            raise Exception("Error: image model not supported using MLX")
-
 
     elif system == "IDEOGRAMAI":
         config.IMAGE_SEED = 0
