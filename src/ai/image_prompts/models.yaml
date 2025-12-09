@@ -98,7 +98,7 @@ stabilityai:
     image_aspect_ratio:
       default: "16:9"
       options: ["16:9", "1:1", "21:9", "2:3", "3:2", "4:5", "5:4", "9:16", "9:21"]
-    style_preset:
+    style:
       default: digital-art
       options: [3d-model, analog-film, anime, cinematic, comic-book, digital-art, enhance, fantasy-art, isometric, line-art, low-poly, modeling-compound, neon-punk, origami, photographic, pixel-art, tile-texture]
     negative_prompt: "text, characters, letters, words, labels"
@@ -258,6 +258,9 @@ mlx:
       options: [1024, 768, 512]
     seed: 0
     negative_prompt: "text, characters, letters, words, labels"
+    style:
+      default: "photorealistic 3D art"
+      options: ["photorealistic 3D art", "papercraft-kirigami art", "computer collage art"]
     #mlx_controlnet_strength:
     #  default: 0.4
     #  options: [0.4]
@@ -313,7 +316,7 @@ mlx:
 #     cloud_type: IDEOGRAMAI
 #     seed: 0
 #     negative_prompt: "text, characters, letters, words, labels"
-#     style_type:
+#     style:
 #       default: AUTO
 #       options: [AUTO, GENERAL, REALISTIC, DESIGN]
 #   models:

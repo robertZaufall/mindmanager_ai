@@ -30,7 +30,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
+CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview-grounding'       # best in class (nano banana pro + vendor web search grounding)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                     # best in class (nano banana)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-001'                    # best in class
@@ -48,7 +48,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+veo-2.0-generate-001'                       # best
 
 # MLX (local generation, MacOS w/ Apple Silicon only)
-CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit'                              # good
+# CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit'                              # good
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-dev-4bit'                                  # poor (slow)
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-krea-dev-4bit'                             # good (slow)
 # CLOUD_TYPE_IMAGE = 'MLX+mflux-qwen-6bit'                                 # good (slow)
@@ -81,7 +81,6 @@ CLOUD_TYPE_IMAGE = 'MLX+mflux-schnell-4bit'                              # good
 # CLOUD_TYPE_IMAGE = 'FAL+bytedance/seedream/v4'                           # best
 
 
-
 def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespace:
 
     config = SimpleNamespace(
@@ -89,7 +88,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     )
 
     config.LOG = True
-    config.TURBO_MODE = True
     config.USE_AZURE_ENTRA_IMAGE = False
     config.INSERT_IMAGE_AS_BACKGROUND = False
     config.OPTIMIZE_PROMPT_IMAGE = False
@@ -157,7 +155,6 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.GCP_CLIENT_ID_IMAGE = os.getenv('GCP_CLIENT_ID')
         config.GCP_CLIENT_SECRET_IMAGE = os.getenv('GCP_CLIENT_SECRET')
         config.GOOGLE_ACCESS_TOKEN_IMAGE = os.getenv('GOOGLE_ACCESS_TOKEN_AI')
-
         config.IMAGE_PROJECT_ID = os.getenv('VERTEXAI_PROJECT_ID_IMAGE')
         config.IMAGE_LOCATION_ID = os.getenv('VERTEXAI_LOCATION_ID_IMAGE')
 
@@ -169,13 +166,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
                 f"{model}:predict"
             )
         elif model.startswith("gemini-"):
-            if model.endswith("-grounding"):
-                config.IMAGE_USE_GROUNDING = True
-                model = model.replace("-grounding", "")
-                config.IMAGE_MODEL_ID = model
-            else:
-                config.IMAGE_USE_GROUNDING = False
-
+            model = model.replace("-grounding", "")
             config.IMAGE_API_URL = (
                 f"https://{os.getenv('VERTEXAI_API_ENDPOINT_GLOBAL_IMAGE')}/v1/projects/{config.IMAGE_PROJECT_ID}"
                 f"/locations/{os.getenv('VERTEXAI_LOCATION_ID')}/publishers/google/models/"
@@ -190,20 +181,9 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         else:
             raise Exception("Error: Unknown VertexAI image model")
 
-
-    elif system == "MLX":
-        config.IMAGE_SEED = 0
-        #https://enragedantelope.github.io/Styles-FluxDev/
-        config.IMAGE_EXPLICIT_STYLE = "photorealistic 3D art"
-        #config.IMAGE_EXPLICIT_STYLE = "papercraft-kirigami art"
-        #config.IMAGE_EXPLICIT_STYLE = "computer collage art"
-
-
-    elif system == "IDEOGRAMAI":
-        config.IMAGE_SEED = 0
-        config.IMAGE_NEGATIV_PROMPT = "text, characters, letters, words, labels"
-        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Api-Key": os.getenv('IDEOGRAMAI_API_KEY') or ""}
-        config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_V3_URL')
+    # elif system == "IDEOGRAMAI":
+    #     config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Api-Key": os.getenv('IDEOGRAMAI_API_KEY') or ""}
+    #     config.IMAGE_API_URL = os.getenv('IDEOGRAMAI_API_V3_URL')
 
     elif system == "BFL":
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "x-key": os.getenv('BFL_API_KEY') or ""}

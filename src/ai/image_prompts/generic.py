@@ -1,10 +1,8 @@
 class MPrompt:
     _cloud_type: str = ""
-    _explicit_style: str = ""
 
-    def __init__(self, cloud_type: str="", _explicit_style: str=""):
+    def __init__(self, cloud_type: str=""):
         self._cloud_type = cloud_type
-        self._explicit_style = _explicit_style
 
     def get_prompt(self,
             context: str="",
@@ -24,8 +22,6 @@ class MPrompt:
             extra_topics = ""
 
         extra_topic_list = [item.strip() for item in extra_topics.split(",") if item.strip()]
-        explicit_style = f", {self._explicit_style}" if self._explicit_style else ""
-        requested_style = f", {style_hint}" if style_hint else ""
 
         topic_clause = (
             f"a strong, business-focused scene illustrating the vision of {main_topic}"
@@ -50,7 +46,7 @@ class MPrompt:
 
         prompt = (
             "Business graphic, minimalistic, professional"
-            f"{explicit_style}{requested_style}, "
+            f"{style}, "
             f"{topic_clause}.{subtopic_clause}"
             " On a gray gradient background with an expensive look, no text or labels."
             #f"{context_clause}"

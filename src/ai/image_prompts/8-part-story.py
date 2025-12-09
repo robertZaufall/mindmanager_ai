@@ -2,23 +2,9 @@
 
 class MPrompt:
     _cloud_type: str = ""
-    _explicit_style: str = ""
 
-    def __init__(self, cloud_type: str="", _explicit_style: str=""):
+    def __init__(self, cloud_type: str=""):
         self._cloud_type = cloud_type
-        self._explicit_style = _explicit_style
-
-    def get_prompt(self, 
-            context: str="",
-            top_most_topic: str="", 
-            subtopics: str="" 
-        ) -> str:
-        return (
-            "Create a beautifully entertaining 8 part story in one image with one blue character and his adventures. "
-            "The story is thrilling throughout with emotional highs and lows and ending on a "
-            "great twist and high note. Do not include any words or text on the images but tell the story purely through the imagery itself. "
-            f"Take this markdown as context: \n```markdown\n{context}```\n "
-        )
 
     def get_prompt(self, 
             context: str="",
@@ -26,18 +12,24 @@ class MPrompt:
             subtopics: str="",
             style: str="",
         ) -> str:
-        return (
-            f"Create a beautifully entertaining 8 part story in one image with one blue character and his adventures{(", " + style + ",") if style else ""} "
-            f"from {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}: "
-            f"\n```markdown\n{context}```\n "
+        result = f"Create a beautifully entertaining 8 part story{(' on ' + top_most_topic) if top_most_topic else ''} in one image with one blue character and his adventures"
+        if context:
+            result += f" about {"the core topics of this markdown" if subtopics == "" else "'" + subtopics + "' and the following markdown as context"}:\n```markdown\n{context}```\n"
+        else:
+            result += f"{ "." if subtopics == "" else " about '" + subtopics + "'."}\n"
+        result += (
             "The story is thrilling throughout with emotional highs and lows and ending on a "
             "great twist and high note. Do not include any words or text on the images but tell the story purely through the imagery itself. "
         )
+        return result
 
 def main():
     _prompt = MPrompt()
-    prompt_text = _prompt.get_prompt(context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n')
-    print(prompt_text)
+    print(_prompt.get_prompt(top_most_topic="Main Topic", subtopics="SubTopic 1, SubTopic 2", context=''))
+    print(_prompt.get_prompt(top_most_topic="Main Topic", subtopics="", context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n'))
+
+    print(_prompt.get_prompt(top_most_topic="Main Topic", subtopics="SubTopic 1, SubTopic 2", context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n'))
+    print(_prompt.get_prompt(top_most_topic="", subtopics="", context='# Title\n  ## Main Topic\n    ### SubTopic 1\n      ### SubTopic 1.1\n      ### SubTopic 1.2\n'))
 
 if __name__ == "__main__":
     main()

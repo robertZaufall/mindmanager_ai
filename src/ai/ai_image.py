@@ -32,19 +32,17 @@ def call_image_ai(model,
     if config.CLOUD_TYPE_IMAGE == "":
         raise Exception("Error: CLOUD_TYPE_IMAGE is not set in config_image.py")
     
-    style_prompt = ""
-    try:
-        style_prompt = data.get("style_prompt", "")
-    except Exception:
-        style_prompt = ""
+    #https://enragedantelope.github.io/Styles-FluxDev/
+    style = data.get("style", "")
 
     prompt_path = os.path.join(os.path.dirname(__file__), 'image_prompts', f"{image_prompt}.py")
     if not os.path.exists(prompt_path):
         raise Exception(f"Error: {prompt_path} does not exist.")
     module = file_helper.load_module_from_path(prompt_path, "mprompt")
-    mprompt = module.MPrompt(config.CLOUD_TYPE_IMAGE, config.IMAGE_EXPLICIT_STYLE if hasattr(config, "IMAGE_EXPLICIT_STYLE") else "")
 
-    str_user = mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics, style=style_prompt)
+    mprompt = module.MPrompt(config.CLOUD_TYPE_IMAGE)
+
+    str_user = mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics, style=style)
 
     if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA_IMAGE:
         n_count = 1 # override n_count to 1
@@ -222,9 +220,7 @@ def call_image_ai(model,
         n_count = 1 # override n_count to 1
         negative_prompt = data.get("negative_prompt") if config.IMAGE_MODEL_ID != "sd3-large-turbo" else ""
         seed = data.get("seed") if data.get("seed") != 0 else random.randint(0, 2**32 - 1)
-        style = ""
-        #if config.MODEL_ENDPOINT == "core":
-        style = data.get("style_preset") or data.get("style_presets") or ""
+        style = data.get("style") or data.get("style") or ""
 
         response = requests.post(
             url=config.IMAGE_API_URL,
@@ -262,7 +258,7 @@ def call_image_ai(model,
                 "rendering_speed": data.get("image_rendering_speed"),
                 "magic_prompt": "AUTO",
                 "negative_prompt": data.get("negative_prompt"),
-                "style_type": data.get("style_type"),
+                "style_type": data.get("style"),
             }
         else:
             raise Exception("Error: Unknown Ideogram AI image model")

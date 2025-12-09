@@ -5,7 +5,6 @@ import requests
 import json
 import time
 import os
-from types import SimpleNamespace
 import google.auth
 
 from google.auth.transport.requests import Request  
@@ -164,8 +163,8 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
             "generationConfig": {
                 "responseModalities": ["TEXT", "IMAGE"],
                 "imageConfig": { 
-                    "aspectRatio": data.get("image_aspect_ratio"), 
-                    "imageSize": data.get("image_size"),
+                    "aspectRatio": data.get("image_aspect_ratio", "16:9"), 
+                    "imageSize": data.get("image_size", "2K"),
                 }
             },
             "safetySettings": [
@@ -180,7 +179,7 @@ def call_image_ai(model, str_user, image_paths, n_count=1, data={}):
             ]
         }
         
-        if hasattr(config, "IMAGE_USE_GROUNDING") and config.IMAGE_USE_GROUNDING:
+        if data.get("use_grounding", False):
             payload["tools"] = {"google_search": {}}
 
     elif config.IMAGE_MODEL_ID.startswith("veo-"):

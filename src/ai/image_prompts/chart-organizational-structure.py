@@ -2,11 +2,9 @@
 
 class MPrompt:
     _cloud_type: str = ""
-    _explicit_style: str = ""
 
-    def __init__(self, cloud_type: str="", _explicit_style: str=""):
+    def __init__(self, cloud_type: str=""):
         self._cloud_type = cloud_type
-        self._explicit_style = _explicit_style
 
     def get_prompt(self, 
             context: str="",
