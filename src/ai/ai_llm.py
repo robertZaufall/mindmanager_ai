@@ -113,7 +113,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
        "OPENAI+" in config.CLOUD_TYPE or \
        "AZURE_FOUNDRY+" in config.CLOUD_TYPE or \
        "GITHUB+" in config.CLOUD_TYPE) and \
-       not "+o3-pro" in config.CLOUD_TYPE and not "+gpt-5.1" in config.CLOUD_TYPE and not "+anthropic/" in config.CLOUD_TYPE:
+       not "+o3-pro" in config.CLOUD_TYPE and not "+gpt-5." in config.CLOUD_TYPE and not "+anthropic/" in config.CLOUD_TYPE:
 
         payload = {}
 
@@ -162,7 +162,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
 
         result = get_response(payload)
     
-    elif config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") or config.CLOUD_TYPE.startswith("AZURE+gpt-5.1") or config.CLOUD_TYPE.startswith("OPENAI+o3-pro"):
+    elif config.CLOUD_TYPE.startswith("OPENAI+gpt-5.") or config.CLOUD_TYPE.startswith("AZURE+gpt-5.") or config.CLOUD_TYPE.startswith("OPENAI+o3-pro"):
         this_model = config.MODEL_ID if config.CLOUD_TYPE.startswith("OPENAI+") else config.AZURE_DEPLOYMENT
         def get_payload_for_responses():
             payload = {
@@ -205,7 +205,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
 
         if config.REASONING_EFFORT != "":
             payload["reasoning"] = {"effort": config.REASONING_EFFORT}
-        if (config.CLOUD_TYPE.startswith("OPENAI+gpt-5.1") or config.CLOUD_TYPE.startswith("AZURE+gpt-5.1")) and config.REASONING_EFFORT == "none":
+        if (config.CLOUD_TYPE.startswith("OPENAI+gpt-5.") or config.CLOUD_TYPE.startswith("AZURE+gpt-5.")) and config.REASONING_EFFORT == "none":
             payload["temperature"] = config.LLM_TEMPERATURE
         
         if config.CLOUD_TYPE.endswith("-flex"):

@@ -11,7 +11,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best ($  1.25, $ 10.00)
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # good
 
-CLOUD_TYPE = 'AZURE+anthropic/claude-haiku-4-5'                       # best
+# CLOUD_TYPE = 'AZURE+anthropic/claude-haiku-4-5'                       # best
 # CLOUD_TYPE = 'AZURE+anthropic/claude-sonnet-4-5'                      # best
 # CLOUD_TYPE = 'AZURE+anthropic/claude-opus-4-5'                        # best
 
@@ -31,6 +31,7 @@ CLOUD_TYPE = 'AZURE+anthropic/claude-haiku-4-5'                       # best
 # CLOUD_TYPE = 'AZURE+o3-mini'                                          # good
 
 # OpenAI
+CLOUD_TYPE = 'OPENAI+gpt-5.2-2025-12-11-none'                         # best ($  1.75, $ 14.00)
 # CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-none'                         # best ($  1.25, $ 10.00)
 # CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-low'                          # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-medium'                       # best ($  1.25, $ 10.00 ++ reasoning tokens)
@@ -330,7 +331,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     if "OPENAI+" in CLOUD_TYPE:
         config.API_URL = os.getenv('OPENAI_API_URL')
 
-        if CLOUD_TYPE.startswith("OPENAI+o3-pro") or "+gpt-5.1" in CLOUD_TYPE:
+        if CLOUD_TYPE.startswith("OPENAI+o3-pro") or "+gpt-5." in CLOUD_TYPE:
             config.API_URL = os.getenv('OPENAI_API_URL').replace("chat/completions", "responses")
         
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY') or "")}
@@ -352,7 +353,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         else:
 
             config.AZURE_DEPLOYMENT = config.MODEL_ID
-            if "+gpt-5.1" in CLOUD_TYPE:
+            if "+gpt-5." in CLOUD_TYPE:
                 config.API_VERSION = os.getenv('AZURE_API_VERSION_RESPONSES')
                 config.API_URL = (
                     f"{os.getenv('AZURE_API_URL_RESPONSES')}"
