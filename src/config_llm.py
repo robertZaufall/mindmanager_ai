@@ -4,6 +4,7 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
+CLOUD_TYPE = 'AZURE+gpt-5.2'                                          # best ($  1.75, $ 14.00 + reasoning tokens)
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best ($  0.05, $  0.44)
 # CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($  0.25, $  2.20)
 # CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best ($  1.25, $ 10.00 + reasoning tokens)
@@ -31,7 +32,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'AZURE+o3-mini'                                          # good
 
 # OpenAI
-CLOUD_TYPE = 'OPENAI+gpt-5.2-2025-12-11-none'                         # best ($  1.75, $ 14.00)
+# CLOUD_TYPE = 'OPENAI+gpt-5.2-2025-12-11-none'                         # best ($  1.75, $ 14.00)
 # CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-none'                         # best ($  1.25, $ 10.00)
 # CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-low'                          # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-medium'                       # best ($  1.25, $ 10.00 ++ reasoning tokens)
