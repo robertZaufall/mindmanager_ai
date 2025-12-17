@@ -31,6 +31,7 @@ elif sys.platform.startswith('darwin'):
 
 valid_actions = [
     "refine", "refine_dev", "refine_grounding", 
+    "answer_grounding",
     "complexity_1", "complexity_2", "complexity_3", 
     "examples", "cluster", "exp", "capex_opex", 
     "prc_org", "prj_prc_org", "exp_prj_prc_org", "prj_org", 

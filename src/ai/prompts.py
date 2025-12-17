@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import sys
+if sys.platform.startswith('win'):
+    platform = "win"
+elif sys.platform.startswith('darwin'):
+    platform = "darwin"
 
 @dataclass(frozen=True)
 class PromptSettings:
@@ -191,9 +196,35 @@ def _refine_prompt(text: str, topic_texts: str, *, level_label: str, perspective
     return _mermaid_prompt(instruction, text)
 
 
+def _answer_prompt(text: str, topic_texts: str, *, level_label: str, perspective: str | None = None) -> str:
+    topics = _topic_scope(
+        topic_texts,
+        scoped_template='only the topic(s) "{topic_texts}" each',
+        default="each subtopic",
+    )
+    perspective_suffix = f" from a {perspective} perspective" if perspective else ""
+    instruction = (
+        "Please "
+        "_answer_ (if leaf topics like ['current','actual','now',...]  or ['stocks','price','date','weather',...])  or "
+        "_define_ (if leaf topics like ['reason','ground','definition','explanation',...]) "
+        f"{topics} "
+        f"by adding at least one more additional {level_label} with up to {TOP_MOST_RESULTS} top most important subtopics{perspective_suffix}. "
+        "If there are keywords like ['each','every','all',...] in the topic texts, please do it for each of them ([entities,symbols,...]). "
+        f"{ "Add representative emojis to leaf topics where appropriate like price differences (up/down) or sentiment. Don't use technical but general emojis, like positive, negative, up, down, extraordinary, (...). " if platform == "darwin" else ""}" 
+        "If you decide from your knowledge there have to be more or fewer most important subtopics as essential information, you can increase or decrease this number. "
+        f"{REFINE_SUFFIX}"
+    )
+    return _mermaid_prompt(instruction, text)
+
+
 def prompt_refine(text: str, topic_texts: str = "") -> str:
     """Refine by adding a deeper child level."""
     return _refine_prompt(text, topic_texts, level_label="child level")
+
+
+def prompt_answer(text: str, topic_texts: str = "") -> str:
+    """Answer by adding a deeper child level."""
+    return _answer_prompt(text, topic_texts, level_label="child level")
 
 
 def prompt_refine_dev(text: str, topic_texts: str = "") -> str:
@@ -383,6 +414,7 @@ def prompt(param: str, text: str, topic_texts: str = "", freetext: str = "") -> 
     prompt_functions = {
         "refine": prompt_refine,
         "refine_grounding": prompt_refine,
+        "answer_grounding": prompt_answer,
         "refine_dev": prompt_refine_dev,
         "examples": prompt_examples,
         "cluster": prompt_cluster,

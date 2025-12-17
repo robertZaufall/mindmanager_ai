@@ -15,6 +15,7 @@ ACTION_MAP = {
     "Refine": "refine",
     "Refine (Grounding)": "refine_grounding",
     "Refine (Dev)": "refine_dev",
+    "Answer (Grounding)": "answer_grounding",
     "Examples": "examples",
     "Cluster": "cluster",
     "Glossary (md/html)": "glossary",
