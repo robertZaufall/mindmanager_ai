@@ -272,7 +272,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
             }
         }
 
-        if "gemini-2.5-flash" in config.MODEL_ID:
+        if config.THINKING_BUDGET is not None:
             payload["generation_config"]["thinkingConfig"] = {"thinkingBudget": config.THINKING_BUDGET}
 
         if param.endswith("_grounding") and "-lite" not in config.MODEL_ID:

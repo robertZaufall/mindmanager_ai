@@ -6,7 +6,7 @@ from file_helper import load_env
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
 # CLOUD_TYPE = 'AZURE+gpt-5.2'                                          # best ($  1.75, $ 14.00 + reasoning tokens)
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best ($  0.05, $  0.44)
-CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($  0.25, $  2.20)
+# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($  0.25, $  2.20)
 # CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best ($  1.25, $ 10.00)
@@ -105,7 +105,11 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($ 
 # CLOUD_TYPE = 'ANTHROPIC+claude-3-5-haiku-20241022'                    # best ($  0.80, $  4.00)
 
 # Google Gemini
+
+CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview'                          # ($ 0.50, $  3.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-thinking'                 # ($ 0.50, $  3.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview'                            # ($ 2.00, $ 12.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview-thinking'                   # ($ 2.00, $ 12.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-09-2025'                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-09-2025'           # ($ 0.10, $  0.40) bad
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash'                                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
@@ -118,7 +122,10 @@ CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($ 
 # CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
 # Google Gemini Vertex AI (OAuth2)
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview'                        # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-thinking'               # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview'                          # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview-thinking'                 # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-09-2025'              # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-09-2025'         # bad
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash'                              # best
@@ -401,10 +408,15 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
-        config.TOP_P = 0.95
+        config.TOP_P = 0.50
+        config.THINKING_BUDGET = None
         if "gemini-2.5" in model or "gemini-3" in model:
             config.MAX_TOKENS = 64000
-            config.THINKING_BUDGET = 2048
+            if "-thinking" in model:
+                config.THINKING_BUDGET = 2048
+                config.MODEL_ID = config.MODEL_ID.replace("-thinking", "")
+            else:
+                config.THINKING_BUDGET = 0
         else:
             config.MAX_TOKENS = 8191
         config.MULTIMODAL = True
