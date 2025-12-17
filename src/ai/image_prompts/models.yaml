@@ -359,6 +359,13 @@ bfl:
     output_format: png
     safety_tolerance: 5
   models:
+    - id: flux-2-max
+      image_width:
+        default: 1280
+        options: [2016, 1680, 1920, 1440, 1280, 1024, 800, 512, 256]
+      image_height:
+        default: 800
+        options: [864, 800, 720, 1080, 1024, 600, 512, 256]
     - id: flux-2-pro
       image_width:
         default: 1680

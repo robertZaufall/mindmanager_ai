@@ -63,12 +63,13 @@ CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1.5'                                #
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_QUALITY'                              # best
         
 # Black Forrest Labs        
-# CLOUD_TYPE_IMAGE = 'BFL+flux-2-pro'                                      # best (fast and efficient) (0,03ct per image)
-# CLOUD_TYPE_IMAGE = 'BFL+flux-2-flex'                                     # best (max quality) (0,06ct per image)
-# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-pro'                                # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                                # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                              # best
-# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                                    # best
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-max'                                      # best (highest quality)      ($ 0,07 + 0,030 per megapixel)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-pro'                                      # best (fast and efficient)   ($ 0,03 + 0,015 per megapixel)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-flex'                                     # best (quality with control) ($ 0,06 per megapixel)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-pro'                                # best ($ 0,04 per image)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                                # best ($ 0,08 per image)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1-ultra'                              # best ($ 0,06 per image)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-pro-1.1'                                    # best ($ 0,04 per image)
 
 # RecraftAI
 # CLOUD_TYPE_IMAGE = 'RECRAFTAI+recraftv3'                                 # best

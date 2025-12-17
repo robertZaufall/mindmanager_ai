@@ -304,7 +304,11 @@ def call_image_ai(model,
             "output_format": data.get("output_format")
         }
 
-        if config.IMAGE_MODEL_ID == "flux-2-pro":
+        if config.IMAGE_MODEL_ID == "flux-2-max":
+            payload["width"] = data.get("image_width")
+            payload["height"] = data.get("image_height")
+
+        elif config.IMAGE_MODEL_ID == "flux-2-pro":
             payload["width"] = data.get("image_width")
             payload["height"] = data.get("image_height")
             payload["steps"] = data.get("steps")
