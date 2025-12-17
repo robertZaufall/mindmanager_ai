@@ -55,6 +55,22 @@ openai:
       style:
         default: vivid
         options: [vivid, natural]
+    - id: gpt-image-1.5
+      image_size:
+        default: 1536x1024
+        options: [1024x1024, 1536x1024, 1024x1536]
+      image_quality:
+        default: medium
+        options: [high, medium, low, auto]
+      moderation:
+        default: low
+        options: [low, auto]
+      output_compression:
+        default: 100
+        options: [100, 80, 60]
+      background:
+        default: auto
+        options: [auto, transparent, opaque]
     - id: gpt-image-1
       image_size:
         default: 1536x1024

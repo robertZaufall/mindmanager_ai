@@ -33,7 +33,9 @@ def call_image_ai(model,
         raise Exception("Error: CLOUD_TYPE_IMAGE is not set in config_image.py")
     
     #https://enragedantelope.github.io/Styles-FluxDev/
-    style = data.get("style", "")
+    style_model = data.get("style", "") # model specific
+
+    style_prompt = data.get("style_prompt", "")
 
     prompt_path = os.path.join(os.path.dirname(__file__), 'image_prompts', f"{image_prompt}.py")
     if not os.path.exists(prompt_path):
@@ -42,7 +44,7 @@ def call_image_ai(model,
 
     mprompt = module.MPrompt(config.CLOUD_TYPE_IMAGE)
 
-    str_user = mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics, style=style)
+    str_user = mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics, style=style_prompt)
 
     if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA_IMAGE:
         n_count = 1 # override n_count to 1
@@ -155,19 +157,24 @@ def call_image_ai(model,
             else:
                 raise Exception(f"Job didn't succeed. Status: {status}")
 
-        # gpt-image-1, FLUX-1.1-pro, dall-e-3
+        # gpt-image-1.x, FLUX-1.1-pro, dall-e-3
         else:
 
             n_count = 1 # override n_count to 1
             #format = "url"
             format = "b64_json"
+
+            # fix language bug
+            if  "gpt-image-1" in config.IMAGE_MODEL_ID:
+                str_user = str_user.replace("in the same language as the context ", "in the same language as the context (i.e. most likely English or German) ")
+            
             payload = {
                 "prompt": str_user,
                 "n": n_count,
             }
 
             if config.IMAGE_MODEL_ID == "dall-e-3":
-                payload["style"] = data.get("style")
+                payload["style"] = style_model
                 payload["response_format"] = format
                 payload["quality"] = data.get("image_quality")
                 payload["size"] = data.get("image_size")
@@ -177,6 +184,8 @@ def call_image_ai(model,
                 payload["moderation"] = data.get("moderation")
                 payload["quality"] = data.get("image_quality")
                 payload["size"] = data.get("image_size")
+                if data.get("background", "auto") != "auto":
+                    payload["background"] = data.get("background")
 
             elif config.IMAGE_MODEL_ID == "FLUX-1.1-pro":
                 payload["size"] = data.get("image_size")
@@ -220,7 +229,6 @@ def call_image_ai(model,
         n_count = 1 # override n_count to 1
         negative_prompt = data.get("negative_prompt") if config.IMAGE_MODEL_ID != "sd3-large-turbo" else ""
         seed = data.get("seed") if data.get("seed") != 0 else random.randint(0, 2**32 - 1)
-        style = data.get("style") or data.get("style") or ""
 
         response = requests.post(
             url=config.IMAGE_API_URL,
@@ -233,7 +241,7 @@ def call_image_ai(model,
                 "aspect_ratio": data.get("image_aspect_ratio"),
                 "negative_prompt": negative_prompt,
                 "seed": seed,
-                "style_preset": style,
+                "style_preset": style_model
             },
         )
 
@@ -258,7 +266,7 @@ def call_image_ai(model,
                 "rendering_speed": data.get("image_rendering_speed"),
                 "magic_prompt": "AUTO",
                 "negative_prompt": data.get("negative_prompt"),
-                "style_type": data.get("style"),
+                "style_type": style_model,
             }
         else:
             raise Exception("Error: Unknown Ideogram AI image model")
@@ -379,8 +387,8 @@ def call_image_ai(model,
             "model": config.IMAGE_MODEL_ID,
             "n": n_count,
             "prompt": str_user,
-            "style": data.get("style").split("|")[0],
-            "substyle": data.get("style").split("|")[1],
+            "style": style_model.split("|")[0],
+            "substyle": style_model.split("|")[1],
             "response_format": format,
             "size": data.get("image_size"),
         }

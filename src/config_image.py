@@ -1,3 +1,4 @@
+from logging import config
 import os
 from types import SimpleNamespace
 from file_helper import load_env
@@ -14,6 +15,7 @@ CLOUD_TYPE_IMAGE = ''
         
 # OpenAI        
 # CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                     # best
+CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1.5'                                #
 # CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                  # good
 # CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1-mini'                             # good
 # CLOUD_TYPE_IMAGE = 'OPENAI+sora-2'                                       # best
@@ -30,7 +32,7 @@ CLOUD_TYPE_IMAGE = ''
 # CLOUD_TYPE_IMAGE = 'STABILITYAI+ultra'                                   # good
 
 # VertexAI
-CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
+# CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview'                 # best in class (nano banana pro)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-3-pro-image-preview-grounding'       # best in class (nano banana pro + vendor web search grounding)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+gemini-2.5-flash-image'                     # best in class (nano banana)
 # CLOUD_TYPE_IMAGE = 'VERTEXAI+imagen-4.0-generate-001'                    # best in class
@@ -91,6 +93,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     config.USE_AZURE_ENTRA_IMAGE = False
     config.INSERT_IMAGE_AS_BACKGROUND = False
     config.OPTIMIZE_PROMPT_IMAGE = False
+    config.TURBO_MODE = True
 
     # only relevant for MACOS platform
     config.MACOS_ACCESS = 'appscript'
@@ -137,7 +140,7 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
             raise Exception("Error: Unsupported Azure image model")
 
     elif system == "OPENAI":
-        if model in ("dall-e-3", "gpt-image-1", "gpt-image-1-mini"):
+        if model in ("dall-e-3", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"):
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
         elif "sora" in model:
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE_VIDEO')
