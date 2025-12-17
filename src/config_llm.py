@@ -4,9 +4,9 @@ from types import SimpleNamespace
 from file_helper import load_env
 
 # Azure serverless models, !use your model deployment name, ie. gpt-4o!
-CLOUD_TYPE = 'AZURE+gpt-5.2'                                          # best ($  1.75, $ 14.00 + reasoning tokens)
+# CLOUD_TYPE = 'AZURE+gpt-5.2'                                          # best ($  1.75, $ 14.00 + reasoning tokens)
 # CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best ($  0.05, $  0.44)
-# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($  0.25, $  2.20)
+CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($  0.25, $  2.20)
 # CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'AZURE+gpt-5'                                            # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best ($  1.25, $ 10.00)
@@ -265,6 +265,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.MAX_RETRIES = 3
 
     # only relevant for MACOS platform
+    #   appscript: debugging works flawlessly in VSCode; permission problems e.g. with Cursor because of osascript middleware
+    #   applescript: experimental
     config.MACOS_ACCESS = 'appscript'
 
     config.SYSTEM_PROMPT = """
