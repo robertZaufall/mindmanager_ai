@@ -106,12 +106,11 @@ from file_helper import load_env
 
 # Google Gemini
 
-CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview'                          # ($ 0.50, $  3.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-thinking'                 # ($ 0.50, $  3.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview'                            # ($ 2.00, $ 12.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview-thinking'                   # ($ 2.00, $ 12.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-preview-09-2025'                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
-# CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite-preview-09-2025'           # ($ 0.10, $  0.40) bad
+CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-minimal'                  # ($ 0.50, $  3.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-low'                      # ($ 0.50, $  3.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-high'                     # ($ 0.50, $  3.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview-low'                        # ($ 2.00, $ 12.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview-high'                       # ($ 2.00, $ 12.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash'                                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) good
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro'                                  # ($ 1.25, $ 10.00) best
@@ -122,17 +121,16 @@ CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview'                          # ($ 0.50,
 # CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
 # Google Gemini Vertex AI (OAuth2)
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview'                        # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-thinking'               # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview'                          # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview-thinking'                 # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-preview-09-2025'              # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite-preview-09-2025'         # bad
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-minimal'                # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-low'                    # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-high'                   # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview-low'                      # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview-high'                     # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash'                              # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite'                         # good
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro'                                # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.0-flash'                              # best
-# CLOUD_TYPE = 'VERTEXAI+anthropic/claude-sonnet-4'                     # *** implementation does not work ***
+# CLOUD_TYPE = 'VERTEXAI+anthropic/claude-sonnet-4'                     # 0 quotas
 
 # AWS Bedrock
 # CLOUD_TYPE = 'BEDROCK+global.anthropic.claude-opus-4-5-20251101-v1:0' # best
@@ -409,12 +407,19 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     elif "GEMINI" in CLOUD_TYPE or "VERTEXAI" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
         config.TOP_P = 0.50
+        config.THINKING_LEVEL = None
         config.THINKING_BUDGET = None
+
         if "gemini-2.5" in model or "gemini-3" in model:
             config.MAX_TOKENS = 64000
-            if "-thinking" in model:
-                config.THINKING_BUDGET = 2048
-                config.MODEL_ID = config.MODEL_ID.replace("-thinking", "")
+            if "gemini-3" in model:
+                thinking_level = model.split("-")[-1]
+                if thinking_level in ["minimal", "low", "high"]:
+                    config.THINKING_LEVEL = thinking_level
+                    model = model.replace(f"-{thinking_level}", "")
+                    config.MODEL_ID = model
+                else:
+                    config.THINKING_LEVEL = "low"
             else:
                 config.THINKING_BUDGET = 0
         else:

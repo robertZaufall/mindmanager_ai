@@ -87,6 +87,10 @@ def call_llm_gcp(model, str_user, param, data, mimeType):
 
         if config.THINKING_BUDGET is not None:
             payload["generation_config"]["thinkingConfig"] = {"thinkingBudget": config.THINKING_BUDGET}
+        else:
+            if config.THINKING_LEVEL is not None:
+                payload["generation_config"]["thinkingConfig"] = {"thinkingLevel": config.THINKING_LEVEL}
+
 
         if param.endswith("_grounding") and "-lite" not in config.MODEL_ID:
             payload["tools"] = {"google_search": {}}
