@@ -1,0 +1,41 @@
+{
+  "prompt-groups": [
+    {
+      "prompt_base": "template-create",
+      "prompt_template": "Create <subject> on or about <top_most_topic> in one image <detail><subtopics-with-prefix><context-with-prefix>\n<additional-info>",
+      "prompts": [
+        {
+          "name": "8-part-story",
+          "subject": "a beautifully entertaining 8 part story",
+          "detail": "with one blue character and his adventures",
+          "additional_info": "The story is thrilling throughout with emotional highs and lows and ending on a great twist and high note. Do not include any words or text on the images but tell the story purely through the imagery itself."
+        }
+      ]
+    },
+    {
+      "prompt_base": "template-generate",
+      "prompt_template": "Generate <subject><style-with-prefix>, in the context's language,<subtopics-with-prefix><context-with-prefix>",
+      "prompts": [
+        { "name": "advertising", "subject": "a high-class advertorial image" },
+        { "name": "business-matrix", "subject": "a business matrix image" },
+        { "name": "chart-organizational-structure", "subject": "a organizational structure chart image using avatars" },
+        { "name": "chart-process-organization", "subject": "a process organization chart image" },
+        { "name": "comic", "subject": "an image with a funny humorous comic ultrarealistic" },
+        { "name": "coverimage", "subject": "a high-class cover image" },
+        { "name": "infographic-lifecycle", "subject": "an info graphic about the entire life cycle from start to finish. Focus especially on planning, implementation and review stages" },
+        { "name": "infographic-business", "subject": "the image of a business infographic" },
+        { "name": "infographic-professor", "subject": "the image of a professor's whiteboard: diagrams, arrows, boxes, and captions explaining the core idea visually" },
+        { "name": "integration-plan", "subject": "an integration plan image" },
+        { "name": "mindmap", "subject": "a mindmap image" },
+        { "name": "pixelart", "subject": "an image of isometric perspective, detailed pixel art" },
+        { "name": "swot-analysis", "subject": "a SWOT analysis image" }
+      ]
+    },
+  ],
+  "prompts": [
+    {
+      "name": "generic",
+      "prompt_template": "Business graphic, minimalistic, professional<style-with-prefix>, a strong, business-focused scene illustrating the vision of <top_most_topic>.<subtopics-sentence> On a gray gradient background with an expensive look, no text or labels."
+    }
+  ]
+}

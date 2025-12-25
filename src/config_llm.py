@@ -75,7 +75,7 @@ from file_helper import load_env
 # CLOUD_TYPE = 'OPENAI+gpt-4.1-mini-2025-04-14'                         # best ($ 0.40, $  1.60)
 # CLOUD_TYPE = 'OPENAI+gpt-4.1-nano-2025-04-14'                         # best ($ 0.10, $  0.40)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best ($ 2.50, $ 10.00)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best ($ 2.50, $ 10.00) (OpenAI's 4o default) 
+# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best ($ 2.50, $ 10.00) 
 # CLOUD_TYPE = 'OPENAI+gpt-4o-search-preview-2025-03-11'                # best ($ 2.50, $ 10.00)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($ 0.15, $  0.60)
 # CLOUD_TYPE = 'OPENAI+gpt-4o-mini-search-preview-2025-03-11'           # best ($ 0.15, $  0.60)

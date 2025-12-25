@@ -8,6 +8,7 @@ import os
 import sys
 import json
 import itertools
+from ai import image_prompt_helper
 
 SETTINGS_FILE = "settings.json"
 
@@ -29,20 +30,10 @@ ACTION_MAP = {
 }
 
 def load_image_prompts():
-    directory_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_prompts')
-    try:
-        file_names = os.listdir(directory_path)
-        file_dict = {
-            file.replace(".py", "").replace("_", " ").title(): \
-                file for file in file_names \
-                    if os.path.isfile(os.path.join(directory_path, file)) and file.endswith(".py") and not file.startswith("_")
-        }
-        return file_dict
-    except FileNotFoundError:
-        return {}
+    return image_prompt_helper.get_prompt_display_map()
 
 def load_image_styles():
-    styles_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_prompts', 'styles.yaml')
+    styles_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_styles.yaml')
     if not os.path.exists(styles_path):
         return {}
 
@@ -89,7 +80,7 @@ def load_image_styles():
         return {}
 
 def load_model_capabilities():
-    models_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_prompts', 'models.yaml')
+    models_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_models.yaml')
     if not os.path.exists(models_path):
         return {}
 
@@ -109,7 +100,7 @@ def load_model_capabilities():
 
 def filter_image_models(all_models, capabilities):
     """
-    Keep only models that have an active entry in models.yaml.
+    Keep only models that have an active entry in image_models.yaml.
     """
     if not capabilities or not all_models:
         return all_models
@@ -515,9 +506,8 @@ class MindmanagerAIApp(tk.Tk):
         def submit_tab2():
             selected_image_model = self.var_cloud_img_tab2.get()
             selected_action_key = self.var_image_action_tab2.get()
-            prompt_file = image_prompts.get(selected_action_key, "")
-            prompt_base = os.path.splitext(prompt_file)[0] if prompt_file else "generic"
-            action = "image" if prompt_base == "generic" else f"image_{prompt_base}"
+            prompt_key = image_prompts.get(selected_action_key, "generic")
+            action = "image" if prompt_key == "generic" else f"image_{prompt_key}"
             selected_style_key = self.var_image_style_tab2.get()
             style_prompt = image_styles.get(selected_style_key, "")
             option_payload = self.image_option_map.get(self.var_image_config_tab2.get(), {})

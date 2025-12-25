@@ -1,15 +1,11 @@
-import os
-import sys
 import time
 import config_image as cfg
-from types import SimpleNamespace
 import requests
 import json
 
 import random
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-import file_helper
+from ai.image_prompt_helper import render_image_prompt
 
 def call_image_ai(model, 
             image_paths, 
@@ -28,28 +24,39 @@ def call_image_ai(model,
     from urllib.parse import urlparse
 
     config = cfg.get_image_config(model)
+    data = dict(data or {})
 
     if config.CLOUD_TYPE_IMAGE == "":
         raise Exception("Error: CLOUD_TYPE_IMAGE is not set in config_image.py")
     
     #https://enragedantelope.github.io/Styles-FluxDev/
     style_model = data.get("style", "") # model specific
-
     style_prompt = data.get("style_prompt", "")
 
-    prompt_path = os.path.join(os.path.dirname(__file__), 'image_prompts', f"{image_prompt}.py")
-    if not os.path.exists(prompt_path):
-        raise Exception(f"Error: {prompt_path} does not exist.")
-    module = file_helper.load_module_from_path(prompt_path, "mprompt")
+    data.setdefault("image_prompt", image_prompt)
+    data.setdefault("context", context)
+    data.setdefault("top_most_topic", top_most_topic)
+    data.setdefault("subtopics", subtopics)
+    data.setdefault("style_prompt", style_prompt)
 
-    mprompt = module.MPrompt(config.CLOUD_TYPE_IMAGE)
-
-    str_user = mprompt.get_prompt(context=context, top_most_topic=top_most_topic, subtopics=subtopics, style=style_prompt)
+    str_user = render_image_prompt(
+        image_prompt,
+        context=context,
+        top_most_topic=top_most_topic,
+        subtopics=subtopics,
+        style=style_prompt,
+    )
 
     if "AZURE" in config.CLOUD_TYPE_IMAGE and config.USE_AZURE_ENTRA_IMAGE:
         n_count = 1 # override n_count to 1
         import ai.ai_azure_entra as ai_azure_entra
-        return ai_azure_entra.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count, data=data)
+        return ai_azure_entra.call_image_ai(
+            model=model,
+            str_user=str_user,
+            image_paths=image_paths,
+            n_count=n_count,
+            data=data,
+        )
 
     # Azure + OpenAI
     if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
@@ -427,7 +434,13 @@ def call_image_ai(model,
     elif "VERTEXAI" in config.CLOUD_TYPE_IMAGE:
         n_count = 1 # override n_count to 1
         import ai.ai_gcp as ai_gcp
-        return ai_gcp.call_image_ai(model=model, str_user=str_user, image_paths=image_paths, n_count=n_count, data=data)
+        return ai_gcp.call_image_ai(
+            model=model,
+            str_user=str_user,
+            image_paths=image_paths,
+            n_count=n_count,
+            data=data,
+        )
 
     # MLX
     elif "MLX+" in config.CLOUD_TYPE_IMAGE:
