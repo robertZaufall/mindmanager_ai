@@ -8,7 +8,9 @@ except ImportError:
     yaml = None
 
 
-PROMPTS_PATH = os.path.join(os.path.dirname(__file__), "image_prompts.yaml")
+PROMPTS_PATH = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "awesome-ai-models", "image", "image_prompts.yaml")
+)
 _PROMPT_DATA_CACHE = None
 
 

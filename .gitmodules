@@ -1,0 +1,3 @@
+[submodule "awesome-ai-models"]
+	path = awesome-ai-models
+	url = https://github.com/robertZaufall/awesome-ai-models

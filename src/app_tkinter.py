@@ -32,8 +32,14 @@ ACTION_MAP = {
 def load_image_prompts():
     return image_prompt_helper.get_prompt_display_map()
 
+def _image_models_root_path(filename):
+    return os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "awesome-ai-models", "image", filename)
+    )
+
+
 def load_image_styles():
-    styles_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_styles.yaml')
+    styles_path = _image_models_root_path("image_styles.yaml")
     if not os.path.exists(styles_path):
         return {}
 
@@ -80,7 +86,7 @@ def load_image_styles():
         return {}
 
 def load_model_capabilities():
-    models_path = os.path.join(os.path.dirname(__file__), 'ai', 'image_models.yaml')
+    models_path = _image_models_root_path("image_models.yaml")
     if not os.path.exists(models_path):
         return {}
 
