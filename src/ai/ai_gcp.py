@@ -11,11 +11,8 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow  
 
 GCP_SCOPES = [
-    "https://www.googleapis.com/auth/iam.test",
     "https://www.googleapis.com/auth/cloud-platform.read-only",
     "https://www.googleapis.com/auth/userinfo.email",
-    "https://www.googleapis.com/auth/compute.readonly",
-    "https://www.googleapis.com/auth/generative-language.retriever.readonly",
     "openid"
    ]  
 
