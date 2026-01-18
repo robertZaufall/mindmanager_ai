@@ -6,27 +6,6 @@ from dotenv import load_dotenv
 from importlib import import_module
 import importlib.util as import_util
 
-MARKMAP_TEMPLATE = """
-<div class="markmap">
-<script type="text/template">
----
-markmap:
-colorFreezeLevel: {{colorFreezeLevel}}
-initialExpandLevel: -1
----
-{{markmap}}
-</script>
-</div>
-"""
-
-MERMAID_TEMPLATE= """
-<div class="mermaid">
-%%{init: {"theme": "dark"}}%% 
-{{mermaid}}
-</div>
-"""
-
-
 if sys.platform.startswith('win'):
     platform = "win"
 elif sys.platform.startswith('darwin'):
@@ -92,25 +71,6 @@ def generate_argumentation_html(content, guid):
     with open(file_path, 'w') as f:
         f.write(html)
     open_file(file_path, platform)
-
-def generate_markmap_html(content, max_topic_level, guid):
-    file_path = get_new_file_paths("docs", guid)
-    this_content = MARKMAP_TEMPLATE.replace("{{colorFreezeLevel}}", str(max_topic_level)).replace("{{markmap}}", content)
-    template = get_template_content("markmap.html")
-    html = template.replace("{{body}}", this_content).replace("{{title}}", "Markmap")
-    with open(file_path, 'w') as f:
-        f.write(html)
-    open_file(file_path, platform)
-
-def generate_mermaid_html(content, max_topic_level, guid, do_open_file = True):
-    file_path = get_new_file_paths("docs", guid)
-    this_content = MERMAID_TEMPLATE.replace("{{mermaid}}", content)
-    template = get_template_content("mermaid.html")
-    html = template.replace("{{body}}", this_content).replace("{{title}}", "Mermaid")
-    with open(file_path, 'w') as f:
-        f.write(html)
-    if do_open_file:
-        open_file(file_path, platform)
 
 def get_template_content(template_name):
     templates_folder_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "templates")

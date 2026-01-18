@@ -6,10 +6,9 @@ import config_translate as cfg_translate
 import ai.prompts as prompts
 
 from mindmap.mindmap import MindmapDocument
-import mindmap.serialization as mms
+import mindmap.export as mm_export
 
-from mermaid.mermaid_helper import *
-import mermaid.mermaid_helper as mermaid_helper
+from mermaid.mermaid_helper import MermaidMindmap
 
 import file_helper
 import input_helper
@@ -49,6 +48,15 @@ valid_actions = [
 
 valid_charttypes = ["orgchart", "radial", "auto"] # (-> on macos factory template duplicates are used from the ./macos folder)
 
+def write_export_html(guid, export_type, output, source, do_open_file=True):
+    docs_dir = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "docs")
+    os.makedirs(docs_dir, exist_ok=True)
+    extension = ".html" if export_type.endswith("_html") else mm_export.export_extension(export_type)
+    output_path = os.path.join(docs_dir, f"{guid}{extension}")
+    mm_export.write_output(output_path, output, source, export_type)
+    if do_open_file:
+        mm_export.open_file(output_path)
+
 
 def create_mindmap_from_mermaid(document, mermaid, inplace=False):
     charttype = document.charttype
@@ -68,7 +76,7 @@ def generate_image(model, document, guid, count=1, image_prompt="generic", data=
     config = cfg_image.get_image_config(model)
 
     # get map as md
-    context = mms.serialize_mindmap_markdown(document.mindmap)
+    context = mm_export.markdown_data(document)
 
     # collect some grounding information for LLM
     top_most_topic, subtopics = document.get_grounding_information()
@@ -154,8 +162,9 @@ def main(param, charttype, model, data={}, inplace=False):
                 mermaid = MermaidMindmap(
                     ai_llm.call_llm_sequence(model=model, params_list=["text2knowledgegraph"], input=value, topic_texts=key_plain)
                 )
-                content, max_topic_level = mermaid.export_to_mermaid(False)
-                file_helper.generate_mermaid_html(content, max_topic_level, guid, False)
+                content, _ = mermaid.export_to_mermaid(False)
+                mermaid_html = mm_export.mermaid_html(document, content)
+                write_export_html(guid, "mermaid_html", mermaid_html, content, do_open_file=False)
 
                 # 2nd call: knowledge graph to mindmap
                 mermaid = MermaidMindmap(
@@ -228,7 +237,7 @@ def main(param, charttype, model, data={}, inplace=False):
                 document.create_mindmap()
 
         else:
-            mermaid = MermaidMindmap(get_mermaid_from_mindmap(mindmap=document.mindmap))
+            mermaid = MermaidMindmap(mm_export.mermaid(document))
             params_list = prompts.prompts_list_from_param(param=param)
             _ = document.get_selection()
             topic_texts_join = ",".join(document.selected_topic_texts) if len(document.selected_topic_texts) > 0 else ""
@@ -266,13 +275,15 @@ def main(param, charttype, model, data={}, inplace=False):
 
             # mindmap to markmap
             elif param == "export_markmap":
-                content, max_topic_level = mermaid.export_to_markmap()
-                file_helper.generate_markmap_html(content, max_topic_level, guid)
+                markmap_text = mm_export.markmap(document)
+                markmap_html = mm_export.markmap_html(document, markmap_text)
+                write_export_html(guid, "markmap_html", markmap_html, markmap_text)
 
             # mindmap to mermaid
             elif param == "export_mermaid":
-                content, max_topic_level = mermaid.export_to_mermaid()
-                file_helper.generate_mermaid_html(content, max_topic_level, guid)
+                mermaid_text = mm_export.mermaid(document)
+                mermaid_html = mm_export.mermaid_html(document, mermaid_text)
+                write_export_html(guid, "mermaid_html", mermaid_html, mermaid_text)
 
             # translation
             elif "translate_deepl" in param:
