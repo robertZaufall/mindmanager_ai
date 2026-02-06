@@ -3,89 +3,41 @@ import sys
 from types import SimpleNamespace
 from file_helper import load_env
 
-# Azure serverless models, !use your model deployment name, ie. gpt-4o!
-# CLOUD_TYPE = 'AZURE+gpt-5.2'                                          # best ($  1.75, $ 14.00 + reasoning tokens)
-# CLOUD_TYPE = 'AZURE+gpt-5-nano'                                       # best ($  0.05, $  0.44)
-# CLOUD_TYPE = 'AZURE+gpt-5-mini'                                       # best ($  0.25, $  2.20)
-# CLOUD_TYPE = 'AZURE+gpt-5.1'                                          # best ($  1.25, $ 10.00 + reasoning tokens)
-# CLOUD_TYPE = 'AZURE+gpt-5'                                            # best ($  1.25, $ 10.00 + reasoning tokens)
-# CLOUD_TYPE = 'AZURE+gpt-5.1-codex'                                    # best ($  1.25, $ 10.00)
-# CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'                               # good
+# Azure serverless models, use your model deployment name, ie. gpt-5.2
+# CLOUD_TYPE = 'AZURE+model-router'
+# CLOUD_TYPE = 'AZURE+gpt-5.2-codex'
+# CLOUD_TYPE = 'AZURE+gpt-5.2'
+CLOUD_TYPE = 'AZURE+gpt-5.1-codex-mini'
+# CLOUD_TYPE = 'AZURE+gpt-5.1-codex'
+# CLOUD_TYPE = 'AZURE+gpt-5-mini'
+# CLOUD_TYPE = 'AZURE+gpt-5-nano'
+# CLOUD_TYPE = 'AZURE+gpt-5.1'
+# CLOUD_TYPE = 'AZURE+o4-mini'
 
-# CLOUD_TYPE = 'AZURE+anthropic/claude-haiku-4-5'                       # best
-# CLOUD_TYPE = 'AZURE+anthropic/claude-sonnet-4-5'                      # best
-# CLOUD_TYPE = 'AZURE+anthropic/claude-opus-4-5'                        # best
+# CLOUD_TYPE = 'AZURE+grok-4-fast-non-reasoning'
+# CLOUD_TYPE = 'AZURE+grok-4-fast-reasoning'
+# CLOUD_TYPE = 'AZURE+gpt-oss-120b'
 
-# CLOUD_TYPE = 'AZURE+gpt-4.1'                                          # best
-# CLOUD_TYPE = 'AZURE+gpt-4.1-mini'                                     # best
-# CLOUD_TYPE = 'AZURE+gpt-4.1-nano'                                     # best
-# CLOUD_TYPE = 'AZURE+gpt-4o'                                           # best
-# CLOUD_TYPE = 'AZURE+gpt-4o-mini'                                      # best
+# CLOUD_TYPE = 'AZURE+anthropic/claude-haiku-4-5'
+# CLOUD_TYPE = 'AZURE+anthropic/claude-sonnet-4-5'
+# CLOUD_TYPE = 'AZURE+anthropic/claude-opus-4-5'
 
-# CLOUD_TYPE = 'AZURE+o4-mini-high'                                     # best
-# CLOUD_TYPE = 'AZURE+o4-mini-medium'                                   # best
-# CLOUD_TYPE = 'AZURE+o4-mini-low'                                      # best
-# CLOUD_TYPE = 'AZURE+o4-mini'                                          # best
-# CLOUD_TYPE = 'AZURE+o3-mini-high'                                     # good
-# CLOUD_TYPE = 'AZURE+o3-mini-medium'                                   # good
-# CLOUD_TYPE = 'AZURE+o3-mini-low'                                      # good
-# CLOUD_TYPE = 'AZURE+o3-mini'                                          # good
+# don't work
+# CLOUD_TYPE = 'AZURE+Kimi-K2.5'
+# CLOUD_TYPE = 'AZURE+DeepSeek-V3.2'
+# CLOUD_TYPE = 'AZURE+Mistral-Large-3'
+# CLOUD_TYPE = 'AZURE+Llama-3.3-70B-Instruct'
 
 # OpenAI
-# CLOUD_TYPE = 'OPENAI+gpt-5.2-2025-12-11-none'                         # best ($  1.75, $ 14.00)
-# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-none'                         # best ($  1.25, $ 10.00)
-# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-low'                          # best ($  1.25, $ 10.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-medium'                       # best ($  1.25, $ 10.00 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13-high'                         # best ($  1.25, $ 10.00 +++ reasoning tokens)
-
-# CLOUD_TYPE = 'OPENAI+gpt-5.1-codex-low'                               # best ($  1.25, $ 10.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5.1-codex-medium'                            # best ($  1.25, $ 10.00 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5.1-codex-high'                              # best ($  1.25, $ 10.00 +++ reasoning tokens)
-
+# CLOUD_TYPE = 'OPENAI+gpt-5.2-2025-12-11'                              # best ($  1.75, $ 14.00)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-2025-11-13'                              # best ($  1.25, $ 10.00)
+# CLOUD_TYPE = 'OPENAI+gpt-5.1-codex'                                   # best ($  1.25, $ 10.00 + reasoning tokens)
 # CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07'                                # best ($  1.25, $ 10.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-minimal'                        # best ($  1.25, $ 10.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-low'                            # best ($  1.25, $ 10.00 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-medium'                         # best ($  1.25, $ 10.00 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-2025-08-07-high'                           # best ($  1.25, $ 10.00 +++ reasoning tokens)
-
 # CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07'                           # ok   ($  0.25, $  2.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-low'                       # ok   ($  0.25, $  2.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-medium'                    # best ($  0.25, $  2.00 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-mini-2025-08-07-high'                      # best ($  0.25, $  2.00 +++ reasoning tokens)
-
 # CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07'                           # ok   ($  0.05, $  0.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-low'                       # ok   ($  0.05, $  0.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-medium'                    # best ($  0.05, $  0.40 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+gpt-5-nano-2025-08-07-high'                      # best ($  0.05, $  0.40 +++ reasoning tokens)
-
-# CLOUD_TYPE = 'OPENAI+o3-pro-2025-06-10'                               # best ($ 20.00, $ 80.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-2025-04-16'                                   # best ($  2.00, $  8.00 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-2025-04-16-flex'                              # best ($  1.00, $  4.00 + reasoning tokens)
-
 # CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16'                              # best ($  1.10, $  4.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-low'                          # best ($  1.10, $  4.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-high'                         # best ($  1.10, $  4.40 +++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o4-mini-2025-04-16-medium'                       # best ($  1.10, $  4.40 ++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31'                              # best ($  1.10, $  4.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-low'                          # best ($  1.10, $  4.40 + reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-high'                         # best ($  1.10, $  4.40 +++ reasoning tokens)
-# CLOUD_TYPE = 'OPENAI+o3-mini-2025-01-31-medium'                       # best ($  1.10, $  4.40 ++ reasoning tokens)
-
-# CLOUD_TYPE = 'OPENAI+gpt-4.1-2025-04-14'                              # best ($ 2.00, $  8.00)
-# CLOUD_TYPE = 'OPENAI+gpt-4.1-mini-2025-04-14'                         # best ($ 0.40, $  1.60)
-# CLOUD_TYPE = 'OPENAI+gpt-4.1-nano-2025-04-14'                         # best ($ 0.10, $  0.40)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-11-20'                               # best ($ 2.50, $ 10.00)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-2024-08-06'                               # best ($ 2.50, $ 10.00) 
-# CLOUD_TYPE = 'OPENAI+gpt-4o-search-preview-2025-03-11'                # best ($ 2.50, $ 10.00)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-mini-2024-07-18'                          # best ($ 0.15, $  0.60)
-# CLOUD_TYPE = 'OPENAI+gpt-4o-mini-search-preview-2025-03-11'           # best ($ 0.15, $  0.60)
 
 # Github Models
-# CLOUD_TYPE = 'GITHUB+openai/gpt-4.1-nano'                             # 33k
-# CLOUD_TYPE = 'GITHUB+openai/gpt-4.1-mini'                             # 33k
-# CLOUD_TYPE = 'GITHUB+openai/gpt-4.1'                                  # 33k
-# CLOUD_TYPE = 'GITHUB+openai/gpt-4o'                                   # 16k
-# CLOUD_TYPE = 'GITHUB+openai/gpt-4o-mini'                              # 4k
 # CLOUD_TYPE = 'GITHUB+microsoft/Phi-4'                                 # 16k
 # CLOUD_TYPE = 'GITHUB+microsoft/Phi-4-mini-instruct'                   # 4k
 # CLOUD_TYPE = 'GITHUB+meta/Llama-3.3-70B-Instruct'                     # 4k
@@ -106,11 +58,8 @@ from file_helper import load_env
 
 # Google Gemini
 
-CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-minimal'                  # ($ 0.50, $  3.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-low'                      # ($ 0.50, $  3.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-high'                     # ($ 0.50, $  3.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview-low'                        # ($ 2.00, $ 12.00) best
-# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview-high'                       # ($ 2.00, $ 12.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview'                          # ($ 0.50, $  3.00) best
+# CLOUD_TYPE = 'GEMINI+gemini-3-pro-preview'                            # ($ 2.00, $ 12.00) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash'                                # ($ 0.30, $  2.50 (non-thinking) / 3.50 (thinking)) best
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-flash-lite'                           # ($ 0.10, $  0.40) good
 # CLOUD_TYPE = 'GEMINI+gemini-2.5-pro'                                  # ($ 1.25, $ 10.00) best
@@ -121,11 +70,8 @@ CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-minimal'                  # ($ 0.50,
 # CLOUD_TYPE = 'GEMINI+gemma-3n-e4b-it'                                 # good
 
 # Google Gemini Vertex AI (OAuth2)
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-minimal'                # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-low'                    # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview-high'                   # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview-low'                      # best
-# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview-high'                     # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-flash-preview'                        # best
+# CLOUD_TYPE = 'VERTEXAI+gemini-3-pro-preview'                          # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash'                              # best
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-flash-lite'                         # good
 # CLOUD_TYPE = 'VERTEXAI+gemini-2.5-pro'                                # best
@@ -187,10 +133,8 @@ CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-minimal'                  # ($ 0.50,
 # CLOUD_TYPE = 'PERPLEXITY+sonar'                                       # best ($ 1.00, $  1.00)
 # CLOUD_TYPE = 'PERPLEXITY+sonar-search'                                # best ($ 1.00, $  1.00)
 # CLOUD_TYPE = 'PERPLEXITY+sonar-pro'                                   # best ($ 3.00, $ 15.00)
-# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-pro-low'                     # best ($ 2.00, $  8.00)
-# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-pro-medium'                  # best ($ 2.00, $  8.00)
-# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-pro-high'                    # best ($ 2.00, $  8.00)
-# CLOUD_TYPE = 'PERPLEXITY+sonar-deep-research-low'                     # best ($ 2.00, $  8.00) (+++ $2, $5, $3)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-reasoning-pro'                         # best ($ 2.00, $  8.00)
+# CLOUD_TYPE = 'PERPLEXITY+sonar-deep-research'                         # best ($ 2.00, $  8.00) (+++ $2, $5, $3)
 
 # Firekworks.ai
 # CLOUD_TYPE = 'FIREWORKS+qwen2p5-72b-instruct'                         # good
@@ -214,9 +158,12 @@ CLOUD_TYPE = 'GEMINI+gemini-3-flash-preview-minimal'                  # ($ 0.50,
 # CLOUD_TYPE = 'HF+meta-llama/Llama-3.1-8B-Instruct'                    # needs pro-subscription
 
 # Cerebras.ai
-# CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b-medium'                           # best
+# CLOUD_TYPE = 'CEREBRAS+gpt-oss-120b'                                  # best
 # CLOUD_TYPE = 'CEREBRAS+qwen-3-235b-a22b-instruct-2507'                # best (deprecated)
 # CLOUD_TYPE = 'CEREBRAS+zai-glm-4.6'                                   # best
+
+# MoonshotAI
+# CLOUD_TYPE = 'MOONSHOTAI+kimi-k2.5'                                   # best ($ 0.60, $ 3.00)
 
 # Ollama (local models), best results *** not up-to-date ***
 # CLOUD_TYPE = 'OLLAMA+qwen3'                                           # good (8b)
@@ -287,8 +234,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     load_env(system)
 
-    config.MULTIMODAL = False
-    config.MULTIMODAL_MIME_TYPES = []
     config.MULTIMODAL_PDF_TO_IMAGE_DPI = 200
     config.MARKDOWN_OPTIMIZATION_LEVEL = 2
     config.OPENAI_COMPATIBILITY = True
@@ -297,7 +242,7 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     config.REASONING_EFFORT = ""
     config.SEARCH_MODE = ""
 
-    if "OPENAI+" in CLOUD_TYPE or "AZURE+" in CLOUD_TYPE or "OPENROUTER+" in CLOUD_TYPE or "GITHUB+" in CLOUD_TYPE:
+    if "OPENAI+" in CLOUD_TYPE or "AZURE+" in CLOUD_TYPE:
         config.REASONING_EFFORT = ""
         reasoning_effort_value = ""
         reasoning_effort = model.split("-")[-1]
@@ -305,43 +250,16 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             reasoning_effort_value = reasoning_effort
         
         if "gpt-5" in model :
-            config.MAX_TOKENS = 128000
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
             if reasoning_effort_value:
                 config.REASONING_EFFORT = reasoning_effort_value
                 config.MODEL_ID = model.replace(f"-{reasoning_effort_value}", "")
             else:
                 config.REASONING_EFFORT = "low"
-        elif "gpt-4o" in model:
-            config.MAX_TOKENS = 16383
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        elif "gpt-4.1" in model :
-            config.MAX_TOKENS = 32767
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        elif "o1-mini" in model:
-            config.MAX_TOKENS = 65535
-        elif "o1-" in model or "o3-" in model or "o4-" in model or model == "o1" or model == "o3" or model == "o4":
-            config.MAX_TOKENS = 100000
-            if reasoning_effort_value:
-                config.REASONING_EFFORT = reasoning_effort_value
-                config.MODEL_ID = model.replace(f"-{reasoning_effort_value}", "")
-            else:
-                config.REASONING_EFFORT = "low"
-        elif "model-router" in model:
-            config.MAX_TOKENS = 32768
-            config.MULTIMODAL = False
-        elif "anthropic/" in model:
-            config.MAX_TOKENS = 32000
 
     if "OPENAI+" in CLOUD_TYPE:
         config.API_URL = os.getenv('OPENAI_API_URL')
-
-        if CLOUD_TYPE.startswith("OPENAI+o3-pro") or "+gpt-5." in CLOUD_TYPE:
+        if "+gpt-5." in CLOUD_TYPE:
             config.API_URL = os.getenv('OPENAI_API_URL').replace("chat/completions", "responses")
-        
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENAI_API_KEY') or "")}
 
     elif "AZURE+" in CLOUD_TYPE:
@@ -379,26 +297,12 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
 
     elif "OPENROUTER+" in CLOUD_TYPE:
         config.REASONING_EFFORT = ""
-        config.MAX_TOKENS = 16384
         config.API_URL = os.getenv('OPENROUTER_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('OPENROUTER_API_KEY') or "")}
         config.PROVIDER_ORDER = None
         config.PROVIDER_ALLOW_FALLBACKS = False
         config.PROVIDER_DATA_COLLECTION = "deny"
         config.PROVIDER_SORT = "price"
-        model_provider = model.split("/")[0]
-        if model.lower() == "openrouter/auto":
-            config.MAX_TOKENS = 16384
-            # config.PROVIDER_ORDER = ["anthropic", "openai"]
-        if model_provider.lower() == "moonshotai":
-            config.MAX_TOKENS = 130000
-        elif model_provider.lower() == "x-ai":
-            if "4.6" in model:
-                config.MAX_TOKENS = 128000
-            elif "4.5v" in model:
-                config.MAX_TOKENS = 16000
-            elif "4.5" in model:
-                config.MAX_TOKENS = 96000
 
     elif "GITHUB+" in CLOUD_TYPE:
         config.API_URL = os.getenv('GITHUB_MODELS_API_URL')
@@ -411,7 +315,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.THINKING_BUDGET = None
 
         if "gemini-2.5" in model or "gemini-3" in model:
-            config.MAX_TOKENS = 64000
             if "gemini-3" in model:
                 thinking_level = model.split("-")[-1]
                 if thinking_level in ["minimal", "low", "high"]:
@@ -422,10 +325,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
                     config.THINKING_LEVEL = "low"
             else:
                 config.THINKING_BUDGET = 0
-        else:
-            config.MAX_TOKENS = 8191
-        config.MULTIMODAL = True
-        config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
 
         if system == "GEMINI":
             config.API_URL = f"{os.getenv('GEMINI_API_URL')}{model}:generateContent?key={os.getenv('GEMINI_API_KEY')}"
@@ -437,7 +336,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.GCP_MODEL_VERSION_TEXT = ""
             if "anthropic/" in model:
                 config.LOCATION_ID = "europe-west1"
-                config.MAX_TOKENS = 64000
                 model = model.replace("anthropic/", "")
                 config.API_URL = (
                     f"https://{config.API_ENDPOINT}/v1/projects/{config.PROJECT_ID}/"
@@ -450,7 +348,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
                     f"https://{config.API_ENDPOINT}/v1/projects/{config.PROJECT_ID}/"
                     f"locations/{config.LOCATION_ID}/publishers/google/models/{model}:generateContent"
                 )
-            config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('VERTEXAI_ACCESS_TOKEN') or "")}
             
             # Example GCP environment fields
             config.GCP_CLIENT_ID = os.getenv('GCP_CLIENT_ID')
@@ -462,17 +359,8 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
     elif "BEDROCK" in CLOUD_TYPE:
         config.OPENAI_COMPATIBILITY = False
         config.AWS_ACCOUNT_ID = ""
-        if model.startswith("amazon.titan-"):
-            config.MAX_TOKENS = 3000
-        elif model.startswith("amazon.nova-premier-"):
-            config.MAX_TOKENS = 32000
+        if model.startswith("amazon.nova-premier-"):
             config.AWS_ACCOUNT_ID = os.getenv("BEDROCK_ACCOUNT_ID")
-        elif model.startswith("amazon.nova-pro-"):
-            config.MAX_TOKENS = 5120
-        elif model.startswith("amazon.nova-lite-"):
-            config.MAX_TOKENS = 5120
-        elif "-sonnet-4" in model or "-opus-4" in model or "-haiku-4" in model:
-            config.MAX_TOKENS = 64000
         config.AWS_ACCESS_KEY = os.getenv("BEDROCK_ACCESS_KEY")
         config.AWS_SECRET_KEY = os.getenv("BEDROCK_SECRET_KEY")
         config.AWS_SERVICE_NAME = "bedrock-runtime"
@@ -484,23 +372,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.AWS_MODEL_VERSION_TEXT = "bedrock-2023-05-31"
 
     elif "ANTHROPIC" in CLOUD_TYPE:
-        if "claude-opus-4" in model:
-            config.MAX_TOKENS = 32000
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        elif "claude-sonnet-4" in model or "claude-haiku-4" in model:
-            config.MAX_TOKENS = 64000
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        elif "claude-3-7-sonnet" in model:
-            config.MAX_TOKENS = 64000
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
-        elif "claude-3-5" in model:
-            config.MAX_TOKENS = 8192
-            if "sonnet" in model:
-                config.MULTIMODAL = True
-                config.MULTIMODAL_MIME_TYPES = ["application/pdf"]
         config.ANTHROPIC_VERSION = os.getenv('ANTHROPIC_VERSION')
         config.API_URL = os.getenv('ANTHROPIC_API_URL')
         config.HEADERS = {
@@ -510,52 +381,22 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         }
 
     elif "XAI+" in CLOUD_TYPE:
-        if "-vision-" in model:
-            config.MULTIMODAL = True
-            config.MULTIMODAL_MIME_TYPES = ["image/jpeg", "image/png"]
-        if "grok-4-fast-" in model:
-            config.MAX_TOKENS = 128000
         config.API_URL = os.getenv('XAI_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('XAI_API_KEY') or "")}
 
     elif "MINIMAX+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 128000
         config.API_URL = os.getenv('MINIMAX_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('MINIMAX_API_KEY') or "")}
 
     elif "GROQ+" in CLOUD_TYPE:
-        config.REASONING_EFFORT = ""
-        if "qwen/qwen3" in model:
-            config.MAX_TOKENS = 130000
-        elif "deepseek-r1" in model:
-            config.MAX_TOKENS = 130000
-        elif "llama-3.3-70b-versatile" in model:
-            config.MAX_TOKENS = 32766
-        elif "moonshot/kimi-k2-instruct" in model:
-            config.MAX_TOKENS = 16384
-        elif "openai/gpt-oss-" in model:
-            config.MAX_TOKENS = 32766
-            reasoning_effort = model.split("-")[-1]
-            if reasoning_effort in ["low", "medium", "high"]:
-                config.REASONING_EFFORT = reasoning_effort
-                config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
         config.API_URL = os.getenv('GROQ_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('GROQ_API_KEY') or "")}
 
     elif "CEREBRAS+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 64000
         config.API_URL = os.getenv('CEREBRAS_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('CEREBRAS_API_KEY') or "")}
-        config.REASONING_EFFORT = ""
-        reasoning_effort = model.split("-")[-1]
-        if reasoning_effort == "pro":
-            reasoning_effort = ""
-        if reasoning_effort in ["low", "medium", "high"]:
-            config.REASONING_EFFORT = reasoning_effort
-            config.MODEL_ID = model.replace(f"-{reasoning_effort}", "")
 
     elif "PERPLEXITY+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 8000
         config.API_URL = os.getenv('PERPLEXITY_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('PERPLEXITY_API_KEY') or "")}
         if "-reasoning-" in model or "-research-" in model:
@@ -572,26 +413,16 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.MODEL_ID = model.replace(f"-search", "")
 
     elif "STACKIT+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 4096
         config.API_URL = f"{os.getenv('STACKIT_API_URL')}/chat/completions"
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('STACKIT_API_KEY') or "")}
 
     elif "DEEPSEEK+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 8000
-        if "deepseek-reasoner" in model:
-            config.MAX_TOKENS = 64000
         config.API_URL = os.getenv('DEEPSEEK_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('DEEPSEEK_API_KEY') or "")}
 
     elif "ALIBABACLOUD+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 32768
         config.API_URL = os.getenv('ALIBABACLOUD_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('ALIBABACLOUD_API_KEY') or "")}
-        config.TOP_P = 0.8
-        config.ENABLE_THINKING = False
-        config.THINKING_BUDGET = 0
-        if model in ["qwen-max-2025-01-25", "qwen-turbo-2025-04-28"]:
-            config.MAX_TOKENS = 8192
 
     elif "MISTRAL+" in CLOUD_TYPE:
         config.API_URL = os.getenv('MISTRAL_API_URL')
@@ -607,6 +438,10 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
         config.API_URL = os.getenv('FIREWORKS_API_URL')
         config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('FIREWORKS_API_KEY') or "")}
 
+    elif "MOONSHOTAI+" in CLOUD_TYPE:
+        config.API_URL = f"{os.getenv('MOONSHOTAI_API_URL')}"
+        config.HEADERS = {**config.HEADERS, "Authorization": "Bearer " + (os.getenv('MOONSHOTAI_API_KEY') or "")}
+
     # local systems
 
     elif "OLLAMA+" in CLOUD_TYPE:
@@ -618,7 +453,6 @@ def get_config(CLOUD_TYPE: str = CLOUD_TYPE) -> SimpleNamespace:
             config.API_URL += "/chat/completions"
 
     elif "GPT4ALL+" in CLOUD_TYPE:
-        config.MAX_TOKENS = 2000
         config.DEVICE = "gpu"
         config.ALLOW_DOWNLOAD = False
         if platform == "darwin":

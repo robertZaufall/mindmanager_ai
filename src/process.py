@@ -71,7 +71,7 @@ def create_mindmap_from_mermaid(document, mermaid, inplace=False):
         document.mindm = None
 
 
-def generate_image(model, document, guid, count=1, image_prompt="generic", data={}):
+def generate_image(model, document, guid, count=1, image_prompt="generic", data=None):
 
     config = cfg_image.get_image_config(model)
 
@@ -110,7 +110,7 @@ def generate_image(model, document, guid, count=1, image_prompt="generic", data=
                 image.show()
 
 
-def main(param, charttype, model, data={}, inplace=False):
+def main(param, charttype, model, data=None, inplace=False):
 
     document = None
     mermaid = None
@@ -150,7 +150,7 @@ def main(param, charttype, model, data={}, inplace=False):
             # pdf to mindmap via text
             if "mindmap" in actions:
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, params_list=["text2mindmap"], input=value, topic_texts=key_plain)
+                    ai_llm.call_llm_sequence(model=model, params_list=["text2mindmap"], input=value, topic_texts=key_plain, xdata=data)
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 
@@ -160,7 +160,7 @@ def main(param, charttype, model, data={}, inplace=False):
 
                 # 1st call: pdf to knowledge graph
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, params_list=["text2knowledgegraph"], input=value, topic_texts=key_plain)
+                    ai_llm.call_llm_sequence(model=model, params_list=["text2knowledgegraph"], input=value, topic_texts=key_plain, xdata=data)
                 )
                 content, _ = mermaid.export_to_mermaid(False)
                 mermaid_html = mm_export.mermaid_html(document, content)
@@ -168,7 +168,7 @@ def main(param, charttype, model, data={}, inplace=False):
 
                 # 2nd call: knowledge graph to mindmap
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, params_list=["knowledgegraph2mindmap"], input=content, topic_texts=key_plain)
+                    ai_llm.call_llm_sequence(model=model, params_list=["knowledgegraph2mindmap"], input=content, topic_texts=key_plain, xdata=data)
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
     
@@ -187,7 +187,8 @@ def main(param, charttype, model, data={}, inplace=False):
                             input="", 
                             topic_texts=text_helper.cleanse_title(key), 
                             data=value, 
-                            mimeType="application/pdf")
+                            mimeType="application/pdf",
+                            xdata=data)
                     )
                     create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 
@@ -203,7 +204,8 @@ def main(param, charttype, model, data={}, inplace=False):
                             input="", 
                             topic_texts=text_helper.cleanse_title(key), 
                             data=value, 
-                            mimeType="image/png"
+                            mimeType="image/png",
+                            xdata=data
                         )
                     )
                     create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
@@ -218,7 +220,7 @@ def main(param, charttype, model, data={}, inplace=False):
             docs = input_helper.load_text_files("md")
             for key, value in docs.items():
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, params_list=["md2mindmap"], input=value, topic_texts=text_helper.cleanse_title(key))
+                    ai_llm.call_llm_sequence(model=model, params_list=["md2mindmap"], input=value, topic_texts=text_helper.cleanse_title(key), xdata=data)
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 
@@ -259,7 +261,7 @@ def main(param, charttype, model, data={}, inplace=False):
 
             # text generation: glossary in MD format
             elif param == "glossary":
-                markdown = ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
+                markdown = ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, xdata=data)
                 markdown = markdown[8:].strip() if markdown.startswith("markdown") else markdown
                 if "GROQ+llama-3.1-8b" in config.CLOUD_TYPE or \
                     ("MLX+" in config.CLOUD_TYPE and "Llama-3.1-8B" in config.CLOUD_TYPE):
@@ -269,7 +271,7 @@ def main(param, charttype, model, data={}, inplace=False):
 
             # text generation: argumentation in MD format
             elif param == "argumentation":
-                markdown = ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join)
+                markdown = ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, xdata=data)
                 markdown = markdown[8:].strip() if markdown.startswith("markdown") else markdown
                 file_helper.generate_argumentation_html(markdown, guid)
 
@@ -297,7 +299,7 @@ def main(param, charttype, model, data={}, inplace=False):
             else:
                 freetext = data.get("freetext", "") if "freetext" in param else ""
                 mermaid = MermaidMindmap(
-                    ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, freetext=freetext)
+                    ai_llm.call_llm_sequence(model=model, params_list=params_list, input=mermaid.mermaid_mindmap, topic_texts=topic_texts_join, freetext=freetext, xdata=data)
                 )
                 create_mindmap_from_mermaid(document=document, mermaid=mermaid, inplace=inplace)
 

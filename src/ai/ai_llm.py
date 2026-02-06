@@ -10,7 +10,7 @@ import json
 import os
 import sys
 
-def call_llm_sequence(model, params_list, input, topic_texts="", data="", mimeType="", freetext=""):
+def call_llm_sequence(model, params_list, input, topic_texts="", data="", mimeType="", freetext="", xdata=None):
 
     config = cfg.get_config(model)
 
@@ -27,7 +27,7 @@ def call_llm_sequence(model, params_list, input, topic_texts="", data="", mimeTy
         if this_prompt == "":
             return ""
 
-        result = call_llm(model=model, str_user=this_prompt, param=param, data=data, mimeType=mimeType)
+        result = call_llm(model=model, str_user=this_prompt, param=param, data=data, mimeType=mimeType, xdata=xdata)
                 
         log_output += result + "\n\n"
         log_prompt += "Prompt = " + param + "\n-------\n" + this_prompt + "\n\n"
@@ -37,24 +37,24 @@ def call_llm_sequence(model, params_list, input, topic_texts="", data="", mimeTy
     
     return result
 
-def call_llm(model, str_user, param, data="", mimeType=""):
+def call_llm(model, str_user, param, data="", mimeType="", xdata=None):
     config = cfg.get_config(model)
     print("Using model: " + config.CLOUD_TYPE)
 
-    if data != "" and (config.MULTIMODAL == False or mimeType not in config.MULTIMODAL_MIME_TYPES):
+    if data != "" and (xdata.get("multimodal") == False or mimeType not in xdata.get("multimodal_mime_types", [])):
         raise Exception(f"Error: {config.CLOUD_TYPE} does not support multimodal actions.")
 
-    def get_payload():
+    def get_payload(data=None):
         payload = {
             "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
-            "temperature": config.LLM_TEMPERATURE,
             "stream": False,
             "messages": [
                 {"role": "system", "content": str_system},
                 {"role": "user", "content": str_user}
             ]
         }
+        payload["temperature"] = data.get("temperature", config.LLM_TEMPERATURE) if data is not None else config.LLM_TEMPERATURE
+        payload["max_tokens"] = data.get("max_tokens", config.MAX_TOKENS) if data is not None else config.MAX_TOKENS
         return payload
         
         
@@ -303,7 +303,7 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     elif "ANTHROPIC" in config.CLOUD_TYPE or "AZURE+anthropic/" in config.CLOUD_TYPE:
         payload = {
             "model": config.MODEL_ID,
-            "max_tokens": config.MAX_TOKENS,
+            "max_tokens": xdata.get("max_tokens", config.MAX_TOKENS) if xdata is not None else config.MAX_TOKENS,
             "temperature": config.LLM_TEMPERATURE,
             "messages": [
                 {"role": "user", "content": "Hello, Claude."},
@@ -384,22 +384,23 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     # GROQ
     elif "GROQ+" in config.CLOUD_TYPE:
         payload = get_payload()
-        if "/gpt-" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
-            payload["reasoning_effort"] = config.REASONING_EFFORT
+        if "/gpt-" in config.CLOUD_TYPE:
+            payload["reasoning_effort"] = xdata.get("reasoning_effort")
         result = get_response(payload)
        
     # CEREBRAS
     elif "CEREBRAS+" in config.CLOUD_TYPE:
         payload = get_payload()
-        if "+gpt-" in config.CLOUD_TYPE and config.REASONING_EFFORT != "":
-            payload["reasoning_effort"] = config.REASONING_EFFORT
+        if "+gpt-" in config.CLOUD_TYPE:
+            if xdata.get("reasoning_effort") is not None:
+                payload["reasoning_effort"] = xdata.get("reasoning_effort")
         result = get_response(payload)
        
     # Perplexity
     elif "PERPLEXITY+" in config.CLOUD_TYPE:
         payload = get_payload()
-        if ("-reasoning-" in config.CLOUD_TYPE or "-research-" in config.CLOUD_TYPE) and config.REASONING_EFFORT != "":
-            payload["reasoning_effort"] = config.REASONING_EFFORT
+        if ("-reasoning-" in config.CLOUD_TYPE or "-research-" in config.CLOUD_TYPE):
+            payload["reasoning_effort"] = xdata.get("reasoning_effort")
         if "-search" in config.CLOUD_TYPE:
             if config.SEARCH_MODE == "web":
                 payload["web_search_options"] = {
@@ -421,10 +422,9 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     # Alibaba Cloud
     elif "ALIBABACLOUD+" in config.CLOUD_TYPE:
         payload = get_payload()
-        payload["top_p"] = config.TOP_P
-        if config.ENABLE_THINKING == True:
-            payload["enable_thinking"] = config.ENABLE_THINKING
-            payload["thinking_budget"] = config.THINKING_BUDGET
+        payload["top_p"] = xdata.get("top_p") 
+        payload["enable_thinking"] = xdata.get("enable_thinking")
+        payload["thinking_budget"] = xdata.get("thinking_budget")
         result = get_response(payload)
 
     # Mistral AI
@@ -447,6 +447,13 @@ def call_llm(model, str_user, param, data="", mimeType=""):
     # Fireworks.ai
     elif "FIREWORKS+" in config.CLOUD_TYPE:
         payload = get_payload()
+        result = get_response(payload)
+
+    # MoonshotAI
+    elif "MOONSHOTAI+" in config.CLOUD_TYPE:
+        payload = get_payload(data=xdata)
+        payload["stream"] = False
+        payload["thinking"] = { "type": xdata.get("thinking_type") }
         result = get_response(payload)
 
     else:

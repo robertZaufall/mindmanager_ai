@@ -37,6 +37,10 @@ def _image_models_root_path(filename):
         os.path.join(os.path.dirname(__file__), "..", "awesome-ai-models", "image", filename)
     )
 
+def _llm_models_root_path(filename):
+    return os.path.abspath(
+        os.path.join(os.path.dirname(__file__), "..", "awesome-ai-models", "llm", filename)
+    )
 
 def load_image_styles():
     styles_path = _image_models_root_path("image_styles.yaml")
@@ -121,6 +125,74 @@ def filter_image_models(all_models, capabilities):
         if any(isinstance(m, dict) and m.get("id") == model_id for m in models):
             filtered.append(model_entry)
     return filtered
+
+
+def load_llm_models():
+    models_path = _llm_models_root_path("llm_models.yaml")
+    if not os.path.exists(models_path):
+        return {}
+
+    try:
+        try:
+            import yaml
+        except ImportError:
+            yaml = None
+
+        with open(models_path, "r", encoding="utf-8") as f:
+            content = f.read()
+            data = yaml.safe_load(content) if yaml else json.loads(content)
+        return data if isinstance(data, dict) else {}
+    except Exception:
+        return {}
+
+
+def build_llm_model_catalog(llm_data):
+    if not isinstance(llm_data, dict):
+        return [], {}, {}, {}
+
+    models = []
+    model_map = {}
+    provider_models = {}
+
+    for provider_key, section in llm_data.items():
+        if not isinstance(section, dict):
+            continue
+        defaults = section.get("defaults", {})
+        provider_name = defaults.get("cloud_type", provider_key).upper()
+        model_entries = section.get("models", [])
+        provider_models.setdefault(provider_name, [])
+        for entry in model_entries:
+            if not isinstance(entry, dict):
+                continue
+            model_id = entry.get("id")
+            if not model_id:
+                continue
+            provider_models[provider_name].append(model_id)
+            cloud_type = f"{provider_name}+{model_id}"
+            models.append(cloud_type)
+            properties = {k: v for k, v in entry.items() if k != "id"}
+            model_map[cloud_type] = {
+                "provider": provider_name,
+                "model_id": model_id,
+                "reasoning_effort": entry.get("reasoning_effort"),
+                "thinking_level": entry.get("thinking_level"),
+                "thinking_type": entry.get("thinking_type"),
+                "grounding": bool(entry.get("grounding", False)),
+                "properties": properties
+            }
+
+    search_variants = {}
+    search_bases = {}
+    for provider_name, model_ids in provider_models.items():
+        model_set = set(model_ids)
+        for model_id in model_ids:
+            if model_id.endswith("-search"):
+                base_id = model_id[:-7]
+                if base_id in model_set:
+                    search_variants[(provider_name, base_id)] = model_id
+                    search_bases[(provider_name, model_id)] = base_id
+
+    return models, model_map, search_variants, search_bases
 
 
 def load_settings():
@@ -223,19 +295,32 @@ class MindmanagerAIApp(tk.Tk):
         data = parse_cloud_definitions(config_file_llm, config_file_image)
         agents = load_agents()
         self.model_capabilities = load_model_capabilities()
+        self.llm_models_data = load_llm_models()
+        llm_models, llm_model_map, llm_search_variants, llm_search_bases = build_llm_model_catalog(self.llm_models_data)
+        self.all_cloud_types = llm_models or data['all_cloud_types']
+        self.llm_model_map = llm_model_map
+        self.llm_search_variants = llm_search_variants
+        self.llm_search_bases = llm_search_bases
 
-        self.all_cloud_types = data['all_cloud_types']
-        self.active_cloud_type = data['active_cloud_type'] or (
+        self._syncing_llm_controls = False
+        active_cloud = data['active_cloud_type']
+        resolved_active = self.resolve_llm_defaults(active_cloud) if active_cloud else (None, None, None, False)
+        self.active_cloud_type = resolved_active[0] or (
             self.all_cloud_types[0] if self.all_cloud_types else ""
         )
+        self.default_llm_effort = resolved_active[1]
+        self.default_llm_thinking = resolved_active[2]
+        self.default_llm_search = resolved_active[3]
         self.all_cloud_images = filter_image_models(data['all_cloud_images'], self.model_capabilities)
         self.active_cloud_image = data['active_cloud_image']
         if not self.active_cloud_image or self.active_cloud_image not in self.all_cloud_images:
             self.active_cloud_image = self.all_cloud_images[0] if self.all_cloud_images else ""
 
         # Load or init stored values:
-        self.agentic_model_strong = self.settings_data.get("agentic_model_strong", self.active_cloud_type)
-        self.agentic_model_cheap = self.settings_data.get("agentic_model_cheap", self.active_cloud_type)
+        agentic_strong = self.settings_data.get("agentic_model_strong", self.active_cloud_type)
+        agentic_cheap = self.settings_data.get("agentic_model_cheap", self.active_cloud_type)
+        self.agentic_model_strong = self.resolve_llm_defaults(agentic_strong)[0] or self.active_cloud_type
+        self.agentic_model_cheap = self.resolve_llm_defaults(agentic_cheap)[0] or self.active_cloud_type
         self.chartType = self.settings_data.get("chartType", "auto")
         self.modifyLiveMap = self.settings_data.get("modifyLiveMap", False)
 
@@ -297,6 +382,201 @@ class MindmanagerAIApp(tk.Tk):
     # ------------------------------------------------------------------------
     # Helper Methods
     # ------------------------------------------------------------------------
+    def resolve_llm_defaults(self, cloud_type):
+        if not cloud_type or "+" not in cloud_type:
+            return None, None, None, False
+
+        if cloud_type in self.llm_model_map:
+            entry = self.llm_model_map[cloud_type]
+            return (
+                cloud_type,
+                self._default_option(entry.get("reasoning_effort")),
+                self._default_option(entry.get("thinking_level")),
+                False
+            )
+
+        provider, model_id = cloud_type.split("+", 1)
+        base_id = self.llm_search_bases.get((provider, model_id))
+        if base_id:
+            base_cloud = f"{provider}+{base_id}"
+            entry = self.llm_model_map.get(base_cloud, {})
+            return (
+                base_cloud,
+                self._default_option(entry.get("reasoning_effort")),
+                self._default_option(entry.get("thinking_level")),
+                True
+            )
+
+        for base_cloud, entry in self.llm_model_map.items():
+            if entry.get("provider") != provider:
+                continue
+            for key in ("reasoning_effort", "thinking_level"):
+                opt = entry.get(key)
+                if isinstance(opt, dict):
+                    options = opt.get("options") or []
+                    for option in options:
+                        if model_id == f"{entry.get('model_id')}-{option}":
+                            if key == "reasoning_effort":
+                                return base_cloud, option, None, False
+                            return base_cloud, None, option, False
+
+        return None, None, None, False
+
+    @staticmethod
+    def _default_option(option_entry):
+        if isinstance(option_entry, dict):
+            return option_entry.get("default")
+        return None
+
+    def build_llm_model_name(self, base_cloud_type, option_value=None, use_search=False):
+        if not base_cloud_type or base_cloud_type not in self.llm_model_map:
+            return base_cloud_type
+
+        entry = self.llm_model_map[base_cloud_type]
+        provider = entry.get("provider")
+        model_id = entry.get("model_id")
+        if not provider or not model_id:
+            return base_cloud_type
+
+        if use_search:
+            search_id = self.llm_search_variants.get((provider, model_id))
+            if search_id:
+                return f"{provider}+{search_id}"
+
+        thinking_opt = entry.get("thinking_level")
+        if isinstance(thinking_opt, dict):
+            chosen = option_value or thinking_opt.get("default")
+            if chosen:
+                model_id = f"{model_id}-{chosen}"
+
+        return f"{provider}+{model_id}"
+
+    def sync_llm_controls(self, model_var, option_var, option_combo, option_label, search_var, search_check):
+        model_key = model_var.get()
+        entry = self.llm_model_map.get(model_key)
+
+        option_label_text = "Effort:"
+        options = []
+        default_val = None
+
+        if entry:
+            reasoning_opt = entry.get("reasoning_effort")
+            thinking_opt = entry.get("thinking_level")
+            if isinstance(reasoning_opt, dict):
+                option_label_text = "Effort:"
+                options = reasoning_opt.get("options") or []
+                default_val = reasoning_opt.get("default")
+            elif isinstance(thinking_opt, dict):
+                option_label_text = "Level:"
+                options = thinking_opt.get("options") or []
+                default_val = thinking_opt.get("default")
+
+        if options:
+            option_label.config(text=option_label_text)
+            option_combo["values"] = options
+            if option_var.get() not in options:
+                option_var.set(default_val or options[0])
+            option_combo.config(state="readonly")
+        else:
+            option_label.config(text="Effort:")
+            option_combo["values"] = []
+            option_var.set("")
+            option_combo.config(state="disabled")
+
+        search_available = False
+        search_enabled = False
+        if entry:
+            provider = entry.get("provider")
+            model_id = entry.get("model_id")
+            if provider and model_id:
+                if (provider, model_id) in self.llm_search_bases:
+                    search_available = True
+                    search_enabled = True
+                elif (provider, model_id) in self.llm_search_variants:
+                    search_available = True
+
+        self._syncing_llm_controls = True
+        try:
+            if search_var.get() != search_enabled:
+                search_var.set(search_enabled)
+            search_check.config(state="normal" if search_available else "disabled")
+        finally:
+            self._syncing_llm_controls = False
+
+    def build_llm_data(self, cloud_type, option_value=None, use_search=False):
+        if not cloud_type or cloud_type not in self.llm_model_map:
+            return {}
+
+        entry = self.llm_model_map[cloud_type]
+        provider = entry.get("provider")
+        model_id = entry.get("model_id")
+        if not provider or not model_id:
+            return {}
+
+        search_enabled = use_search or (provider, model_id) in self.llm_search_bases
+        base_cloud = cloud_type
+        if (provider, model_id) in self.llm_search_bases:
+            base_id = self.llm_search_bases[(provider, model_id)]
+            base_cloud = f"{provider}+{base_id}"
+
+        base_entry = self.llm_model_map.get(base_cloud, entry)
+        data = {}
+
+        reasoning_opt = base_entry.get("reasoning_effort")
+        if reasoning_opt is not None:
+            if isinstance(reasoning_opt, dict):
+                data["reasoning_effort"] = option_value or reasoning_opt.get("default")
+            else:
+                data["reasoning_effort"] = reasoning_opt
+
+        thinking_opt = base_entry.get("thinking_level")
+        if thinking_opt is not None:
+            if isinstance(thinking_opt, dict):
+                data["thinking_level"] = option_value or thinking_opt.get("default")
+            else:
+                data["thinking_level"] = thinking_opt
+
+        base_props = base_entry.get("properties", {})
+        if "grounding" in base_props:
+            data["grounding"] = bool(search_enabled)
+
+        if search_enabled:
+            search_cloud = cloud_type
+            if (provider, model_id) not in self.llm_search_bases:
+                search_id = self.llm_search_variants.get((provider, model_id))
+                if search_id:
+                    search_cloud = f"{provider}+{search_id}"
+            search_entry = self.llm_model_map.get(search_cloud, {})
+            search_props = search_entry.get("properties", {})
+            for key, val in search_props.items():
+                if key.startswith("search_") or key in ("search", "grounding"):
+                    data[key] = val
+
+        return {k: v for k, v in data.items() if v not in (None, "")}
+
+    def toggle_llm_search(self, model_var, search_var):
+        if self._syncing_llm_controls:
+            return
+        model_key = model_var.get()
+        entry = self.llm_model_map.get(model_key)
+        if not entry:
+            return
+        provider = entry.get("provider")
+        model_id = entry.get("model_id")
+        if not provider or not model_id:
+            return
+
+        if search_var.get():
+            if (provider, model_id) in self.llm_search_bases:
+                return
+            search_id = self.llm_search_variants.get((provider, model_id))
+            if search_id:
+                model_var.set(f"{provider}+{search_id}")
+        else:
+            base_id = self.llm_search_bases.get((provider, model_id))
+            if base_id:
+                model_var.set(f"{provider}+{base_id}")
+
     def build_payload(self, model, action, data=None):
         """Build a standard payload dict."""
         if data is None:
@@ -405,6 +685,64 @@ class MindmanagerAIApp(tk.Tk):
 
         return props
 
+    def get_llm_model_properties(self, cloud_type):
+        """Return flattened default values for the given LLM model from llm_models.yaml."""
+        if not cloud_type or "+" not in cloud_type or not isinstance(self.llm_models_data, dict):
+            return {}
+
+        provider_name, model_id = cloud_type.split("+", 1)
+        provider_name = provider_name.strip().upper()
+
+        section = None
+        defaults = {}
+        for key, value in self.llm_models_data.items():
+            if not isinstance(value, dict):
+                continue
+            candidate_defaults = value.get("defaults", {})
+            provider_key = (candidate_defaults.get("cloud_type", key) if isinstance(candidate_defaults, dict) else key)
+            if str(provider_key).strip().upper() == provider_name:
+                section = value
+                defaults = candidate_defaults if isinstance(candidate_defaults, dict) else {}
+                break
+
+        if not section:
+            return {}
+
+        models = section.get("models", [])
+        entry = next(
+            (m for m in models if isinstance(m, dict) and m.get("id") == model_id),
+            None
+        )
+        if not entry:
+            return {}
+
+        def pick_val(val):
+            if isinstance(val, dict) and ("default" in val or "options" in val):
+                if "default" in val:
+                    return val.get("default")
+                opts = val.get("options")
+                if isinstance(opts, list) and opts:
+                    return opts[0]
+                return None
+            return val
+
+        skip_keys = {"id", "headers"}
+        props = {}
+        for source in (defaults, entry):
+            for key, val in (source or {}).items():
+                if key in skip_keys:
+                    continue
+                chosen = pick_val(val)
+                if chosen not in (None, ""):
+                    props[key] = chosen
+
+        return props
+
+    def build_llm_request_data(self, cloud_type, option_value=None, use_search=False):
+        base_props = self.get_llm_model_properties(cloud_type)
+        llm_data = self.build_llm_data(cloud_type, option_value=option_value, use_search=use_search)
+        return {**base_props, **llm_data}
+
     def call_process_json(self, payload_dict):
         print("Process called. Please wait...")
         self.update()
@@ -415,7 +753,7 @@ class MindmanagerAIApp(tk.Tk):
         """Create a label 'Output:' + text box, store in tab_to_textbox."""
         ttk.Label(parent, text="Output:").pack(anchor="w", padx=10)
         txt = tk.Text(
-            parent, font=("TkDefaultFont", 9),
+            parent, font=("TkDefaultFont", 9), height=5,
             state='disabled', highlightbackground="gray"
         )
         txt.pack(padx=10, pady=5, fill="both", expand=True)
@@ -448,6 +786,28 @@ class MindmanagerAIApp(tk.Tk):
             tab, "Model:", self.var_cloud_type_tab1, self.all_cloud_types
         )
 
+        # Effort/Level + Search controls
+        frame_llm_controls = ttk.Frame(tab)
+        frame_llm_controls.pack(padx=10, pady=5, fill="x")
+        self.lbl_llm_option_tab1 = ttk.Label(frame_llm_controls, text="Effort:", width=8, anchor="w")
+        self.lbl_llm_option_tab1.pack(side="left")
+        self.var_llm_option_tab1 = tk.StringVar(value=self.default_llm_effort or self.default_llm_thinking or "")
+        self.cmb_llm_option_tab1 = ttk.Combobox(
+            frame_llm_controls,
+            textvariable=self.var_llm_option_tab1,
+            state="readonly",
+            justify="left",
+            width=10
+        )
+        self.cmb_llm_option_tab1.pack(side="left", padx=(2, 12))
+        self.var_llm_search_tab1 = tk.BooleanVar(value=self.default_llm_search)
+        self.chk_llm_search_tab1 = ttk.Checkbutton(
+            frame_llm_controls,
+            text="Search",
+            variable=self.var_llm_search_tab1
+        )
+        self.chk_llm_search_tab1.pack(side="left")
+
         # Action combobox
         self.var_action_tab1 = tk.StringVar(value="Refine")
         self.create_labeled_combobox(
@@ -455,15 +815,42 @@ class MindmanagerAIApp(tk.Tk):
         )
 
         def submit_tab1():
-            selected_cloud_type = self.var_cloud_type_tab1.get()
+            option_value = self.var_llm_option_tab1.get().strip() or None
+            selected_cloud_type = self.build_llm_model_name(
+                self.var_cloud_type_tab1.get(),
+                option_value=option_value,
+                use_search=self.var_llm_search_tab1.get()
+            )
             selected_action_key = self.var_action_tab1.get()
             action_val = ACTION_MAP[selected_action_key]
-            payload = self.build_payload(selected_cloud_type, action_val)
+            data = self.build_llm_request_data(
+                self.var_cloud_type_tab1.get(),
+                option_value=option_value,
+                use_search=self.var_llm_search_tab1.get()
+            )
+            payload = self.build_payload(selected_cloud_type, action_val, data=data)
             self.call_process_json(payload)
 
         # Execute button
         self.btn_tab1 = ttk.Button(tab, text="Execute", command=submit_tab1, default="normal")
         self.btn_tab1.pack(padx=10, pady=10)
+
+        def update_llm_controls_tab1(*args):
+            self.sync_llm_controls(
+                self.var_cloud_type_tab1,
+                self.var_llm_option_tab1,
+                self.cmb_llm_option_tab1,
+                self.lbl_llm_option_tab1,
+                self.var_llm_search_tab1,
+                self.chk_llm_search_tab1
+            )
+
+        def toggle_search_tab1(*args):
+            self.toggle_llm_search(self.var_cloud_type_tab1, self.var_llm_search_tab1)
+
+        self.var_cloud_type_tab1.trace_add("write", update_llm_controls_tab1)
+        self.var_llm_search_tab1.trace_add("write", toggle_search_tab1)
+        update_llm_controls_tab1()
 
         # Output
         self.create_output_box(tab, "Actn")
@@ -556,22 +943,73 @@ class MindmanagerAIApp(tk.Tk):
             tab, "Model:", self.var_cloud_type_tab3, self.all_cloud_types
         )
 
+        # Effort/Level + Search controls
+        frame_llm_controls = ttk.Frame(tab)
+        frame_llm_controls.pack(padx=10, pady=5, fill="x")
+        self.lbl_llm_option_tab3 = ttk.Label(frame_llm_controls, text="Effort:", width=8, anchor="w")
+        self.lbl_llm_option_tab3.pack(side="left")
+        self.var_llm_option_tab3 = tk.StringVar(value=self.default_llm_effort or self.default_llm_thinking or "")
+        self.cmb_llm_option_tab3 = ttk.Combobox(
+            frame_llm_controls,
+            textvariable=self.var_llm_option_tab3,
+            state="readonly",
+            justify="left",
+            width=10
+        )
+        self.cmb_llm_option_tab3.pack(side="left", padx=(2, 12))
+        self.var_llm_search_tab3 = tk.BooleanVar(value=self.default_llm_search)
+        self.chk_llm_search_tab3 = ttk.Checkbutton(
+            frame_llm_controls,
+            text="Search",
+            variable=self.var_llm_search_tab3
+        )
+        self.chk_llm_search_tab3.pack(side="left")
+
         # Input text
         ttk.Label(tab, text="LLM prompt for content:").pack(anchor="w", padx=10)
         self.txt_llm_tab3 = tk.Text(tab, height=4, width=54, highlightbackground="gray")
         self.txt_llm_tab3.pack(padx=10, pady=5, fill="x", expand=True)
 
         def submit_tab3():
-            selected_cloud_type = self.var_cloud_type_tab3.get()
+            option_value = self.var_llm_option_tab3.get().strip() or None
+            selected_cloud_type = self.build_llm_model_name(
+                self.var_cloud_type_tab3.get(),
+                option_value=option_value,
+                use_search=self.var_llm_search_tab3.get()
+            )
             user_text = self.txt_llm_tab3.get("1.0", tk.END).strip()
             if not user_text:
                 return
-            data = {"freetext": user_text}
+            data = {
+                **self.build_llm_request_data(
+                    self.var_cloud_type_tab3.get(),
+                    option_value=option_value,
+                    use_search=self.var_llm_search_tab3.get()
+                ),
+                "freetext": user_text
+            }
             payload = self.build_payload(selected_cloud_type, "freetext", data)
             self.call_process_json(payload)
 
         self.btn_tab3 = ttk.Button(tab, text="Execute", command=submit_tab3)
         self.btn_tab3.pack(padx=10, pady=10)
+
+        def update_llm_controls_tab3(*args):
+            self.sync_llm_controls(
+                self.var_cloud_type_tab3,
+                self.var_llm_option_tab3,
+                self.cmb_llm_option_tab3,
+                self.lbl_llm_option_tab3,
+                self.var_llm_search_tab3,
+                self.chk_llm_search_tab3
+            )
+
+        def toggle_search_tab3(*args):
+            self.toggle_llm_search(self.var_cloud_type_tab3, self.var_llm_search_tab3)
+
+        self.var_cloud_type_tab3.trace_add("write", update_llm_controls_tab3)
+        self.var_llm_search_tab3.trace_add("write", toggle_search_tab3)
+        update_llm_controls_tab3()
 
         # Output
         self.create_output_box(tab, "Txt")
@@ -667,19 +1105,21 @@ class MindmanagerAIApp(tk.Tk):
         )
 
         def submit_tab5():
-            model_strong = self.var_agentic_strong.get()
-            model_cheap = self.var_agentic_cheap.get()
+            model_strong = self.build_llm_model_name(self.var_agentic_strong.get())
+            model_cheap = self.build_llm_model_name(self.var_agentic_cheap.get())
             action_val = self.var_agentic_action.get()
             # Persist these so they initialize on next start
-            self.settings_data["agentic_model_strong"] = model_strong
-            self.settings_data["agentic_model_cheap"] = model_cheap
+            self.settings_data["agentic_model_strong"] = self.var_agentic_strong.get()
+            self.settings_data["agentic_model_cheap"] = self.var_agentic_cheap.get()
             save_settings(self.settings_data)
 
             agent_action = load_agents().get(action_val)
             data = {
                 "agent_action": agent_action,
                 "model_strong": model_strong,
-                "model_cheap": model_cheap
+                "model_cheap": model_cheap,
+                "model_strong_data": self.build_llm_request_data(self.var_agentic_strong.get()),
+                "model_cheap_data": self.build_llm_request_data(self.var_agentic_cheap.get())
             }
             payload = self.build_payload(model_strong, "agent", data)
             self.call_process_json(payload)
