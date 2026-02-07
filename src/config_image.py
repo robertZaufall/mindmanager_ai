@@ -6,17 +6,15 @@ from file_helper import load_env
 CLOUD_TYPE_IMAGE = ''
 
 # Azure
-# CLOUD_TYPE_IMAGE = 'AZURE+dall-e-3'                                      # best
-# CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1'                                   # best
+CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1.5'                                 #
+# CLOUD_TYPE_IMAGE = 'AZURE+gpt-image-1-mini'                              #
+# CLOUD_TYPE_IMAGE = 'AZURE+FLUX.2-pro'                                    #
 # CLOUD_TYPE_IMAGE = 'AZURE+FLUX-1.1-pro'                                  # best
 # CLOUD_TYPE_IMAGE = 'AZURE+FLUX.1-Kontext-pro'                            # best
-
-# CLOUD_TYPE_IMAGE = 'AZURE+sora'                                          # good
+# CLOUD_TYPE_IMAGE = 'AZURE+sora-2'                                        #
         
 # OpenAI        
-# CLOUD_TYPE_IMAGE = 'OPENAI+dall-e-3'                                     # best
-CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1.5'                                #
-# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1'                                  # good
+# CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1.5'                                #
 # CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1-mini'                             # good
 # CLOUD_TYPE_IMAGE = 'OPENAI+sora-2'                                       # best
 # CLOUD_TYPE_IMAGE = 'OPENAI+sora-2-pro'                                   # best
@@ -63,8 +61,10 @@ CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1.5'                                #
 # CLOUD_TYPE_IMAGE = 'IDEOGRAMAI+V_3_QUALITY'                              # best
         
 # Black Forrest Labs        
-# CLOUD_TYPE_IMAGE = 'BFL+flux-2-max'                                      # best (highest quality)      ($ 0,07 + 0,030 per megapixel)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-klein-4b'                                 #
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-klein-9b'                                 #
 # CLOUD_TYPE_IMAGE = 'BFL+flux-2-pro'                                      # best (fast and efficient)   ($ 0,03 + 0,015 per megapixel)
+# CLOUD_TYPE_IMAGE = 'BFL+flux-2-max'                                      # best (highest quality)      ($ 0,07 + 0,030 per megapixel)
 # CLOUD_TYPE_IMAGE = 'BFL+flux-2-flex'                                     # best (quality with control) ($ 0,06 per megapixel)
 # CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-pro'                                # best ($ 0,04 per image)
 # CLOUD_TYPE_IMAGE = 'BFL+flux-kontext-max'                                # best ($ 0,08 per image)
@@ -82,6 +82,9 @@ CLOUD_TYPE_IMAGE = 'OPENAI+gpt-image-1.5'                                #
 # Fal.ai
 # CLOUD_TYPE_IMAGE = 'FAL+hunyuan-image/v3'                                # poor
 # CLOUD_TYPE_IMAGE = 'FAL+bytedance/seedream/v4'                           # best
+
+# Replicate
+# CLOUD_TYPE_IMAGE = 'REPLICATE+qwen/qwen-image-layered/predictions'       #
 
 
 def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespace:
@@ -110,40 +113,29 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
     # Branch logic
     if system == "AZURE":
         config.USE_AZURE_ENTRA_IMAGE = os.getenv('AZURE_ENTRA_AUTH', '').lower() in ('true', '1', 'yes')
-
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
         config.AZURE_DEPLOYMENT_IMAGE = model
-        if model == "dall-e-3":
-            config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
-            config.IMAGE_API_URL = (
-                f"{os.getenv('AZURE_API_URL_IMAGE_EASTUS')}openai/deployments/"
-                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
-                f"?api-version={config.IMAGE_API_VERSION}")
-            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_EASTUS') or ""}
-        elif "sora" in model:
-            config.IMAGE_API_VERSION = "preview" # os.getenv('AZURE_API_VERSION_IMAGE')
-            config.IMAGE_API_URL = f"{os.getenv('AZURE_API_URL_IMAGE')}openai/v1/video/generations/jobs?api-version={config.IMAGE_API_VERSION}"
-            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
-        elif model == "gpt-image-1":
-            config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_EASTUS')
-            config.IMAGE_API_URL = (
-                f"{os.getenv('AZURE_API_URL_IMAGE_WESTUS3')}openai/deployments/"
-                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
-                f"?api-version={config.IMAGE_API_VERSION}")
-            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE_WESTUS3') or ""}
-        elif model in ("FLUX-1.1-pro", "FLUX.1-Kontext-pro"):
-            config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
-            config.IMAGE_API_URL = (
-                f"{os.getenv('AZURE_API_URL_IMAGE')}openai/deployments/"
-                f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
-                f"?api-version={config.IMAGE_API_VERSION}")
-            config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "api-key":  os.getenv('AZURE_API_KEY_IMAGE') or ""}
+        if model.startswith("sora-2"):
+            config.IMAGE_API_URL = f"{os.getenv('AZURE_API_URL_IMAGE_2')}openai/v1/videos"
+        elif "gpt-image-" in model or "FLUX" in model:
+            if model == "FLUX.2-pro":
+                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE_2')
+                config.IMAGE_API_URL = (
+                    f"{os.getenv('AZURE_API_URL_IMAGE_2')}providers/blackforestlabs/v1/flux-2-pro"
+                    f"?api-version={config.IMAGE_API_VERSION}")
+            else:
+                config.IMAGE_API_VERSION = os.getenv('AZURE_API_VERSION_IMAGE')
+                config.IMAGE_API_URL = (
+                    f"{os.getenv('AZURE_API_URL_IMAGE')}openai/deployments/"
+                    f"{config.AZURE_DEPLOYMENT_IMAGE}/images/generations"
+                    f"?api-version={config.IMAGE_API_VERSION}")
         else:
             raise Exception("Error: Unsupported Azure image model")
 
     elif system == "OPENAI":
-        if model in ("dall-e-3", "gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini"):
+        if model in ("gpt-image-1.5", "gpt-image-1-mini"):
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE')
-        elif "sora" in model:
+        elif model.startswith("sora-2"):
             config.IMAGE_API_URL = os.getenv('OPENAI_API_URL_IMAGE_VIDEO')
         else:
             raise Exception("Error: Unknown OpenAI image model")
@@ -207,6 +199,10 @@ def get_image_config(CLOUD_TYPE_IMAGE: str = CLOUD_TYPE_IMAGE) -> SimpleNamespac
         config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Key " + (os.getenv('FAL_API_KEY') or "")}
         config.IMAGE_API_URL = f"{os.getenv('FAL_API_URL')}/{model}/text-to-image"
         config.IMAGE_API_URL_REQUESTS = f"{os.getenv('FAL_API_URL')}/{base_model}/requests"
+
+    elif system == "REPLICATE":
+        config.IMAGE_HEADERS = {**config.IMAGE_HEADERS, "Authorization": "Bearer " + (os.getenv('REPLICATE_API_KEY_IMAGE') or "")}
+        config.IMAGE_API_URL = f"{os.getenv('REPLICATE_API_URL_IMAGE')}/{model}"
 
     else:
         # If none of the above matched, it's unknown.

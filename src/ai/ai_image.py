@@ -7,6 +7,136 @@ import random
 
 from ai.image_prompt_helper import render_image_prompt
 
+def _extract_video_job(response_json, job_id=""):
+    if not isinstance(response_json, dict):
+        return {}
+
+    # Single-resource response (GET /videos/{id})
+    if response_json.get("status") is not None:
+        return response_json
+
+    # List response (GET /videos): choose the requested id from data[]
+    if response_json.get("object") == "list":
+        data_list = response_json.get("data")
+        if isinstance(data_list, list):
+            if job_id:
+                for item in data_list:
+                    if isinstance(item, dict) and str(item.get("id") or "") == str(job_id):
+                        return item
+            for item in data_list:
+                if isinstance(item, dict) and item.get("status") is not None:
+                    return item
+
+    return {}
+
+
+def _extract_video_job_id(response_json):
+    if not isinstance(response_json, dict):
+        return ""
+
+    job_id = response_json.get("id") or response_json.get("job_id")
+    if job_id:
+        return str(job_id)
+    return ""
+
+
+def _extract_video_error_message(video_job):
+    if not isinstance(video_job, dict):
+        return ""
+
+    error = video_job.get("error")
+    if isinstance(error, str):
+        return error
+    if isinstance(error, dict):
+        code = error.get("code")
+        message = error.get("message")
+        if code and message:
+            return f"{code}: {message}"
+        return message or code or ""
+    return ""
+
+
+def _save_video_response_to_paths(video_response, image_paths, uuid_module):
+    if not video_response.ok:
+        raise Exception(f"Error: {video_response.status_code} - {video_response.text}")
+
+    for i, image_path in enumerate(image_paths):
+        image_path = image_path.replace(".png", f"_{uuid_module.uuid4()}.mp4")
+        image_paths[i] = image_path
+        with open(image_path, "wb") as file:
+            file.write(video_response.content)
+
+
+def _download_video_content(base_video_url, job_id, headers):
+    base_video_url = base_video_url.rstrip("/")
+    content_url = f"{base_video_url}/{job_id}/content"
+    response = requests.get(content_url, headers=headers)
+    if response.ok:
+        return response
+    raise Exception(f"Error: {response.status_code} - {response.text}")
+
+
+def _generate_sora2_video(base_video_url, headers, model_id, prompt, seconds, size, image_paths, uuid_module):
+    payload = {
+        "model": model_id,
+        "prompt": prompt,
+        "seconds": seconds,
+        "size": size,
+    }
+
+    response = requests.post(
+        url=base_video_url,
+        headers=headers,
+        data=json.dumps(payload)
+    )
+    response_text = response.text
+    response_status = response.status_code
+
+    if response_status not in (200, 201):
+        raise Exception(f"Error: {response_status} - {response_text}")
+
+    create_response = response.json()
+    job_id = _extract_video_job_id(create_response)
+    if job_id == "":
+        raise Exception("Error: Missing video job id in response.")
+
+    status_url = f"{base_video_url.rstrip('/')}/{job_id}"
+    status = None
+    status_response = {}
+    while status not in ("succeeded", "completed", "failed", "cancelled"):
+        status_http_response = requests.get(
+            status_url,
+            headers=headers,
+        )
+        if status_http_response.status_code != 200:
+            raise Exception(f"Error: {status_http_response.status_code} - {status_http_response.text}")
+        status_response = status_http_response.json()
+        video_job = _extract_video_job(status_response, job_id=job_id)
+        status = str(video_job.get("status") or "").lower()
+        if status == "":
+            fallback_status = ""
+            if isinstance(status_response, dict):
+                fallback_status = str(status_response.get("status") or "").lower()
+            status = fallback_status
+        if status not in ("succeeded", "completed", "failed", "cancelled"):
+            time.sleep(5)
+
+    if status == "succeeded" or status == "completed":
+        print("Video generation succeeded.")
+        video_response = _download_video_content(
+            base_video_url=base_video_url,
+            job_id=job_id,
+            headers=headers,
+        )
+        _save_video_response_to_paths(video_response, image_paths, uuid_module)
+    else:
+        video_job = _extract_video_job(status_response, job_id=job_id)
+        error_message = _extract_video_error_message(video_job)
+        if error_message:
+            raise Exception(f"Job didn't succeed. Status: {status}. Error: {error_message}")
+        raise Exception(f"Job didn't succeed. Status: {status}")
+
+
 def call_image_ai(model, 
             image_paths, 
             context: str="",
@@ -61,110 +191,19 @@ def call_image_ai(model,
     # Azure + OpenAI
     if "AZURE" in config.CLOUD_TYPE_IMAGE or "OPENAI" in config.CLOUD_TYPE_IMAGE:
 
-        # sora on Azure
-        if "AZURE" in config.CLOUD_TYPE_IMAGE and "sora" in config.IMAGE_MODEL_ID:
-            payload = {
-                "model": config.IMAGE_MODEL_ID,
-                "prompt": str_user,
-                "n_seconds": data.get("video_length"),
-                "width": data.get("image_size").split("x")[0],
-                "height": data.get("image_size").split("x")[1],
-            }
-        
-            response = requests.post(
-                url=config.IMAGE_API_URL,
+        if config.IMAGE_MODEL_ID.startswith("sora-2"):
+            _generate_sora2_video(
+                base_video_url=config.IMAGE_API_URL,
                 headers=config.IMAGE_HEADERS,
-                data=json.dumps(payload)
+                model_id=config.IMAGE_MODEL_ID,
+                prompt=str_user,
+                seconds=data.get("video_length"),
+                size=data.get("image_size"),
+                image_paths=image_paths,
+                uuid_module=uuid,
             )
-            response_text = response.text
-            response_status = response.status_code
 
-            if response_status not in (200,201):
-                raise Exception(f"Error: {response_status} - {response_text}")
-
-            job_id = response.json()["id"]
-
-            status_url = config.IMAGE_API_URL.replace('/jobs?', f"/jobs/{job_id}?")
-
-            status = None
-            while status not in ("succeeded", "failed", "cancelled"):
-                time.sleep(5)
-                status_response = requests.get(
-                    status_url, 
-                    headers=config.IMAGE_HEADERS,
-                ).json()
-                status = status_response.get("status")
-        
-            if status == "succeeded":
-                generations = status_response.get("generations", [])
-                if generations:
-                    print(f"✅ Video generation succeeded.")
-                    generation_id = generations[0].get("id")
-                    video_url = config.IMAGE_API_URL.replace('/jobs?', f"/{generation_id}/content/video?")
-                    video_response = requests.get(
-                        video_url, 
-                        headers=config.IMAGE_HEADERS
-                    )
-                    if video_response.ok:
-                        for i, image_path in enumerate(image_paths):
-                            image_path = image_path.replace(".png", f"_{uuid.uuid4()}.mp4")
-                            image_paths[i] = image_path
-                            with open(image_path, "wb") as file:
-                                file.write(video_response.content)
-                else:
-                    raise Exception("No generations found in job result.")
-            else:
-                raise Exception(f"Job didn't succeed. Status: {status}")
-
-        # sora on OpenAI
-        elif "OPENAI" in config.CLOUD_TYPE_IMAGE and "sora" in config.IMAGE_MODEL_ID:
-            payload = {
-                "model": config.IMAGE_MODEL_ID,
-                "prompt": str_user,
-                "seconds": data.get("video_length"),
-                "size": data.get("image_size"),
-            }
-        
-            response = requests.post(
-                url=config.IMAGE_API_URL,
-                headers=config.IMAGE_HEADERS,
-                data=json.dumps(payload)
-            )
-            response_text = response.text
-            response_status = response.status_code
-
-            if response_status not in (200,201):
-                raise Exception(f"Error: {response_status} - {response_text}")
-
-            job_id = response.json()["id"]
-
-            status_url = f"{config.IMAGE_API_URL}/{job_id}"
-
-            status = None
-            while status not in ("completed", "failed", "cancelled"): # queued, in_progress, completed, failed
-                time.sleep(5)
-                status_response = requests.get(
-                    status_url, 
-                    headers=config.IMAGE_HEADERS,
-                ).json()
-                status = status_response.get("status")
-        
-            if status == "completed":
-                video_url = f"{config.IMAGE_API_URL}/{job_id}/content"
-                video_response = requests.get(
-                    video_url, 
-                    headers=config.IMAGE_HEADERS
-                )
-                if video_response.ok:
-                    for i, image_path in enumerate(image_paths):
-                        image_path = image_path.replace(".png", f"_{uuid.uuid4()}.mp4")
-                        image_paths[i] = image_path
-                        with open(image_path, "wb") as file:
-                            file.write(video_response.content)
-            else:
-                raise Exception(f"Job didn't succeed. Status: {status}")
-
-        # gpt-image-1.x, FLUX-1.1-pro, dall-e-3
+        # gpt-image-1.x, FLUX-1.1-pro
         else:
 
             n_count = 1 # override n_count to 1
@@ -172,7 +211,7 @@ def call_image_ai(model,
             format = "b64_json"
 
             # fix language bug
-            if  "gpt-image-1" in config.IMAGE_MODEL_ID:
+            if  "gpt-image-" in config.IMAGE_MODEL_ID:
                 str_user = str_user.replace("in the same language as the context ", "in the same language as the context (i.e. most likely English or German) ")
             
             payload = {
@@ -180,19 +219,18 @@ def call_image_ai(model,
                 "n": n_count,
             }
 
-            if config.IMAGE_MODEL_ID == "dall-e-3":
-                payload["style"] = style_model
-                payload["response_format"] = format
-                payload["quality"] = data.get("image_quality")
-                payload["size"] = data.get("image_size")
-
-            elif "gpt-image-1" in config.IMAGE_MODEL_ID:
+            if "gpt-image-" in config.IMAGE_MODEL_ID:
                 payload["output_format"] = "png"
                 payload["moderation"] = data.get("moderation")
                 payload["quality"] = data.get("image_quality")
                 payload["size"] = data.get("image_size")
                 if data.get("background", "auto") != "auto":
                     payload["background"] = data.get("background")
+
+            elif config.IMAGE_MODEL_ID == "FLUX.2-pro":
+                payload["width"] = data.get("image_width")
+                payload["height"] = data.get("image_height")
+                payload["model"] = "flux.2-pro"
 
             elif config.IMAGE_MODEL_ID == "FLUX-1.1-pro":
                 payload["size"] = data.get("image_size")
@@ -318,8 +356,14 @@ def call_image_ai(model,
         elif config.IMAGE_MODEL_ID == "flux-2-pro":
             payload["width"] = data.get("image_width")
             payload["height"] = data.get("image_height")
-            payload["steps"] = data.get("steps")
-            payload["guidance"] = data.get("guidance")
+
+        elif config.IMAGE_MODEL_ID == "flux-2-klein-9b":
+            payload["width"] = data.get("image_width")
+            payload["height"] = data.get("image_height")
+
+        elif config.IMAGE_MODEL_ID == "flux-2-klein-4b":
+            payload["width"] = data.get("image_width")
+            payload["height"] = data.get("image_height")
 
         elif config.IMAGE_MODEL_ID == "flux-2-flex":
             payload["width"] = data.get("image_width")

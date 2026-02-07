@@ -123,55 +123,7 @@ def call_image_ai(model, str_user, image_paths, n_count = 1, data={}):
     }
 
     if "sora" in config.IMAGE_MODEL_ID:
-        payload = {
-            "model": config.IMAGE_MODEL_ID,
-            "prompt": str_user,
-            "n_seconds": data.get("video_length"),
-            "width": data.get("image_size").split("x")[0],
-            "height": data.get("image_size").split("x")[1],
-        }
-
-        response = requests.post(
-            url=config.IMAGE_API_URL,
-            headers=headers,
-            data=json.dumps(payload),
-        )
-        response_text = response.text
-        response_status = response.status_code
-
-        if response_status not in (200, 201):
-            raise Exception(f"Error: {response_status} - {response_text}")
-
-        job_id = response.json()["id"]
-        status_url = config.IMAGE_API_URL.replace("/jobs?", f"/jobs/{job_id}?")
-
-        status = None
-        while status not in ("succeeded", "failed", "cancelled"):
-            time.sleep(5)
-            status_response = requests.get(
-                status_url,
-                headers=headers,
-            ).json()
-            status = status_response.get("status")
-
-        if status == "succeeded":
-            generations = status_response.get("generations", [])
-            if generations:
-                generation_id = generations[0].get("id")
-                video_url = config.IMAGE_API_URL.replace("/jobs?", f"/{generation_id}/content/video?")
-                video_response = requests.get(video_url, headers=headers)
-                if video_response.ok:
-                    for i, image_path in enumerate(image_paths):
-                        image_path = image_path.replace(".png", f"_{uuid.uuid4()}.mp4")
-                        image_paths[i] = image_path
-                        with open(image_path, "wb") as file:
-                            file.write(video_response.content)
-            else:
-                raise Exception("No generations found in job result.")
-        else:
-            raise Exception(f"Job didn't succeed. Status: {status}")
-
-        return image_paths
+        raise Exception("Error: sora not implemented for AZURE Entra.")
 
     n_count = 1  # override n_count to 1 (align with ai_image.py)
     response_format = "b64_json"
@@ -180,19 +132,21 @@ def call_image_ai(model, str_user, image_paths, n_count = 1, data={}):
         "n": n_count,
     }
 
-    if config.IMAGE_MODEL_ID == "dall-e-3":
-        payload["style"] = data.get("style")
-        payload["response_format"] = response_format
-        payload["quality"] = data.get("image_quality")
-        payload["size"] = data.get("image_size")
-    elif "gpt-image-1" in config.IMAGE_MODEL_ID:
+    if "gpt-image-" in config.IMAGE_MODEL_ID:
         payload["output_format"] = "png"
         payload["moderation"] = data.get("moderation")
         payload["quality"] = data.get("image_quality")
         payload["size"] = data.get("image_size")
+
+    elif config.IMAGE_MODEL_ID == "FLUX.2-pro":
+        payload["width"] = data.get("image_width")
+        payload["height"] = data.get("image_height")
+        payload["model"] = "flux.2-pro"
+
     elif config.IMAGE_MODEL_ID == "FLUX-1.1-pro":
         payload["size"] = data.get("image_size")
         payload["prompt_upsampling"] = data.get("prompt_upsampling")
+
     elif config.IMAGE_MODEL_ID == "FLUX.1-Kontext-pro":
         payload["aspect_ratio"] = data.get("image_aspect_ratio")
         payload["prompt_upsampling"] = data.get("prompt_upsampling")
